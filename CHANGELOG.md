@@ -5,12 +5,17 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
-## Unreleased
+## 0.1.3 (2026-11-07)
 
-### temper-inspect
+### `@tiaforge-ui/temper-inspect`
 
+- `--cookie name=value` and `--header "Name: value"` (both repeatable; `cookies` and `headers` in the API) for pages
+  behind a login: the cookie is set for each page's origin before it loads, the header goes with every request.
+  temper-inspect does not log in itself; pass the session cookie or token from your dev login.
 - A native (non-Flatpak) Chrome no longer leaves a `com.google.Chrome.*` folder in the temp directory on every run:
   its temp files now live in the throwaway profile, and the browser gets time to exit before it is killed.
+
+## 0.1.2 (2026-11-07)
 
 ### CSS
 
@@ -27,6 +32,13 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Checker (`temper check`, Vite plugin)
 
+- `data-justify` and `data-align` on a button (or `a role="button"`) no longer warn that they need `data-layout`
+  (TM107): a button is a flex row already, so they take effect.
+
+## 0.1.1 (2026-11-07)
+
+### Checker (`temper check`, Vite plugin)
+
 - `--fix` no longer moves a value to another axis when several axes share it (`sm` is a value of `data-size`,
   `data-gap` and `data-pad`; `center` of `data-layout`, `data-align`, `data-justify` and `data-self`). The
   message names the candidates instead; the fix is only applied when exactly one axis has the value.
@@ -35,14 +47,9 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - Tokens in `style` attributes are checked in plain HTML files that have no `<style>` block (TM201).
 - An icon-only or close button whose content is only whitespace or a comment is reported (TM103).
 - `temper check <path>` reports a path that does not exist instead of crashing.
-- `data-justify` and `data-align` on a button (or `a role="button"`) no longer warn that they need `data-layout`
-  (TM107): a button is a flex row already, so they take effect.
 
 ### `@tiaforge-ui/temper-inspect`
 
-- `--cookie name=value` and `--header "Name: value"` (both repeatable; `cookies` and `headers` in the API) for pages
-  behind a login: the cookie is set for each page's origin before it loads, the header goes with every request.
-  temper-inspect does not log in itself; pass the session cookie or token from your dev login.
 - **Fixed a disk leak with a Flatpak Chrome.** The sandbox's /tmp is not the host's, so the profile dir landed inside
   the sandbox (a private tmpfs under `$XDG_RUNTIME_DIR`) and the cleanup removed an empty host directory: every run
   left 70 MB and more behind until the runtime dir was full and the browser no longer started (bwrap: "No space left
