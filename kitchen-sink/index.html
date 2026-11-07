@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>tinystyle kitchen sink</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="theme-examples.css">
+  <link rel="stylesheet" href="demo.css">
+  <script>
+    // Apply ?d=ink|graphite|fjord, ?t=light|dark, ?density=compact before first paint.
+    { const q = new URLSearchParams(location.search), h = document.documentElement;
+    if (q.get('example')) h.dataset.exampleTheme = q.get('example');
+    if (q.get('t')) h.dataset.theme = q.get('t');
+    if (q.get('density')) h.dataset.density = q.get('density'); }
+  </script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+    <symbol id="i-reply" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v4"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar" data-layout="row" data-gap="sm">
+  <div class="wordmark">tinystyle <span>kitchen sink</span></div>
+  <div class="segmented" role="group" aria-label="Theme example" id="example">
+    <button data-variant="ghost" data-size="sm" value="">Default</button>
+    <button data-variant="ghost" data-size="sm" value="ink">Ink</button>
+    <button data-variant="ghost" data-size="sm" value="fjord">Fjord</button>
+  </div>
+  <div class="segmented" role="group" aria-label="Theme" id="theme">
+    <button data-variant="ghost" data-size="sm" value="">Auto</button>
+    <button data-variant="ghost" data-size="sm" value="light">Light</button>
+    <button data-variant="ghost" data-size="sm" value="dark">Dark</button>
+  </div>
+  <div class="segmented" role="group" aria-label="Density" id="density">
+    <button data-variant="ghost" data-size="sm" value="">Comfortable</button>
+    <button data-variant="ghost" data-size="sm" value="compact">Compact</button>
+  </div>
+</header>
+
+<main class="page" data-layout="center" data-gap="xl">
+
+  <!-- ───────── Mail ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <div class="section-head" data-layout="stack" data-gap="xs">
+      <h2>Mail</h2>
+      <p>Ghost buttons with counts, a dense message list and a reader with label/value pairs.</p>
+    </div>
+
+    <div class="mail">
+      <nav class="folders" data-layout="stack" data-gap="none" aria-label="Folders">
+        <button data-variant="secondary" data-tone="accent" aria-current="page"><svg><use href="#i-inbox"/></svg>Inbox <span data-badge data-tone="accent">12</span></button>
+        <button data-variant="ghost"><svg><use href="#i-file"/></svg>Drafts <span data-badge>2</span></button>
+        <button data-variant="ghost"><svg><use href="#i-send"/></svg>Sent</button>
+        <button data-variant="ghost"><svg><use href="#i-trash"/></svg>Trash</button>
+        <h4>Calendars</h4>
+        <button data-variant="ghost" style="--ts-tone: oklch(0.6 0.15 250)"><span class="cal-dot"></span>Work</button>
+        <button data-variant="ghost" style="--ts-tone: oklch(0.65 0.16 150)"><span class="cal-dot"></span>Family</button>
+        <button data-variant="ghost" style="--ts-tone: oklch(0.68 0.16 55)"><span class="cal-dot"></span>Climbing club</button>
+      </nav>
+
+      <div class="msgs">
+        <div class="msgs-head" data-layout="row" data-gap="xs">
+          <input type="search" placeholder="Search mail" aria-label="Search mail" style="flex:1; inline-size:auto">
+          <button data-icon data-variant="ghost" aria-label="New message"><svg><use href="#i-plus"/></svg></button>
+        </div>
+        <ul class="msg-list">
+          <li><a href="#" class="unread"><span class="from">Jonas Weber</span><time>09:42</time><span class="subject" data-truncate>Venue options for the March offsite</span><span class="snippet" data-truncate>I shortlisted three places near Leipzig, all with rooms for twelve and a quiet…</span></a></li>
+          <li><a href="#" aria-current="true"><span class="from">Priya Raman</span><time>08:15</time><span class="subject" data-truncate>Re: CalDAV sync drops recurring exceptions</span><span class="snippet" data-truncate>Confirmed on Nextcloud 31 as well. The EXDATE is still on the server…</span></a></li>
+          <li><a href="#" class="unread"><span class="from">Calendar</span><time>Yesterday</time><span class="subject" data-truncate>Invitation: Design review, Thu 12 Nov 14:00</span><span class="snippet" data-truncate>Mira Okafor invited you and 4 others.</span></a></li>
+          <li><a href="#"><span class="from">Mira Okafor</span><time>Tue</time><span class="subject" data-truncate>Photos from Saturday</span><span class="snippet" data-truncate>The light at the crag was ridiculous. Four attached, more in the album.</span></a></li>
+          <li><a href="#"><span class="from">Deutsche Bahn</span><time>Mon</time><span class="subject" data-truncate>Your booking: Berlin Hbf → Leipzig Hbf</span><span class="snippet" data-truncate>ICE 1537, 13 Mar, coach 7, seat 64. Show this ticket on board.</span></a></li>
+        </ul>
+      </div>
+
+      <article class="reader" style="border:0; border-radius:0; box-shadow:none; border-inline-start: 1px solid var(--ts-border)" data-layout="stack" data-gap="md">
+        <header>
+          <h3>Re: CalDAV sync drops recurring exceptions</h3>
+          <div data-layout="row" data-gap="xs">
+            <button data-icon data-variant="ghost" aria-label="Previous"><svg><use href="#i-left"/></svg></button>
+            <button data-icon data-variant="ghost" aria-label="Next"><svg><use href="#i-right"/></svg></button>
+          </div>
+        </header>
+        <dl data-pairs>
+          <dt>From</dt><dd>Priya Raman &lt;priya@raman.dev&gt;</dd>
+          <dt>To</dt><dd>you, sync-team</dd>
+          <dt>Date</dt><dd><time>Sat 7 Nov 2026, 08:15</time></dd>
+        </dl>
+        <hr>
+        <div class="reader-body" data-layout="stack" data-gap="sm">
+          <p>Confirmed on Nextcloud 31 as well. The <code>EXDATE</code> is still on the server, but after the next sync the cancelled Tuesday shows up again in the week view.</p>
+          <p>My guess is the override with <code>RECURRENCE-ID</code> gets written before the master event. Logs are attached. Happy to pair on it Monday.</p>
+        </div>
+        <div data-layout="row" data-gap="xs">
+          <span data-badge><svg width="12" height="12"><use href="#i-file"/></svg>sync-trace.log · 48 KB</span>
+          <span data-badge data-tone="success">Signed</span>
+        </div>
+        <footer style="justify-content:start">
+          <button><svg><use href="#i-reply"/></svg>Reply</button>
+          <button data-variant="secondary">Forward</button>
+          <button data-variant="ghost" data-tone="danger"><svg><use href="#i-trash"/></svg>Delete</button>
+        </footer>
+      </article>
+    </div>
+  </section>
+
+  <!-- ───────── Event form, dialog, contact ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <div class="section-head" data-layout="stack" data-gap="xs">
+      <h2>Calendar and contacts</h2>
+      <p>A form with every field type and an invalid field, a confirmation dialog, a menu and a contact card.</p>
+    </div>
+
+    <div data-layout="grid" data-gap="lg" style="--ts-min: 22rem; align-items:start">
+      <article data-layout="stack" data-gap="md">
+        <header><h3>Edit event</h3><button data-icon data-variant="ghost" aria-label="Close"><svg><use href="#i-x"/></svg></button></header>
+        <form data-layout="stack" data-gap="md" onsubmit="return false">
+          <label>Title <input value="Design review"></label>
+          <div data-layout="grid" data-gap="sm" style="--ts-min: 9rem">
+            <label>Starts <input type="date" value="2026-11-12"></label>
+            <label>Time <input type="time" value="14:00"></label>
+          </div>
+          <label>Calendar
+            <select><option>Work</option><option>Family</option><option>Climbing club</option></select>
+          </label>
+          <label><input type="checkbox" role="switch"> All day</label>
+          <fieldset>
+            <legend>Repeat</legend>
+            <div data-layout="row" data-gap="md">
+              <label><input type="radio" name="r"> Never</label>
+              <label><input type="radio" name="r" checked> Weekly</label>
+              <label><input type="radio" name="r"> Monthly</label>
+            </div>
+          </fieldset>
+          <label>Guests
+            <input value="mira@okafor.io, priya@" aria-invalid="true">
+            <small data-tone="danger">“priya@” is incomplete. Enter a full address, like name@example.com.</small>
+          </label>
+          <label>Notes <textarea placeholder="Agenda, links, dial-in"></textarea></label>
+          <label><input type="checkbox" checked> Email me 30 minutes before</label>
+        </form>
+        <footer>
+          <button data-variant="ghost">Cancel</button>
+          <button>Save event</button>
+        </footer>
+      </article>
+
+      <div data-layout="stack" data-gap="lg">
+        <dialog open class="preview-dialog" aria-labelledby="del-title">
+          <header><h3 id="del-title">Delete “Team retro”?</h3><button data-icon data-variant="ghost" aria-label="Close"><svg><use href="#i-x"/></svg></button></header>
+          <p>This removes the event from your calendar and sends a cancellation to all 6 guests.</p>
+          <div data-callout data-tone="warning"><strong>This event repeats weekly.</strong>Only Thursday 12 Nov is deleted. Later dates stay.</div>
+          <footer>
+            <button data-variant="secondary">Keep event</button>
+            <button data-tone="danger">Delete event</button>
+          </footer>
+        </dialog>
+
+        <div data-layout="row" data-gap="lg" data-align="start">
+          <div popover class="preview-menu" id="menu-preview">
+            <button data-variant="ghost" data-size="sm">Open in new tab</button>
+            <button data-variant="ghost" data-size="sm">Mark as unread</button>
+            <button data-variant="ghost" data-size="sm">Move to…</button>
+            <hr>
+            <button data-variant="ghost" data-size="sm" data-tone="danger">Delete</button>
+          </div>
+
+          <article data-layout="stack" data-gap="sm" style="flex:1; min-inline-size: 14rem">
+            <div data-layout="row" data-gap="sm" style="flex-wrap:nowrap">
+              <div class="avatar" style="--ts-tone: oklch(0.65 0.16 150)">MO</div>
+              <div data-layout="stack" data-gap="none" style="min-inline-size:0">
+                <strong>Mira Okafor</strong>
+                <small data-muted data-truncate>mira@okafor.io</small>
+              </div>
+            </div>
+            <dl data-pairs>
+              <dt>Mobile</dt><dd>+49 151 2345 6789</dd>
+              <dt>Birthday</dt><dd>14 March</dd>
+            </dl>
+            <div data-layout="row" data-gap="xs"><span data-badge>Climbing club</span><span data-badge data-tone="accent">Favourite</span></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── Reference ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <div class="section-head" data-layout="stack" data-gap="xs">
+      <h2>Reference</h2>
+      <p>Every variant against every tone. Rows are <code>data-variant</code>, columns are <code>data-tone</code>.</p>
+    </div>
+
+    <article data-layout="stack" data-gap="lg">
+      <div style="overflow-x:auto">
+        <table class="matrix">
+          <thead><tr><th></th><th>default</th><th>accent</th><th>danger</th><th>success</th><th>warning</th></tr></thead>
+          <tbody>
+            <tr><th>primary</th><td><button>Save</button></td><td><button data-tone="accent">Save</button></td><td><button data-tone="danger">Delete</button></td><td><button data-tone="success">Accept</button></td><td><button data-tone="warning">Retry</button></td></tr>
+            <tr><th>secondary</th><td><button data-variant="secondary">Forward</button></td><td><button data-variant="secondary" data-tone="accent">Forward</button></td><td><button data-variant="secondary" data-tone="danger">Delete</button></td><td><button data-variant="secondary" data-tone="success">Accept</button></td><td><button data-variant="secondary" data-tone="warning">Retry</button></td></tr>
+            <tr><th>outline</th><td><button data-variant="outline">Export</button></td><td><button data-variant="outline" data-tone="accent">Export</button></td><td><button data-variant="outline" data-tone="danger">Delete</button></td><td><button data-variant="outline" data-tone="success">Accept</button></td><td><button data-variant="outline" data-tone="warning">Retry</button></td></tr>
+            <tr><th>ghost</th><td><button data-variant="ghost">Cancel</button></td><td><button data-variant="ghost" data-tone="accent">Cancel</button></td><td><button data-variant="ghost" data-tone="danger">Delete</button></td><td><button data-variant="ghost" data-tone="success">Accept</button></td><td><button data-variant="ghost" data-tone="warning">Retry</button></td></tr>
+            <tr><th>link</th><td><button data-variant="link">Details</button></td><td><button data-variant="link" data-tone="accent">Details</button></td><td><button data-variant="link" data-tone="danger">Delete</button></td><td><button data-variant="link" data-tone="success">Accept</button></td><td><button data-variant="link" data-tone="warning">Retry</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div data-layout="row" data-gap="sm">
+        <button data-size="sm">Small</button>
+        <button>Medium</button>
+        <button data-size="lg">Large</button>
+        <button data-icon data-variant="outline" aria-label="Search"><svg><use href="#i-search"/></svg></button>
+        <button aria-busy="true">Saving</button>
+        <button data-variant="secondary" aria-busy="true">Syncing</button>
+        <button disabled>Disabled</button>
+        <button data-variant="outline" aria-pressed="true">Pressed</button>
+        <input placeholder="Inputs match button height" style="inline-size: 16rem">
+      </div>
+
+      <div data-layout="row" data-gap="sm">
+        <span data-badge>Neutral</span>
+        <span data-badge data-tone="accent">Accent</span>
+        <span data-badge data-tone="info">Info</span>
+        <span data-badge data-tone="success">Synced</span>
+        <span data-badge data-tone="warning">Pending</span>
+        <span data-badge data-tone="danger">Failed</span>
+        <span data-badge style="--ts-tone: oklch(0.6 0.2 330)">Custom colour</span>
+      </div>
+
+      <div data-layout="grid" data-gap="sm" style="--ts-min: 15rem">
+        <div data-callout><strong>Sync paused</strong>Caley syncs again when you are back online.</div>
+        <div data-callout data-tone="success"><strong>Calendar imported</strong>48 events added to Work.</div>
+        <div data-callout data-tone="warning"><strong>Password expires soon</strong>Update it before 1 December to keep syncing.</div>
+        <div data-callout data-tone="danger" role="alert"><strong>Could not send</strong>The SMTP server refused the login. Check the password in Settings.</div>
+      </div>
+
+      <div data-layout="grid" data-gap="lg" style="--ts-min: 15rem">
+        <div data-layout="stack" data-gap="sm">
+          <label><input type="checkbox" checked> Checked</label>
+          <label><input type="checkbox"> Unchecked</label>
+          <label><input type="checkbox" id="indet"> Indeterminate</label>
+          <label><input type="checkbox" role="switch" checked> Switch on</label>
+          <label><input type="checkbox" disabled> Disabled</label>
+        </div>
+        <div data-layout="stack" data-gap="sm">
+          <label>Import progress <progress value="64" max="100"></progress></label>
+          <label>Storage <progress value="88" max="100" data-tone="warning"></progress></label>
+          <label>Attachment <input type="file"></label>
+        </div>
+        <div data-layout="stack" data-gap="sm">
+          <details open><summary>What syncs automatically?</summary><p data-muted>Calendars, contacts and mail every 5 minutes, and instantly when your server supports push.</p></details>
+          <details><summary>Can I use more than one account?</summary><p>Yes.</p></details>
+        </div>
+      </div>
+
+      <table>
+        <thead><tr><th>Account</th><th>Type</th><th>Last sync</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>tia@posteo.de</td><td>IMAP</td><td><time>08:15</time></td><td><span data-badge data-tone="success">Synced</span></td></tr>
+          <tr><td>Nextcloud</td><td>CalDAV</td><td><time>08:14</time></td><td><span data-badge data-tone="success">Synced</span></td></tr>
+          <tr><td>Work Exchange</td><td>CardDAV</td><td><time>Yesterday</time></td><td><span data-badge data-tone="danger">Login failed</span></td></tr>
+        </tbody>
+      </table>
+
+      <p>Body text with a <a href="#">link to settings</a>, <mark>highlighted search hits</mark>, inline <code>RRULE:FREQ=WEEKLY</code> and a shortcut: press <kbd>C</kbd> to compose.</p>
+
+      <div class="swatches">
+        <div class="swatch"><i style="background:var(--ts-bg)"></i>bg</div>
+        <div class="swatch"><i style="background:var(--ts-surface)"></i>surface</div>
+        <div class="swatch"><i style="background:var(--ts-fill)"></i>fill</div>
+        <div class="swatch"><i style="background:var(--ts-border-strong)"></i>border-strong</div>
+        <div class="swatch"><i style="background:var(--ts-text-muted)"></i>text-muted</div>
+        <div class="swatch"><i style="background:var(--ts-text)"></i>text</div>
+        <div class="swatch"><i style="background:var(--ts-accent)"></i>accent</div>
+        <div class="swatch"><i style="background:var(--ts-danger)"></i>danger</div>
+        <div class="swatch"><i style="background:var(--ts-success)"></i>success</div>
+        <div class="swatch"><i style="background:var(--ts-warning)"></i>warning</div>
+      </div>
+    </article>
+  </section>
+</main>
+
+<script>
+{
+  document.getElementById('indet').indeterminate = true;
+  const h = document.documentElement;
+  const groups = { example: 'exampleTheme', theme: 'theme', density: 'density' };
+  for (const [id, key] of Object.entries(groups)) {
+    const group = document.getElementById(id);
+    const sync = () => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String((h.dataset[key] ?? '') === b.value)));
+    group.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.value) h.dataset[key] = b.value; else delete h.dataset[key];
+      const q = new URLSearchParams(location.search);
+      const param = { exampleTheme: 'example', theme: 't' }[key] ?? key;
+      b.value ? q.set(param, b.value) : q.delete(param);
+      history.replaceState(null, '', '?' + q);
+      sync();
+    });
+    sync();
+  }
+}
+</script>
+</body>
+</html>

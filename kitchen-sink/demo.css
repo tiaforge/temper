@@ -1,0 +1,79 @@
+/* App-level CSS for the kitchen sink. Unlayered, so it wins over the library without tricks.
+   It only uses --ts-* tokens, the way caley's own CSS would. */
+
+body { min-block-size: 100dvh; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 2;
+  padding: var(--ts-space-sm) var(--ts-space-md);
+  border-block-end: 1px solid var(--ts-border);
+  background: color-mix(in oklab, var(--ts-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+.wordmark { font-weight: 700; letter-spacing: -0.02em; font-size: 1.0625rem; margin-inline-end: auto; }
+.wordmark span { color: var(--ts-text-muted); font-weight: 450; }
+.segmented { display: inline-flex; gap: 2px; padding: 2px; border-radius: calc(var(--ts-radius) + 2px); background: var(--ts-fill); }
+
+.page { padding-block: var(--ts-space-xl); }
+.section-head { max-inline-size: 44rem; }
+.section-head p { color: var(--ts-text-muted); }
+
+/* mail frame */
+.mail {
+  display: grid; grid-template-columns: 12rem 22rem 1fr;
+  border: 1px solid var(--ts-border); border-radius: var(--ts-radius-lg);
+  background: var(--ts-surface); box-shadow: var(--ts-shadow-sm); overflow: hidden;
+  min-block-size: 30rem;
+}
+.mail > * + * { border-inline-start: 1px solid var(--ts-border); }
+.folders { padding: var(--ts-space-sm); background: var(--ts-bg); }
+.folders button { justify-content: start; inline-size: 100%; }
+.folders button [data-badge] { margin-inline-start: auto; }
+.folders h4 { padding: var(--ts-space-md) var(--ts-space-sm) var(--ts-space-xs); font-size: var(--ts-text-xs); color: var(--ts-text-muted); font-weight: 600; letter-spacing: 0; }
+.cal-dot { inline-size: 0.625rem; block-size: 0.625rem; border-radius: 50%; background: var(--ts-tone); }
+.msgs { display: flex; flex-direction: column; min-inline-size: 0; }
+.msgs-head { padding: var(--ts-space-sm); border-block-end: 1px solid var(--ts-border); }
+.msg-list { list-style: none; padding: 0; overflow: auto; }
+.msg-list a {
+  display: grid; grid-template-columns: 1fr auto; gap: 0.125rem var(--ts-space-sm);
+  padding: var(--ts-space-sm) var(--ts-space-md);
+  border-block-end: 1px solid var(--ts-border);
+  color: var(--ts-text); text-decoration: none; font-size: var(--ts-text-sm);
+}
+.msg-list a:hover { background: color-mix(in oklab, var(--ts-fill) 60%, transparent); }
+.msg-list a[aria-current="true"] { background: var(--ts-tone-soft); box-shadow: inset 3px 0 var(--ts-accent); }
+.msg-list .from { font-weight: 500; }
+.msg-list .unread .from, .msg-list .unread .subject { font-weight: 650; }
+.msg-list time { color: var(--ts-text-muted); font-size: var(--ts-text-xs); }
+.msg-list .subject, .msg-list .snippet { grid-column: 1 / -1; }
+.msg-list .snippet { color: var(--ts-text-muted); }
+.reader { padding: var(--ts-space-lg); min-inline-size: 0; }
+.reader-body { max-inline-size: 38rem; }
+
+/* contact card */
+.avatar {
+  display: grid; place-items: center; flex-shrink: 0;
+  inline-size: 3rem; block-size: 3rem; border-radius: 50%;
+  background: var(--ts-tone-soft); color: var(--ts-tone-ink); font-weight: 650;
+}
+
+/* static previews of overlay components */
+.preview-dialog { position: static; display: grid; opacity: 1; scale: 1; inline-size: 100%; }
+.preview-menu { position: static; display: block; inset: auto; margin: 0; inline-size: 14rem; }
+.preview-menu button { inline-size: 100%; justify-content: start; }
+.preview-menu hr { margin-block: var(--ts-space-xs); }
+
+/* reference sheet */
+.matrix th, .matrix td { border: 0; padding: var(--ts-space-xs) var(--ts-space-sm); vertical-align: middle; }
+.matrix tbody tr:hover { background: none; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: var(--ts-space-sm); }
+.swatch { display: grid; gap: 0.25rem; font-size: var(--ts-text-xs); color: var(--ts-text-muted); }
+.swatch i { block-size: 2.5rem; border-radius: var(--ts-radius-sm); border: 1px solid var(--ts-border); }
+
+@media (width < 64rem) {
+  .mail { grid-template-columns: 1fr; }
+  .mail > * + * { border-inline-start: 0; border-block-start: 1px solid var(--ts-border); }
+}
+.segmented [aria-pressed="true"] { background: var(--ts-surface-raised); color: var(--ts-text); box-shadow: 0 1px 2px oklch(0 0 0 / 0.12); }
+.swatch-dot { inline-size: 0.625rem; block-size: 0.625rem; border-radius: 50%; background: var(--c); }
+.topbar { row-gap: var(--ts-space-xs); }
