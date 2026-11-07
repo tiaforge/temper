@@ -148,13 +148,13 @@ On: any container: page wrappers, sections, panels, rows. Padding inside the ele
 
 ### `data-align`
 
-On: [data-layout]. Cross-axis alignment of children (align-items).
+On: [data-layout], button. Cross-axis alignment of children (align-items). A button is a flex row already, so it works there without data-layout.
 
 Values: `start`, `center`, `end`, `stretch`.
 
 ### `data-justify`
 
-On: [data-layout]. Main-axis distribution of children (justify-content).
+On: [data-layout], button. Main-axis distribution of children (justify-content). A button is a flex row already, so it works there without data-layout; it also aligns a label that wraps (data-justify="start" on a "From: …" toggle).
 
 - `start`
 - `center`

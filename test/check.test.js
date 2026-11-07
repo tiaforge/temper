@@ -73,6 +73,9 @@ test('fields need a label (warning)', () => {
 test('layout attributes need data-layout', () => {
   assert.deepEqual(codes(checkMarkup('<div data-gap="sm" data-justify="end"></div>')), ['TM107']);
   assert.deepEqual(codes(checkMarkup('<div data-layout="row" data-gap="sm"></div><dl data-pairs></dl>')), []);
+  // a button is a flex row already: data-justify and data-align work on it without data-layout
+  assert.deepEqual(codes(checkMarkup('<button data-justify="start" data-align="start">From</button><a role="button" data-justify="end">x</a>')), []);
+  assert.deepEqual(codes(checkMarkup('<span data-justify="start">x</span>')), ['TM107']);
 });
 
 test('misspelled attribute names are warnings', () => {

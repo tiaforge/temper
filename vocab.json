@@ -190,8 +190,8 @@
     },
     "data-align": {
       "module": "core",
-      "on": "[data-layout]",
-      "description": "Cross-axis alignment of children (align-items).",
+      "on": "[data-layout], button",
+      "description": "Cross-axis alignment of children (align-items). A button is a flex row already, so it works there without data-layout.",
       "values": {
         "start": "",
         "center": "",
@@ -200,12 +200,13 @@
       },
       "with": {
         "data-layout": null
-      }
+      },
+      "withExcept": ["button", "a[role=button]"]
     },
     "data-justify": {
       "module": "core",
-      "on": "[data-layout]",
-      "description": "Main-axis distribution of children (justify-content).",
+      "on": "[data-layout], button",
+      "description": "Main-axis distribution of children (justify-content). A button is a flex row already, so it works there without data-layout; it also aligns a label that wraps (data-justify=\"start\" on a \"From: …\" toggle).",
       "values": {
         "start": "",
         "center": "",
@@ -214,7 +215,8 @@
       },
       "with": {
         "data-layout": null
-      }
+      },
+      "withExcept": ["button", "a[role=button]"]
     },
     "data-self": {
       "module": "core",

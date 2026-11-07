@@ -51,10 +51,13 @@
   }
 
   @supports (position-area: block-end) {
+    /* The end margin keeps a gap to the screen edge: a menu that would touch it tries the other side, then
+       --tm-menu-fit, which centers it under its button and shifts it inside the screen. */
     :where([popover][data-menu]) {
-      inset: auto; margin: var(--tm-space-xs) 0 0;
+      inset: auto; margin: var(--tm-space-xs) var(--tm-space-sm) 0 0;
       position-area: block-end span-inline-end;
-      position-try-fallbacks: flip-block, flip-inline;
+      position-try-fallbacks: flip-block, flip-inline, --tm-menu-fit;
     }
   }
+  @position-try --tm-menu-fit { position-area: block-end; margin: var(--tm-space-xs) var(--tm-space-sm) 0; }
 }

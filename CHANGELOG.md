@@ -7,6 +7,19 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### CSS
+
+- `data-justify` also aligns the text of a label that wraps: `data-justify="start"` on a button put the first line at the
+  start but kept the text centered.
+- A `data-variant="item"` button with `data-layout="stack"` (or `row`) keeps its children at the start edge; before, the
+  button's own `align-items: center` centered them until you added `data-align="stretch"`.
+- A busy item (`data-variant="item"`, rail and menu entries with `aria-busy="true"`) stays clickable and a drop target,
+  for example a mailbox that syncs. Busy buttons still ignore clicks.
+- A `[popover][data-menu]` that has no room next to its button keeps a gap to the screen edge: it tries the other side,
+  then centers under its button and shifts inside the screen (`@position-try --tm-menu-fit`). Before, it could sit flush
+  against the edge on phones.
+- Tests: `test/render.test.js` checks these in a real browser (skipped without Chrome).
+
 ### Checker (`temper check`, Vite plugin)
 
 - `--fix` no longer moves a value to another axis when several axes share it (`sm` is a value of `data-size`,
@@ -17,6 +30,8 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - Tokens in `style` attributes are checked in plain HTML files that have no `<style>` block (TM201).
 - An icon-only or close button whose content is only whitespace or a comment is reported (TM103).
 - `temper check <path>` reports a path that does not exist instead of crashing.
+- `data-justify` and `data-align` on a button (or `a role="button"`) no longer warn that they need `data-layout`
+  (TM107): a button is a flex row already, so they take effect.
 
 ### `@tiaforge-ui/temper-inspect`
 

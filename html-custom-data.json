@@ -361,7 +361,7 @@
     },
     {
       "name": "data-align",
-      "description": "temper. On: [data-layout]. Cross-axis alignment of children (align-items).",
+      "description": "temper. On: [data-layout], button. Cross-axis alignment of children (align-items). A button is a flex row already, so it works there without data-layout.",
       "values": [
         {
           "name": "start"
@@ -379,7 +379,7 @@
     },
     {
       "name": "data-justify",
-      "description": "temper. On: [data-layout]. Main-axis distribution of children (justify-content).",
+      "description": "temper. On: [data-layout], button. Main-axis distribution of children (justify-content). A button is a flex row already, so it works there without data-layout; it also aligns a label that wraps (data-justify=\"start\" on a \"From: …\" toggle).",
       "values": [
         {
           "name": "start"

@@ -228,9 +228,9 @@
   :where([data-align="center"]) { align-items: center; }
   :where([data-align="end"]) { align-items: end; }
   :where([data-align="stretch"]) { align-items: stretch; }
-  :where([data-justify="start"]) { justify-content: start; }
-  :where([data-justify="center"]) { justify-content: center; }
-  :where([data-justify="end"]) { justify-content: end; }
+  :where([data-justify="start"]) { justify-content: start; text-align: start; }
+  :where([data-justify="center"]) { justify-content: center; text-align: center; }
+  :where([data-justify="end"]) { justify-content: end; text-align: end; }
   :where([data-justify="between"]) { justify-content: space-between; }
 }
 
@@ -275,7 +275,7 @@
   /* item: a full-width, multi-line list entry (message list, search results); selected = soft accent */
   :where(button, a)[data-variant="item"] {
     --_bg: transparent; --_fg: var(--tm-text);
-    display: grid; justify-content: stretch; justify-items: start; align-content: center; gap: 0.125rem;
+    display: grid; justify-content: stretch; justify-items: start; align-items: start; align-content: center; gap: 0.125rem;
     position: relative; inline-size: 100%; block-size: auto; min-block-size: var(--tm-control-h);
     font-size: var(--tm-control-font);
     padding: var(--tm-space-sm) var(--tm-space-md); border-radius: var(--tm-radius-sm);
@@ -330,7 +330,7 @@
     border: 2px solid var(--_fg); border-inline-end-color: transparent;
     animation: tm-spin 0.7s linear infinite;
   }
-  :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"] { color: var(--_fg); }
+  :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"] { color: var(--_fg); pointer-events: auto; }
   :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"]::after {
     content: ""; position: absolute; inset-block: 0; inset-inline: auto var(--tm-space-sm); margin-block: auto;
     inline-size: 0.875em; block-size: 0.875em; border-radius: 50%;

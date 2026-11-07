@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Layout regressions</title>
+<link rel="stylesheet" href="../../src/core.css">
+<link rel="stylesheet" href="../../src/menu.css">
+</head>
+<body>
+<main data-layout="stack" data-pad="md">
+  <!-- data-justify on a button aligns its wrapped label text too -->
+  <button id="justify" type="button" data-variant="ghost" data-justify="start" style="inline-size: 16rem">From: Priya Raman and two more people in a label that wraps</button>
+  <!-- an item laid out as a stack keeps its children at the start edge -->
+  <button id="item-stack" type="button" data-variant="item" data-layout="stack" data-gap="xs"><strong>Subject</strong><span>Preview</span></button>
+  <!-- a busy item (a syncing mailbox) stays clickable and a drop target -->
+  <button id="item-busy" type="button" data-variant="item" aria-busy="true">Inbox</button>
+  <button id="busy" type="button" aria-busy="true">Save</button>
+  <!-- a menu wider than the room next to its button keeps a gap to the screen edge -->
+  <div data-layout="row" data-gap="sm">
+    <button type="button" data-variant="ghost" aria-label="Previous">‹</button>
+    <button id="open" type="button" popovertarget="menu" data-variant="outline">November 2026</button>
+  </div>
+  <div popover id="menu" data-menu><div style="inline-size: 20rem; block-size: 4rem"></div></div>
+</main>
+</body>
+</html>
