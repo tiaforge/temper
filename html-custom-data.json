@@ -73,8 +73,177 @@
     },
     {
       "name": "data-icon",
-      "description": "tinystyle. On: button, a[role=button]. Square icon-only button. Must have an aria-label. Usually combined with data-variant=\"ghost\".",
-      "valueSet": "v"
+      "description": "tinystyle. On: button, a, or any element (span) for a standalone icon. An icon by name (Lucide names). <span data-icon=\"mail\"></span> is an icon; <button data-icon=\"plus\">New</button> puts it before the text; an empty <button data-icon=\"plus\" aria-label=\"New contact\"></button> is a square icon-only button and needs an aria-label. Without a value (<button data-icon aria-label=\"…\"><svg>…</svg></button>) it makes a square icon button around your own svg. The default set needs icons.css (or all.css); the Vite plugin makes every Lucide icon and your own SVG folder available.",
+      "values": [
+        {
+          "name": "mail"
+        },
+        {
+          "name": "inbox"
+        },
+        {
+          "name": "send"
+        },
+        {
+          "name": "calendar"
+        },
+        {
+          "name": "calendar-plus"
+        },
+        {
+          "name": "clock"
+        },
+        {
+          "name": "users"
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "user-plus"
+        },
+        {
+          "name": "search"
+        },
+        {
+          "name": "bell"
+        },
+        {
+          "name": "settings"
+        },
+        {
+          "name": "log-out"
+        },
+        {
+          "name": "log-in"
+        },
+        {
+          "name": "menu"
+        },
+        {
+          "name": "plus"
+        },
+        {
+          "name": "minus"
+        },
+        {
+          "name": "x"
+        },
+        {
+          "name": "check"
+        },
+        {
+          "name": "pencil"
+        },
+        {
+          "name": "trash-2"
+        },
+        {
+          "name": "share-2"
+        },
+        {
+          "name": "copy"
+        },
+        {
+          "name": "download"
+        },
+        {
+          "name": "upload"
+        },
+        {
+          "name": "paperclip"
+        },
+        {
+          "name": "link"
+        },
+        {
+          "name": "external-link"
+        },
+        {
+          "name": "star"
+        },
+        {
+          "name": "heart"
+        },
+        {
+          "name": "filter"
+        },
+        {
+          "name": "refresh-cw"
+        },
+        {
+          "name": "ellipsis"
+        },
+        {
+          "name": "ellipsis-vertical"
+        },
+        {
+          "name": "chevron-down"
+        },
+        {
+          "name": "chevron-up"
+        },
+        {
+          "name": "chevron-left"
+        },
+        {
+          "name": "chevron-right"
+        },
+        {
+          "name": "arrow-left"
+        },
+        {
+          "name": "arrow-right"
+        },
+        {
+          "name": "house"
+        },
+        {
+          "name": "info"
+        },
+        {
+          "name": "circle-alert"
+        },
+        {
+          "name": "triangle-alert"
+        },
+        {
+          "name": "circle-check"
+        },
+        {
+          "name": "eye"
+        },
+        {
+          "name": "eye-off"
+        },
+        {
+          "name": "lock"
+        },
+        {
+          "name": "map-pin"
+        },
+        {
+          "name": "phone"
+        },
+        {
+          "name": "archive"
+        },
+        {
+          "name": "folder"
+        },
+        {
+          "name": "file"
+        },
+        {
+          "name": "image"
+        },
+        {
+          "name": "sun"
+        },
+        {
+          "name": "moon"
+        }
+      ]
     },
     {
       "name": "data-layout",

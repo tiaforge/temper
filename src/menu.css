@@ -35,7 +35,7 @@
   :where([data-menu]) :where(svg) { inline-size: 1rem; block-size: 1rem; flex-shrink: 0; }
 
   /* Buttons that open a popover get a dropdown caret (not icon buttons, not close buttons). */
-  :where(button:is([popovertarget]:not([popovertargetaction="hide"]), [commandfor]:is([command="toggle-popover"], [command="show-popover"])):not([data-icon], [aria-busy="true"]))::after {
+  :where(button:is([popovertarget]:not([popovertargetaction="hide"]), [commandfor]:is([command="toggle-popover"], [command="show-popover"])):not(:is([data-icon=""], [data-icon]:empty), [aria-busy="true"]))::after {
     content: ""; inline-size: 0.875em; block-size: 0.875em; margin-inline-end: -0.25em; flex-shrink: 0;
     background: currentColor; opacity: 0.7;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;

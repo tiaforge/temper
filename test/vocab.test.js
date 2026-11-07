@@ -9,7 +9,7 @@ const css = readdirSync(new URL('../src/', import.meta.url))
   .map(f => readFileSync(new URL('../src/' + f, import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, ''))
   .join('\n');
 
-const selectors = new Set([...css.matchAll(/\[(data-[a-z-]+)(?:="([^"]+)")?\]/g)].map(m => m[2] ? `${m[1]}=${m[2]}` : m[1]));
+const selectors = new Set([...css.matchAll(/\[(data-[a-z-]+)(?:="([^"]*)")?\]/g)].map(m => m[2] ? `${m[1]}=${m[2]}` : m[1]));
 const declared = new Set([...css.matchAll(/(--ts-[a-z0-9-]+)\s*:/g)].map(m => m[1]));
 const used = new Set([...css.matchAll(/var\((--ts-[a-z0-9-]+)/g)].map(m => m[1]));
 
@@ -30,11 +30,15 @@ test('every attribute selector in the CSS is in the vocab', () => {
 });
 
 test('every token in the CSS is in the vocab', () => {
-  for (const t of new Set([...declared, ...used])) assert.ok(vocab.tokens[t], `${t} is missing from vocab.json`);
+  for (const t of new Set([...declared, ...used])) {
+    if (t.startsWith('--ts-icon-')) continue; // --ts-icon-<name>, one per icon
+    assert.ok(vocab.tokens[t], `${t} is missing from vocab.json`);
+  }
 });
 
 test('every vocab token is declared in the CSS, unless optional', () => {
   for (const [t, spec] of Object.entries(vocab.tokens)) {
+    if (spec.pattern) continue;
     if (spec.optional) assert.ok(used.has(t), `optional ${t} is never used`);
     else assert.ok(declared.has(t), `${t} is in vocab.json but never declared`);
   }

@@ -9,6 +9,7 @@
 import '@tiaforge-ui/tinystyle/core.css';   // always
 import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
 import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
+import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
 ```
 
@@ -16,6 +17,8 @@ import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
 // vite.config.js: runs tinystyle check in every build (errors fail the build, the dev server warns)
 import tinystyle from '@tiaforge-ui/tinystyle/vite';
 export default { plugins: [tinystyle()] };
+// with icons: every Lucide icon by name (only the used ones are emitted) plus your own SVG folder
+// export default { plugins: [tinystyle({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:tinystyle-icons.css';
 ```
 
 ## Rules
@@ -60,6 +63,30 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 
 {{tokens}}
 
+## Icons
+
+```html
+<span data-icon="mail"></span>                                        <!-- an icon, 1.125em, in the text color -->
+<button data-icon="pencil">Edit</button>                              <!-- icon before the text -->
+<button data-icon="x" data-variant="ghost" aria-label="Close"></button>  <!-- empty: square icon-only button, needs aria-label -->
+<a href="/mail/" data-icon="mail"><span>Mail</span></a>               <!-- rail items, links -->
+```
+
+Names are Lucide's (https://lucide.dev/icons). icons.css contains the common ones listed under
+`data-icon` below. With the Vite plugin's `icons` option every Lucide name works, and only the icons you
+use end up in the CSS. Do not paste inline `<svg>` for an icon that has a name.
+
+Your own icons: put SVG files in the plugin's `icons.dir` (file name = icon name; it replaces a default
+of the same name), or without the plugin:
+
+```css
+:root { --ts-icon-mail: url(/icons/mail.svg); }            /* replace a default icon */
+:root { --ts-icon-rocket: url(/icons/rocket.svg); }         /* add one */
+[data-icon="rocket"] { --_icon: var(--ts-icon-rocket); }
+```
+
+Icons are one color (the text color); keep multicolor logos as `<img>`.
+
 ## Recipes
 
 ### Form
@@ -88,7 +115,7 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 
 ```html
 <article data-layout="stack" data-gap="sm">
-  <header><h3>Title</h3><button data-icon data-variant="ghost" aria-label="Close">×</button></header>
+  <header><h3>Title</h3><button data-icon="x" data-variant="ghost" aria-label="Close"></button></header>
   <p>Body text.</p>
   <footer><button data-variant="secondary">Edit</button></footer>
 </article>
@@ -126,7 +153,7 @@ row: give such elements the `hidden` attribute.
 <div data-layout="row" data-gap="sm">
   <h2>Contacts</h2>
   <input type="search" data-grow placeholder="Search" aria-label="Search">
-  <button data-icon data-variant="ghost" aria-label="Add contact">+</button>
+  <button data-icon="plus" data-variant="ghost" aria-label="Add contact"></button>
 </div>
 ```
 
@@ -160,22 +187,22 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
       <span data-rail-label>Caley</span>
       <input type="checkbox" data-rail-collapse aria-label="Collapse menu">
     </header>
-    <a href="/mail/"><svg>…</svg><span>Mail</span><span data-badge data-tone="accent">12</span></a>
-    <a href="/contacts/" aria-current="page"><svg>…</svg><span>Contacts</span></a>
+    <a href="/mail/" data-icon="mail"><span>Mail</span><span data-badge data-tone="accent">12</span></a>
+    <a href="/contacts/" data-icon="users" aria-current="page"><span>Contacts</span></a>
     <footer>
       <span data-caption data-rail-label>Tia Heinrich</span>
-      <a href="/settings/"><svg>…</svg><span>Settings</span></a>
+      <a href="/settings/" data-icon="settings"><span>Settings</span></a>
     </footer>
   </nav>
   <main data-layout="stack" data-gap="lg" data-pad="lg">
     <div data-layout="row" data-gap="sm">
-      <button popovertarget="rail" data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu">☰</button>
+      <button popovertarget="rail" data-show="narrow" data-icon="menu" data-variant="ghost" aria-label="Open menu"></button>
       <h1>Contacts</h1>
       …
     </div>
     …
   </main>
-  <button data-fab data-icon aria-label="New contact">+</button>
+  <button data-fab data-icon="plus" aria-label="New contact"></button>
 </body>
 ```
 
@@ -254,7 +281,8 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 | `style="padding: var(--ts-space-lg)"` | `data-pad="lg"` |
 | a custom class to turn a `label` into a flex row | `<label data-layout="row" data-justify="between">` |
 | `data-gap="4"` or `data-gap="16px"` | `data-gap="md"` |
-| `<button data-icon>×</button>` | `<button data-icon aria-label="Close">×</button>` |
+| `<button data-icon="x"></button>` | `<button data-icon="x" aria-label="Close"></button>` |
+| `<svg><path d="…"/></svg>` for a mail icon | `<span data-icon="mail"></span>` |
 | `data-badge="true"` | `data-badge` |
 | `color: #666` in app CSS | `color: var(--ts-text-muted)` |
 | `!important` to beat tinystyle | a plain selector; app CSS already wins |

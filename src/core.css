@@ -270,7 +270,17 @@
   :where([data-size="sm"]) { --_size: 0.8; --_font: 0.8125rem; }
   :where([data-size="md"]) { --_size: 1; }
   :where([data-size="lg"]) { --_size: 1.2; --_font: 1rem; }
-  :where([data-icon]) { inline-size: calc(var(--ts-control-h) * var(--_size, 1)); padding: 0; flex-shrink: 0; }
+  :where(:is(button, a[role="button"])[data-icon]:is([data-icon=""], :empty)) { inline-size: calc(var(--ts-control-h) * var(--_size, 1)); padding: 0; flex-shrink: 0; }
+
+  /* icons: data-icon="name" draws the icon from --ts-icon-<name> (icons.css, the Vite plugin, or your own CSS).
+     On buttons and links the icon is a ::before in front of the text; anywhere else the element is the icon. */
+  :where(:not(button, a, summary)[data-icon]:not([data-icon=""])),
+  :where(button, a, summary)[data-icon]:not([data-icon=""])::before {
+    inline-size: 1.125em; block-size: 1.125em; flex-shrink: 0;
+    background: currentColor; mask: var(--_icon) center / contain no-repeat;
+  }
+  :where(:not(button, a, summary)[data-icon]:not([data-icon=""])) { display: inline-block; vertical-align: -0.2em; }
+  :where(button, a, summary)[data-icon]:not([data-icon=""])::before { content: ""; display: inline-block; }
   :where(button, a[role="button"]) :where(svg) { inline-size: 1.125em; block-size: 1.125em; flex-shrink: 0; }
   :where(button, input, select, textarea):disabled { opacity: 0.5; cursor: not-allowed; }
   :where([aria-disabled="true"]) { opacity: 0.5; pointer-events: none; }

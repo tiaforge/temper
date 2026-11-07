@@ -46,6 +46,21 @@ test('empty close buttons need a label', () => {
   assert.deepEqual(codes(checkMarkup('<button commandfor="d" command="close" data-sn-text="m.cancel()"></button>')), []);
 });
 
+test('icons: known names pass, typos get a suggestion, project icons count', () => {
+  assert.deepEqual(codes(checkMarkup('<span data-icon="mail"></span><button data-icon="plus">New</button>')), []);
+  const [d] = checkMarkup('<span data-icon="maill"></span>');
+  assert.equal(d.code, 'TS105');
+  assert.match(d.message, /Did you mean "mail"\?/);
+  assert.deepEqual(codes(checkMarkup('<span data-icon="rocket"></span>', 'a', { icons: new Set(['rocket']) })), []);
+});
+
+test('icon-only buttons need a label, icon + text buttons do not', () => {
+  assert.deepEqual(codes(checkMarkup('<button data-icon="plus"></button>')), ['TS103']);
+  assert.deepEqual(codes(checkMarkup('<button data-icon="plus" aria-label="New contact"></button>')), []);
+  assert.deepEqual(codes(checkMarkup('<button data-icon="plus">New contact</button>')), []);
+  assert.deepEqual(codes(checkMarkup('<button data-icon><svg></svg></button>')), ['TS103']);
+});
+
 test('misspelled attribute names are warnings', () => {
   const [d] = checkMarkup('<button data-varient="ghost">x</button>');
   assert.equal(d.severity, 'warning');

@@ -36,17 +36,17 @@
   :where([data-rail]) :where(ul) { display: flex; flex-direction: column; gap: 2px; padding: 0; list-style: none; }
 
   /* rail items: links and buttons look like quiet nav entries; aria-current marks the active one */
-  :where([data-rail]) :where(a, button):not([data-variant], [data-icon]) {
+  :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
     --_bg: transparent; --_fg: var(--ts-text);
     justify-content: start; gap: var(--ts-space-sm);
     inline-size: 100%; block-size: var(--ts-control-h); padding-inline: calc((var(--ts-control-h) - 1.125rem) / 2);
     border-radius: var(--ts-radius); font-size: var(--ts-control-font); font-weight: 500; text-decoration: none; white-space: nowrap;
   }
-  :where([data-rail]) :where(a):not([data-variant], [data-icon]) {
+  :where([data-rail]) :where(a):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
     display: flex; align-items: center; color: var(--_fg); background: var(--_bg);
     transition: background-color var(--ts-duration) var(--ts-ease);
   }
-  :where([data-rail]) :where(a, button):not([data-variant], [data-icon]):hover { background: var(--ts-fill); }
+  :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)):hover { background: var(--ts-fill); }
   :where([data-rail]) :where(a, button)[aria-current]:not([aria-current="false"]) {
     --_bg: var(--ts-tone-soft); --_fg: var(--ts-tone-ink); --ts-tone: var(--ts-accent);
     background: var(--_bg); color: var(--_fg); font-weight: 600;

@@ -24,6 +24,7 @@
   },
   "files": [
     "dist",
+    "LICENSE-lucide",
     "lib",
     "bin",
     "vocab.json",
@@ -49,9 +50,18 @@
     "prepublishOnly": "npm run gen && npm test && npm run build"
   },
   "devDependencies": {
-    "lightningcss": "^1.33.0"
+    "lightningcss": "^1.33.0",
+    "lucide-static": "^1.70.0"
   },
   "engines": {
     "node": ">=20"
+  },
+  "peerDependencies": {
+    "lucide-static": ">=0.400.0"
+  },
+  "peerDependenciesMeta": {
+    "lucide-static": {
+      "optional": true
+    }
   }
 }
