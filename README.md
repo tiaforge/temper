@@ -42,6 +42,7 @@ t.html:5:7  error TS102 data-badge is a boolean attribute. Write it without a va
 a.css:1:10  error TS201 --ts-text-mute is not a tinystyle token. Did you mean --ts-text-muted?
 ```
 
+It also warns about inputs, selects and textareas that have no label (a placeholder doesn't count).
 It reads HTML, Svelte, Astro, Vue and JSX files, plus `--ts-*` tokens in CSS. The Vite plugin runs it
 in every build (errors fail the build, the dev server warns). With classes this isn't possible:
 nothing knows that `.secondary.outline.contrast` is a contradiction.
