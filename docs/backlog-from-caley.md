@@ -368,3 +368,27 @@ already the case before the migration.
     - `--ts-measure` includes the side padding,
     - a divider with text ("or") is missing,
     - document `closedby="any"` (it replaces backdrop-click handlers; seven of them in caley).
+
+## Checker and build (from a review of the compile step, 2026-11-07)
+
+Done in the same pass: types for computed values (`types/*.d.ts`; sinter's `SinterAttributes`), computed
+values reduced to their literals in `tinystyle check`, context rules from vocab.json (TS107–TS109) and
+missing module imports (TS110). Still open, in this order:
+
+54. **`tinystyle check --fix` and deprecations.** The checker already computes "did you mean"; apply the
+    unambiguous ones (wrong axis `data-variant="danger"` → `data-tone="danger"`, value typos, `data-badge="true"`).
+    A closed vocabulary turns every rename into a breaking change, so add `deprecated: { use: … }` entries to
+    vocab.json: the checker warns (TS112), `--fix` rewrites, and the types keep accepting the old value until the
+    next major. Needed before 1.0, so caley and tia.vision can follow renames mechanically.
+55. **Lint app CSS against the library's rules (warnings).** caley went from about 4,750 lines of app CSS to
+    about 210; keep it from growing back: `margin` on children of `[data-layout]` (or on anything, outside
+    `@layer`), raw colors and `px` spacing where a token exists (`#666` → `var(--ts-text-muted)`,
+    `padding: 16px` → `data-pad="md"`), `!important`, and rules that restyle tinystyle selectors
+    (`[data-variant=…]`) instead of setting tokens. checkStyles already parses `--ts-*`; this needs a small
+    declaration scanner, still no dependency.
+56. **Ship only the CSS a project uses (lowest priority).** The Vite plugin knows every static value in use,
+    so it could drop unused rules (most of `data-cols`, unused tones and variants, icons it already handles).
+    Core is about 5.4 KB brotli, so the saving is small, and it is only safe when computed values are fully
+    known: with the types (or the checker's literal analysis) a value outside the literals is a type error, but plain JS
+    projects can still build one at runtime. Do it only behind an option, and keep anything referenced by an
+    unknown computed value.
