@@ -238,6 +238,7 @@
     --_bg: transparent; --_fg: var(--ts-tone-ink);
     --_bd: color-mix(in oklab, var(--ts-tone-ink) 22%, var(--ts-border-strong));
   }
+  :where([data-variant="outline"][data-tone]:not([data-tone="neutral"])) { --_bd: color-mix(in oklab, var(--ts-tone-ink) 65%, transparent); }
   :where([data-variant="ghost"]) { --_bg: transparent; --_fg: var(--ts-tone-ink); }
   :where([data-variant="outline"], [data-variant="ghost"]):hover { background: var(--ts-tone-soft); }
   :where([data-variant="link"]) {
@@ -287,6 +288,8 @@
     border-color: var(--ts-danger);
     --ts-accent: var(--ts-danger);
   }
+  /* In a row, fields take their natural width instead of 100%, so they don't push siblings onto a new line. */
+  :where([data-layout="row"]) > :where(input, select) { inline-size: auto; min-inline-size: 0; }
   :where(textarea) { block-size: auto; min-block-size: 5.5em; padding-block: 0.5em; resize: vertical; line-height: 1.5; }
   :where(::placeholder) { color: var(--ts-text-muted); opacity: 1; }
   :where(select:not([multiple], [size])) {
