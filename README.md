@@ -89,6 +89,14 @@ exactly one close match, a value removed from a boolean attribute. Renames go th
 and `--fix` rewrites them.
 
 It also warns about inputs, selects and textareas that have no label (a placeholder doesn't count).
+
+Your own CSS is checked against the same rules, as warnings, so an app's CSS doesn't grow back
+after a migration: `!important` (never needed, your CSS already wins), fixed colors in color
+properties (they ignore dark mode; use a token or one custom property with `light-dark()`), outer
+margins, spacing that is exactly a scale step (`16px` → `var(--ts-space-md)`, fixable), rules that
+restyle `[data-variant]` and friends instead of setting tokens, and `margin`/`padding` in `style`
+attributes (use `data-gap`/`data-pad`). A `tinystyle-ignore` comment on a line or the line before it
+silences that line.
 It reads HTML, Svelte, Astro, Vue and JSX files, plus `--ts-*` tokens in CSS. The Vite plugin runs it
 in every build (errors fail the build, the dev server warns). With classes this isn't possible:
 nothing knows that `.secondary.outline.contrast` is a contradiction.

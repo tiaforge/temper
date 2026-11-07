@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { checkMarkup, checkStyles, check, applyFixes } from '../lib/check.js';
 
 const codes = r => r.map(d => d.code);
@@ -263,3 +265,42 @@ test('the CLI fixes files and reports what is left', async () => {
   assert.match(run.stdout, /data-gap="ss" is not valid/);
   assert.equal(read(dir + '/a.html', 'utf8'), '<button data-tone="danger">x</button>\n<div data-gap="ss"></div>\n');
 });
+
+// ───── app CSS against the library's rules (warnings) ─────
+
+test('app CSS: !important, fixed colors, margins, scale values, restyled variants', () => {
+  const css = `.card { color: #666 !important; margin-top: 1rem; padding: 16px 0.75rem; gap: 0.5rem; }
+.ok { color: var(--ts-text-muted); background: color-mix(in oklab, var(--ts-accent) 10%, white); margin-inline: auto; margin: 0; padding: 0.75rem; }
+:root { --brand: #e8590c; $x: red; }
+button[data-variant="ghost"] { background: var(--ts-fill); padding: 0; }
+[data-theme="dark"] .logo { filter: invert(1); }
+.list [data-tone] { --ts-tone: var(--ts-info); }`;
+  const r = checkStyles(css, 'a.css');
+  assert.deepEqual(codes(r), ['TS204', 'TS205', 'TS206', 'TS207', 'TS207', 'TS208']);
+  assert.match(r[1].message, /var\(--ts-text\) or var\(--ts-text-muted\)/);
+  assert.equal(applyFixesTo(css, r).split('\n')[0], '.card { color: #666 !important; margin-top: 1rem; padding: var(--ts-space-md) 0.75rem; gap: var(--ts-space-sm); }');
+});
+
+test('inline styles: margins and paddings point to data-gap and data-pad; tokens are fine', () => {
+  assert.deepEqual(codes(checkMarkup('<p style="margin-top: 8px; color: red">x</p>')), ['TS206', 'TS205']);
+  assert.deepEqual(codes(checkMarkup('<div style="padding: 1rem">x</div>')), ['TS206']);
+  assert.deepEqual(codes(checkMarkup('<div style="--ts-min: 12rem; --ts-tone: #e11">x</div>')), []);
+});
+
+test('style blocks in components are linted; markup outside them is not CSS', () => {
+  const svelte = `<div style:color={c}>a: b;</div>\n<style>\n  .x { margin-bottom: 4px; }\n</style>`;
+  const r = check([writeTemp('A.svelte', svelte)]);
+  assert.deepEqual(codes(r), ['TS206']);
+  assert.equal(r[0].line, 3);
+});
+
+test('tinystyle-ignore silences a line', () => {
+  const r = check([writeTemp('a.css', '.x { color: #333; }\n/* tinystyle-ignore: the print logo */\n.y { color: #000; }\n')]);
+  assert.deepEqual(r.map(d => d.line), [1]);
+});
+
+function writeTemp(name, text) {
+  const dir = mkdtempSync(join(tmpdir(), 'ts-lint-'));
+  writeFileSync(join(dir, name), text);
+  return dir;
+}

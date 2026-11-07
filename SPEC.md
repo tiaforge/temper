@@ -321,7 +321,9 @@ Lessons:
   without label, TS104 misspelled attribute, TS201 unknown token, TS202 reserved `--ts-` prefix,
   TS203 derived token set. Later: TS107 needs another attribute, TS108 wrong element, TS109 wrong
   parent or missing ancestor, TS110 module not imported, TS111 `false` renders the attribute
-  (all driven by `tags`, `with`, `parent` and `inside` in vocab.json). Computed values are reduced
+  (all driven by `tags`, `with`, `parent` and `inside` in vocab.json), TS112 deprecated name;
+  app CSS warnings TS204 `!important`, TS205 fixed color, TS206 outer margin (and margin/padding
+  in `style`), TS207 a space-scale value written out, TS208 restyled tinystyle variant. Computed values are reduced
   to the literals they can produce; `types/*.d.ts` (generated) types them for React, Vue, Astro,
   Svelte component props and sinter's `data-sn-attr`. No findings on caley's current frontend.
 

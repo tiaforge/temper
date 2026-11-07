@@ -66,7 +66,7 @@ body { min-block-size: 100dvh; }
 .matrix th, .matrix td { border: 0; padding: var(--ts-space-xs) var(--ts-space-sm); vertical-align: middle; }
 .matrix tbody tr:hover { background: none; }
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: var(--ts-space-sm); }
-.swatch { display: grid; gap: 0.25rem; font-size: var(--ts-text-xs); color: var(--ts-text-muted); }
+.swatch { display: grid; gap: var(--ts-space-xs); font-size: var(--ts-text-xs); color: var(--ts-text-muted); }
 .swatch i { block-size: 2.5rem; border-radius: var(--ts-radius-sm); border: 1px solid var(--ts-border); }
 
 @media (width < 64rem) {

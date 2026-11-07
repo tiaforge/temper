@@ -380,7 +380,7 @@ missing module imports (TS110). Still open, in this order:
     A closed vocabulary turns every rename into a breaking change, so add `deprecated: { use: … }` entries to
     vocab.json: the checker warns (TS112), `--fix` rewrites, and the types keep accepting the old value until the
     next major. Needed before 1.0, so caley and tia.vision can follow renames mechanically.
-55. **Lint app CSS against the library's rules (warnings).** caley went from about 4,750 lines of app CSS to
+55. *Done: TS204–TS208 in CSS files, `<style>` blocks and `style` attributes; `tinystyle-ignore` comments. On caley's migrated frontend: one finding (a 0.25rem gap).* **Lint app CSS against the library's rules (warnings).** caley went from about 4,750 lines of app CSS to
     about 210; keep it from growing back: `margin` on children of `[data-layout]` (or on anything, outside
     `@layer`), raw colors and `px` spacing where a token exists (`#666` → `var(--ts-text-muted)`,
     `padding: 16px` → `data-pad="md"`), `!important`, and rules that restyle tinystyle selectors
