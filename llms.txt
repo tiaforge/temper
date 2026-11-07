@@ -13,6 +13,7 @@ This is the short version: enough for small edits. Before building whole pages o
 import '@tiaforge-ui/tinystyle/core.css';   // always
 import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
 import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
+import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
@@ -81,7 +82,7 @@ export default { plugins: [tinystyle()] };
 | `data-justify` | start, center, end, between | Main-axis distribution of children (justify-content). |
 | `data-self` | start, center, end, stretch | Aligns this one child (e.g. data-self="start" keeps a button in a stack from stretching). |
 | `data-wrap` | wrap, none | Whether a row wraps onto more lines. |
-| `data-grow` | (boolean) | This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. |
+| `data-grow` | (boolean) | This child takes the remaining space in its row or stack. |
 | `data-scroll` | (none), y, both | Scroll container: sideways by default, "y" vertical (panes), "both". |
 | `data-density` | comfortable, compact | Control height and padding for everything inside. |
 | `data-theme` | light, dark | Forces light or dark mode. |
@@ -89,12 +90,12 @@ export default { plugins: [tinystyle()] };
 | `data-callout` | (boolean) | Tinted message box. |
 | `data-muted` | (boolean) | Secondary text color. |
 | `data-truncate` | (boolean) | Single line, cut off with an ellipsis. |
-| `data-clamp` | 2, 3 | Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version). |
+| `data-clamp` | 2, 3 | Ellipsis after this many lines. |
 | `data-bar` | (boolean) | A colored bar on the start edge in the element's tone. |
 | `data-sr-only` | (boolean) | Hidden visually, still read by screen readers. |
 | `data-pairs` | (boolean) | Shows dt/dd pairs as a two-column label/value grid. |
-| `data-caption` | (boolean) | Small, semibold, muted label text: captions above values, group headings like a letter in an index. |
-| `data-list` | (boolean) | One bordered box whose children are rows separated by lines: settings lists, keys, devices. |
+| `data-caption` | (boolean) | Small, muted label text (captions, group headings). |
+| `data-list` | (boolean) | One bordered box; its children are rows separated by lines. |
 | `data-divider` | (boolean) | A horizontal line with the element's text in the middle, e.g. |
 | `data-avatar` | (boolean) | Round avatar with initials, or an <img> child that fills it. |
 | `data-stretch` | (boolean) | Makes the whole card clickable through this element. |
@@ -106,7 +107,10 @@ export default { plugins: [tinystyle()] };
 | `data-fab` (app.css) | (boolean) | Floating action button fixed in the bottom-right corner. |
 | `data-show` (app.css) | narrow, wide | Shows the element only on narrow (< 48rem) or wide screens. |
 | `data-menu` (menu.css) | (boolean) | Menu of buttons, links and checkbox labels; as a [popover] it opens under its button. |
-| `data-combo` (menu.css) | (boolean) | Combobox: the data-menu (role="listbox", options role="option", the highlighted one aria-selected="true") inside it opens under the field. |
+| `data-combo` (menu.css) | (boolean) | Wraps a field and its suggestion list (data-menu, role="listbox"), which opens under it. |
+| `data-toasts` (feedback.css) | (boolean) | Toast region (one per page, role="status"); holds data-toast children. |
+| `data-toast` (feedback.css) | (boolean) | A toast inside data-toasts; data-tone colors its bar. |
+| `data-tooltip` (feedback.css) | any text, or none | Tooltip: the given text, or the aria-label when empty. |
 
 ## Tokens
 

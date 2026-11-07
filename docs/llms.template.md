@@ -15,6 +15,7 @@ This is the short version: enough for small edits. Before building whole pages o
 import '@tiaforge-ui/tinystyle/core.css';   // always
 import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
 import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
+import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
@@ -310,6 +311,32 @@ icon buttons (`data-icon`) do not. A submit button (`type="submit"`, the default
 `popovertarget` and `commandfor`; give opener and closer buttons `type="button"`.
 
 A `data-menu` popover can hold any content, not only items: a month picker, a small form.
+
+### Toasts and tooltips (feedback.css)
+
+```html
+<button data-variant="ghost" data-icon="trash-2" aria-label="Delete" data-tooltip></button>  <!-- tooltip = aria-label -->
+<span data-badge tabindex="0" data-tooltip="Synced 3 hours ago">Stale</span>              <!-- own text (visual only) -->
+
+<div data-toasts role="status"></div>   <!-- once, at the end of <body> -->
+```
+
+```js
+// Show a toast: append it to the region, remove it after a few seconds (hidden first, so it fades out).
+function toast(text, tone) {
+  const t = document.createElement('div');
+  t.dataset.toast = '';
+  if (tone) t.dataset.tone = tone;           // success, danger, … colors the bar
+  if (tone === 'danger') t.role = 'alert';
+  t.textContent = text;                       // or: a <span> plus <button data-variant="link" data-size="sm">Undo</button>
+  document.querySelector('[data-toasts]').append(t);
+  setTimeout(() => { t.hidden = true; setTimeout(() => t.remove(), 300); }, 5000);
+}
+```
+
+In a framework, render the region once and the toasts from a list (`{#each toasts as t (t.id)}<div data-toast …>`).
+To show toasts above an open modal dialog, give the region `popover="manual"` and call `region.showPopover()`
+after the dialog opens (the top layer stacks in opening order).
 
 ### Combobox (menu.css)
 

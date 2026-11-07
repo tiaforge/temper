@@ -94,7 +94,7 @@ export interface TinystyleAttributes<Removes = never, Empty = never> {
   'data-self'?: 'start' | 'center' | 'end' | 'stretch' | null | Removes;
   /** Whether a row wraps onto more lines. */
   'data-wrap'?: 'wrap' | 'none' | null | Removes;
-  /** This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. */
+  /** This child takes the remaining space in its row or stack. */
   'data-grow'?: true | '' | null | Removes;
   /** Scroll container: sideways by default, "y" vertical (panes), "both". */
   'data-scroll'?: 'y' | 'both' | '' | Empty | null | Removes;
@@ -110,7 +110,7 @@ export interface TinystyleAttributes<Removes = never, Empty = never> {
   'data-muted'?: true | '' | null | Removes;
   /** Single line, cut off with an ellipsis. */
   'data-truncate'?: true | '' | null | Removes;
-  /** Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version). */
+  /** Ellipsis after this many lines. */
   'data-clamp'?: '2' | '3' | 2 | 3 | null | Removes;
   /** A colored bar on the start edge in the element's tone. */
   'data-bar'?: true | '' | null | Removes;
@@ -118,9 +118,9 @@ export interface TinystyleAttributes<Removes = never, Empty = never> {
   'data-sr-only'?: true | '' | null | Removes;
   /** Shows dt/dd pairs as a two-column label/value grid. */
   'data-pairs'?: true | '' | null | Removes;
-  /** Small, semibold, muted label text: captions above values, group headings like a letter in an index. */
+  /** Small, muted label text (captions, group headings). */
   'data-caption'?: true | '' | null | Removes;
-  /** One bordered box whose children are rows separated by lines: settings lists, keys, devices. */
+  /** One bordered box; its children are rows separated by lines. */
   'data-list'?: true | '' | null | Removes;
   /** A horizontal line with the element's text in the middle, e.g. */
   'data-divider'?: true | '' | null | Removes;
@@ -144,6 +144,12 @@ export interface TinystyleAttributes<Removes = never, Empty = never> {
   'data-show'?: 'narrow' | 'wide' | null | Removes;
   /** Menu of buttons, links and checkbox labels; as a [popover] it opens under its button. Needs menu.css. */
   'data-menu'?: true | '' | null | Removes;
-  /** Combobox: the data-menu (role="listbox", options role="option", the highlighted one aria-selected="true") inside it opens under the field. Needs menu.css. */
+  /** Wraps a field and its suggestion list (data-menu, role="listbox"), which opens under it. Needs menu.css. */
   'data-combo'?: true | '' | null | Removes;
+  /** Toast region (one per page, role="status"); holds data-toast children. Needs feedback.css. */
+  'data-toasts'?: true | '' | null | Removes;
+  /** A toast inside data-toasts; data-tone colors its bar. Needs feedback.css. */
+  'data-toast'?: true | '' | null | Removes;
+  /** Tooltip: the given text, or the aria-label when empty. Needs feedback.css. */
+  'data-tooltip'?: string | Empty | null | Removes;
 }

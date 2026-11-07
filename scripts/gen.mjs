@@ -12,7 +12,7 @@ const firstSentence = t => (t.match(/^.*?[.!?](?=\s|$)/) ?? [t])[0];
 /** One table row per attribute: name, values, first sentence of the description. */
 function compactAttributes(vocab) {
   const rows = Object.entries(vocab.attributes).map(([name, a]) => {
-    const values = name === 'data-icon' ? 'an icon name (see Icons), or none'
+    const values = name === 'data-icon' ? 'an icon name (see Icons), or none' : a.freeText ? 'any text, or none'
       : a.boolean ? '(boolean)' : (a.allowEmpty ? '(none), ' : '') + Object.keys(a.values).join(', ');
     const mod = a.module && a.module !== 'core' ? ` (${a.module}.css)` : '';
     return `| \`${name}\`${mod} | ${values} | ${a.short ?? firstSentence(a.description)} |`;
@@ -40,6 +40,7 @@ export function renderLlms(vocab, template, { full = true } = {}) {
     const mod = a.module && a.module !== 'core' ? ` Needs \`${a.module}.css\`.` : '';
     const head = `### \`${name}\`${a.boolean ? ' (boolean, no value)' : ''}\n\nOn: ${a.on}. ${a.description}${mod}`;
     if (a.boolean) return head + (a.requires ? `\nRequires one of: ${a.requires.map(r => `\`${r}\``).join(', ')}.` : '');
+    if (a.freeText) return `${head}\n\nValue: any text, or none.`;
     const entries = Object.entries(a.values);
     // values without descriptions read best as one line (and keep llms.txt short)
     const optional = a.allowEmpty ? 'Also valid without a value.\n\n' : '';
@@ -80,6 +81,7 @@ export function renderAttributeTypes(vocab) {
   const props = Object.entries(vocab.attributes).map(([name, a]) => {
     let type;
     if (name === 'data-icon') type = `TinystyleIcon | (string & {}) | '' | Empty`;
+    else if (a.freeText) type = `string | Empty`;
     else if (a.boolean) type = `true | ''`;
     else {
       const values = Object.keys(a.values);

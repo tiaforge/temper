@@ -34,6 +34,9 @@ const CASES = [
   ['app-menu', 'app.html?t=light&menu', 1280],
   ['app-dialog', 'app.html?t=light&dialog', 1280],
   ['app-drawer-phone', 'app.html?t=light&open', 390],
+  ['components-light', 'components.html?t=light&tip', 1280, true],
+  ['components-dark', 'components.html?t=dark&tip', 1280, true],
+  ['components-phone', 'components.html?t=light', 390, true],
 ];
 
 const FREEZE = '*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }';

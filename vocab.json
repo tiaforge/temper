@@ -267,7 +267,8 @@
         "label",
         "dialog"
       ],
-      "loose": true
+      "loose": true,
+      "short": "This child takes the remaining space in its row or stack."
     },
     "data-scroll": {
       "module": "core",
@@ -329,7 +330,8 @@
       "values": {
         "2": "",
         "3": ""
-      }
+      },
+      "short": "Ellipsis after this many lines."
     },
     "data-bar": {
       "module": "core",
@@ -356,13 +358,15 @@
       "module": "core",
       "boolean": true,
       "on": "any text element",
-      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index."
+      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
+      "short": "Small, muted label text (captions, group headings)."
     },
     "data-list": {
       "module": "core",
       "boolean": true,
       "on": "ul, ol or any container of rows",
-      "description": "One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-pad on a child overrides it); give a child data-layout=\"row\" data-justify=\"between\" for label + action rows. Card styling of article children is removed, so <article role=\"listitem\"> rows need no extra attributes. A leading <template> child does not count as the first row."
+      "description": "One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-pad on a child overrides it); give a child data-layout=\"row\" data-justify=\"between\" for label + action rows. Card styling of article children is removed, so <article role=\"listitem\"> rows need no extra attributes. A leading <template> child does not count as the first row.",
+      "short": "One bordered box; its children are rows separated by lines."
     },
     "data-divider": {
       "module": "core",
@@ -469,7 +473,34 @@
       "module": "menu",
       "boolean": true,
       "on": "a wrapper around an input and its suggestion list",
-      "description": "Combobox: the data-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script."
+      "description": "Combobox: the data-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
+      "short": "Wraps a field and its suggestion list (data-menu, role=\"listbox\"), which opens under it."
+    },
+    "data-toasts": {
+      "module": "feedback",
+      "boolean": true,
+      "on": "one div per page, at the end of <body> (role=\"status\"; popover=\"manual\" to show above modal dialogs)",
+      "description": "Toast region: fixed to the bottom corner (bottom center on phones), stacks its [data-toast] children with the newest at the bottom. Give it role=\"status\" so screen readers announce new toasts. Optionally popover=\"manual\": it then sits in the top layer above an open modal dialog (call showPopover() on it again after opening a dialog).",
+      "short": "Toast region (one per page, role=\"status\"); holds data-toast children."
+    },
+    "data-toast": {
+      "module": "feedback",
+      "boolean": true,
+      "on": "a div inside [data-toasts]",
+      "inside": [
+        "[data-toasts]"
+      ],
+      "description": "A toast: a short message with optional actions (data-variant=\"link\" or \"ghost\" buttons, data-size=\"sm\") and a close button (data-icon=\"x\" with aria-label). data-tone adds a colored bar. Your code appends it to [data-toasts] (it slides in) and removes it after a few seconds; set hidden first to fade it out. Use role=\"alert\" on the toast for errors.",
+      "short": "A toast inside data-toasts; data-tone colors its bar."
+    },
+    "data-tooltip": {
+      "module": "feedback",
+      "allowEmpty": true,
+      "freeText": true,
+      "values": {},
+      "on": "buttons, links and any focusable element",
+      "description": "Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space).",
+      "short": "Tooltip: the given text, or the aria-label when empty."
     }
   },
   "tokens": {

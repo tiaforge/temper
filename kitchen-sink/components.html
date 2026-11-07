@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>tinystyle components</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/feedback.css">
+  <link rel="stylesheet" href="../src/icons.css">
+  <script>
+    // ?t=light|dark, ?tip (focus the first tooltip button, for screenshots)
+    { const q = new URLSearchParams(location.search);
+      if (q.get('t')) document.documentElement.dataset.theme = q.get('t'); }
+  </script>
+</head>
+<body>
+<main data-layout="center" data-gap="xl" data-pad="xl">
+  <h1>Components</h1>
+
+  <!-- ───────── Feedback ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <h2>Toasts and tooltips <small data-muted>feedback.css</small></h2>
+    <div data-layout="row" data-gap="sm">
+      <button id="show-toast">Show a toast</button>
+      <button data-variant="outline" id="show-error" data-tone="danger">Show an error</button>
+      <button data-variant="ghost" data-icon="pencil" aria-label="Edit" data-tooltip id="tip"></button>
+      <button data-variant="ghost" data-icon="trash-2" aria-label="Delete" data-tooltip></button>
+      <button data-variant="ghost" data-icon="share-2" aria-label="Share" data-tooltip="Share with your team"></button>
+      <span data-badge data-tone="warning" tabindex="0" data-tooltip="Synced 3 hours ago">Stale</span>
+    </div>
+  </section>
+</main>
+
+<div data-toasts role="status">
+  <div data-toast data-tone="success"><span>Contact saved.</span> <button data-variant="link" data-size="sm">Undo</button></div>
+  <div data-toast><span>3 messages moved to Archive.</span>
+    <button data-variant="ghost" data-size="sm" data-icon="x" aria-label="Dismiss"></button></div>
+  <div data-toast data-tone="danger" role="alert"><span>Could not reach the server. Your changes are kept and will be sent when you are back online.</span>
+    <button data-variant="ghost" data-size="sm">Retry</button></div>
+</div>
+
+<script>
+{
+  const region = document.querySelector('[data-toasts]');
+  // The whole toast recipe: append, remove after a while (hidden first, so it fades out).
+  function toast(text, tone) {
+    const t = document.createElement('div');
+    t.dataset.toast = '';
+    if (tone) { t.dataset.tone = tone; if (tone === 'danger') t.role = 'alert'; }
+    t.textContent = text;
+    region.append(t);
+    setTimeout(() => { t.hidden = true; setTimeout(() => t.remove(), 300); }, 5000);
+  }
+  document.getElementById('show-toast').onclick = () => toast('Saved.', 'success');
+  document.getElementById('show-error').onclick = () => toast('Something went wrong.', 'danger');
+  if (new URLSearchParams(location.search).has('tip')) document.getElementById('tip').focus({ focusVisible: true });
+}
+</script>
+</body>
+</html>

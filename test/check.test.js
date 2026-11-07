@@ -191,3 +191,8 @@ test('imports are found in JS, CSS and HTML; all.css counts as every module', as
   assert.ok(importedModules([dir]).has('app'));
   assert.equal(importedModules([mkdtempSync(tmpdir() + '/ts-mod-')]), null);
 });
+
+test('an empty data-tooltip needs an aria-label to show', () => {
+  assert.deepEqual(codes(checkMarkup('<button data-tooltip>Save</button>')), ['TS103']);
+  assert.deepEqual(codes(checkMarkup('<button data-tooltip aria-label="Save" data-icon="check"></button><span data-tooltip="Synced">x</span>')), []);
+});

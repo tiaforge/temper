@@ -1,0 +1,72 @@
+/* tinystyle feedback: toasts and tooltips. Requires core.css. No JavaScript in the CSS; showing a toast is
+   your code appending an element (recipe in llms.txt).
+   <div data-toasts role="status"></div>                       one region, at the end of <body>
+   <div data-toast data-tone="success">Saved. <button data-variant="link">Undo</button></div>   appended into it
+   <button data-icon="trash-2" aria-label="Delete" data-tooltip></button>   tooltip from aria-label */
+
+@layer ts.components {
+  /* toast region: bottom corner on wide screens, bottom center on phones; newest at the bottom */
+  :where([data-toasts]) {
+    position: fixed; inset: auto var(--ts-space-md) var(--ts-space-md) auto; z-index: 50;
+    display: flex; flex-direction: column; align-items: end; gap: var(--ts-space-sm);
+    inline-size: min(24rem, 100% - 2 * var(--ts-space-md)); margin: 0; padding: 0;
+    border: 0; background: none; box-shadow: none; overflow: visible; min-inline-size: 0;
+    pointer-events: none;
+  }
+  /* as popover="manual" it is in the top layer, above an open modal dialog (call showPopover() again after opening one) */
+  :where([data-toasts][popover]:not(:popover-open)) { display: none; }
+  @media (width < 48rem) { :where([data-toasts]) { inset-inline: var(--ts-space-sm); inline-size: auto; align-items: stretch; } }
+
+  :where([data-toast]) {
+    display: flex; align-items: center; gap: var(--ts-space-sm);
+    max-inline-size: 100%; min-block-size: var(--ts-control-h);
+    padding: var(--ts-space-sm) var(--ts-space-sm) var(--ts-space-sm) var(--ts-space-md);
+    border: 1px solid var(--ts-border); border-radius: var(--ts-radius);
+    background: var(--ts-surface-raised); color: var(--ts-text); box-shadow: var(--ts-shadow-lg);
+    font-size: var(--ts-text-sm); pointer-events: auto;
+    transition: opacity var(--ts-duration) var(--ts-ease), translate var(--ts-duration) var(--ts-ease),
+      display var(--ts-duration) allow-discrete;
+  }
+  :where([data-toast][data-tone]) { border-inline-start: 3px solid var(--ts-tone); color: var(--ts-text); }
+  :where([data-toast][data-tone]) > :where(:not([data-tone])) { --ts-tone: var(--ts-accent); } /* the tone colors the bar only */
+  :where([data-toast]) > :where(:first-child:not(button)) { flex: 1 1 auto; min-inline-size: 0; }
+  :where([data-toast]) :where(button) { flex-shrink: 0; }
+  /* appended: slides up; hidden (set before removing it): fades out */
+  @starting-style { :where([data-toast]) { opacity: 0; translate: 0 0.5rem; } }
+  :where([data-toast][hidden]) { opacity: 0; }
+
+  /* tooltip: data-tooltip="text", or empty to show the element's aria-label (icon buttons) */
+  :where([data-tooltip]) { position: relative; }
+  :where([data-tooltip])::after {
+    content: attr(data-tooltip);
+    position: absolute; inset: auto auto calc(100% + 0.375rem) 50%; translate: -50% 0; z-index: 60;
+    inline-size: max-content; max-inline-size: 16rem; padding: 0.25rem 0.5rem;
+    border: 0; border-radius: var(--ts-radius-sm); background: var(--ts-text); color: var(--ts-bg);
+    mask: none; box-shadow: var(--ts-shadow-sm);
+    font-size: var(--ts-text-xs); font-weight: 500; line-height: 1.4; text-align: center; white-space: normal;
+    pointer-events: none; opacity: 0; visibility: hidden;
+    transition: opacity var(--ts-duration) var(--ts-ease), visibility var(--ts-duration) allow-discrete;
+  }
+  :where([data-tooltip=""])::after { content: attr(aria-label); }
+  @media (hover: hover) {
+    :where([data-tooltip]:hover)::after { opacity: 1; visibility: visible; transition-delay: 400ms; }
+  }
+  :where([data-tooltip]:focus-visible)::after { opacity: 1; visibility: visible; }
+  :where([data-tooltip][aria-expanded="true"], [data-tooltip][aria-busy="true"])::after { display: none; }
+
+  /* With anchor positioning the tooltip is fixed to the viewport, so a scroll container (the rail) cannot
+     clip it, and it flips when there is no room. In the rail it opens to the side. */
+  @supports (anchor-scope: all) {
+    :where([data-tooltip]) { anchor-name: --ts-tooltip; anchor-scope: --ts-tooltip; }
+    :where([data-tooltip])::after {
+      position: fixed; position-anchor: --ts-tooltip; inset: auto; translate: none; margin: 0.375rem;
+      position-area: block-start; position-try-fallbacks: flip-block, flip-inline;
+    }
+    :where([data-rail] [data-tooltip])::after { position-area: inline-end; }
+  }
+  /* rail items show their label unless the rail is collapsed: no tooltip then */
+  @media (width >= 48rem) {
+    :where([data-rail]:not([data-collapsed], :has([data-rail-collapse]:checked)) [data-tooltip])::after { display: none; }
+  }
+  @media (width < 48rem) { :where([data-rail] [data-tooltip])::after { display: none; } }
+}

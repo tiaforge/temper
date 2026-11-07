@@ -605,6 +605,21 @@
       "name": "data-combo",
       "description": "tinystyle (menu.css). On: a wrapper around an input and its suggestion list. Combobox: the data-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
       "valueSet": "v"
+    },
+    {
+      "name": "data-toasts",
+      "description": "tinystyle (feedback.css). On: one div per page, at the end of <body> (role=\"status\"; popover=\"manual\" to show above modal dialogs). Toast region: fixed to the bottom corner (bottom center on phones), stacks its [data-toast] children with the newest at the bottom. Give it role=\"status\" so screen readers announce new toasts. Optionally popover=\"manual\": it then sits in the top layer above an open modal dialog (call showPopover() on it again after opening a dialog).",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-toast",
+      "description": "tinystyle (feedback.css). On: a div inside [data-toasts]. A toast: a short message with optional actions (data-variant=\"link\" or \"ghost\" buttons, data-size=\"sm\") and a close button (data-icon=\"x\" with aria-label). data-tone adds a colored bar. Your code appends it to [data-toasts] (it slides in) and removes it after a few seconds; set hidden first to fade it out. Use role=\"alert\" on the toast for errors.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-tooltip",
+      "description": "tinystyle (feedback.css). On: buttons, links and any focusable element. Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space).",
+      "values": []
     }
   ]
 }
