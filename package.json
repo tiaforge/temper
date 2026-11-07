@@ -80,7 +80,7 @@
     "build": "node scripts/build.mjs",
     "gen": "node scripts/gen.mjs",
     "check": "node bin/temper.js check kitchen-sink",
-    "test": "node scripts/gen.mjs --check && node --test test/*.test.js",
+    "test": "node scripts/gen.mjs --check && node --test test/*.test.js packages/inspect/test/*.test.js",
     "shots": "scripts/shoot.sh",
     "contrast": "node scripts/contrast.mjs",
     "visual": "node scripts/visual.mjs",

@@ -5,6 +5,36 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### Checker (`temper check`, Vite plugin)
+
+- `--fix` no longer moves a value to another axis when several axes share it (`sm` is a value of `data-size`,
+  `data-gap` and `data-pad`; `center` of `data-layout`, `data-align`, `data-justify` and `data-self`). The
+  message names the candidates instead; the fix is only applied when exactly one axis has the value.
+- The Vite plugin checks hot updates with the same context as the build: icons the project defines in its own CSS
+  (`--tm-icon-*`) no longer fail TM105 in dev, and a missing module import (TM110) is reported in dev too.
+- Tokens in `style` attributes are checked in plain HTML files that have no `<style>` block (TM201).
+- An icon-only or close button whose content is only whitespace or a comment is reported (TM103).
+- `temper check <path>` reports a path that does not exist instead of crashing.
+
+### `@tiaforge-ui/temper-inspect`
+
+- **Fixed a disk leak with a Flatpak Chrome.** The sandbox's /tmp is not the host's, so the profile dir landed inside
+  the sandbox (a private tmpfs under `$XDG_RUNTIME_DIR`) and the cleanup removed an empty host directory: every run
+  left 70 MB and more behind until the runtime dir was full and the browser no longer started (bwrap: "No space left
+  on device"), which looked like a hang. The profile dir is now shared into the sandbox with `--filesystem`, and the
+  directories of `file://` pages too, so those work with a Flatpak browser as well. Profiles are also much smaller
+  (about 2 MB instead of 75 MB): Chrome no longer downloads components (Safe Browsing lists, dictionaries, models) or
+  writes crash reports during a run.
+- The browser is killed and its profile removed when the process ends without `close()` (an exception, `process.exit`);
+  before, an orphaned headless Chrome kept running.
+- A browser that crashes mid-run, or one that does not start, fails with a message (and Chrome's stderr) instead of ending
+  the process with "unsettled top-level await".
+- `scripts/shoot.sh` (and the eval scripts) give headless Chrome a throwaway profile too: without `--user-data-dir`,
+  each run left a 100+ MB `scoped_dir` profile in `~/.var/app/com.google.Chrome/config/google-chrome-headless`.
+- Tests: the inspector runs against its fixtures (`packages/inspect/test/`) as part of `npm test`.
+
 ## 0.1.0 (2026-11-07)
 
 The first release.

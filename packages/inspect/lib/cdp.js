@@ -22,28 +22,67 @@ export function findBrowser(explicit = process.env.CHROME_PATH) {
   throw new Error('No Chrome or Chromium found. Set CHROME_PATH or pass --browser.');
 }
 
-export async function launch(browserCmd = findBrowser()) {
-  const profile = mkdtempSync(join(tmpdir(), 'temper-inspect-'));
+/**
+ * The command line for a headless browser with its profile in `profile`. A Flatpak browser cannot see the host's
+ * /tmp: its /tmp is a private tmpfs under $XDG_RUNTIME_DIR (a few GB, wiped only when the app's last instance exits,
+ * which never happens while the user's own Chrome is open). Without sharing, the profile lands inside the sandbox,
+ * the cleanup removes an empty host dir, and every run leaks 70 MB and more until bwrap fails with ENOSPC. So the
+ * profile dir and the directories of file:// pages are shared into the sandbox explicitly.
+ */
+export function commandLine(browserCmd, profile, share = []) {
   const [cmd, ...pre] = browserCmd;
-  const proc = spawn(cmd, [...pre, '--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`,
-    '--no-first-run', '--no-default-browser-check', '--disable-gpu', '--hide-scrollbars', 'about:blank'],
-  { stdio: ['ignore', 'ignore', 'pipe'] });
+  const run = cmd === 'flatpak' ? pre.indexOf('run') : -1;
+  if (run >= 0) pre.splice(run + 1, 0, ...share.map(d => `--filesystem=${d}:ro`), `--filesystem=${profile}`);
+  return [cmd, ...pre, '--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`,
+    '--no-first-run', '--no-default-browser-check', '--disable-gpu', '--hide-scrollbars',
+    // keep the profile small and the run offline apart from the pages themselves: no component downloads (Safe Browsing
+    // lists, dictionaries, models: 100 MB and more per profile), no sync, extensions or crash reports
+    '--disable-background-networking', '--disable-component-update', '--disable-sync', '--disable-extensions',
+    '--disable-default-apps', '--metrics-recording-only', '--disable-breakpad', 'about:blank'];
+}
 
-  const wsUrl = await new Promise((resolve, reject) => {
-    let err = '';
-    const timer = setTimeout(() => reject(new Error(`Browser did not start:\n${err.slice(-2000)}`)), 30000);
-    proc.stderr.on('data', d => {
-      err += d;
-      const m = err.match(/DevTools listening on (ws:\/\/\S+)/);
-      if (m) { clearTimeout(timer); resolve(m[1]); }
-    });
-    proc.on('exit', code => { clearTimeout(timer); reject(new Error(`Browser exited (${code}):\n${err.slice(-2000)}`)); });
+/** Launches the browser. `share`: directories of file:// pages (a Flatpak browser cannot see them otherwise). */
+export async function launch(browserCmd = findBrowser(), { share = [] } = {}) {
+  const profile = mkdtempSync(join(tmpdir(), 'temper-inspect-'));
+  const [cmd, ...argv] = commandLine(browserCmd, profile, share);
+  const proc = spawn(cmd, argv, { stdio: ['ignore', 'ignore', 'pipe'] });
+  // If this process ends without close() (an exception, process.exit), the browser must not keep running (240 MB
+  // resident, its profile on disk) as an orphan.
+  const abandon = () => { try { proc.kill(); } catch {} try { rmSync(profile, { recursive: true, force: true }); } catch {} };
+  process.once('exit', abandon);
+
+  // Everything that waits on the browser fails together when it dies (a crash, a kill, a sandbox that refuses to
+  // start): a wait that never settles would end the process with "unsettled top-level await" and no message.
+  let err = '', dead = null;
+  const pending = new Map(), waiting = new Set(); // waiting: the reject functions of waits outside `pending`
+  const die = e => {
+    if (dead) return;
+    dead = e;
+    for (const reject of waiting) reject(e);
+    for (const { reject } of pending.values()) reject(e);
+    waiting.clear(); pending.clear();
+  };
+  const until = (start, timeout, what) => new Promise((resolve, reject) => {
+    if (dead) return reject(dead);
+    const timer = setTimeout(() => { waiting.delete(reject); reject(new Error(`${what}:\n${err.slice(-2000)}`)); }, timeout);
+    waiting.add(reject);
+    start(value => { clearTimeout(timer); waiting.delete(reject); resolve(value); });
   });
+  proc.stderr.on('data', d => { err += d; });
+  proc.on('exit', code => die(new Error(`The browser exited (${code}):\n${err.slice(-2000)}`)));
+  proc.on('error', e => die(new Error(`Could not start the browser (${cmd}): ${e.message}`)));
+
+  const wsUrl = await until(done => {
+    const look = () => { const m = err.match(/DevTools listening on (ws:\/\/\S+)/); if (m) { proc.stderr.off('data', look); done(m[1]); } };
+    proc.stderr.on('data', look); look();
+  }, 30000, 'The browser did not start');
 
   const ws = new WebSocket(wsUrl);
-  await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject; });
+  ws.onclose = () => die(new Error(`The browser closed the DevTools connection (did it crash?):\n${err.slice(-2000)}`));
+  ws.onerror = () => die(new Error(`Could not connect to the browser at ${wsUrl}`));
+  await until(done => { ws.onopen = () => done(); }, 20000, 'The DevTools connection did not open');
   let nextId = 1;
-  const pending = new Map(), listeners = new Set();
+  const listeners = new Set();
   ws.onmessage = ({ data }) => {
     const msg = JSON.parse(data);
     if (msg.id && pending.has(msg.id)) {
@@ -53,21 +92,22 @@ export async function launch(browserCmd = findBrowser()) {
     } else for (const l of listeners) l(msg);
   };
   const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
+    if (dead) return reject(dead);
     const id = nextId++;
     pending.set(id, { resolve, reject });
     ws.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
   });
-  const waitFor = (method, sessionId, timeout = 20000) => new Promise((resolve, reject) => {
-    const timer = setTimeout(() => { listeners.delete(l); reject(new Error(`Timed out waiting for ${method}`)); }, timeout);
-    const l = msg => { if (msg.method === method && msg.sessionId === sessionId) { clearTimeout(timer); listeners.delete(l); resolve(msg.params); } };
-    listeners.add(l);
-  });
+  const waitFor = (method, sessionId, timeout = 20000) => {
+    let l;
+    return until(done => { l = msg => { if (msg.method === method && msg.sessionId === sessionId) done(msg.params); }; listeners.add(l); },
+      timeout, `Timed out waiting for ${method}`).finally(() => listeners.delete(l));
+  };
 
   async function close() {
     try { await Promise.race([send('Browser.close'), new Promise(r => setTimeout(r, 2000))]); } catch {}
     ws.close();
-    proc.kill();
-    try { rmSync(profile, { recursive: true, force: true }); } catch {}
+    process.off('exit', abandon);
+    abandon();
   }
 
   async function newPage() {

@@ -179,7 +179,8 @@ The misses for the others were things a reader won't spot in code review: button
 contrast in dark mode, an "outline danger" button that came out blue because there was no way to
 combine those two, badges with unreadable text, an icon button that wasn't square. The row without
 the checker shows that the vocabulary itself carries most of the weight; the checker is the safety
-net. (It's a small sample: 10 tasks × 2 runs. The task list is in the eval harness.)
+net. (It's a small sample: 10 tasks × 2 runs. The harness and task list are not in this repository, so take these as
+reported numbers, not something you can rerun from here.)
 
 **A real migration.** caley, a calendar, mail and contacts app, was moved from Pico CSS to temper
 page by page: contacts, mail, calendar, search, settings and login, including the Svelte components

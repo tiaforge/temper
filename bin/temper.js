@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { check, applyFixes } from '../lib/check.js';
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -18,6 +18,7 @@ const strict = args.includes('--warnings-as-errors');
 const iconsAt = args.indexOf('--icons');
 const iconsDir = iconsAt >= 0 ? args.splice(iconsAt, 2)[1] : null;
 const paths = args.filter(a => !a.startsWith('--'));
+for (const p of paths) if (!existsSync(p)) { console.error(`temper: ${p} does not exist`); process.exit(2); }
 // Icon names beyond the default set: an own SVG folder (--icons <dir>) and/or all Lucide names (--lucide),
 // matching the Vite plugin's icons option.
 const { folderIcons, lucideIconsDir, lucideNames } = await import('../lib/icons.js');

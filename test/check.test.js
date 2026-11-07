@@ -304,3 +304,26 @@ function writeTemp(name, text) {
   writeFileSync(join(dir, name), text);
   return dir;
 }
+
+test('--fix never guesses between axes that share a value', () => {
+  // "sm" is a value of data-size, data-gap and data-pad: name them, apply nothing
+  const [d] = checkMarkup('<button data-variant="sm">x</button>');
+  assert.equal(d.code, 'TM101');
+  assert.match(d.message, /"sm" is a value of data-size="sm", data-gap="sm" or data-pad="sm"/);
+  assert.equal(d.fix, undefined);
+  assert.equal(checkMarkup('<button data-size="center">x</button>')[0].fix, undefined);
+  // one other axis: the value moves there
+  assert.equal(fixed('<button data-variant="danger">x</button>'), '<button data-tone="danger">x</button>');
+});
+
+test('an icon or close button with only whitespace or a comment inside has no visible text', () => {
+  assert.deepEqual(codes(checkMarkup('<button data-icon="x">\n</button>')), ['TM103']);
+  assert.deepEqual(codes(checkMarkup('<button commandfor="d" command="close">\n  <!-- icon -->\n</button>')), ['TM103']);
+  assert.deepEqual(codes(checkMarkup('<button data-icon="x">\n  New\n</button>')), []);
+});
+
+test('tokens in style attributes are checked in plain HTML files too', () => {
+  const r = check([writeTemp('a.html', '<div style="color: var(--tm-txt)"></div>\n')]);
+  assert.deepEqual(codes(r), ['TM201']);
+  assert.match(r[0].message, /Did you mean --tm-text\?/);
+});

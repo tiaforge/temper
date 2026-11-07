@@ -37,6 +37,8 @@ replaces a dozen separate screenshots when you also need to judge how it looks.
 
 It needs no npm dependencies. It drives an installed Chrome or Chromium over the DevTools protocol,
 using Node's built-in WebSocket (Node 22+). It finds the browser through `CHROME_PATH`, `--browser`,
-common binary names, or Flatpak (`com.google.Chrome`, `org.chromium.Chromium`). Point it at your dev
+common binary names, or Flatpak (`com.google.Chrome`, `org.chromium.Chromium`). Each run uses a fresh,
+throwaway profile that is removed afterwards; with a Flatpak browser the profile directory and the
+directories of `file://` pages are shared into the sandbox, since its `/tmp` is not the host's. Point it at your dev
 server, so the page has its real data. Clicking openers runs the page's own handlers, so use dev or
 mock data, not a production backend.

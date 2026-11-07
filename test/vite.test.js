@@ -113,3 +113,18 @@ test('prune: build only, keeps what the project uses', async () => {
   dev.configResolved({ root: dir, command: 'serve', logger: { warn() {} } });
   assert.equal(dev.transform.handler(css, id), undefined);
 });
+
+test('hot updates report the same diagnostics as the build: project icons count, missing modules are reported', () => {
+  const dir = project('<!doctype html><html><body data-shell>\n<button data-icon="rocket" aria-label="Launch"></button>\n<nav data-rail></nav>\n</body></html>');
+  writeFileSync(join(dir, 'app.css'), ':root { --tm-icon-rocket: url("data:image/svg+xml,x"); }');
+  writeFileSync(join(dir, 'main.js'), "import '@tiaforge-ui/temper/core.css';");
+  const plugin = temper();
+  const warnings = [];
+  plugin.configResolved({ root: dir, command: 'serve', logger: { warn: m => warnings.push(m) } });
+  plugin.buildStart.call({ error: m => { throw new Error(m); } });
+  const codes = text => [...text.matchAll(/\b(TM\d{3})\b/g)].map(m => m[1]);
+  assert.deepEqual(codes(warnings[0]), ['TM110']); // app.css is not imported; the icon is the project's own
+  warnings.length = 0;
+  plugin.handleHotUpdate({ file: join(dir, 'index.html') });
+  assert.deepEqual(codes(warnings[0]), ['TM110']);
+});

@@ -1,5 +1,6 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from './cdp.js';
 import { install } from './audit.js';
 
@@ -11,7 +12,8 @@ import { install } from './audit.js';
  */
 export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 'dark'], height = 900, settle = 800,
   overlays = true, browser, sheet, sheetRows = 3 } = {}) {
-  const b = await launch(browser ? browser.split(' ') : findBrowser());
+  const share = [...new Set(urls.filter(u => u.startsWith('file:')).map(u => dirname(fileURLToPath(u))))];
+  const b = await launch(browser ? browser.split(' ') : findBrowser(), { share });
   const merged = new Map(), sheets = [];
   try {
     const page = await b.newPage();
