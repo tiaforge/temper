@@ -148,3 +148,40 @@ Also added after v3 (fewer attributes to write):
 - An empty close button in a dialog or card header (`command="close"`, `hide-popover`, `popovertargetaction="hide"`) is drawn as a quiet × icon button; the checker requires an aria-label on it.
 - Buttons that open a popover get a dropdown caret (menu.css).
 - Vite plugin (`@tiaforge-ui/tinystyle/vite`) runs the checker in every build.
+
+## Rerun v4 (tinystyle-inspect installed, not mentioned in the brief)
+
+| | v3 | v4 |
+|---|---|---|
+| Custom CSS (page + nav) | 0 | 0 |
+| Script | ~8 lines in nav.ts | ~4 lines (collapse) in contacts.ts; nav split into nav-core.ts + nav.ts |
+| Inspector findings (errors / warnings) | 3 / 0 (unlabeled form fields) | **0 / 0** |
+| Agent tokens / tool calls / minutes | 117k / 28 / 6.0 | 142k / 60 / 7.2 |
+| Screenshots taken by the agent | several | ~16 (2 shoot.sh + ~14 of dialogs, menus, narrow views) + 2 inspector runs |
+
+The agent found the inspector through llms.txt rule 10 and used it. Its first run reported 3 unlabeled
+controls in the form dialog that the checker and the screenshots had missed. It still took about 16
+screenshots, because the inspector reports problems but cannot answer "does it look right". Quality
+went up (0 findings), token use went up 21%.
+
+### New findings (v4)
+
+21. **Drawer trigger recipe is wrong.** The fixed-position ☰ from the recipe overlapped the page title. The
+    trigger belongs in the page's top row (or a dedicated mobile bar). Fix the recipe.
+22. **Icons dominate nav markup.** Seven inline SVGs (the gear alone about 1 KB) were about 4k tokens. Option: an
+    optional icon module (CSS mask icons such as `data-icon-name="mail"`) for the 15 or so standard app icons.
+23. **Checker false positive.** TS103 flags close or cancel buttons whose text comes from `data-sn-text`
+    (empty in source, filled at runtime). The agent added static text only to silence it. Treat
+    bound-content attributes (`data-sn-text`, `data-sn-html`) as content.
+24. **Narrow form rows.** An input (`data-grow`) + select + remove button row overflowed a phone-width
+    dialog until it wrapped. Check the select's intrinsic width in rows.
+25. **Static `data-menu` has no background.** It only gets surface, border and shadow as a `[popover]`. The share
+    menu (a Svelte component positioned by its own code) looked transparent, so the agent dropped `data-menu`.
+26. **FAB with a text "+"** renders small; only an `svg` inside it is enlarged. Give the FAB a larger font size too.
+
+### Inspector improvements found while checking v4
+
+- Tap-target info should use the effective target: a `data-stretch` element's covering pseudo-element, and a
+  checkbox's label.
+- To cut screenshot loops further: optionally write one contact-sheet image of all states (page, each
+  dialog and popover, both widths and schemes) instead of 10–16 separate screenshots.
