@@ -32,6 +32,15 @@
   }
   :where([data-menu]) :where(label):hover { background: var(--ts-fill); }
   :where([data-menu]) :where(hr) { margin-block: var(--ts-space-xs); }
+  /* combobox: a non-popover data-menu (role=listbox) inside a data-combo wrapper opens under the field */
+  :where([data-combo]) { position: relative; }
+  :where([data-combo]) > :where([data-menu]) { position: absolute; inset-block-start: calc(100% + var(--ts-space-xs)); inset-inline: 0; z-index: 20; }
+  :where([data-menu]) :where([role="option"]) {
+    display: flex; align-items: center; gap: var(--ts-space-sm); min-block-size: calc(var(--ts-control-h) * 0.85);
+    padding-inline: var(--ts-space-sm); border-radius: var(--ts-radius-sm); cursor: pointer;
+  }
+  :where([data-menu]) :where([role="option"]):hover { background: var(--ts-fill); }
+  :where([data-menu]) :where([role="option"][aria-selected="true"]) { background: var(--ts-tone-soft); --ts-tone: var(--ts-accent); }
   :where([data-menu]) :where(svg) { inline-size: 1rem; block-size: 1rem; flex-shrink: 0; }
 
   /* Buttons that open a popover get a dropdown caret (not icon buttons, not close buttons). */

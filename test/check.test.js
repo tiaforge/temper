@@ -67,6 +67,11 @@ test('fields need a label (warning)', () => {
   assert.deepEqual(codes(checkMarkup('<select aria-label="Type"></select><input data-sn-attr="{\'aria-label\': m.x()}"><input type="hidden">')), []);
 });
 
+test('layout attributes need data-layout', () => {
+  assert.deepEqual(codes(checkMarkup('<div data-gap="sm" data-justify="end"></div>')), ['TS107']);
+  assert.deepEqual(codes(checkMarkup('<div data-layout="row" data-gap="sm"></div><dl data-pairs></dl>')), []);
+});
+
 test('misspelled attribute names are warnings', () => {
   const [d] = checkMarkup('<button data-varient="ghost">x</button>');
   assert.equal(d.severity, 'warning');

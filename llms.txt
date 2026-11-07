@@ -71,6 +71,7 @@ export default { plugins: [tinystyle()] };
 | `data-size` | sm, md, lg | Control size relative to the current density. |
 | `data-icon` | an icon name (see Icons), or none | Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label). |
 | `data-layout` | stack, row, grid, split, center | Lays out the element's children (overrides its own display). |
+| `data-cols` | 2, 3, 4, 5, 6, 7 | Exactly this many equal grid columns. |
 | `data-gap` | none, xs, sm, md, lg, xl | Space between the children of a data-layout element. |
 | `data-pad` | none, xs, sm, md, lg, xl | Padding inside the element, on all sides. |
 | `data-align` | start, center, end, stretch | Cross-axis alignment of children (align-items). |
@@ -85,6 +86,8 @@ export default { plugins: [tinystyle()] };
 | `data-callout` | (boolean) | Tinted message box. |
 | `data-muted` | (boolean) | Secondary text color. |
 | `data-truncate` | (boolean) | Single line, cut off with an ellipsis. |
+| `data-clamp` | 2, 3 | Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version). |
+| `data-bar` | (boolean) | A colored bar on the start edge in the element's tone. |
 | `data-sr-only` | (boolean) | Hidden visually, still read by screen readers. |
 | `data-pairs` | (boolean) | Shows dt/dd pairs as a two-column label/value grid. |
 | `data-caption` | (boolean) | Small, semibold, muted label text: captions above values, group headings like a letter in an index. |
@@ -98,6 +101,7 @@ export default { plugins: [tinystyle()] };
 | `data-fab` (app.css) | (boolean) | Floating action button fixed in the bottom-right corner. |
 | `data-show` (app.css) | narrow, wide | Shows the element only on narrow (< 48rem) or wide screens. |
 | `data-menu` (menu.css) | (boolean) | Menu of buttons, links and checkbox labels; as a [popover] it opens under its button. |
+| `data-combo` (menu.css) | (boolean) | Combobox: the data-menu (role="listbox", options role="option", the highlighted one aria-selected="true") inside it opens under the field. |
 
 ## Tokens
 

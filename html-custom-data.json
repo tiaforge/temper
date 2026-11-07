@@ -23,7 +23,7 @@
         },
         {
           "name": "item",
-          "description": "Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background."
+          "description": "Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background. data-size=\"sm\" makes a compact row (event chips)."
         }
       ]
     },
@@ -276,6 +276,30 @@
       ]
     },
     {
+      "name": "data-cols",
+      "description": "tinystyle. On: [data-layout=grid]. Exactly this many equal columns instead of responsive ones (week and month grids, a 7-day picker). Columns never wrap; use data-show to swap in another layout on phones.",
+      "values": [
+        {
+          "name": "2"
+        },
+        {
+          "name": "3"
+        },
+        {
+          "name": "4"
+        },
+        {
+          "name": "5"
+        },
+        {
+          "name": "6"
+        },
+        {
+          "name": "7"
+        }
+      ]
+    },
+    {
       "name": "data-gap",
       "description": "tinystyle. On: [data-layout]. Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in tinystyle.",
       "values": [
@@ -472,6 +496,23 @@
       "valueSet": "v"
     },
     {
+      "name": "data-clamp",
+      "description": "tinystyle. On: any text element. Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version).",
+      "values": [
+        {
+          "name": "2"
+        },
+        {
+          "name": "3"
+        }
+      ]
+    },
+    {
+      "name": "data-bar",
+      "description": "tinystyle. On: any element, usually a data-variant=\"item\" row or a card. A colored bar on the start edge in the element's tone. Event chips: <button data-variant=\"item\" data-size=\"sm\" data-bar style=\"--ts-tone: #4CAF50\">.",
+      "valueSet": "v"
+    },
+    {
       "name": "data-sr-only",
       "description": "tinystyle. On: any element. Hidden visually, still read by screen readers.",
       "valueSet": "v"
@@ -548,6 +589,11 @@
     {
       "name": "data-menu",
       "description": "tinystyle (menu.css). On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-combo",
+      "description": "tinystyle (menu.css). On: a wrapper around an input and its suggestion list. Combobox: the data-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
       "valueSet": "v"
     }
   ]

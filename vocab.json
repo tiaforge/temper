@@ -11,7 +11,7 @@
         "outline": "Transparent with a border.",
         "ghost": "Transparent, fill on hover. Toolbars, icon buttons, Cancel.",
         "link": "Looks like a link, keeps button semantics.",
-        "item": "Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background."
+        "item": "Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background. data-size=\"sm\" makes a compact row (event chips)."
       },
       "short": "Button style; leave it out for the solid main button."
     },
@@ -116,6 +116,20 @@
         "center": "Horizontally centered column with max width --ts-measure (default 72rem) and side padding."
       },
       "short": "Lays out the element's children (overrides its own display)."
+    },
+    "data-cols": {
+      "module": "core",
+      "on": "[data-layout=grid]",
+      "description": "Exactly this many equal columns instead of responsive ones (week and month grids, a 7-day picker). Columns never wrap; use data-show to swap in another layout on phones.",
+      "short": "Exactly this many equal grid columns.",
+      "values": {
+        "2": "",
+        "3": "",
+        "4": "",
+        "5": "",
+        "6": "",
+        "7": ""
+      }
     },
     "data-gap": {
       "module": "core",
@@ -245,6 +259,21 @@
       "on": "any element",
       "description": "Single line, cut off with an ellipsis."
     },
+    "data-clamp": {
+      "module": "core",
+      "on": "any text element",
+      "description": "Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version).",
+      "values": {
+        "2": "",
+        "3": ""
+      }
+    },
+    "data-bar": {
+      "module": "core",
+      "boolean": true,
+      "on": "any element, usually a data-variant=\"item\" row or a card",
+      "description": "A colored bar on the start edge in the element's tone. Event chips: <button data-variant=\"item\" data-size=\"sm\" data-bar style=\"--ts-tone: #4CAF50\">."
+    },
     "data-sr-only": {
       "module": "core",
       "boolean": true,
@@ -331,6 +360,12 @@
       "on": "[popover] (dropdown) or any container (static menu)",
       "description": "Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
       "short": "Menu of buttons, links and checkbox labels; as a [popover] it opens under its button."
+    },
+    "data-combo": {
+      "module": "menu",
+      "boolean": true,
+      "on": "a wrapper around an input and its suggestion list",
+      "description": "Combobox: the data-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script."
     }
   },
   "tokens": {

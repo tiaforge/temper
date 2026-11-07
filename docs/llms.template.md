@@ -154,6 +154,11 @@ buttons to the end.
 </dialog>
 ```
 
+The open dialog is a grid with a gap between its direct children, so content inside a wrapper element
+loses that gap. To let one part fill the remaining height (a message body, a long list), give the dialog
+`data-layout="stack"` and that part `data-grow data-scroll="y"`. Pico-style `dialog > article` markup
+works too: the article adds no box of its own.
+
 An empty close button in the header (`command="close"`, `command="hide-popover"` or
 `popovertargetaction="hide"`) is drawn as a quiet × icon button; give it an `aria-label`. Header and
 footer also work through one wrapper (`dialog > form > footer`, a template-rendered `div`). The open
@@ -252,6 +257,36 @@ c.addEventListener('change', () => localStorage.setItem('rail-collapsed', c.chec
 Buttons that open a popover (`popovertarget`, `command="toggle-popover"`) get a ▾ caret automatically;
 icon buttons (`data-icon`) do not. A submit button (`type="submit"`, the default inside a form) ignores
 `popovertarget` and `commandfor`; give opener and closer buttons `type="button"`.
+
+A `data-menu` popover can hold any content, not only items: a month picker, a small form.
+
+### Combobox (menu.css)
+
+```html
+<div data-combo>
+  <input type="text" role="combobox" aria-label="To" aria-controls="to-list" aria-expanded="true">
+  <div data-menu role="listbox" id="to-list">
+    <div role="option" aria-selected="true">Priya Raman &lt;priya@raman.dev&gt;</div>
+    <div role="option">Mira Okafor &lt;mira@okafor.io&gt;</div>
+  </div>
+</div>
+```
+
+Show and hide the list, and move `aria-selected` with the arrow keys, from script.
+
+### Calendar grid and event chips
+
+```html
+<div data-layout="grid" data-cols="7" data-gap="xs">
+  <div data-layout="stack" data-gap="xs">
+    <span data-caption aria-current="date">Sat 7</span>
+    <button data-variant="item" data-size="sm" data-bar style="--ts-tone: #4CAF50">
+      <small data-muted>10:00</small><span data-clamp="2">Market and brunch</span>
+    </button>
+  </div>
+  …
+</div>
+```
 
 ### Card grid with avatars, whole card clickable
 

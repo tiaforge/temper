@@ -68,7 +68,7 @@ On: button, a[role=button], input[type=submit|button|reset]. Button style. Leave
 - `outline`: Transparent with a border.
 - `ghost`: Transparent, fill on hover. Toolbars, icon buttons, Cancel.
 - `link`: Looks like a link, keeps button semantics.
-- `item`: Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background.
+- `item`: Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background. data-size="sm" makes a compact row (event chips).
 
 ### `data-tone`
 
@@ -106,6 +106,12 @@ On: any container. Lays out the element's children. Wins over the element's own 
 - `grid`: Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row.
 - `split`: Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens.
 - `center`: Horizontally centered column with max width --ts-measure (default 72rem) and side padding.
+
+### `data-cols`
+
+On: [data-layout=grid]. Exactly this many equal columns instead of responsive ones (week and month grids, a 7-day picker). Columns never wrap; use data-show to swap in another layout on phones.
+
+Values: `2`, `3`, `4`, `5`, `6`, `7`.
 
 ### `data-gap`
 
@@ -200,6 +206,16 @@ On: any text element. Secondary text color.
 
 On: any element. Single line, cut off with an ellipsis.
 
+### `data-clamp`
+
+On: any text element. Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version).
+
+Values: `2`, `3`.
+
+### `data-bar` (boolean, no value)
+
+On: any element, usually a data-variant="item" row or a card. A colored bar on the start edge in the element's tone. Event chips: <button data-variant="item" data-size="sm" data-bar style="--ts-tone: #4CAF50">.
+
 ### `data-sr-only` (boolean, no value)
 
 On: any element. Hidden visually, still read by screen readers.
@@ -258,6 +274,10 @@ On: any element. Shows the element only on narrow (< 48rem) or wide screens. Nee
 ### `data-menu` (boolean, no value)
 
 On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport). Needs `menu.css`.
+
+### `data-combo` (boolean, no value)
+
+On: a wrapper around an input and its suggestion list. Combobox: the data-menu (role="listbox", options role="option", the highlighted one aria-selected="true") inside it opens under the field. Show and hide the list from script. Needs `menu.css`.
 
 ## Tokens
 
@@ -422,6 +442,11 @@ buttons to the end.
 </dialog>
 ```
 
+The open dialog is a grid with a gap between its direct children, so content inside a wrapper element
+loses that gap. To let one part fill the remaining height (a message body, a long list), give the dialog
+`data-layout="stack"` and that part `data-grow data-scroll="y"`. Pico-style `dialog > article` markup
+works too: the article adds no box of its own.
+
 An empty close button in the header (`command="close"`, `command="hide-popover"` or
 `popovertargetaction="hide"`) is drawn as a quiet × icon button; give it an `aria-label`. Header and
 footer also work through one wrapper (`dialog > form > footer`, a template-rendered `div`). The open
@@ -520,6 +545,36 @@ c.addEventListener('change', () => localStorage.setItem('rail-collapsed', c.chec
 Buttons that open a popover (`popovertarget`, `command="toggle-popover"`) get a ▾ caret automatically;
 icon buttons (`data-icon`) do not. A submit button (`type="submit"`, the default inside a form) ignores
 `popovertarget` and `commandfor`; give opener and closer buttons `type="button"`.
+
+A `data-menu` popover can hold any content, not only items: a month picker, a small form.
+
+### Combobox (menu.css)
+
+```html
+<div data-combo>
+  <input type="text" role="combobox" aria-label="To" aria-controls="to-list" aria-expanded="true">
+  <div data-menu role="listbox" id="to-list">
+    <div role="option" aria-selected="true">Priya Raman &lt;priya@raman.dev&gt;</div>
+    <div role="option">Mira Okafor &lt;mira@okafor.io&gt;</div>
+  </div>
+</div>
+```
+
+Show and hide the list, and move `aria-selected` with the arrow keys, from script.
+
+### Calendar grid and event chips
+
+```html
+<div data-layout="grid" data-cols="7" data-gap="xs">
+  <div data-layout="stack" data-gap="xs">
+    <span data-caption aria-current="date">Sat 7</span>
+    <button data-variant="item" data-size="sm" data-bar style="--ts-tone: #4CAF50">
+      <small data-muted>10:00</small><span data-clamp="2">Market and brunch</span>
+    </button>
+  </div>
+  …
+</div>
+```
 
 ### Card grid with avatars, whole card clickable
 

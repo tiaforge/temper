@@ -167,7 +167,10 @@
   :where(:focus-visible) { outline: 2px solid var(--ts-accent); outline-offset: 2px; }
   :where([data-tone]) { color: var(--ts-tone-ink); }
   :where([data-muted]) { color: var(--ts-text-muted); }
-  :where([data-truncate]) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-inline-size: 0; }
+  :where([data-truncate]) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-inline-size: 0; max-inline-size: 100%; }
+  :where([data-clamp]) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--_clamp); overflow: hidden; min-inline-size: 0; }
+  :where([data-clamp="2"]) { --_clamp: 2; }
+  :where([data-clamp="3"]) { --_clamp: 3; }
   :where([data-sr-only]) {
     position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden;
     clip-path: inset(50%); white-space: nowrap;
@@ -182,6 +185,9 @@
   :where([data-layout="row"]) { display: flex; flex-wrap: wrap; align-items: center; }
   :where(:is(button, a, label)[data-layout="row"]:not([data-wrap])) { flex-wrap: nowrap; }
   :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(var(--ts-min, 16rem), 100%), 1fr)); }
+  :where([data-layout="grid"][data-cols]) { grid-template-columns: repeat(var(--_cols), minmax(0, 1fr)); }
+  :where([data-cols="2"]) { --_cols: 2; } :where([data-cols="3"]) { --_cols: 3; } :where([data-cols="4"]) { --_cols: 4; }
+  :where([data-cols="5"]) { --_cols: 5; } :where([data-cols="6"]) { --_cols: 6; } :where([data-cols="7"]) { --_cols: 7; }
   :where([data-layout="split"]) { display: flex; flex-wrap: wrap; }
   :where([data-layout="split"] > :nth-child(1 of :not(template))) { flex: 1 1 var(--ts-split, 16rem); }
   :where([data-layout="split"] > :nth-last-child(1 of :not(template))) { flex: 999 1 0; min-inline-size: 60%; }
@@ -276,6 +282,8 @@
     text-decoration: none; white-space: normal;
   }
   :where(button, a)[data-variant="item"]:hover { background: var(--ts-fill); }
+  :where(button, a)[data-variant="item"][data-size="sm"] { min-block-size: 0; padding: 0.25rem var(--ts-space-sm); gap: 0; font-size: var(--ts-text-sm); }
+  :where([data-bar]) { border-inline-start: 3px solid var(--ts-tone); }
   :where(button, a)[data-variant="item"]:is([aria-current]:not([aria-current="false"]), [aria-selected="true"], [aria-pressed="true"]) {
     --ts-tone: var(--ts-accent); --_bg: var(--ts-tone-soft); --_fg: var(--ts-text); background: var(--_bg);
   }
@@ -462,9 +470,10 @@
   :where(dialog[open])::backdrop { opacity: 1; }
   @starting-style { :where(dialog[open])::backdrop { opacity: 0; } }
   :where(dialog, article) > :where(header),
-  :where(dialog, article) > :where(div, form, section) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-sm); }
+  :where(dialog) > :where(article) { display: contents; }
+  :where(dialog, article) > :where(div, form, section, article) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-sm); }
   :where(dialog, article) > :where(footer),
-  :where(dialog, article) > :where(div, form, section) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--ts-space-sm); }
+  :where(dialog, article) > :where(div, form, section, article) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--ts-space-sm); }
   :where(dialog, article) :where(header) > :where(:not(h1, h2, h3, h4, h5, h6)) { flex-shrink: 0; }
   /* Close buttons in a dialog or card header look like quiet icon buttons; an empty one draws an ×. */
   :where(dialog, article) :where(header) :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])) {
@@ -539,6 +548,7 @@
 
   /* caption: small secondary label text (dt, field captions, group headings) */
   :where([data-caption]) { font-size: var(--ts-text-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ts-text-muted); }
+  :where([aria-current="date"]:not(a, button)) { color: var(--ts-accent); font-weight: 650; }
 
   /* avatar: initials or a photo in a circle, colored by tone */
   :where([data-avatar]) {
