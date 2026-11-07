@@ -18,7 +18,8 @@
     "./html-custom-data.json": "./html-custom-data.json",
     "./check": "./lib/check.js",
     "./vite": "./lib/vite.js",
-    "./icons.css": "./dist/icons.css"
+    "./icons.css": "./dist/icons.css",
+    "./pico-compat.css": "./dist/pico-compat.css"
   },
   "bin": {
     "tinystyle": "bin/tinystyle.js"

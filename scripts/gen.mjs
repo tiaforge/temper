@@ -13,7 +13,7 @@ const firstSentence = t => (t.match(/^.*?[.!?](?=\s|$)/) ?? [t])[0];
 function compactAttributes(vocab) {
   const rows = Object.entries(vocab.attributes).map(([name, a]) => {
     const values = name === 'data-icon' ? 'an icon name (see Icons), or none'
-      : a.boolean ? '(boolean)' : Object.keys(a.values).join(', ');
+      : a.boolean ? '(boolean)' : (a.allowEmpty ? '(none), ' : '') + Object.keys(a.values).join(', ');
     const mod = a.module && a.module !== 'core' ? ` (${a.module}.css)` : '';
     return `| \`${name}\`${mod} | ${values} | ${a.short ?? firstSentence(a.description)} |`;
   });
@@ -42,9 +42,10 @@ export function renderLlms(vocab, template, { full = true } = {}) {
     if (a.boolean) return head + (a.requires ? `\nRequires one of: ${a.requires.map(r => `\`${r}\``).join(', ')}.` : '');
     const entries = Object.entries(a.values);
     // values without descriptions read best as one line (and keep llms.txt short)
-    const values = entries.every(([, d]) => !d)
+    const optional = a.allowEmpty ? 'Also valid without a value.\n\n' : '';
+    const values = optional + (entries.every(([, d]) => !d)
       ? `Values: ${entries.map(([v]) => `\`${v}\``).join(', ')}.`
-      : entries.map(([v, d]) => `- \`${v}\`${d ? `: ${d}` : ''}`).join('\n');
+      : entries.map(([v, d]) => `- \`${v}\`${d ? `: ${d}` : ''}`).join('\n'));
     return `${head}\n\n${values}`;
   }).join('\n\n');
   const kinds = {};

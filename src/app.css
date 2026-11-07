@@ -9,6 +9,9 @@
      other children (script, template or framework elements such as <sn-resource>) take no space. */
   :where([data-shell]) { display: flex; min-block-size: 100dvh; }
   :where([data-shell]) > :where(main) { flex: 1 1 0; min-inline-size: 0; }
+  /* fixed: the shell fills the viewport and main scrolls inside it (mail-style multi-pane apps) */
+  :where([data-shell="fixed"]) { block-size: 100dvh; min-block-size: 0; overflow: hidden; }
+  :where([data-shell="fixed"]) > :where(main) { min-block-size: 0; overflow: auto; }
 
   /* rail */
   :where([data-rail]) {
@@ -40,7 +43,7 @@
     --_bg: transparent; --_fg: var(--ts-text);
     justify-content: start; gap: var(--ts-space-sm);
     inline-size: 100%; block-size: var(--ts-control-h); padding-inline: calc((var(--ts-control-h) - 1.125rem) / 2);
-    border-radius: var(--ts-radius); font-size: var(--ts-control-font); font-weight: 500; text-decoration: none; white-space: nowrap;
+    position: relative; border-radius: var(--ts-radius); font-size: var(--ts-control-font); font-weight: 500; text-decoration: none; white-space: nowrap;
   }
   :where([data-rail]) :where(a):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
     display: flex; align-items: center; color: var(--_fg); background: var(--_bg);

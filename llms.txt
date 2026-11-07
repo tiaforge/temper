@@ -14,6 +14,7 @@ import '@tiaforge-ui/tinystyle/core.css';   // always
 import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
 import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
 import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
+import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
 ```
 
@@ -63,7 +64,7 @@ export default { plugins: [tinystyle()] };
 
 | Attribute | Values | What it does |
 |---|---|---|
-| `data-variant` | secondary, outline, ghost, link | Button style; leave it out for the solid main button. |
+| `data-variant` | secondary, outline, ghost, link, item | Button style; leave it out for the solid main button. |
 | `data-tone` | accent, neutral, danger, success, warning, info | Color, independent of the style; for any other color use style="--ts-tone: …". |
 | `data-size` | sm, md, lg | Control size relative to the current density. |
 | `data-icon` | an icon name (see Icons), or none | Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label). |
@@ -74,8 +75,8 @@ export default { plugins: [tinystyle()] };
 | `data-justify` | start, center, end, between | Main-axis distribution of children (justify-content). |
 | `data-self` | start, center, end, stretch | Aligns this one child (e.g. data-self="start" keeps a button in a stack from stretching). |
 | `data-wrap` | wrap, none | Whether a row wraps onto more lines. |
-| `data-grow` | (boolean) | This child takes the remaining space in its row or stack. |
-| `data-scroll` | (boolean) | Scrolls its content sideways when it is wider than the screen, instead of making the whole page scroll. |
+| `data-grow` | (boolean) | This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. |
+| `data-scroll` | (none), y, both | Scroll container: sideways by default, "y" vertical (panes), "both". |
 | `data-density` | comfortable, compact | Control height and padding for everything inside. |
 | `data-theme` | light, dark | Forces light or dark mode. |
 | `data-badge` | (boolean) | Small status label (counts, tags, states). |
@@ -87,7 +88,7 @@ export default { plugins: [tinystyle()] };
 | `data-caption` | (boolean) | Small, semibold, muted label text: captions above values, group headings like a letter in an index. |
 | `data-avatar` | (boolean) | Round avatar with initials, or an <img> child that fills it. |
 | `data-stretch` | (boolean) | Makes the whole card clickable through this element. |
-| `data-shell` (app.css) | (boolean) | App shell: a navigation rail ([data-rail]) next to <main>. |
+| `data-shell` (app.css) | (none), fixed | App shell (rail + main); data-shell="fixed" fills the viewport and main scrolls inside. |
 | `data-rail` (app.css) | (boolean) | Navigation rail next to <main>; with popover it is a drawer on narrow screens. |
 | `data-collapsed` (app.css) | (boolean) | Icon-only rail, set in the markup (e.g. |
 | `data-rail-collapse` (app.css) | (boolean) | Collapse toggle drawn as a chevron icon button. |

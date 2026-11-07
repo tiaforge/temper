@@ -20,6 +20,10 @@
         {
           "name": "link",
           "description": "Looks like a link, keeps button semantics."
+        },
+        {
+          "name": "item",
+          "description": "Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background."
         }
       ]
     },
@@ -402,13 +406,22 @@
     },
     {
       "name": "data-grow",
-      "description": "tinystyle. On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
+      "description": "tinystyle. On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
       "valueSet": "v"
     },
     {
       "name": "data-scroll",
-      "description": "tinystyle. On: a wrapper around wide content (table, long code, wide grids). Scrolls its content sideways when it is wider than the screen, instead of making the whole page scroll. Wrap tables that can get wide: <div data-scroll><table>…</table></div>.",
-      "valueSet": "v"
+      "description": "tinystyle. On: a wrapper around wide or tall content (table, code, list pane). Scroll container. Without a value it scrolls sideways when the content is wider than the screen, instead of making the whole page scroll (wrap wide tables in it). data-scroll=\"y\" scrolls vertically inside a fixed-height area (panes in a data-shell=\"fixed\" app, message lists).",
+      "values": [
+        {
+          "name": "y",
+          "description": "Vertical scrolling (panes, long lists)."
+        },
+        {
+          "name": "both",
+          "description": "Both directions."
+        }
+      ]
     },
     {
       "name": "data-density",
@@ -485,8 +498,13 @@
     },
     {
       "name": "data-shell",
-      "description": "tinystyle (app.css). On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer.",
-      "valueSet": "v"
+      "description": "tinystyle (app.css). On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll=\"y\").",
+      "values": [
+        {
+          "name": "fixed",
+          "description": "Fills the viewport; main scrolls inside it."
+        }
+      ]
     },
     {
       "name": "data-rail",

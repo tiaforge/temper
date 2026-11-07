@@ -16,6 +16,7 @@ import '@tiaforge-ui/tinystyle/core.css';   // always
 import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
 import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
 import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
+import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
 ```
 
@@ -247,7 +248,8 @@ c.addEventListener('change', () => localStorage.setItem('rail-collapsed', c.chec
 ```
 
 Buttons that open a popover (`popovertarget`, `command="toggle-popover"`) get a ▾ caret automatically;
-icon buttons (`data-icon`) do not.
+icon buttons (`data-icon`) do not. A submit button (`type="submit"`, the default inside a form) ignores
+`popovertarget` and `commandfor`; give opener and closer buttons `type="button"`.
 
 ### Card grid with avatars, whole card clickable
 

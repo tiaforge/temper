@@ -201,7 +201,9 @@
   :where([data-wrap="none"]) { flex-wrap: nowrap; }
   :where([data-wrap="wrap"]) { flex-wrap: wrap; }
   :where([data-scroll]) { max-inline-size: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
-  :where([data-grow]) { flex: 1 1 var(--ts-grow-basis, 8rem); min-inline-size: 0; }
+  :where([data-scroll="y"]) { overflow: hidden auto; min-block-size: 0; overscroll-behavior: contain; }
+  :where([data-scroll="both"]) { overflow: auto; min-block-size: 0; overscroll-behavior: contain; }
+  :where([data-grow]) { flex: 1 1 var(--ts-grow-basis, 8rem); min-inline-size: 0; min-block-size: 0; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
   :where([data-pad="xs"]) { --_pad: var(--ts-space-xs); }
@@ -263,6 +265,20 @@
   :where([data-variant="outline"][data-tone]:not([data-tone="neutral"])) { --_bd: color-mix(in oklab, var(--ts-tone-ink) 65%, transparent); }
   :where([data-variant="ghost"]) { --_bg: transparent; --_fg: var(--ts-tone-ink); }
   :where([data-variant="outline"], [data-variant="ghost"]):hover { background: var(--ts-tone-soft); }
+  /* item: a full-width, multi-line list entry (message list, search results); selected = soft accent */
+  :where(button, a)[data-variant="item"] {
+    --_bg: transparent; --_fg: var(--ts-text);
+    display: grid; justify-content: stretch; justify-items: start; align-content: center; gap: 0.125rem;
+    position: relative; inline-size: 100%; block-size: auto; min-block-size: var(--ts-control-h);
+    font-size: var(--ts-control-font);
+    padding: var(--ts-space-sm) var(--ts-space-md); border-radius: var(--ts-radius-sm);
+    background: var(--_bg); color: var(--_fg); font-weight: 400; line-height: 1.4; text-align: start;
+    text-decoration: none; white-space: normal;
+  }
+  :where(button, a)[data-variant="item"]:hover { background: var(--ts-fill); }
+  :where(button, a)[data-variant="item"]:is([aria-current]:not([aria-current="false"]), [aria-selected="true"], [aria-pressed="true"]) {
+    --ts-tone: var(--ts-accent); --_bg: var(--ts-tone-soft); --_fg: var(--ts-text); background: var(--_bg);
+  }
   :where([data-variant="link"]) {
     --_bg: transparent; --_fg: var(--ts-tone-ink);
     block-size: auto; padding: 0; border: 0;
@@ -289,10 +305,18 @@
   :where(button, input, select, textarea):disabled { opacity: 0.5; cursor: not-allowed; }
   :where([aria-disabled="true"]) { opacity: 0.5; pointer-events: none; }
   :where(button, a[role="button"])[aria-busy="true"] { color: transparent; pointer-events: none; }
+  :where(form, fieldset, section, article, ul, ol, table, [data-layout])[aria-busy="true"] { opacity: 0.65; transition: opacity var(--ts-duration) var(--ts-ease); }
   :where(button, a[role="button"])[aria-busy="true"]::after {
     content: ""; position: absolute; inset: 0; margin: auto;
     inline-size: 1.1em; block-size: 1.1em; border-radius: 50%;
     border: 2px solid var(--_fg); border-inline-end-color: transparent;
+    animation: ts-spin 0.7s linear infinite;
+  }
+  :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"] { color: var(--_fg); }
+  :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"]::after {
+    content: ""; position: absolute; inset-block: 0; inset-inline: auto var(--ts-space-sm); margin-block: auto;
+    inline-size: 0.875em; block-size: 0.875em; border-radius: 50%;
+    border: 2px solid currentColor; border-inline-end-color: transparent; opacity: 0.7;
     animation: ts-spin 0.7s linear infinite;
   }
   @keyframes ts-spin { to { rotate: 1turn; } }
