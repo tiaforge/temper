@@ -56,3 +56,12 @@ test('llms.txt stays short', () => {
   const short = readFileSync(new URL('../llms.txt', import.meta.url), 'utf8');
   assert.ok(short.length < 12000, `llms.txt is ${short.length} bytes; move detail to llms-full.txt (full-only blocks)`);
 });
+
+test('dialog and card headers and footers are flex rows', () => {
+  // Guards against selector-list edits that move these selectors onto another rule (happened once).
+  for (const part of ['header', 'footer']) {
+    const rule = css.match(new RegExp(`:where\\(dialog, article\\) > :where\\(${part}\\)[^{]*\\{([^}]*)\\}`));
+    assert.ok(rule, `no rule for dialog/article > ${part}`);
+    assert.match(rule[1], /display:\s*flex/, `dialog/article > ${part} is not display: flex`);
+  }
+});

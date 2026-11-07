@@ -469,8 +469,8 @@
   }
   :where(dialog[open])::backdrop { opacity: 1; }
   @starting-style { :where(dialog[open])::backdrop { opacity: 0; } }
-  :where(dialog, article) > :where(header),
   :where(dialog) > :where(article) { display: contents; }
+  :where(dialog, article) > :where(header),
   :where(dialog, article) > :where(div, form, section, article) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-sm); }
   :where(dialog, article) > :where(footer),
   :where(dialog, article) > :where(div, form, section, article) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--ts-space-sm); }
