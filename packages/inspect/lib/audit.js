@@ -157,6 +157,8 @@ export function install(opts) {
 
   function checkOverlay(state, el) {
     const r = R(el);
+    if (el.scrollWidth > el.clientWidth + 1)
+      findings.push({ state, severity: 'error', code: 'overflow', selector: sel(el), message: `content is ${el.scrollWidth - el.clientWidth}px wider than the ${el.localName === 'dialog' ? 'dialog' : 'overlay'} and gets cut off or scrolls sideways` });
     if (r.left <= 1 && r.top <= 1 && r.width < vw - 2 && r.height < vh - 2)
       findings.push({ state, severity: 'error', code: 'position', selector: sel(el), message: 'sits in the top-left corner (missing margin: auto or anchor position?)' });
     if (r.right > vw + 1 || r.bottom > vh + 1 || r.left < -1 || r.top < -1)

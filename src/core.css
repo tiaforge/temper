@@ -424,7 +424,7 @@
     transition: opacity var(--ts-duration) var(--ts-ease), scale var(--ts-duration) var(--ts-ease),
       overlay var(--ts-duration) allow-discrete, display var(--ts-duration) allow-discrete;
   }
-  :where(dialog[open]) { display: grid; gap: var(--ts-space-md); opacity: 1; scale: 1; }
+  :where(dialog[open]) { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ts-space-md); opacity: 1; scale: 1; }
   @starting-style { :where(dialog[open]) { opacity: 0; scale: 0.97; } }
   :where(dialog)::backdrop {
     background: oklch(0.2 0.02 var(--ts-neutral-hue) / 0.45);
@@ -439,10 +439,10 @@
   :where(dialog, article) > :where(div, form, section) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--ts-space-sm); }
   :where(dialog, article) :where(header) > :where(:not(h1, h2, h3, h4, h5, h6)) { flex-shrink: 0; }
   /* Close buttons in a dialog or card header look like quiet icon buttons; an empty one draws an ×. */
-  :where(dialog, article) :where(header) > :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])) {
+  :where(dialog, article) :where(header) :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])) {
     --_bg: transparent; --_fg: var(--ts-text-muted); inline-size: calc(var(--ts-control-h) * var(--_size, 1)); padding: 0;
   }
-  :where(dialog, article) :where(header) > :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])):empty::before {
+  :where(dialog, article) :where(header) :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])):empty::before {
     content: ""; inline-size: 1.125rem; block-size: 1.125rem; background: currentColor;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") center / contain no-repeat;
   }

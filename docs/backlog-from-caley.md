@@ -185,3 +185,28 @@ went up (0 findings), token use went up 21%.
   checkbox's label.
 - To cut screenshot loops further: optionally write one contact-sheet image of all states (page, each
   dialog and popover, both widths and schemes) instead of 10–16 separate screenshots.
+
+## Rerun v5 (named icons, contact sheet, short llms.txt; same brief as v4)
+
+| | v4 | v5 |
+|---|---|---|
+| Custom CSS (page + nav) | 0 | 0 |
+| Inline `<svg>` in page + nav | 8 | **0** (18 `data-icon` uses) |
+| Nav partial | 5,173 bytes | **2,301 bytes** (−55%) |
+| Agent tokens / tool calls / minutes | 142k / 60 / 7.2 | 144k / 50 / 6.6 |
+| Used tinystyle-inspect | yes (2 runs) | **no** |
+| Screenshots | ~16 | ~30 |
+| Inspector findings on the result | 0 / 0 | 0 / 0 after the dialog fix (before it: 1 error, see below) |
+
+Did the changes deliver?
+- **Named icons: yes.** No inline SVG left, and the nav markup halved.
+- **Contact sheet: not used.** The agent never ran the inspector, so it took about 30 screenshots. v4 used the inspector under the same brief, so adoption is not reliable from llms.txt alone. Added: `tinystyle check` now prints the inspector command when the inspector is installed.
+- **Short llms.txt: no visible harm.** Token use was flat (+1%) despite twice the screenshots. Whether it read llms-full.txt is unknown.
+- **v4 fixes: held.** Drawer button in the top row, narrow form rows wrap correctly, FAB round.
+
+Found by v5 or by inspecting v5:
+- **Dialog content wider than a phone dialog** (92px at 390px): the open dialog is a grid whose column grew to the content. Fixed (`grid-template-columns: minmax(0, 1fr)`). The inspector missed it because the page itself did not overflow; it now reports content wider than its dialog or popover. Found by looking at the contact sheet.
+- `icons.css` was missing from the package exports. Fixed.
+- The quiet × close button only matched direct children of the header. Fixed (any depth in the header).
+- The Vite plugin's `paths` option (check only migrated parts) was undocumented. Now in llms.txt.
+- Open: dialogs whose content depends on app state (the detail dialog with no contact selected) render empty in the inspector. A way to run a setup step before opening would help.

@@ -17,7 +17,8 @@
     "./vocab.json": "./vocab.json",
     "./html-custom-data.json": "./html-custom-data.json",
     "./check": "./lib/check.js",
-    "./vite": "./lib/vite.js"
+    "./vite": "./lib/vite.js",
+    "./icons.css": "./dist/icons.css"
   },
   "bin": {
     "tinystyle": "bin/tinystyle.js"
