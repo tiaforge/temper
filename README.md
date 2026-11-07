@@ -220,7 +220,7 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 
 | File | brotli | What's in it |
 |---|---|---|
-| `core.css` | 5.4 KB | tokens, reset, type, layout, buttons, forms (incl. meter, color, multi-row select), dialog, popover, details, table, card, badge, callout, avatar |
+| `core.css` | 5.5 KB | tokens, reset, type, layout, buttons, forms (incl. meter, color, multi-row select), dialog, popover, details, table, card, badge, callout, avatar |
 | `app.css` | 1.4 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button |
 | `menu.css` | 0.9 KB | dropdown menus |
 | `feedback.css` | 0.8 KB | toasts, tooltips (anchor-positioned, never clipped by a scroll container) |
