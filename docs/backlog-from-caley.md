@@ -330,3 +330,41 @@ The mock now has it.
       the rest (compose needed 5 rules).
     - A resizable dialog option.
 48. **Docs:** a `data-menu` popover can hold arbitrary widgets (the month picker worked as one); say so.
+
+## Search, settings, login: Pico removed from caley (fourth step)
+
+| | before | after |
+|---|---|---|
+| Search (`SearchPage.svelte`) | 204 lines scoped CSS | 0 |
+| Settings (`SettingsForm` 171, `EncryptionSettings` 290, `CreateCalendarDialog` 7, `ImportDialog` 55) | 523 | 9 |
+| Login (`LoginPage.svelte`) | 52 | 0 |
+| Deleted | `main.scss` (219), `nav.scss` (213), the old nav partial, Pico branches in `nav.ts`, `UiIcon.svelte`, unused `CalendarList.svelte` and `index.ts` | |
+| Pico in sources / built output | everywhere | **none** (`@picocss/pico` is only still listed in package.json; needs `npm uninstall`) |
+| Inspector, all six pages | | **0 errors** (10 warnings: dialogs opened from script) |
+| Agent tokens / tool calls / minutes | | 208k / 72 / 12 |
+
+### Whole migration (contacts, mail, calendar, search, settings, login)
+
+| | Pico | tinystyle |
+|---|---|---|
+| App CSS (SCSS + scoped styles) | about 4,750 lines | about 210 lines |
+| Agent effort for the whole app | | about 940k tokens over four steps |
+
+Also found: the CalDAV account dialog uses the email-account heading ("E-Mail-Konto hinzufügen"). That was
+already the case before the migration.
+
+### Findings (settings, search, login)
+
+49. **Regression (fixed in 0ca5e67):** since c0300ec, `dialog > header` and `article > header` were not
+    rows. The agent put `data-layout="row"` on 14 headers to compensate; those attributes are now
+    redundant. A test now guards the rule.
+50. **Tabs:** there is no tabs primitive (`role="tablist"` / `role="tab"` with `aria-selected`). The agent
+    switched `data-variant` between secondary and ghost.
+51. **Long button labels on phones:** buttons never wrap, so a long German label overflows (9 lines of CSS).
+    Allow wrapping (`white-space: normal`) for buttons in narrow containers, or add `data-wrap` on buttons.
+52. **Bordered list rows:** `article role="listitem"` with 5 attributes, 9 times. A bordered variant of the
+    item row, or a `data-list` container that separates its children.
+53. **Smaller items:**
+    - `--ts-measure` includes the side padding,
+    - a divider with text ("or") is missing,
+    - document `closedby="any"` (it replaces backdrop-click handlers; seven of them in caley).
