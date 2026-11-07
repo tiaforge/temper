@@ -289,3 +289,44 @@ virtual folder instead of three icons, and an icon-only reader toolbar. Sender a
 40. **Inspector, fixed:** false positives for dialogs inside panes hidden at a width (now reported as
     not rendered), popovers opened without their button (no position check), and `data-sr-only` text
     (not "clipped").
+
+## Calendar page + the remaining Svelte dialogs (third step, built on the mail step)
+
+The calendar is a Svelte app (not sinter), so this step also tested tinystyle attributes and the checker inside
+Svelte components.
+
+| | before | after |
+|---|---|---|
+| Scoped CSS in calendar components + the 5 dialogs | 1,114 lines | 106 |
+| `--pico-*` in CSS loaded by calendar, mail, message view, contacts | bridge + Pico | **0** (bridge deleted) |
+| Inspector on calendar, mail, contacts | compose had 3 label errors | **0 errors** (6 warnings: dialogs opened from script) |
+| Agent tokens / tool calls / minutes | | 255k / 105 / 20 |
+
+New shared components: `EventChip` (a `data-variant="item"` button; it replaced three copies of the chip
+markup) and `Combo` (the autocomplete list that was duplicated in the event form and in compose).
+`SelectDropdown` was removed; compose's "From" is now a native `<select>`. On phones the week view is a
+day-by-day agenda list.
+
+Still on Pico: the search and settings pages. `ImportDialog` keeps an `<article>` wrapper and its
+`.close-btn` for the Pico settings page; on tinystyle pages one rule makes the article transparent.
+
+Mock: the stock mock had no month-grid endpoint (`/api/calendar?month=`), so the agent wrote its own copy.
+The mock now has it.
+
+### Findings (calendar)
+
+41. **Fixed-column grids:** `data-layout="grid"` cannot say "exactly 7 columns". Proposed: `--ts-cols`
+    (with a narrow-screen fallback). About 30 lines across the week, month and picker grids.
+42. **`aria-current="date"`** (today in a calendar) has no styling.
+43. **Autocomplete list under an input** (combobox): an anchored, non-popover `data-menu` with
+    `aria-selected` styling would replace the 25-line component + 8 lines of CSS, used 6 times.
+44. **Event chip:** a `data-variant="item"` with a `--ts-tone` start bar, a compact size and `data-clamp="2"`
+    (multi-line truncation). 18 lines today.
+45. **`data-truncate` on a grid child** does not work (grid items need `min-inline-size: 0`).
+46. **Checker:** it does not flag `data-justify`/`data-align`/`data-gap` without `data-layout`.
+47. **Dialogs:**
+    - `dialog > article` (Pico-style markup) shows a double card. Treat it as transparent.
+    - Document that the open dialog is a grid (a wrapper element loses the gap) and how to let one row fill
+      the rest (compose needed 5 rules).
+    - A resizable dialog option.
+48. **Docs:** a `data-menu` popover can hold arbitrary widgets (the month picker worked as one); say so.
