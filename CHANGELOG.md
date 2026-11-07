@@ -16,7 +16,7 @@ The first release.
   form controls including switches, `meter`, color inputs and multi-row selects, dialog, popover, details,
   tables, cards (with `data-stretch` for clickable ones), badge, callout, avatar, list, divider, tabs
   (`role="tablist"`). Light and dark mode from the OS, or `data-theme` on any element; the palette comes
-  from `--tm-hue` and `--tm-chroma`. Nothing has an outer margin. Everything lives in `@layer ts.*` and
+  from `--tm-hue` and `--tm-chroma`. Nothing has an outer margin. Everything lives in `@layer tm.*` and
   `:where()`, so app CSS always wins.
 - `app.css`: app shell with a navigation rail (collapsible without script, a popover drawer on phones),
   floating action button, `data-show`.

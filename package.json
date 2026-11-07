@@ -130,5 +130,8 @@
         "types/sinter.d.ts"
       ]
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

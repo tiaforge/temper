@@ -51,7 +51,7 @@ export default { plugins: [temper()] };
    `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
    `data-grow` on one child makes it take the remaining space (search fields, inputs next to a button).
 5. Sizes always use the same words: `xs sm md lg xl`. There are no numeric scales.
-6. Your own CSS always wins over temper (temper lives in `@layer ts.*`). Never use `!important`.
+6. Your own CSS always wins over temper (temper lives in `@layer tm.*`). Never use `!important`.
    In your own CSS, use the tokens (`var(--tm-text-muted)`, `var(--tm-space-sm)`), never hard-coded colors.
 7. Use `class` only for your app's own components. `data-*` attributes from the list below belong to
    temper; do not use those names for anything else.

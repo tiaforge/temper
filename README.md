@@ -2,7 +2,7 @@
 
 CSS for plain, semantic HTML with a checked vocabulary, designed so coding agents get it right the first time.
 
-**5.4 KB** core (brotli) · **20 / 20** agent tasks correct, against 11 for Pico and 10 for daisyUI ·
+**5.5 KB** core (brotli) · **20 / 20** agent tasks correct, against 11 for Pico and 10 for daisyUI ·
 **4,750 → 210** lines of app CSS in a real migration · **no** JS, build step or dependencies
 
 <picture>
@@ -78,7 +78,7 @@ at WCAG AA contrast in both modes.
 <section data-theme="dark" data-pad="xl">…</section>
 ```
 
-**Your CSS always wins.** Everything lives in `@layer ts.*` behind `:where()`, so `.card { padding: 2rem }`
+**Your CSS always wins.** Everything lives in `@layer tm.*` behind `:where()`, so `.card { padding: 2rem }`
 beats it. You never need `!important`.
 
 ## Quick start
