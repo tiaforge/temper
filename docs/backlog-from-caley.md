@@ -358,13 +358,13 @@ already the case before the migration.
 49. **Regression (fixed in 0ca5e67):** since c0300ec, `dialog > header` and `article > header` were not
     rows. The agent put `data-layout="row"` on 14 headers to compensate; those attributes are now
     redundant. A test now guards the rule.
-50. **Tabs:** there is no tabs primitive (`role="tablist"` / `role="tab"` with `aria-selected`). The agent
+50. *Done: `role="tablist"`/`role="tab"` are styled (underline on `aria-selected="true"`, `aria-orientation="vertical"` stacks them), no attributes needed.* **Tabs:** there is no tabs primitive (`role="tablist"` / `role="tab"` with `aria-selected`). The agent
     switched `data-variant` between secondary and ghost.
-51. **Long button labels on phones:** buttons never wrap, so a long German label overflows (9 lines of CSS).
+51. *Done: button labels wrap (and break long words) only when the button cannot fit; buttons now have a minimum height instead of a fixed one.* **Long button labels on phones:** buttons never wrap, so a long German label overflows (9 lines of CSS).
     Allow wrapping (`white-space: normal`) for buttons in narrow containers, or add `data-wrap` on buttons.
-52. **Bordered list rows:** `article role="listitem"` with 5 attributes, 9 times. A bordered variant of the
+52. *Done: `data-list` (one bordered box, rows separated by lines, article card styling removed); recipe in llms.txt.* **Bordered list rows:** `article role="listitem"` with 5 attributes, 9 times. A bordered variant of the
     item row, or a `data-list` container that separates its children.
-53. **Smaller items:**
+53. *Done: `--ts-measure` is now the content width, `data-divider` draws a line with text, `closedby="any"` is in the dialog docs.* **Smaller items:**
     - `--ts-measure` includes the side padding,
     - a divider with text ("or") is missing,
     - document `closedby="any"` (it replaces backdrop-click handlers; seven of them in caley).

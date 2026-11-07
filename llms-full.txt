@@ -32,7 +32,8 @@ export default { plugins: [tinystyle()] };
    `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `code`, `kbd` are styled
    without any attributes.
 2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner),
-   `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`.
+   `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`,
+   `aria-selected="true"` (the selected `role="tab"`; see Tabs).
 3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute
    is one independent axis: `data-variant` is the style, `data-tone` is the color, `data-size` is the
    size. Do not invent classes or values for these.
@@ -105,7 +106,7 @@ On: any container. Lays out the element's children. Wins over the element's own 
 - `row`: Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-wrap.
 - `grid`: Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row.
 - `split`: Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens.
-- `center`: Horizontally centered column with max width --ts-measure (default 72rem) and side padding.
+- `center`: Horizontally centered column with side padding. Its content is at most --ts-measure wide (default 72rem); the padding comes on top.
 
 ### `data-cols`
 
@@ -227,6 +228,14 @@ On: dl. Shows dt/dd pairs as a two-column label/value grid.
 ### `data-caption` (boolean, no value)
 
 On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.
+
+### `data-list` (boolean, no value)
+
+On: ul, ol or any container of rows. One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-pad on a child overrides it); give a child data-layout="row" data-justify="between" for label + action rows. Card styling of article children is removed, so <article role="listitem"> rows need no extra attributes. A leading <template> child does not count as the first row.
+
+### `data-divider` (boolean, no value)
+
+On: any text element. A horizontal line with the element's text in the middle, e.g. <p data-divider>or</p> between two sign-in options. Empty, it is a plain line.
 
 ### `data-avatar` (boolean, no value)
 
@@ -447,6 +456,9 @@ loses that gap. To let one part fill the remaining height (a message body, a lon
 `data-layout="stack"` and that part `data-grow data-scroll="y"`. Pico-style `dialog > article` markup
 works too: the article adds no box of its own.
 
+Add `closedby="any"` to close the dialog on a click outside it or on Esc, with no script (no backdrop
+click handlers).
+
 An empty close button in the header (`command="close"`, `command="hide-popover"` or
 `popovertargetaction="hide"`) is drawn as a quiet × icon button; give it an `aria-label`. Header and
 footer also work through one wrapper (`dialog > form > footer`, a template-rendered `div`). The open
@@ -463,7 +475,8 @@ row: give such elements the `hidden` attribute.
 </div>
 ```
 
-`data-grow` makes the search field fill the space between the heading and the button. For a fixed
+`data-grow` makes the search field fill the space between the heading and the button. A button whose
+label does not fit (a long translation on a phone) wraps the label onto two lines; nothing to add. For a fixed
 width instead, leave `data-grow` out and add `data-justify="between"` to the row.
 
 ### Status
@@ -482,6 +495,43 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
   <label data-layout="row" data-justify="between" data-pad="sm">Email notifications <input type="checkbox" role="switch"></label>
   <label data-layout="row" data-justify="between" data-pad="sm">Show week numbers <input type="checkbox" role="switch"></label>
 </div>
+```
+
+### Bordered list
+
+```html
+<ul data-list>
+  <li data-layout="row" data-justify="between">
+    <span data-grow>Firefox on Linux <span data-badge data-tone="accent">This browser</span></span>
+    <button data-icon="trash-2" data-variant="ghost" data-size="sm" data-tone="danger" aria-label="Remove"></button>
+  </li>
+  <li data-layout="row" data-justify="between">…</li>
+</ul>
+```
+
+`data-list` draws one box with a line between rows and pads each row. `data-grow` on the label keeps
+the button at the end of the row on narrow screens. Do not build the same from bordered `article`s
+with `data-pad`.
+
+### Tabs
+
+```html
+<div role="tablist" aria-label="Settings">
+  <button role="tab" aria-selected="true" aria-controls="general">General</button>
+  <button role="tab" aria-selected="false" aria-controls="encryption">Encryption</button>
+</div>
+<section role="tabpanel" id="general">…</section>
+<section role="tabpanel" id="encryption" hidden>…</section>
+```
+
+No `data-variant` on tabs: the selected one (`aria-selected="true"`) is underlined. Your script switches
+`aria-selected` and `hidden`. `aria-orientation="vertical"` on the tablist stacks the tabs.
+
+### Divider with text
+
+```html
+<button data-variant="secondary">Sign in with a passkey</button>
+<p data-divider>or</p>
 ```
 
 ### App shell with navigation rail (app.css)

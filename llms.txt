@@ -36,7 +36,8 @@ export default { plugins: [tinystyle()] };
    `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `code`, `kbd` are styled
    without any attributes.
 2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner),
-   `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`.
+   `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`,
+   `aria-selected="true"` (the selected `role="tab"`; see Tabs).
 3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute
    is one independent axis: `data-variant` is the style, `data-tone` is the color, `data-size` is the
    size. Do not invent classes or values for these.
@@ -91,6 +92,8 @@ export default { plugins: [tinystyle()] };
 | `data-sr-only` | (boolean) | Hidden visually, still read by screen readers. |
 | `data-pairs` | (boolean) | Shows dt/dd pairs as a two-column label/value grid. |
 | `data-caption` | (boolean) | Small, semibold, muted label text: captions above values, group headings like a letter in an index. |
+| `data-list` | (boolean) | One bordered box whose children are rows separated by lines: settings lists, keys, devices. |
+| `data-divider` | (boolean) | A horizontal line with the element's text in the middle, e.g. |
 | `data-avatar` | (boolean) | Round avatar with initials, or an <img> child that fills it. |
 | `data-stretch` | (boolean) | Makes the whole card clickable through this element. |
 | `data-shell` (app.css) | (none), fixed | App shell (rail + main); data-shell="fixed" fills the viewport and main scrolls inside. |

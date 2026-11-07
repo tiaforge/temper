@@ -193,8 +193,9 @@
   :where([data-layout="split"] > :nth-last-child(1 of :not(template))) { flex: 999 1 0; min-inline-size: 60%; }
   :where([data-layout="center"]) {
     display: flex; flex-direction: column;
-    inline-size: 100%; max-inline-size: var(--ts-measure, 72rem);
-    margin-inline: auto; padding-inline: var(--ts-space-md);
+    --_px: var(--ts-space-md);
+    inline-size: 100%; max-inline-size: calc(var(--ts-measure, 72rem) + 2 * var(--_px)); /* --ts-measure is the content width */
+    margin-inline: auto; padding-inline: var(--_px);
   }
   /* data-layout must not reveal a closed dialog or popover. */
   [data-layout]:is(dialog:not([open]), [popover]:not(:popover-open)) { display: none; }
@@ -218,7 +219,7 @@
   :where([data-pad="lg"]) { --_pad: var(--ts-space-lg); }
   :where([data-pad="xl"]) { --_pad: var(--ts-space-xl); }
   /* A centered page column keeps at least md side padding, so text never touches the screen edge. */
-  :where([data-layout="center"][data-pad]) { padding-inline: max(var(--ts-space-md), var(--_pad)); }
+  :where([data-layout="center"][data-pad]) { --_px: max(var(--ts-space-md), var(--_pad)); padding-inline: var(--_px); }
   :where([data-self="start"]) { align-self: start; }
   :where([data-self="center"]) { align-self: center; }
   :where([data-self="end"]) { align-self: end; }
@@ -242,16 +243,16 @@
     --_bd: transparent;
     display: inline-flex; align-items: center; justify-content: center; gap: 0.5em;
     position: relative;
-    block-size: calc(var(--ts-control-h) * var(--_size, 1));
-    padding-inline: calc(var(--ts-control-px) * var(--_size, 1));
+    min-block-size: calc(var(--ts-control-h) * var(--_size, 1));
+    padding: 0.25em calc(var(--ts-control-px) * var(--_size, 1));
     border: 1px solid var(--_bd);
     border-radius: var(--ts-radius);
     background: var(--_bg);
     color: var(--_fg);
     font-size: var(--_font, var(--ts-control-font));
     font-weight: 550;
-    line-height: 1;
-    white-space: nowrap;
+    line-height: 1.2;
+    text-align: center; text-wrap: balance; overflow-wrap: anywhere; hyphens: auto; /* a label wraps only when the button cannot fit (phones, long translations) */
     text-decoration: none;
     cursor: pointer;
     user-select: none;
@@ -289,7 +290,7 @@
   }
   :where([data-variant="link"]) {
     --_bg: transparent; --_fg: var(--ts-tone-ink);
-    block-size: auto; padding: 0; border: 0;
+    min-block-size: 0; padding: 0; border: 0;
     text-decoration: underline; text-underline-offset: 0.2em;
     text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
   }
@@ -298,6 +299,15 @@
   :where([data-size="sm"]) { --_size: 0.8; --_font: 0.8125rem; }
   :where([data-size="md"]) { --_size: 1; }
   :where([data-size="lg"]) { --_size: 1.2; --_font: 1rem; }
+
+  /* tabs: role="tablist" holding role="tab" buttons; the selected tab (aria-selected="true") is underlined */
+  :where([role="tablist"]) { display: flex; flex-wrap: wrap; gap: var(--ts-space-xs); border-block-end: 1px solid var(--ts-border); }
+  :where([role="tablist"][aria-orientation="vertical"]) { flex-direction: column; border-block-end: 0; border-inline-end: 1px solid var(--ts-border); }
+  :where([role="tab"]) { --_bg: transparent; --_fg: var(--ts-text-muted); --_bd: transparent; border-radius: var(--ts-radius) var(--ts-radius) 0 0; }
+  :where([role="tablist"][aria-orientation="vertical"]) > :where([role="tab"]) { justify-content: start; border-radius: var(--ts-radius) 0 0 var(--ts-radius); }
+  :where([role="tab"]):hover { background: var(--ts-fill); color: var(--ts-text); }
+  :where([role="tab"][aria-selected="true"]) { --_fg: var(--ts-text); box-shadow: inset 0 -2px 0 var(--ts-accent); }
+  :where([role="tablist"][aria-orientation="vertical"]) > :where([role="tab"][aria-selected="true"]) { box-shadow: inset -2px 0 0 var(--ts-accent); }
   :where(:is(button, a[role="button"])[data-icon]:is([data-icon=""], :empty)) { inline-size: calc(var(--ts-control-h) * var(--_size, 1)); padding: 0; flex-shrink: 0; }
 
   /* icons: data-icon="name" draws the icon from --ts-icon-<name> (icons.css, the Vite plugin, or your own CSS).
@@ -548,6 +558,18 @@
 
   /* caption: small secondary label text (dt, field captions, group headings) */
   :where([data-caption]) { font-size: var(--ts-text-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ts-text-muted); }
+
+  /* list: one bordered box; its children are rows separated by lines (settings lists, keys, devices) */
+  :where([data-list]) {
+    display: flex; flex-direction: column; padding: 0; list-style: none;
+    border: 1px solid var(--ts-border); border-radius: var(--ts-radius); background: var(--ts-surface);
+  }
+  :where([data-list]) > :where(*) { padding: var(--ts-space-sm) var(--ts-space-md); border: 0; border-radius: 0; background: none; box-shadow: none; }
+  :where([data-list]) > :where(:not(template) ~ :not(template)) { border-block-start: 1px solid var(--ts-border); }
+
+  /* divider: a line with text in the middle ("or") */
+  :where([data-divider]) { display: flex; align-items: center; gap: var(--ts-space-sm); color: var(--ts-text-muted); font-size: var(--ts-text-sm); }
+  :where([data-divider])::before, :where([data-divider])::after { content: ""; flex: 1; border-block-start: 1px solid var(--ts-border); }
   :where([aria-current="date"]:not(a, button)) { color: var(--ts-accent); font-weight: 650; }
 
   /* avatar: initials or a photo in a circle, colored by tone */

@@ -113,7 +113,7 @@
         "row": "Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-wrap.",
         "grid": "Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row.",
         "split": "Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens.",
-        "center": "Horizontally centered column with max width --ts-measure (default 72rem) and side padding."
+        "center": "Horizontally centered column with side padding. Its content is at most --ts-measure wide (default 72rem); the padding comes on top."
       },
       "short": "Lays out the element's children (overrides its own display)."
     },
@@ -291,6 +291,18 @@
       "boolean": true,
       "on": "any text element",
       "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index."
+    },
+    "data-list": {
+      "module": "core",
+      "boolean": true,
+      "on": "ul, ol or any container of rows",
+      "description": "One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-pad on a child overrides it); give a child data-layout=\"row\" data-justify=\"between\" for label + action rows. Card styling of article children is removed, so <article role=\"listitem\"> rows need no extra attributes. A leading <template> child does not count as the first row."
+    },
+    "data-divider": {
+      "module": "core",
+      "boolean": true,
+      "on": "any text element",
+      "description": "A horizontal line with the element's text in the middle, e.g. <p data-divider>or</p> between two sign-in options. Empty, it is a plain line."
     },
     "data-avatar": {
       "module": "core",

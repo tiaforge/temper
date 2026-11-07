@@ -271,7 +271,7 @@
         },
         {
           "name": "center",
-          "description": "Horizontally centered column with max width --ts-measure (default 72rem) and side padding."
+          "description": "Horizontally centered column with side padding. Its content is at most --ts-measure wide (default 72rem); the padding comes on top."
         }
       ]
     },
@@ -525,6 +525,16 @@
     {
       "name": "data-caption",
       "description": "tinystyle. On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-list",
+      "description": "tinystyle. On: ul, ol or any container of rows. One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-pad on a child overrides it); give a child data-layout=\"row\" data-justify=\"between\" for label + action rows. Card styling of article children is removed, so <article role=\"listitem\"> rows need no extra attributes. A leading <template> child does not count as the first row.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-divider",
+      "description": "tinystyle. On: any text element. A horizontal line with the element's text in the middle, e.g. <p data-divider>or</p> between two sign-in options. Empty, it is a plain line.",
       "valueSet": "v"
     },
     {

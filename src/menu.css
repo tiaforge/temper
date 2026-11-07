@@ -19,7 +19,7 @@
   :where([data-menu]) :where(button, a):not([data-variant]) {
     --_bg: transparent; --_fg: var(--ts-tone-ink);
     display: flex; align-items: center; justify-content: start; gap: var(--ts-space-sm);
-    inline-size: 100%; block-size: calc(var(--ts-control-h) * 0.85); padding-inline: var(--ts-space-sm);
+    inline-size: 100%; min-block-size: 0; block-size: calc(var(--ts-control-h) * 0.85); padding-inline: var(--ts-space-sm);
     border-radius: var(--ts-radius-sm); background: var(--_bg); color: var(--_fg);
     font-weight: 450; text-decoration: none; white-space: nowrap;
   }

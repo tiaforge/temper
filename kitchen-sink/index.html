@@ -283,6 +283,31 @@
         </div>
       </div>
 
+      <div data-layout="grid" data-gap="lg" style="--ts-min: 22rem">
+        <div data-layout="stack" data-gap="md">
+          <div role="tablist" aria-label="Settings">
+            <button role="tab" aria-selected="true">General</button>
+            <button role="tab" aria-selected="false">Encryption</button>
+            <button role="tab" aria-selected="false">Accounts</button>
+          </div>
+          <ul data-list>
+            <li data-layout="row" data-justify="between" data-gap="sm">
+              <span data-layout="row" data-gap="sm" data-grow>Firefox on Linux <span data-badge data-tone="accent">This browser</span></span>
+              <button data-icon="" data-variant="ghost" data-size="sm" data-tone="danger" aria-label="Remove"><svg><use href="#i-trash"/></svg></button>
+            </li>
+            <li data-layout="row" data-justify="between" data-gap="sm">
+              <span data-grow>Pixel 8</span>
+              <button data-icon="" data-variant="ghost" data-size="sm" data-tone="danger" aria-label="Remove"><svg><use href="#i-trash"/></svg></button>
+            </li>
+          </ul>
+        </div>
+        <div data-layout="center" data-gap="sm" style="--ts-measure: 14rem" lang="de">
+          <button data-variant="secondary">Mit einem Passkey anmelden</button>
+          <p data-divider>oder</p>
+          <button>Wiederherstellungsschlüssel herunterladen</button>
+        </div>
+      </div>
+
       <div data-scroll><table>
         <thead><tr><th>Account</th><th>Type</th><th>Last sync</th><th>Status</th></tr></thead>
         <tbody>
