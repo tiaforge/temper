@@ -201,7 +201,7 @@
   :where([data-wrap="none"]) { flex-wrap: nowrap; }
   :where([data-wrap="wrap"]) { flex-wrap: wrap; }
   :where([data-scroll]) { max-inline-size: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
-  :where([data-grow]) { flex: 1 1 var(--ts-grow-basis, 10rem); min-inline-size: 0; }
+  :where([data-grow]) { flex: 1 1 var(--ts-grow-basis, 8rem); min-inline-size: 0; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
   :where([data-pad="xs"]) { --_pad: var(--ts-space-xs); }

@@ -92,6 +92,7 @@
     position: fixed; inset-block-end: var(--ts-space-lg); inset-inline-end: var(--ts-space-lg); z-index: 10;
     inline-size: calc(var(--ts-control-h) * 1.4); block-size: calc(var(--ts-control-h) * 1.4); padding: 0;
     border-radius: 50%; box-shadow: var(--ts-shadow-lg), 0 2px 8px oklch(0 0 0 / 0.15);
+    font-size: 1.5rem; font-weight: 400;
   }
   :where([data-fab]) :where(svg) { inline-size: 1.5rem; block-size: 1.5rem; }
 

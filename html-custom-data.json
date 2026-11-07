@@ -215,7 +215,7 @@
     },
     {
       "name": "data-grow",
-      "description": "tinystyle. On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 10rem): with less room the row wraps and it gets its own line.",
+      "description": "tinystyle. On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
       "valueSet": "v"
     },
     {

@@ -119,7 +119,7 @@
       "module": "core",
       "boolean": true,
       "on": "a child of data-layout=row or stack",
-      "description": "This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 10rem): with less room the row wraps and it gets its own line."
+      "description": "This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line."
     },
     "data-scroll": {
       "module": "core",
@@ -506,7 +506,7 @@
     "--ts-grow-basis": {
       "kind": "input",
       "optional": true,
-      "description": "Width a data-grow child needs before its row wraps. Default 10rem."
+      "description": "Width a data-grow child needs before its row wraps. Default 8rem."
     }
   }
 }

@@ -1,7 +1,8 @@
-// Runs inside the page (serialized with Function.prototype.toString). Returns findings:
-// { state, severity: 'error'|'warning'|'info', code, selector, message }
-export async function audit(opts) {
-  const findings = [];
+// Runs inside the page (serialized with Function.prototype.toString). Installs window.__tsi, which Node
+// drives state by state: list() overlays, open(i), check(state) -> findings, close(i).
+// Findings: { state, severity: 'error'|'warning'|'info', code, selector, message }
+export function install(opts) {
+  let findings = [];
   const vw = innerWidth, vh = innerHeight;
   const cs = el => getComputedStyle(el);
   const R = el => el.getBoundingClientRect();
@@ -132,7 +133,10 @@ export async function audit(opts) {
             ? `its center is covered by a pseudo-element of ${sel(top)}, so clicks go there`
             : `its center is covered by ${sel(top)}, so clicks go there`);
       }
-      if (vw < 768 && (r.width < 24 || r.height < 24) && cs(el).display !== 'inline')
+      // effective target: a covering ::after/::before (stretched link) or the field's label
+      const pseudoCovers = ['::after', '::before'].some(p => { const ps = getComputedStyle(el, p); return ps.content !== 'none' && ps.position === 'absolute'; });
+      const target = isField && el.labels?.length ? [...el.labels].map(R).reduce((a, b) => (a.width * a.height >= b.width * b.height ? a : b)) : r;
+      if (!pseudoCovers && vw < 768 && (target.width < 24 || target.height < 24) && cs(el).display !== 'inline')
         add('info', 'target', el, `tap target ${Math.round(r.width)}×${Math.round(r.height)}px, under 24×24`);
     }
 
@@ -159,30 +163,40 @@ export async function audit(opts) {
       findings.push({ state, severity: 'error', code: 'position', selector: sel(el), message: `extends outside the viewport (${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}×${Math.round(r.height)})` });
   }
 
-  // ── states: the page, then every dialog and every closed popover opened in turn ──
-  check('page');
-  if (opts.overlays) {
-    for (const d of document.querySelectorAll('dialog:not([open])')) {
-      try { d.showModal(); } catch { continue; }
-      await frames(); await sleep(opts.overlayWait);
-      scope = d;
-      const state = `dialog ${sel(d).split(' "')[0]}`;
-      checkOverlay(state, d); check(state);
+  // ── states: the page, then every dialog and every closed popover, opened one at a time ──
+  const overlays = () => [
+    ...[...document.querySelectorAll('dialog:not([open])')].map(el => ({ kind: 'dialog', el })),
+    ...[...document.querySelectorAll('[popover]')].filter(p => !p.matches(':popover-open') && !p.checkVisibility()).map(el => ({ kind: 'popover', el })),
+  ];
+  let list = [], current = null;
+  window.__tsi = {
+    list() { list = opts.overlays ? overlays() : []; return list.length; },
+    check(state) {
+      findings = [];
+      if (current) { scope = current.el; checkOverlay(state, current.el); }
+      check(state);
       scope = document.body;
-      d.close(); await frames();
-    }
-    for (const p of document.querySelectorAll('[popover]')) {
-      if (p.matches(':popover-open') || p.checkVisibility()) continue; // already shown (e.g. a rail on wide screens)
-      const invoker = document.querySelector(`[popovertarget="${CSS.escape(p.id)}"], [commandfor="${CSS.escape(p.id)}"][command$="popover"]`);
-      try { invoker && invoker.checkVisibility() ? invoker.click() : p.showPopover(invoker ? { source: invoker } : undefined); } catch { continue; }
+      return findings;
+    },
+    async open(i) {
+      const o = list[i];
+      if (o.kind === 'dialog') { try { o.el.showModal(); } catch { return null; } }
+      else {
+        const p = o.el;
+        const invoker = document.querySelector(`[popovertarget="${CSS.escape(p.id)}"], [commandfor="${CSS.escape(p.id)}"][command$="popover"]`);
+        try { invoker && invoker.checkVisibility() ? invoker.click() : p.showPopover(invoker ? { source: invoker } : undefined); } catch { return null; }
+        if (!p.matches(':popover-open')) return null;
+        o.note = invoker && !invoker.checkVisibility() ? ' (its button is hidden at this width)' : '';
+      }
       await frames(); await sleep(opts.overlayWait);
-      if (!p.matches(':popover-open')) continue;
-      const state = `popover ${sel(p).split(' "')[0]}${invoker && !invoker.checkVisibility() ? ' (its button is hidden at this width)' : ''}`;
-      scope = p;
-      checkOverlay(state, p); check(state);
-      scope = document.body;
-      p.hidePopover(); await frames();
-    }
-  }
-  return findings;
+      current = o;
+      return `${o.kind} ${sel(o.el).split(' "')[0]}${o.note ?? ''}`;
+    },
+    async close(i) {
+      const o = list[i];
+      o.kind === 'dialog' ? o.el.close() : o.el.hidePopover();
+      current = null;
+      await frames();
+    },
+  };
 }

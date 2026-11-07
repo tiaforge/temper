@@ -20,6 +20,8 @@ Options:
   --no-overlays         do not open dialogs and popovers
   --verbose             also show info (wrapped rows, small tap targets)
   --limit 8             max lines per check and state
+  --sheet <dir>         also write contact sheets: one PNG per page showing every state (page, each
+                        dialog and popover) at every width and scheme, 3 states per image
   --json                print findings as JSON
   --browser <cmd>       browser command (default: CHROME_PATH or the first Chrome/Chromium found)
 
@@ -32,12 +34,14 @@ const schemes = opt('schemes', 'light,dark').split(',');
 const settle = Number(opt('settle', '800'));
 const limit = Number(opt('limit', '8'));
 const browser = opt('browser');
+const sheet = opt('sheet');
 const json = flag('json'), verbose = flag('verbose'), overlays = !flag('no-overlays');
 
 try {
-  const findings = await inspect(args, { widths, schemes, settle, overlays, browser });
+  const { findings, sheets } = await inspect(args, { widths, schemes, settle, overlays, browser, sheet });
   const allWhere = widths.flatMap(w => schemes.map(s => `${w} ${s}`));
-  console.log(json ? JSON.stringify(findings, null, 2) : format(findings, { verbose, limit, allWhere }));
+  console.log(json ? JSON.stringify({ findings, sheets }, null, 2) : format(findings, { verbose, limit, allWhere }));
+  if (sheets.length && !json) console.log(`\nContact sheets:\n${sheets.map(f => '  ' + f).join('\n')}`);
   process.exit(findings.some(f => f.severity === 'error') ? 1 : 0);
 } catch (e) {
   console.error(e.message);

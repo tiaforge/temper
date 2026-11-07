@@ -43,6 +43,7 @@ test('empty close buttons need a label', () => {
   assert.deepEqual(codes(checkMarkup('<button commandfor="d" command="close"></button>')), ['TS103']);
   assert.deepEqual(codes(checkMarkup('<button commandfor="d" command="close" aria-label="Close"></button>')), []);
   assert.deepEqual(codes(checkMarkup('<button commandfor="d" command="close">Cancel</button>')), []);
+  assert.deepEqual(codes(checkMarkup('<button commandfor="d" command="close" data-sn-text="m.cancel()"></button>')), []);
 });
 
 test('misspelled attribute names are warnings', () => {

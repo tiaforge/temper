@@ -26,6 +26,10 @@ For each URL, it:
 Findings are merged across widths and schemes, and capped per check (`--limit`). The exit code is 1 when
 there are errors. `--json` prints machine-readable output.
 
+`--sheet <dir>` also writes a contact sheet per page: one PNG with a row per state (the page, each dialog,
+each popover) and a column per width and scheme, at most 3 states per image. Looking at one sheet
+replaces a dozen separate screenshots when you also need to judge how it looks.
+
 It needs no npm dependencies. It drives an installed Chrome or Chromium over the DevTools protocol,
 using Node's built-in WebSocket (Node 22+). It finds the browser through `CHROME_PATH`, `--browser`,
 common binary names, or Flatpak (`com.google.Chrome`, `org.chromium.Chromium`). Point it at your dev

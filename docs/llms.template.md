@@ -46,7 +46,9 @@ export default { plugins: [tinystyle()] };
 10. To see the result, prefer `npx tinystyle-inspect <dev-server-url>` (package
     `@tiaforge-ui/tinystyle-inspect`, if installed) over screenshots. It opens every dialog and popover
     at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
-    contrast, unlabeled controls and covered click targets as text.
+    contrast, unlabeled controls and covered click targets as text. To judge how it looks, add
+    `--sheet <dir>`: it writes one image per page with every state at every width and scheme, so one
+    look replaces a dozen screenshots.
 
 ## Attributes
 
@@ -153,9 +155,6 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
 
 ```html
 <body data-shell>
-  <!-- shared nav partial: the drawer button and the rail -->
-  <button popovertarget="rail" data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu"
-          style="position: fixed; inset: var(--ts-space-sm) auto auto var(--ts-space-sm)">☰</button>
   <nav data-rail popover id="rail" aria-label="Main">
     <header>
       <span data-rail-label>Caley</span>
@@ -168,13 +167,21 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
       <a href="/settings/"><svg>…</svg><span>Settings</span></a>
     </footer>
   </nav>
-  <main data-layout="stack" data-gap="lg" data-pad="lg">…</main>
+  <main data-layout="stack" data-gap="lg" data-pad="lg">
+    <div data-layout="row" data-gap="sm">
+      <button popovertarget="rail" data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu">☰</button>
+      <h1>Contacts</h1>
+      …
+    </div>
+    …
+  </main>
   <button data-fab data-icon aria-label="New contact">+</button>
 </body>
 ```
 
 No script needed. On wide screens the rail sits next to `main`, and the checkbox collapses it to icons.
-Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click outside closes it. Other
+Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click outside closes it. Put
+the ☰ button first in each page's top row, where it takes its own space; it is hidden on wide screens. Other
 children of `data-shell` (scripts, templates, framework elements) take no space. `aria-current` must
 be set in the markup; CSS cannot detect the current page.
 
