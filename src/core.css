@@ -506,7 +506,7 @@
   :where(article:has([data-stretch])):hover { border-color: var(--ts-border-strong); }
   :where(article:has([data-stretch]:focus-visible)) { outline: 2px solid var(--ts-accent); outline-offset: 2px; }
   :where([data-stretch]):focus-visible { outline: none; }
-  :where(a[data-stretch]) { color: inherit; text-decoration: none; }
+  :where(a[data-stretch], [data-stretch][data-variant="link"]) { color: inherit; text-decoration: none; }
   :where([data-stretch])::after { content: ""; position: absolute; inset: 0; border-radius: var(--ts-radius-lg); }
   :where(article:has([data-stretch])) :where(a, button, input, select, textarea, label):not([data-stretch]) { position: relative; z-index: 1; }
 }

@@ -97,3 +97,32 @@ Baseline CSS was measured from the main worktree's last build (6 Nov), so it is 
 - **Nav items.** They worked with no CSS as `a[role=button]` + `data-variant` toggled by sinter.
 - **Size.** The smallest shipped CSS (5.9 KB gzip) and the fewest classes, with the fewest tokens and the
   shortest time spent by the agent.
+
+## Rerun with app.css and menu.css (v2)
+
+The same Sonnet brief, run again from the same baseline after the core fixes and the two modules landed.
+
+| | tinystyle v1 | tinystyle v2 |
+|---|---|---|
+| Custom CSS (page + nav) | 34 + 50 = 84 lines | **14 + 0** lines (8 of the 14 map `--pico-*` to `--ts-*` for the shared Svelte ShareMenu) |
+| Custom classes in markup | 4 | **0** |
+| Nav partial | 59 lines | 40 lines |
+| Nav script | unchanged nav.ts | nav-ts.ts: 85 → 91 lines, about 20 changed (collapse, drawer, localStorage) |
+| CSS shipped to the page (gzip) | 5.9 KB | 6.5 KB (adds app + menu) |
+| Agent tokens / tool calls / minutes | 126k / 32 / 7.2 | **107k / 25 / 3.6** |
+
+The rerun found a real bug: modal dialogs sat in the top-left corner, because the reset removed the
+browser's `margin: auto`. The kitchen sink only showed a static dialog preview, so it never showed up. Fixed in core.
+
+### New findings (v2)
+
+16. **Rail behavior without script.** Collapse toggle, mobile drawer toggle, remembering the collapsed state
+    and a mobile top bar (hamburger + brand) still took about 15 lines of TS and 7 of markup. Options:
+    - a tiny optional `app.js` (or custom `command="--ts-toggle-rail"` invoker commands),
+    - automatic `aria-current` for the rail link that matches `location.pathname`,
+    - a documented mobile bar recipe.
+17. **Pico coexistence during a gradual migration.** A `pico-compat.css` alias file (`--pico-*` → `--ts-*`)
+    for shared components, plus a docs note that one page cannot load both. This cost a second nav partial and an 8-line bridge.
+18. **Dropdown caret** for `button[popovertarget]` (the agent wrote a `▾` span).
+19. **Dialog close button**: a recipe or default for the header `×` (every dialog repeats it).
+20. **Docs**: `data-size` also works on icon buttons; the search field in a toolbar wants `data-grow` (exists, but the agent did not find it).
