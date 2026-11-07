@@ -2,37 +2,101 @@
 
 Tiny CSS for plain, semantic HTML, designed so coding agents get it right the first time.
 
-- Elements look finished without classes: `button`, `input`, `select`, `dialog`, `[popover]`,
-  `table`, `article`, `dl`, `progress` and the rest.
-- Variants are `data-*` attributes with a **closed, checked set of values**. A typo fails the build
-  and the error suggests the fix.
-- Light and dark mode switch with the OS, with no JS. The whole palette comes from two numbers.
-- About 5.4 KB brotli for the core. No build step required, no JS runtime, no dependencies.
+**5.4 KB** core (brotli) · **20 / 20** agent tasks correct, against 11 for Pico and 10 for daisyUI ·
+**4,750 → 210** lines of app CSS in a real migration · **no** JS, build step or dependencies
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/app-dark.png">
   <img alt="An app shell built with tinystyle and no CSS of its own: navigation rail, contact cards with avatars, a toolbar with a filter field and an open dropdown checklist" src="docs/screenshots/app-light.png">
 </picture>
 
-The app shell demo ([`kitchen-sink/app.html`](kitchen-sink/app.html)) has no CSS of its own. The
-screenshots follow your GitHub theme: switch between light and dark to see the other mode.
+This app shell ([`kitchen-sink/app.html`](kitchen-sink/app.html)) has no CSS of its own. The
+screenshot follows your GitHub theme: switch between light and dark to see the other mode.
+
+## A taste
+
+**Write HTML. It already looks finished.**
 
 ```html
 <form data-layout="stack" data-gap="md">
-  <label>Title <input name="title" required></label>
   <label>Email
     <input type="email" aria-invalid="true">
     <small data-tone="danger">Enter a full address, like name@example.com.</small>
   </label>
   <div data-layout="row" data-gap="sm" data-justify="end">
-    <button type="button" data-variant="ghost">Cancel</button>
+    <button type="button" data-variant="outline" data-tone="danger">Discard</button>
     <button>Save</button>
   </div>
 </form>
 ```
 
-No classes, no margins, no utility soup. Every attribute on that form is one of a few dozen listed
-in [`llms.txt`](llms.txt).
+No classes, no margins. Style (`data-variant`) and color (`data-tone`) are separate axes, so an
+outline danger button is just both. `aria-invalid` is the error state *and* the error styling.
+
+**A typo fails the build, and the error tells you the fix.**
+
+```text
+$ npx tinystyle check src
+page.html:4:13 error TS101 data-variant="danger" is not valid. Did you mean data-tone="danger"? (allowed: secondary, outline, ghost, link, item)
+page.html:7:3 error TS103 <button data-icon="x"> has no visible text. Add aria-label.
+
+2 error(s), 0 warning(s); 1 fixable with --fix
+```
+
+`--fix` rewrites the safe ones. The Vite plugin runs the same check in every build, and in Svelte,
+Vue and JSX it follows expressions: `failed ? 'danger' : 'sucess'` is an error.
+
+**A modal dialog, no JavaScript.**
+
+```html
+<button commandfor="confirm" command="show-modal" data-tone="danger">Delete…</button>
+<dialog id="confirm">
+  <h2>Delete “Team retro”?</h2>
+  <footer>
+    <button commandfor="confirm" command="close" data-variant="secondary">Keep</button>
+    <button data-tone="danger">Delete event</button>
+  </footer>
+</dialog>
+```
+
+It animates in and out, blocks the page behind it and closes on Escape. That's the browser's own `<dialog>`, styled.
+
+**Rebrand with two numbers.**
+
+```css
+:root { --ts-hue: 180; --ts-chroma: 0.12; }   /* teal, in light and dark mode */
+```
+
+Every color is derived from those in OKLCH, and a test sweeps all 360 hues to keep text and buttons
+at WCAG AA contrast in both modes.
+
+**A dark section on a light page is one attribute.**
+
+```html
+<section data-theme="dark" data-pad="xl">…</section>
+```
+
+**Your CSS always wins.** Everything lives in `@layer ts.*` behind `:where()`, so `.card { padding: 2rem }`
+beats it. You never need `!important`.
+
+## Quick start
+
+```sh
+npm install @tiaforge-ui/tinystyle
+```
+
+```js
+import '@tiaforge-ui/tinystyle/core.css';
+```
+
+Then tell your agent about it, in `CLAUDE.md` or `AGENTS.md`:
+
+```md
+UI uses tinystyle. Read node_modules/@tiaforge-ui/tinystyle/llms.txt before editing markup
+(llms-full.txt before building whole pages). Run `npx tinystyle check src` after editing.
+```
+
+The optional modules, the Vite plugin and use without a bundler are under [Install](#install).
 
 ## Screenshots
 
@@ -217,13 +281,6 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
   one contact-sheet image per page when you do want to look.
 - **`html-custom-data.json`** gives VS Code (and other editors) autocomplete and hover docs for every
   attribute value.
-
-Point your agent at the docs, for example in `CLAUDE.md` or `AGENTS.md`:
-
-```md
-UI uses tinystyle. Read node_modules/@tiaforge-ui/tinystyle/llms.txt before editing markup
-(llms-full.txt before building whole pages). Run `npx tinystyle check src` after editing.
-```
 
 ## Install
 
