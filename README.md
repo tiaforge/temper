@@ -7,7 +7,15 @@ Tiny CSS for plain, semantic HTML, designed so coding agents get it right the fi
 - Variants are `data-*` attributes with a **closed, checked set of values**. A typo fails the build
   and the error suggests the fix.
 - Light and dark mode switch with the OS, with no JS. The whole palette comes from two numbers.
-- 4.8 KB brotli for the core. No build step required, no JS runtime, no dependencies.
+- About 5.4 KB brotli for the core. No build step required, no JS runtime, no dependencies.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/app-dark.png">
+  <img alt="An app shell built with tinystyle and no CSS of its own: navigation rail, contact cards with avatars, a toolbar with a filter field and an open dropdown checklist" src="docs/screenshots/app-light.png">
+</picture>
+
+The app shell demo ([`kitchen-sink/app.html`](kitchen-sink/app.html)) has no CSS of its own. The
+screenshots follow your GitHub theme: switch between light and dark to see the other mode.
 
 ```html
 <form data-layout="stack" data-gap="md">
@@ -25,6 +33,25 @@ Tiny CSS for plain, semantic HTML, designed so coding agents get it right the fi
 
 No classes, no margins, no utility soup. Every attribute on that form is one of a few dozen listed
 in [`llms.txt`](llms.txt).
+
+## Screenshots
+
+Every variant against every tone, plus badges, callouts and form controls:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/reference-dark.png">
+  <img alt="Reference sheet: a matrix of button variants (primary, secondary, outline, ghost, link) against tones (default, accent, danger, success, warning), then button sizes, badges and callouts" src="docs/screenshots/reference-light.png">
+</picture>
+
+A mail client from the kitchen sink ([`kitchen-sink/index.html`](kitchen-sink/index.html); the
+three-pane layout and the message list use a few lines of demo CSS):
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/mail-dark.png">
+  <img alt="Mail client: folder list with unread counts, message list with the selected message highlighted, and a reader with label/value pairs and Reply, Forward and Delete buttons" src="docs/screenshots/mail-light.png">
+</picture>
+
+`npm run readme-shots` regenerates them (2560×1440).
 
 ## What it does differently
 
@@ -110,13 +137,24 @@ has a CSS selector and every selector has a vocab entry, that every documented t
 and that `llms.txt`, `llms-full.txt` and `html-custom-data.json` are regenerated from `vocab.json`
 and not stale. Docs, editor autocomplete and the checker can't drift apart from the CSS.
 
+**Contrast is checked for every hue.** `npm run contrast` sweeps the accent hue 0–360 in light and
+dark mode, lets headless Chrome resolve the real tokens, and checks WCAG AA for every text and
+background pair (4.5:1 for text and solid buttons, 3:1 for the focus ring). All hues pass at the
+default chroma. `npm test` runs the same check for the default look and the two theme examples.
+
+**Visual regression tests.** `npm run visual` screenshots the kitchen sink and the app shell demo in
+17 states (light and dark, compact density, phone width, both theme examples, open menu, dialog and
+drawer) and compares them pixel by pixel with baselines in `test/visual/`. A change writes a diff
+image with the changed pixels in red. Baselines depend on fonts and the Chrome version, so they are
+compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
+
 **Size budgets are enforced.** `npm run build` fails above budget.
 
 | File | brotli | What's in it |
 |---|---|---|
-| `core.css` | 4.8 KB | tokens, reset, type, layout, buttons, forms, dialog, popover, details, table, card, badge, callout, avatar |
-| `app.css` | 1.3 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button |
-| `menu.css` | 0.8 KB | dropdown menus |
+| `core.css` | 5.4 KB | tokens, reset, type, layout, buttons, forms, dialog, popover, details, table, card, badge, callout, avatar |
+| `app.css` | 1.4 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button |
+| `menu.css` | 0.9 KB | dropdown menus |
 | `icons.css` | 3.0 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
 | `all.css` | 8.6 KB | everything |
 | `enhance/customizable-select.css` | 0.9 KB | opt-in: the open `<select>` list styled like a menu (see below) |
