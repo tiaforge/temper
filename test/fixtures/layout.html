@@ -6,6 +6,7 @@
 <title>Layout regressions</title>
 <link rel="stylesheet" href="../../src/core.css">
 <link rel="stylesheet" href="../../src/menu.css">
+<link rel="stylesheet" href="../../src/app.css">
 </head>
 <body>
 <main data-layout="stack" data-pad="md">
@@ -21,6 +22,10 @@
     <button type="button" data-variant="ghost" aria-label="Previous">‹</button>
     <button id="open" type="button" popovertarget="menu" data-variant="outline">November 2026</button>
   </div>
+  <!-- an item row in a data-list keeps its colored bar -->
+  <div data-list><button id="list-bar" type="button" data-variant="item" data-bar style="--tm-tone: rgb(255, 152, 0)">Soccer</button></div>
+  <!-- a pressed toggle in the rail looks pressed -->
+  <nav data-rail aria-label="Main"><button id="rail-off" type="button" data-icon="bell" aria-pressed="false"><span>Off</span></button><button id="rail-on" type="button" data-icon="bell" aria-pressed="true"><span>On</span></button></nav>
   <div popover id="menu" data-menu><div style="inline-size: 20rem; block-size: 4rem"></div></div>
 </main>
 </body>

@@ -43,6 +43,9 @@ const probe = `(() => {
     itemBusy: getComputedStyle(el('item-busy')).pointerEvents,
     busy: getComputedStyle(el('busy')).pointerEvents,
     menu: { left: box('menu').left, right: box('menu').right, open: el('menu').matches(':popover-open') },
+    listBar: getComputedStyle(el('list-bar')).borderInlineStartWidth + ' ' + getComputedStyle(el('list-bar')).borderInlineStartColor,
+    railOff: getComputedStyle(el('rail-off')).backgroundColor,
+    railOn: getComputedStyle(el('rail-on')).backgroundColor,
     opener: box('open').left,
     viewport: innerWidth,
   };
@@ -60,6 +63,11 @@ test('buttons, items and menus lay out as documented', { skip: !browser && 'no C
     assert.equal(r.itemBusy, 'auto');
     assert.equal(r.busy, 'none');
     assert.ok(r.menu.open);
+    // an item row in a data-list keeps its colored bar (the list's row reset used to remove it)
+    assert.equal(r.listBar, '3px rgb(255, 152, 0)');
+    // a pressed toggle in the rail gets a background; an unpressed one stays transparent
+    assert.equal(r.railOff, 'rgba(0, 0, 0, 0)');
+    assert.notEqual(r.railOn, r.railOff, 'a pressed rail toggle looks like an unpressed one');
   }
   // there is room: the menu starts under its button
   assert.ok(Math.abs(wide.menu.left - wide.opener) < 1, `menu at ${wide.menu.left}, button at ${wide.opener}`);

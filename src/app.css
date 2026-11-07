@@ -50,10 +50,12 @@
     transition: background-color var(--tm-duration) var(--tm-ease);
   }
   :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)):hover { background: var(--tm-fill); }
-  :where([data-rail]) :where(a, button)[aria-current]:not([aria-current="false"]) {
+  /* the current page, and a pressed toggle (notifications on/off); both beat the item rule's (0,2,0) :not() */
+  :where([data-rail]) :where(a, button):is([aria-current]:not([aria-current="false"]), [aria-pressed="true"]:not([aria-pressed="false"])) {
     --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent);
-    background: var(--_bg); color: var(--_fg); font-weight: 600;
+    background: var(--_bg); color: var(--_fg);
   }
+  :where([data-rail]) :where(a, button)[aria-current]:not([aria-current="false"]) { font-weight: 600; }
   :where([data-rail]) :where(a, button) > :where(span) { overflow: hidden; text-overflow: ellipsis; min-inline-size: 0; }
   :where([data-rail]) :where(a, button) > :where([data-badge]) { margin-inline-start: auto; flex-shrink: 0; }
   :where([data-rail]) :where(svg) { inline-size: 1.125rem; block-size: 1.125rem; flex-shrink: 0; }

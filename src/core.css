@@ -284,7 +284,6 @@
   }
   :where(button, a)[data-variant="item"]:hover { background: var(--tm-fill); }
   :where(button, a)[data-variant="item"][data-size="sm"] { min-block-size: 0; padding: 0.25rem var(--tm-space-sm); gap: 0; font-size: var(--tm-text-sm); }
-  :where([data-bar]) { border-inline-start: 3px solid var(--tm-tone); }
   :where(button, a)[data-variant="item"]:is([aria-current]:not([aria-current="false"]), [aria-selected="true"], [aria-pressed="true"]) {
     --tm-tone: var(--tm-accent); --_bg: var(--tm-tone-soft); --_fg: var(--tm-text); background: var(--_bg);
   }
@@ -585,6 +584,8 @@
   }
   :where([data-list]) > :where(*) { padding: var(--tm-space-sm) var(--tm-space-md); border: 0; border-radius: 0; background: none; box-shadow: none; }
   :where([data-list]) > :where(:not(template) ~ :not(template)) { border-block-start: 1px solid var(--tm-border); }
+  /* after the list's row reset, so an item row in a data-list keeps its bar */
+  :where([data-bar]) { border-inline-start: 3px solid var(--tm-tone); }
 
   /* divider: a line with text in the middle ("or") */
   :where([data-divider]) { display: flex; align-items: center; gap: var(--tm-space-sm); color: var(--tm-text-muted); font-size: var(--tm-text-sm); }

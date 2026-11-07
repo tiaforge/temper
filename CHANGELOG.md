@@ -5,6 +5,16 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### CSS
+
+- An item row inside a `data-list` keeps its `data-bar`: the list's row reset (`border: 0`) came later in the cascade
+  and removed the colored bar.
+- A pressed toggle in a `data-rail` (`aria-pressed="true"`, e.g. notifications on/off) shows its pressed state with the
+  soft accent background. The rail item rule's `:not()` outweighed the general pressed styles, so it looked unpressed.
+- Tests: `test/render.test.js` covers both.
+
 ## 0.1.3 (2026-11-07)
 
 ### `@tiaforge-ui/temper-inspect`
