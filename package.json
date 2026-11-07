@@ -19,7 +19,8 @@
     "./check": "./lib/check.js",
     "./vite": "./lib/vite.js",
     "./icons.css": "./dist/icons.css",
-    "./pico-compat.css": "./dist/pico-compat.css"
+    "./pico-compat.css": "./dist/pico-compat.css",
+    "./enhance/*": "./dist/enhance/*"
   },
   "bin": {
     "tinystyle": "bin/tinystyle.js"

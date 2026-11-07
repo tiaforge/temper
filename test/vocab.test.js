@@ -4,9 +4,9 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 
 const vocab = JSON.parse(readFileSync(new URL('../vocab.json', import.meta.url), 'utf8'));
-const css = readdirSync(new URL('../src/', import.meta.url))
+const css = ['', 'enhance/'].flatMap(dir => readdirSync(new URL('../src/' + dir, import.meta.url))
   .filter(f => f.endsWith('.css'))
-  .map(f => readFileSync(new URL('../src/' + f, import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, ''))
+  .map(f => readFileSync(new URL('../src/' + dir + f, import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')))
   .join('\n');
 
 const selectors = new Set([...css.matchAll(/\[(data-[a-z-]+)(?:="([^"]*)")?\]/g)].map(m => m[2] ? `${m[1]}=${m[2]}` : m[1]));

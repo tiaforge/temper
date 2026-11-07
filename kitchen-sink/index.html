@@ -15,7 +15,13 @@
     if (q.get('css') === 'dist') document.getElementById('core-css').href = '../dist/core.css';
     if (q.get('example')) h.dataset.exampleTheme = q.get('example');
     if (q.get('t')) h.dataset.theme = q.get('t');
-    if (q.get('density')) h.dataset.density = q.get('density'); }
+    if (q.get('density')) h.dataset.density = q.get('density');
+    // ?enhance=customizable-select (or several, comma-separated) adds opt-in enhancements after core.
+    for (const id of (q.get('enhance') ?? '').split(',').filter(Boolean)) {
+      const l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = `../${q.get('css') === 'dist' ? 'dist' : 'src'}/enhance/${id}.css`;
+      document.getElementById('core-css').after(l);
+    } }
   </script>
 </head>
 <body>
@@ -134,9 +140,19 @@
             <label>Starts <input type="date" value="2026-11-12"></label>
             <label>Time <input type="time" value="14:00"></label>
           </div>
-          <label>Calendar
-            <select><option>Work</option><option>Family</option><option>Climbing club</option></select>
-          </label>
+          <div data-layout="grid" data-gap="sm" style="--ts-min: 9rem">
+            <label>Calendar
+              <select><option>Work</option><option>Family</option><option>Climbing club</option></select>
+            </label>
+            <label>Reminder
+              <select id="reminder">
+                <option>None</option>
+                <optgroup label="Before the event"><option>10 minutes</option><option selected>30 minutes</option><option>1 hour</option></optgroup>
+                <hr>
+                <option disabled>Custom (Pro)</option>
+              </select>
+            </label>
+          </div>
           <label><input type="checkbox" role="switch"> All day</label>
           <fieldset>
             <legend>Repeat</legend>

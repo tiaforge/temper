@@ -119,6 +119,7 @@ and not stale. Docs, editor autocomplete and the checker can't drift apart from 
 | `menu.css` | 0.8 KB | dropdown menus |
 | `icons.css` | 3.0 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
 | `all.css` | 8.6 KB | everything |
+| `enhance/customizable-select.css` | 0.9 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 
 ## Built for LLMs and coding agents
 
@@ -175,6 +176,8 @@ export default {
     // tinystyle({ icons: { dir: 'src/icons' } })   and   import 'virtual:tinystyle-icons.css';
     // migrating step by step? check only the migrated parts:
     // tinystyle({ paths: ['src/contacts'] })
+    // opt-in enhancements, appended to core.css / all.css (see Browser support):
+    // tinystyle({ enhance: ['customizable-select'] })   or   enhance: 'all'
   ],
 };
 ```
@@ -184,11 +187,21 @@ Icons from the plugin need `lucide-static` installed (optional peer dependency).
 ### Without a bundler
 
 The files in `dist/` are plain CSS. Link them directly and run `npx tinystyle check` in CI.
+Enhancements are separate files: link `dist/enhance/<id>.css` after `core.css`.
 
 ## Browser support
 
 Chrome / Edge 123+, Firefox 120+, Safari 17.5+ (Baseline 2024, set by `light-dark()`). No vendor
 prefixes and no fallbacks for older browsers; that is part of how it stays small.
+
+Newer features that not every engine has yet are **opt-in enhancements**, one file each, named by
+their [web-features](https://github.com/web-platform-dx/web-features) id. Without them everything
+still looks finished. Turn them on with the Vite plugin's `enhance` option, or import
+`@tiaforge-ui/tinystyle/enhance/<id>.css` after `core.css`.
+
+| Enhancement | What it does | Where it works |
+|---|---|---|
+| `customizable-select` | `appearance: base-select`: the open list of a single `<select>` gets the menu look, an accent checkmark, styled `optgroup`/`hr`, and rich options via `<selectedcontent>` | Chromium 135+; other browsers keep the native picker |
 
 ## More
 

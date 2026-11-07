@@ -143,6 +143,11 @@ only when you opt in:
 tinystyle({ enhance: ['customizable-select', 'field-sizing'] })  // or enhance: 'all'
 ```
 
+The partials live in `src/enhance/<id>.css` and build to `dist/enhance/<id>.css`. The Vite plugin
+appends the chosen ones to `core.css`/`all.css` wherever the app imports them; without the plugin, import
+`@tiaforge-ui/tinystyle/enhance/<id>.css` after `core.css`. Unknown ids fail with a suggestion.
+Implemented: `customizable-select` (2026-11-07).
+
 The precompiled `dist/*.css` files are the default (all-engine) build, so a build step is optional.
 Once an enhancement becomes Baseline in all engines, it moves into the default build in a minor
 release.

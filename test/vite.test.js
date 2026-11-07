@@ -68,3 +68,31 @@ test('icons: unknown names still fail with a suggestion', () => {
   try { plugin.buildStart.call({ error: m => { throw new Error(m); } }); } catch (e) { error = e.message; }
   assert.match(error, /TS105.*Did you mean "alarm-clock"\?/);
 });
+
+test('enhance: appends the chosen enhancements to core.css and all.css only', async () => {
+  const { ENTRY_FILES } = await import('../lib/enhance.js');
+  const plugin = tinystyle({ enhance: ['customizable-select'] });
+  const out = plugin.transform.handler('/* core */', ENTRY_FILES[0] + '?direct');
+  assert.match(out.code, /^\/\* core \*\/[\s\S]*appearance: ?base-select/);
+  assert.match(plugin.transform.handler('', ENTRY_FILES[1]).code, /base-select/);
+  assert.equal(plugin.transform.handler('', '/app/src/app.css'), undefined);
+  assert.equal(plugin.transform.order, 'pre');
+});
+
+test('enhance: off by default, "all" includes every enhancement', async () => {
+  const { ENTRY_FILES, ENHANCEMENTS } = await import('../lib/enhance.js');
+  assert.equal(tinystyle().transform.handler('x', ENTRY_FILES[0]), undefined);
+  const all = tinystyle({ enhance: 'all' }).transform.handler('', ENTRY_FILES[0]).code;
+  assert.ok(ENHANCEMENTS.length && /base-select/.test(all));
+});
+
+test('enhance: unknown ids fail with a suggestion', () => {
+  assert.throws(() => tinystyle({ enhance: ['customisable-select'] }), /unknown enhancement "customisable-select"\. Did you mean "customizable-select"\?/);
+});
+
+test('enhance: the list matches src/enhance/', async () => {
+  const { readdirSync } = await import('node:fs');
+  const { ENHANCEMENTS } = await import('../lib/enhance.js');
+  const files = readdirSync(new URL('../src/enhance/', import.meta.url)).filter(f => f.endsWith('.css')).map(f => f.slice(0, -4));
+  assert.deepEqual([...ENHANCEMENTS].sort(), files.sort());
+});
