@@ -1,5 +1,5 @@
 {
-  "$comment": "Single source of truth for tinystyle's vocabulary. Generates llms.txt and html-custom-data.json (npm run gen) and drives tinystyle check. A test keeps it in sync with src/*.css.",
+  "$comment": "Single source of truth for tinystyle's vocabulary. Generates llms.txt and html-custom-data.json (npm run gen) and drives tinystyle check. A test keeps it in sync with src/*.css. Context rules for tinystyle check: tags (the elements it works on; tagsFor overrides per value), with (attributes it needs on the same element; null = any value), parent (what its parent must match), inside (an ancestor it needs), loose (parent/inside are warnings, and only for plain parents without class or style).",
   "version": 1,
   "attributes": {
     "data-variant": {
@@ -13,7 +13,22 @@
         "link": "Looks like a link, keeps button semantics.",
         "item": "Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background. data-size=\"sm\" makes a compact row (event chips)."
       },
-      "short": "Button style; leave it out for the solid main button."
+      "short": "Button style; leave it out for the solid main button.",
+      "tags": [
+        "button",
+        "input[type=submit|button|reset]",
+        "a[role=button]"
+      ],
+      "tagsFor": {
+        "item": [
+          "button",
+          "a"
+        ],
+        "link": [
+          "button",
+          "a"
+        ]
+      }
     },
     "data-tone": {
       "module": "core",
@@ -129,6 +144,11 @@
         "5": "",
         "6": "",
         "7": ""
+      },
+      "with": {
+        "data-layout": [
+          "grid"
+        ]
       }
     },
     "data-gap": {
@@ -142,6 +162,9 @@
         "md": "1rem",
         "lg": "1.5rem",
         "xl": "2.5rem"
+      },
+      "with": {
+        "data-layout": null
       }
     },
     "data-pad": {
@@ -166,6 +189,9 @@
         "center": "",
         "end": "",
         "stretch": ""
+      },
+      "with": {
+        "data-layout": null
       }
     },
     "data-justify": {
@@ -177,6 +203,9 @@
         "center": "",
         "end": "",
         "between": "Space between the children."
+      },
+      "with": {
+        "data-layout": null
       }
     },
     "data-self": {
@@ -189,7 +218,21 @@
         "center": "",
         "end": "",
         "stretch": ""
-      }
+      },
+      "parent": [
+        "[data-layout]",
+        "header",
+        "footer",
+        "[data-list]",
+        "[data-menu]",
+        "[data-shell]",
+        "[role=tablist]",
+        "summary",
+        "button",
+        "label",
+        "dialog"
+      ],
+      "loose": true
     },
     "data-wrap": {
       "module": "core",
@@ -198,13 +241,33 @@
       "values": {
         "wrap": "Default for rows.",
         "none": "Keep everything on one line (nav items, icon + label)."
+      },
+      "with": {
+        "data-layout": [
+          "row",
+          "split"
+        ]
       }
     },
     "data-grow": {
       "module": "core",
       "boolean": true,
       "on": "a child of data-layout=row or stack",
-      "description": "This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line."
+      "description": "This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
+      "parent": [
+        "[data-layout]",
+        "header",
+        "footer",
+        "[data-list]",
+        "[data-menu]",
+        "[data-shell]",
+        "[role=tablist]",
+        "summary",
+        "button",
+        "label",
+        "dialog"
+      ],
+      "loose": true
     },
     "data-scroll": {
       "module": "core",
@@ -284,7 +347,10 @@
       "module": "core",
       "boolean": true,
       "on": "dl",
-      "description": "Shows dt/dd pairs as a two-column label/value grid."
+      "description": "Shows dt/dd pairs as a two-column label/value grid.",
+      "tags": [
+        "dl"
+      ]
     },
     "data-caption": {
       "module": "core",
@@ -314,7 +380,14 @@
       "module": "core",
       "boolean": true,
       "on": "the main link or button inside an article",
-      "description": "Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button."
+      "description": "Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button.",
+      "tags": [
+        "a",
+        "button"
+      ],
+      "inside": [
+        "article"
+      ]
     },
     "data-shell": {
       "module": "app",
@@ -331,31 +404,50 @@
       "boolean": true,
       "on": "nav inside [data-shell]",
       "description": "Navigation rail. It must be a direct child of [data-shell]. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
-      "short": "Navigation rail next to <main>; with popover it is a drawer on narrow screens."
+      "short": "Navigation rail next to <main>; with popover it is a drawer on narrow screens.",
+      "parent": [
+        "[data-shell]"
+      ]
     },
     "data-collapsed": {
       "module": "app",
       "boolean": true,
       "on": "[data-rail]",
-      "description": "Icon-only rail, set in the markup (e.g. rendered by the server from a saved preference). For a toggle the user can click, use a data-rail-collapse checkbox instead."
+      "description": "Icon-only rail, set in the markup (e.g. rendered by the server from a saved preference). For a toggle the user can click, use a data-rail-collapse checkbox instead.",
+      "with": {
+        "data-rail": null
+      }
     },
     "data-rail-collapse": {
       "module": "app",
       "boolean": true,
       "on": "input type=\"checkbox\" inside [data-rail] (usually in its header)",
-      "description": "Collapse toggle drawn as a chevron icon button. Checked = icon-only rail. Needs an aria-label. CSS cannot remember it across page loads: render checked from a saved preference, or save it with a few lines of script."
+      "description": "Collapse toggle drawn as a chevron icon button. Checked = icon-only rail. Needs an aria-label. CSS cannot remember it across page loads: render checked from a saved preference, or save it with a few lines of script.",
+      "tags": [
+        "input[type=checkbox]"
+      ],
+      "inside": [
+        "[data-rail]"
+      ]
     },
     "data-rail-label": {
       "module": "app",
       "boolean": true,
       "on": "any element inside [data-rail]",
-      "description": "Hidden while the rail is collapsed (e.g. the user name in the rail footer)."
+      "description": "Hidden while the rail is collapsed (e.g. the user name in the rail footer).",
+      "inside": [
+        "[data-rail]"
+      ]
     },
     "data-fab": {
       "module": "app",
       "boolean": true,
       "on": "button",
-      "description": "Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label."
+      "description": "Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label.",
+      "tags": [
+        "button",
+        "a[role=button]"
+      ]
     },
     "data-show": {
       "module": "app",

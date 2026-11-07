@@ -69,6 +69,19 @@ t.html:5:7  error TS102 data-badge is a boolean attribute. Write it without a va
 a.css:1:10  error TS201 --ts-text-mute is not a tinystyle token. Did you mean --ts-text-muted?
 ```
 
+It also knows where an attribute works: `data-pairs` only on a `dl`, `data-rail` only as a direct
+child of `[data-shell]`, `data-cols` only with `data-layout="grid"`, and `data-rail` needs `app.css`
+to be imported somewhere. Computed values are checked too. In Svelte, Vue and JSX it works out every
+literal an expression can produce (`failed ? 'danger' : 'sucess'` is an error), and it flags
+`cond && 'danger'`, which renders `data-tone="false"` when `cond` is false. Types in
+`@tiaforge-ui/tinystyle/react`, `/vue`, `/astro`, `/svelte` and `/sinter` let your framework's own
+type checker catch the rest:
+
+```text
+App.tsx(7,6): error TS2322: Type 'boolean' is not assignable to type 'true | "" | null | undefined'.
+   (<nav data-rail data-collapsed={collapsed}>: false would render data-collapsed="false")
+```
+
 It also warns about inputs, selects and textareas that have no label (a placeholder doesn't count).
 It reads HTML, Svelte, Astro, Vue and JSX files, plus `--ts-*` tokens in CSS. The Vite plugin runs it
 in every build (errors fail the build, the dev server warns). With classes this isn't possible:

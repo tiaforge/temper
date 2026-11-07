@@ -98,3 +98,96 @@ test('setting inputs is fine, setting derived or unknown tokens warns', () => {
   assert.deepEqual(checkStyles(':root { --ts-hue: 30; --ts-primary: var(--ts-accent); }'), []);
   assert.deepEqual(codes(checkStyles(':root { --ts-tone-ink: red; --ts-brand: red; }')), ['TS203', 'TS202']);
 });
+
+// ───── computed values ─────
+
+test('outcomes: literals, ternaries and logical operators', async () => {
+  const { outcomes } = await import('../lib/check.js');
+  assert.deepEqual(outcomes(`a ? 'danger' : "success"`), ['danger', 'success']);
+  assert.deepEqual(outcomes(`a ? (b ? 'x' : 'y') : null`), ['x', 'y', null]);
+  assert.deepEqual(outcomes(`tone ?? 'neutral'`).slice(-1), ['neutral']);
+  assert.equal(outcomes(`a && 'x'`).length, 2);
+  assert.deepEqual(outcomes(`f(a, b ? 'q' : 'r')`).length, 1); // a call: unknown
+  assert.deepEqual(outcomes(`a === b`), [true, false]);
+});
+
+test('Svelte: every literal a {expression} can produce is checked', () => {
+  const r = checkMarkup(`<span data-tone={failed ? 'danger' : 'sucess'}>x</span>`, 'A.svelte');
+  assert.deepEqual(codes(r), ['TS101']);
+  assert.match(r[0].message, /data-tone="sucess" is not valid \(a value of this expression\)\. Did you mean "success"\?/);
+  assert.deepEqual(codes(checkMarkup(`<span data-tone={failed ? 'danger' : null}>x</span><span data-tone={tone}>x</span>`, 'A.svelte')), []);
+  assert.deepEqual(codes(checkMarkup(`<span data-tone="{failed ? 'danger' : 'nope'}">x</span>`, 'A.svelte')), ['TS101']);
+});
+
+test('false renders the attribute in Svelte, JSX, Vue and Astro, but not in sinter', () => {
+  assert.deepEqual(codes(checkMarkup(`<span data-tone={failed && 'danger'}>x</span>`, 'A.svelte')), ['TS111']);
+  assert.deepEqual(codes(checkMarkup(`<span data-tone={failed && 'danger'}>x</span>`, 'A.tsx')), ['TS111']);
+  assert.deepEqual(codes(checkMarkup(`<span :data-tone="failed && 'danger'">x</span>`, 'A.vue')), ['TS111']);
+  assert.deepEqual(codes(checkMarkup(`<span data-tone={failed && 'danger'}>x</span>`, 'a.astro')), ['TS111']);
+  assert.deepEqual(codes(checkMarkup(`<span data-sn-attr="{'data-tone': failed && 'danger'}">x</span>`, 'a.html')), []);
+  // a bare boolean on a boolean attribute is the common case of this bug
+  const [w] = checkMarkup(`<nav data-rail data-collapsed={collapsed}></nav>`, 'A.svelte');
+  assert.equal(w.severity, 'warning');
+  assert.match(w.message, /collapsed \|\| null/);
+  assert.deepEqual(codes(checkMarkup(`<nav data-rail data-collapsed={collapsed || null}></nav>`, 'A.svelte')), []);
+});
+
+test('Vue bindings and sinter data-sn-attr values are checked', () => {
+  assert.deepEqual(codes(checkMarkup(`<b :data-variant="x ? 'ghost' : 'danger'">x</b>`, 'A.vue')), ['TS101', 'TS108']);
+  const src = `<span data-badge data-sn-attr="{'data-tone': bad ? 'danger' : 'oops', title: t}">x</span>`;
+  const [d] = checkMarkup(src, 'a.html');
+  assert.equal(d.code, 'TS101');
+  assert.equal(d.col, src.indexOf('bad ?') + 1); // at the entry's value, not the attribute
+});
+
+test('nested braces in attributes do not hide the tag', () => {
+  assert.deepEqual(codes(checkMarkup(`<button onclick={() => { open = true }} data-variant="danger">x</button>`, 'A.svelte')), ['TS101']);
+});
+
+// ───── context ─────
+
+test('attributes on elements they do not work on', () => {
+  assert.deepEqual(codes(checkMarkup('<div data-pairs></div>')), ['TS108']);
+  const [d] = checkMarkup('<a href="/x" data-variant="outline">x</a>');
+  assert.match(d.message, /Add role="button"/);
+  assert.deepEqual(codes(checkMarkup('<a href="/x" data-variant="item">x</a><a href="/x" role="button" data-variant="ghost">x</a>')), []);
+  assert.deepEqual(codes(checkMarkup('<Button data-variant="ghost">x</Button>', 'A.svelte')), []); // components pass props on
+});
+
+test('attributes that need another one on the same element', () => {
+  assert.deepEqual(codes(checkMarkup('<div data-layout="stack" data-cols="3"></div>')), ['TS107']);
+  assert.deepEqual(codes(checkMarkup('<div data-layout="grid" data-cols="3"></div><nav data-rail data-collapsed></nav>')), []);
+});
+
+test('parents and ancestors', () => {
+  const [d] = checkMarkup('<body><div><nav data-rail></nav></div></body>');
+  assert.equal(d.code, 'TS109');
+  assert.match(d.message, /direct child of \[data-shell\]; here its parent is <div>/);
+  assert.deepEqual(codes(checkMarkup('<body data-shell><template data-sn-if="x"><nav data-rail></nav></template><main></main></body>')), []);
+  assert.deepEqual(codes(checkMarkup('<body><a data-stretch href="/">x</a></body>')), ['TS109']);
+  assert.deepEqual(codes(checkMarkup('<a data-stretch href="/">x</a>', 'Card.svelte')), []); // a component: the article may be outside
+  assert.deepEqual(codes(checkMarkup('<Card><a data-stretch href="/">x</a></Card>', 'A.svelte')), []);
+  // grow/self: warnings, and only when the parent is plain (no class or style of its own)
+  const [w] = checkMarkup('<div><input data-grow aria-label="q"></div>');
+  assert.equal(w.severity, 'warning');
+  assert.deepEqual(codes(checkMarkup('<div class="bar"><input data-grow aria-label="q"></div><header><span data-grow></span></header>')), []);
+});
+
+test('modules the project does not import', () => {
+  const r = checkMarkup('<nav data-rail></nav><div data-menu></div><div data-menu></div>', 'a.html', { modules: new Set(['core']) });
+  assert.deepEqual(codes(r), ['TS110', 'TS110']);
+  assert.match(r[0].message, /data-rail needs app\.css, .*import '@tiaforge-ui\/tinystyle\/app\.css'/);
+  assert.deepEqual(codes(checkMarkup('<nav data-rail></nav>', 'a.html', { modules: null })), []);
+});
+
+test('imports are found in JS, CSS and HTML; all.css counts as every module', async () => {
+  const { importedModules } = await import('../lib/check.js');
+  const { mkdtempSync, writeFileSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const dir = mkdtempSync(tmpdir() + '/ts-mod-');
+  writeFileSync(dir + '/main.ts', `import '@tiaforge-ui/tinystyle/core.css';\nimport "@tiaforge-ui/tinystyle/menu.css";`);
+  assert.deepEqual([...importedModules([dir])].sort(), ['core', 'menu']);
+  writeFileSync(dir + '/index.html', `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tiaforge-ui/tinystyle@0.1.0/dist/all.css">`);
+  assert.ok(importedModules([dir]).has('app'));
+  assert.equal(importedModules([mkdtempSync(tmpdir() + '/ts-mod-')]), null);
+});

@@ -30,6 +30,7 @@ export default { plugins: [tinystyle()] };
 // without the plugin: import '@tiaforge-ui/tinystyle/enhance/customizable-select.css' after core.css
 ```
 
+
 ## Rules
 
 1. Write semantic HTML first. `button`, `input`, `select`, `textarea`, `label`, `fieldset`, `dialog`,
@@ -55,7 +56,8 @@ export default { plugins: [tinystyle()] };
    `style="--ts-tone: #e8590c"`, `style="--ts-avatar-size: 4rem"`). That is the intended way; do not
    write `width`, `margin` or `padding` there.
 9. Run `npx tinystyle check <dir>` after editing (or use the Vite plugin, which runs it in every build).
-   It reports unknown attribute values and tokens, and unlabeled icon or close buttons.
+   It reports bad values, misplaced attributes, missing module imports and
+   unlabeled buttons. For "no attribute" use `null`, not `false`: `cond ? 'x' : null`.
 10. To see the result, prefer `npx tinystyle-inspect <dev-server-url>` (package
     `@tiaforge-ui/tinystyle-inspect`, if installed) over screenshots. It opens every dialog and popover
     at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,

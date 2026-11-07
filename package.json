@@ -16,6 +16,24 @@
     "./all.css": "./dist/all.css",
     "./vocab.json": "./vocab.json",
     "./html-custom-data.json": "./html-custom-data.json",
+    "./types": {
+      "types": "./types/attributes.d.ts"
+    },
+    "./svelte": {
+      "types": "./types/svelte.d.ts"
+    },
+    "./react": {
+      "types": "./types/react.d.ts"
+    },
+    "./vue": {
+      "types": "./types/vue.d.ts"
+    },
+    "./astro": {
+      "types": "./types/astro.d.ts"
+    },
+    "./sinter": {
+      "types": "./types/sinter.d.ts"
+    },
     "./check": "./lib/check.js",
     "./vite": "./lib/vite.js",
     "./icons.css": "./dist/icons.css",
@@ -29,6 +47,7 @@
     "dist",
     "LICENSE-lucide",
     "lib",
+    "types",
     "bin",
     "vocab.json",
     "llms.txt",
@@ -58,8 +77,14 @@
     "prepublishOnly": "npm run gen && npm test && npm run build"
   },
   "devDependencies": {
+    "@types/react": "^19.3.0",
     "lightningcss": "^1.33.0",
-    "lucide-static": "^1.70.0"
+    "lucide-static": "^1.70.0",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
+    "typescript": "^6.0.3",
+    "vue": "^3.5.45",
+    "vue-tsc": "^3.3.14"
   },
   "engines": {
     "node": ">=20"
@@ -70,6 +95,28 @@
   "peerDependenciesMeta": {
     "lucide-static": {
       "optional": true
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "types": [
+        "types/attributes.d.ts"
+      ],
+      "svelte": [
+        "types/svelte.d.ts"
+      ],
+      "react": [
+        "types/react.d.ts"
+      ],
+      "vue": [
+        "types/vue.d.ts"
+      ],
+      "astro": [
+        "types/astro.d.ts"
+      ],
+      "sinter": [
+        "types/sinter.d.ts"
+      ]
     }
   }
 }
