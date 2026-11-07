@@ -210,3 +210,35 @@ Found by v5 or by inspecting v5:
 - The quiet × close button only matched direct children of the header. Fixed (any depth in the header).
 - The Vite plugin's `paths` option (check only migrated parts) was undocumented. Now in llms.txt.
 - Open: dialogs whose content depends on app state (the detail dialog with no contact selected) render empty in the inspector. A way to run a setup step before opening would help.
+
+## Rerun v6 (opener-based inspector, checker hint, all v5 fixes; same brief as v4/v5)
+
+| | v4 | v5 | v6 |
+|---|---|---|---|
+| Custom CSS (page + nav) | 0 | 0 | 0 |
+| Inline `<svg>` | 8 | 0 | 0 |
+| Agent tokens / tool calls / minutes | 142k / 60 / 7.2 | 144k / 50 / 6.6 | **126k / 35 / 5.3** |
+| Used tinystyle-inspect / contact sheet | yes / – | no / no | **yes / yes** (2 runs) |
+| Screenshots | ~16 | ~30 | **11** |
+| Inspector findings on the result | 0 / 0 | 1 error before the dialog fix | **0 / 0** |
+
+The changes delivered this time. The checker's hint got the agent to the inspector and the contact
+sheet without the brief mentioning them. Its first inspector run found 3 unlabeled controls that the
+checker misses. Screenshots dropped from ~30 to 11, and tokens fell 13% against v5. It also added
+`tinystyle({ paths })` to the Vite config on its own, so the build checks the migrated parts only.
+One run per version, so treat the differences as indications, not measurements.
+
+### New findings (v6)
+
+27. **Collapsed rail header.** The logo link and the collapse toggle sit side by side and do not fit one
+    icon's width, so the logo is clipped. Stack them vertically when collapsed. (The "chevron points up"
+    report was a mid-transition screenshot; at rest it points right.)
+28. **Static label check.** `tinystyle check` could flag inputs and selects with no `<label>`,
+    `aria-label`, `aria-labelledby` or `title` as a warning. Today only the inspector catches them
+    (3 times now, in v4, v5 and v6).
+29. **Per-child alignment.** `data-self="start|center|end|stretch"` on a child of a stack or row. The agent wrapped
+    an "add" button in a bare `div` three times to stop it stretching.
+30. **Docs:** `[data-rail]` must be a direct child of `[data-shell]`. Say so in the attribute description, and
+    give a two-partial recipe for apps migrating page by page.
+31. **Share actions inside a menu** (download vCard, mail, system share) still need about 45 lines of
+    script. That is app behaviour, not styling; out of scope for tinystyle.
