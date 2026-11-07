@@ -7,6 +7,11 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### temper-inspect
+
+- A native (non-Flatpak) Chrome no longer leaves a `com.google.Chrome.*` folder in the temp directory on every run:
+  its temp files now live in the throwaway profile, and the browser gets time to exit before it is killed.
+
 ### CSS
 
 - `data-justify` also aligns the text of a label that wraps: `data-justify="start"` on a button put the first line at the
@@ -35,6 +40,9 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### `@tiaforge-ui/temper-inspect`
 
+- `--cookie name=value` and `--header "Name: value"` (both repeatable; `cookies` and `headers` in the API) for pages
+  behind a login: the cookie is set for each page's origin before it loads, the header goes with every request.
+  temper-inspect does not log in itself; pass the session cookie or token from your dev login.
 - **Fixed a disk leak with a Flatpak Chrome.** The sandbox's /tmp is not the host's, so the profile dir landed inside
   the sandbox (a private tmpfs under `$XDG_RUNTIME_DIR`) and the cleanup removed an empty host directory: every run
   left 70 MB and more behind until the runtime dir was full and the browser no longer started (bwrap: "No space left

@@ -35,6 +35,11 @@ there are errors. `--json` prints machine-readable output.
 each popover) and a column per width and scheme, at most 3 states per image. Looking at one sheet
 replaces a dozen separate screenshots when you also need to judge how it looks.
 
+Pages behind a login: pass the session cookie with `--cookie name=value` (set for each page's origin
+before it loads) or a token with `--header "Authorization: Bearer …"` (sent with every request, also to
+other origins). Both can be repeated. Get the cookie from your dev login, for example
+`curl -c - -d 'user=demo&password=demo' http://localhost:3000/login`; temper-inspect does not log in itself.
+
 It needs no npm dependencies. It drives an installed Chrome or Chromium over the DevTools protocol,
 using Node's built-in WebSocket (Node 22+). It finds the browser through `CHROME_PATH`, `--browser`,
 common binary names, or Flatpak (`com.google.Chrome`, `org.chromium.Chromium`). Each run uses a fresh,

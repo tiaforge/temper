@@ -76,3 +76,27 @@ test('fixtures: every check on broken.html, a clean page, dialogs opened through
     srv.close();
   }
 });
+
+test('--cookie and --header reach pages behind a login', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  // A protected page: clean with the session cookie and the token, an image without alt (an error) without them.
+  const seen = [];
+  const srv = createServer((req, res) => {
+    seen.push({ url: req.url, cookie: req.headers.cookie ?? '', token: req.headers['x-token'] ?? '' });
+    const ok = /(^|; )session=abc 123($|;)/.test(req.headers.cookie ?? '') && req.headers['x-token'] === 't1';
+    res.setHeader('content-type', 'text/html');
+    res.end(`<!doctype html><html lang="en"><title>t</title><main><h1>Private</h1>${ok ? '' : '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">'}</main></html>`);
+  });
+  await new Promise(r => srv.listen(0, '127.0.0.1', r));
+  const url = `http://127.0.0.1:${srv.address().port}/private`;
+  const opts = { widths: [390], schemes: ['light'], settle: 50, overlays: false };
+  try {
+    const anon = await inspect([url], opts);
+    assert.deepEqual(anon.findings.map(f => f.code), ['alt']);
+    seen.length = 0;
+    const authed = await inspect([url], { ...opts, cookies: [{ name: 'session', value: 'abc 123' }], headers: { 'X-Token': 't1' } });
+    assert.deepEqual(authed.findings, []);
+    assert.ok(seen.some(r => r.url === '/private' && r.token === 't1' && r.cookie.includes('session=abc 123')), JSON.stringify(seen));
+  } finally {
+    srv.close();
+  }
+});

@@ -8,15 +8,24 @@ import { install } from './audit.js';
  * Loads each URL at each width and color scheme, opens every dialog and popover one at a time, and
  * returns merged findings. With `sheet` (a directory), it also writes contact sheets: one PNG per URL
  * (split into parts of `sheetRows` states) showing every state at every width and scheme.
+ * `cookies` ([{ name, value }]) are set for the origin of every http(s) URL before it loads, and `headers`
+ * ({ Name: value }) go with every request: for pages behind a login.
  * @returns {Promise<{findings: Array, sheets: string[]}>}
  */
 export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 'dark'], height = 900, settle = 800,
-  overlays = true, browser, sheet, sheetRows = 3 } = {}) {
+  overlays = true, browser, sheet, sheetRows = 3, cookies = [], headers = {} } = {}) {
   const share = [...new Set(urls.filter(u => u.startsWith('file:')).map(u => dirname(fileURLToPath(u))))];
   const b = await launch(browser ? browser.split(' ') : findBrowser(), { share });
   const merged = new Map(), sheets = [];
   try {
     const page = await b.newPage();
+    if (cookies.length || Object.keys(headers).length) await page.send('Network.enable');
+    if (Object.keys(headers).length) await page.send('Network.setExtraHTTPHeaders', { headers });
+    const origins = [...new Set(urls.filter(u => /^https?:/.test(u)).map(u => new URL(u).origin))];
+    for (const origin of origins) for (const { name, value } of cookies) {
+      const { success } = await page.send('Network.setCookie', { name, value, url: origin + '/' });
+      if (!success) throw new Error(`Could not set cookie ${name} for ${origin}`);
+    }
     for (const url of urls) {
       const shots = []; // { state, column, data, width, height }
       for (const width of widths) for (const scheme of schemes) {

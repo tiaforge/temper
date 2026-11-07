@@ -1,7 +1,7 @@
 // Minimal Chrome DevTools Protocol client: launches a headless Chrome/Chromium and talks to it over
 // Node's built-in WebSocket. No dependencies.
 import { spawn, execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -45,7 +45,12 @@ export function commandLine(browserCmd, profile, share = []) {
 export async function launch(browserCmd = findBrowser(), { share = [] } = {}) {
   const profile = mkdtempSync(join(tmpdir(), 'temper-inspect-'));
   const [cmd, ...argv] = commandLine(browserCmd, profile, share);
-  const proc = spawn(cmd, argv, { stdio: ['ignore', 'ignore', 'pipe'] });
+  // Chrome keeps its own temp files (com.google.Chrome.XXXXXX, the single-instance socket) in TMPDIR, and they outlive
+  // a browser that is killed while shutting down. Inside the profile they are removed with it.
+  const tmp = join(profile, 'tmp');
+  mkdirSync(tmp);
+  const proc = spawn(cmd, argv, { stdio: ['ignore', 'ignore', 'pipe'], env: { ...process.env, TMPDIR: tmp } });
+  const exited = new Promise(r => proc.once('exit', r));
   // If this process ends without close() (an exception, process.exit), the browser must not keep running (240 MB
   // resident, its profile on disk) as an orphan.
   const abandon = () => { try { proc.kill(); } catch {} try { rmSync(profile, { recursive: true, force: true }); } catch {} };
@@ -105,6 +110,8 @@ export async function launch(browserCmd = findBrowser(), { share = [] } = {}) {
 
   async function close() {
     try { await Promise.race([send('Browser.close'), new Promise(r => setTimeout(r, 2000))]); } catch {}
+    // Browser.close answers before the browser has exited: give it time to clean up before it is killed
+    if (proc.exitCode === null && proc.signalCode === null) await Promise.race([exited, new Promise(r => setTimeout(r, 2000))]);
     ws.close();
     process.off('exit', abandon);
     abandon();
