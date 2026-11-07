@@ -169,9 +169,20 @@ The palette is driven by a few inputs (defaults shown):
 block of token overrides.
 
 Every role token is derived from those inputs at **fixed OKLCH lightness**. OKLCH lightness tracks
-perceived brightness, so contrast stays about the same for any hue. A validator script sweeps hues
-0–360 and asserts WCAG AA for each text/background pair. It also documents hues that need a chroma
-cap, such as yellow.
+perceived brightness, so contrast stays about the same for any hue. `npm run contrast`
+(`scripts/contrast.mjs`) sweeps hues 0–360 (with neutral tint 0 and 0.02) in light and dark mode,
+lets headless Chrome resolve the tokens, and checks WCAG AA for each text/background pair: 4.5:1 for
+text and solid buttons, 3:1 for the accent as a UI color (focus ring, checked box). For each hue it
+also reports the highest chroma that still passes. `--own` checks a palette at its own hue, chroma and
+tint; `--css`/`--root` load a theme block (for example `--css kitchen-sink/theme-examples.css --root
+data-example-theme=ink`). `npm test` runs the `--own` check for the default look, Ink and Fjord
+(skipped without Chrome).
+
+Result for the defaults (chroma 0.19), 2026-11-07: dark mode passes for every hue. In light mode,
+green to cyan hues are too light at L 0.53 once they are clipped to sRGB, so the accent solid button
+and accent text on the accent soft fill drop to 4.1:1. Chroma caps: hue 155 → 0.18, 160 → 0.16,
+165 → 0.15, 170–180 → 0.14, 185–205 → 0.13, 210 → 0.14, 215 → 0.15, 220 → 0.16, 225 → 0.17.
+Yellow needs no cap: tone ink is capped at L 0.5 and the text on solid yellow switches to black.
 
 Role tokens (the only colors components use):
 
@@ -313,6 +324,6 @@ Lessons:
 Missing, roughly in order:
 1. Vite plugin for the checker, and enhancement partials with the build option for them.
 2. Trim `llms.txt` (322 lines now; goal about 200).
-3. Contrast validator (hue sweep, WCAG AA).
+3. ~~Contrast validator (hue sweep, WCAG AA).~~ Done: `npm run contrast`, see §1.6.
 4. Modules for caley: `app`, `menu`, `data`, `nav`, `feedback`, `prose`. Later `site` for tia.vision.
 5. Visual regression tests, agent evals (tinystyle vs. daisyUI and Pico on the same caley tasks), README.

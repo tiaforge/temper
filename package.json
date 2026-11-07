@@ -52,6 +52,7 @@
     "check": "node bin/tinystyle.js check kitchen-sink",
     "test": "node scripts/gen.mjs --check && node --test test/*.test.js",
     "shots": "scripts/shoot.sh",
+    "contrast": "node scripts/contrast.mjs",
     "prepublishOnly": "npm run gen && npm test && npm run build"
   },
   "devDependencies": {
