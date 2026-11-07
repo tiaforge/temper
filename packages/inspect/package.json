@@ -5,9 +5,28 @@
   "license": "MIT",
   "author": "Tia Heinrich",
   "type": "module",
-  "exports": { ".": "./lib/inspect.js" },
-  "bin": { "tinystyle-inspect": "bin/tinystyle-inspect.js" },
-  "files": ["bin", "lib"],
-  "engines": { "node": ">=22" },
-  "keywords": ["accessibility", "layout", "contrast", "headless", "chrome", "devtools-protocol", "llm", "ai"]
+  "exports": {
+    ".": "./lib/inspect.js"
+  },
+  "bin": {
+    "tinystyle-inspect": "bin/tinystyle-inspect.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "accessibility",
+    "layout",
+    "contrast",
+    "headless",
+    "chrome",
+    "devtools-protocol",
+    "llm",
+    "ai"
+  ]
 }

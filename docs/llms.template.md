@@ -3,6 +3,12 @@
 > Tiny CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
 > `data-*` attributes with fixed values. Light and dark mode switch automatically.
 
+<!-- short -->
+This is the short version: enough for small edits. Before building whole pages or migrating, read
+`llms-full.txt` in the same folder: every attribute in detail, all tokens, and copy-paste recipes
+(form, card, dialog, toolbar, status, settings rows, app shell, dropdown, card grid, label/value pairs).
+
+<!-- /short -->
 ## Setup
 
 ```js
@@ -72,10 +78,10 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 <a href="/mail/" data-icon="mail"><span>Mail</span></a>               <!-- rail items, links -->
 ```
 
-Names are Lucide's (https://lucide.dev/icons). icons.css contains the common ones listed under
-`data-icon` below. With the Vite plugin's `icons` option every Lucide name works, and only the icons you
+Names are Lucide's (https://lucide.dev/icons). icons.css contains: {{iconNames}}. With the Vite plugin's `icons` option every Lucide name works, and only the icons you
 use end up in the CSS. Do not paste inline `<svg>` for an icon that has a name.
 
+<!-- full -->
 Your own icons: put SVG files in the plugin's `icons.dir` (file name = icon name; it replaces a default
 of the same name), or without the plugin:
 
@@ -85,8 +91,10 @@ of the same name), or without the plugin:
 [data-icon="rocket"] { --_icon: var(--ts-icon-rocket); }
 ```
 
+<!-- /full -->
 Icons are one color (the text color); keep multicolor logos as `<img>`.
 
+<!-- full -->
 ## Recipes
 
 ### Form
@@ -269,6 +277,7 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 </main>
 ```
 
+<!-- /full -->
 ## Anti-patterns
 
 | Don't | Do |

@@ -11,7 +11,8 @@
         "outline": "Transparent with a border.",
         "ghost": "Transparent, fill on hover. Toolbars, icon buttons, Cancel.",
         "link": "Looks like a link, keeps button semantics."
-      }
+      },
+      "short": "Button style; leave it out for the solid main button."
     },
     "data-tone": {
       "module": "core",
@@ -24,7 +25,8 @@
         "success": "Completed or healthy states.",
         "warning": "Needs attention soon.",
         "info": "Neutral information. Default for callouts."
-      }
+      },
+      "short": "Color, independent of the style; for any other color use style=\"--ts-tone: …\"."
     },
     "data-size": {
       "module": "core",
@@ -98,7 +100,8 @@
         "image": "",
         "sun": "",
         "moon": ""
-      }
+      },
+      "short": "Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label)."
     },
     "data-layout": {
       "module": "core",
@@ -110,7 +113,8 @@
         "grid": "Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row.",
         "split": "Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens.",
         "center": "Horizontally centered column with max width --ts-measure (default 72rem) and side padding."
-      }
+      },
+      "short": "Lays out the element's children (overrides its own display)."
     },
     "data-gap": {
       "module": "core",
@@ -263,7 +267,8 @@
       "module": "app",
       "boolean": true,
       "on": "nav inside [data-shell]",
-      "description": "Navigation rail. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens."
+      "description": "Navigation rail. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
+      "short": "Navigation rail next to <main>; with popover it is a drawer on narrow screens."
     },
     "data-collapsed": {
       "module": "app",
@@ -302,7 +307,8 @@
       "module": "menu",
       "boolean": true,
       "on": "[popover] (dropdown) or any container (static menu)",
-      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport)."
+      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
+      "short": "Menu of buttons, links and checkbox labels; as a [popover] it opens under its button."
     }
   },
   "tokens": {

@@ -44,7 +44,15 @@ test('every vocab token is declared in the CSS, unless optional', () => {
   }
 });
 
-test('llms.txt has balanced code fences', () => {
-  const llms = readFileSync(new URL('../llms.txt', import.meta.url), 'utf8');
-  assert.equal((llms.match(/^```/gm) ?? []).length % 2, 0, 'an unclosed ``` block in docs/llms.template.md');
+for (const file of ['llms.txt', 'llms-full.txt']) {
+  test(`${file} has balanced code fences and no template markers`, () => {
+    const llms = readFileSync(new URL('../' + file, import.meta.url), 'utf8');
+    assert.equal((llms.match(/^```/gm) ?? []).length % 2, 0, 'an unclosed ``` block in docs/llms.template.md');
+    assert.doesNotMatch(llms, /<!-- \/?(full|short) -->|\{\{\w+\}\}/);
+  });
+}
+
+test('llms.txt stays short', () => {
+  const short = readFileSync(new URL('../llms.txt', import.meta.url), 'utf8');
+  assert.ok(short.length < 12000, `llms.txt is ${short.length} bytes; move detail to llms-full.txt (full-only blocks)`);
 });

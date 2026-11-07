@@ -29,7 +29,9 @@
     "bin",
     "vocab.json",
     "llms.txt",
-    "html-custom-data.json"
+    "html-custom-data.json",
+    "llms-full.txt",
+    "LICENSE"
   ],
   "keywords": [
     "css",
