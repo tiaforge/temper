@@ -40,13 +40,16 @@
       "module": "core",
       "boolean": true,
       "on": "button, a[role=button]",
-      "requires": ["aria-label", "aria-labelledby"],
+      "requires": [
+        "aria-label",
+        "aria-labelledby"
+      ],
       "description": "Square icon-only button. Must have an aria-label. Usually combined with data-variant=\"ghost\"."
     },
     "data-layout": {
       "module": "core",
       "on": "any container",
-      "description": "Lays out the element's children. Space between children comes from data-gap; children never get margins.",
+      "description": "Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-gap, space around them from data-pad; children never get margins.",
       "values": {
         "stack": "Vertical column.",
         "row": "Horizontal row that wraps, items vertically centered.",
@@ -58,7 +61,20 @@
     "data-gap": {
       "module": "core",
       "on": "[data-layout]",
-      "description": "Space between the children of a data-layout element. The only spacing control in tinystyle. Default md.",
+      "description": "Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in tinystyle.",
+      "values": {
+        "none": "0",
+        "xs": "0.25rem",
+        "sm": "0.5rem",
+        "md": "1rem",
+        "lg": "1.5rem",
+        "xl": "2.5rem"
+      }
+    },
+    "data-pad": {
+      "module": "core",
+      "on": "any container: page wrappers, sections, panels, rows",
+      "description": "Padding inside the element, on all sides. Use it instead of padding in style attributes. On data-layout=\"center\" the side padding never drops below md. Overrides a component's own padding (e.g. data-pad=\"sm\" on an article).",
       "values": {
         "none": "0",
         "xs": "0.25rem",
@@ -72,13 +88,23 @@
       "module": "core",
       "on": "[data-layout]",
       "description": "Cross-axis alignment of children (align-items).",
-      "values": { "start": "", "center": "", "end": "", "stretch": "" }
+      "values": {
+        "start": "",
+        "center": "",
+        "end": "",
+        "stretch": ""
+      }
     },
     "data-justify": {
       "module": "core",
       "on": "[data-layout]",
       "description": "Main-axis distribution of children (justify-content).",
-      "values": { "start": "", "center": "", "end": "", "between": "Space between the children." }
+      "values": {
+        "start": "",
+        "center": "",
+        "end": "",
+        "between": "Space between the children."
+      }
     },
     "data-density": {
       "module": "core",
@@ -136,63 +162,241 @@
     }
   },
   "tokens": {
-    "--ts-hue": { "kind": "input", "description": "Accent hue in OKLCH degrees. Default 255." },
-    "--ts-chroma": { "kind": "input", "description": "Accent saturation. Default 0.19." },
-    "--ts-neutral-hue": { "kind": "input", "description": "Hue the greys lean toward. Default: --ts-hue." },
-    "--ts-neutral-tint": { "kind": "input", "description": "How much the greys lean toward --ts-neutral-hue. Default 0 (pure grey)." },
-    "--ts-primary": { "kind": "input", "description": "Tone of default buttons. Default var(--ts-neutral); var(--ts-accent) for colored main buttons." },
-    "--ts-radius": { "kind": "input", "description": "Base corner radius. Default 0.375rem. The other radii derive from it." },
-    "--ts-badge-radius": { "kind": "input", "description": "Badge corner radius. Default 0.67 × --ts-radius; var(--ts-radius-full) for pills." },
-    "--ts-font-sans": { "kind": "input", "description": "UI font stack. Default: system fonts." },
-    "--ts-font-mono": { "kind": "input", "description": "Code font stack." },
-    "--ts-heading-weight": { "kind": "input", "description": "Heading font weight. Default 600." },
-    "--ts-heading-tracking": { "kind": "input", "description": "Heading letter spacing. Default -0.025em." },
-    "--ts-duration": { "kind": "input", "description": "Transition duration. Default 150ms." },
-    "--ts-ease": { "kind": "input", "description": "Transition easing." },
-    "--ts-min": { "kind": "input", "optional": true, "description": "Minimum column width for data-layout=\"grid\". Default 16rem." },
-    "--ts-split": { "kind": "input", "optional": true, "description": "Sidebar width for data-layout=\"split\". Default 16rem." },
-    "--ts-measure": { "kind": "input", "optional": true, "description": "Max width for data-layout=\"center\". Default 72rem." },
-    "--ts-dialog-width": { "kind": "input", "optional": true, "description": "Dialog width. Default 30rem." },
-
-    "--ts-bg": { "kind": "color", "description": "Page background." },
-    "--ts-surface": { "kind": "color", "description": "Cards, panes, inputs." },
-    "--ts-surface-raised": { "kind": "color", "description": "Dialogs, popovers, menus." },
-    "--ts-fill": { "kind": "color", "description": "Subtle fill: code, hover, neutral secondary buttons." },
-    "--ts-field": { "kind": "color", "description": "Input background." },
-    "--ts-field-border": { "kind": "color", "description": "Input border." },
-    "--ts-border": { "kind": "color", "description": "Default hairline borders and dividers." },
-    "--ts-border-strong": { "kind": "color", "description": "Stronger borders: inputs, outline buttons." },
-    "--ts-text": { "kind": "color", "description": "Body text." },
-    "--ts-text-muted": { "kind": "color", "description": "Secondary text." },
-    "--ts-accent": { "kind": "color", "description": "Accent: selection, focus, links, checked controls." },
-    "--ts-neutral": { "kind": "color", "description": "Neutral tone (near-black in light mode, near-white in dark mode)." },
-    "--ts-danger": { "kind": "color", "description": "Danger tone." },
-    "--ts-success": { "kind": "color", "description": "Success tone." },
-    "--ts-warning": { "kind": "color", "description": "Warning tone." },
-    "--ts-info": { "kind": "color", "description": "Info tone." },
-    "--ts-tone": { "kind": "color", "description": "Current tone. Set it to any color to recolor an element and its children (e.g. calendar colors)." },
-    "--ts-tone-ink": { "kind": "color", "derived": true, "description": "Text-safe version of --ts-tone." },
-    "--ts-tone-soft": { "kind": "color", "derived": true, "description": "Tinted background from --ts-tone." },
-    "--ts-tone-on": { "kind": "color", "derived": true, "description": "Text color on a solid --ts-tone fill (black or white)." },
-
-    "--ts-space-none": { "kind": "space", "description": "0" },
-    "--ts-space-xs": { "kind": "space", "description": "0.25rem" },
-    "--ts-space-sm": { "kind": "space", "description": "0.5rem" },
-    "--ts-space-md": { "kind": "space", "description": "1rem" },
-    "--ts-space-lg": { "kind": "space", "description": "1.5rem" },
-    "--ts-space-xl": { "kind": "space", "description": "2.5rem" },
-    "--ts-radius-sm": { "kind": "radius", "derived": true, "description": "0.6 × --ts-radius" },
-    "--ts-radius-lg": { "kind": "radius", "derived": true, "description": "1.5 × --ts-radius. Cards and dialogs." },
-    "--ts-radius-full": { "kind": "radius", "description": "Fully round." },
-    "--ts-text-xs": { "kind": "text", "description": "0.75rem" },
-    "--ts-text-sm": { "kind": "text", "description": "0.875rem" },
-    "--ts-text-md": { "kind": "text", "description": "1rem" },
-    "--ts-text-lg": { "kind": "text", "description": "1.25rem" },
-    "--ts-text-xl": { "kind": "text", "description": "1.75rem" },
-    "--ts-shadow-sm": { "kind": "shadow", "description": "Resting shadow (none in the default look)." },
-    "--ts-shadow-lg": { "kind": "shadow", "description": "Overlay shadow: dialogs, popovers." },
-    "--ts-control-h": { "kind": "density", "derived": true, "description": "Height of buttons and inputs, set by data-density." },
-    "--ts-control-px": { "kind": "density", "derived": true, "description": "Horizontal padding of controls, set by data-density." },
-    "--ts-control-font": { "kind": "density", "derived": true, "description": "Font size of controls, set by data-density." }
+    "--ts-hue": {
+      "kind": "input",
+      "description": "Accent hue in OKLCH degrees. Default 255."
+    },
+    "--ts-chroma": {
+      "kind": "input",
+      "description": "Accent saturation. Default 0.19."
+    },
+    "--ts-neutral-hue": {
+      "kind": "input",
+      "description": "Hue the greys lean toward. Default: --ts-hue."
+    },
+    "--ts-neutral-tint": {
+      "kind": "input",
+      "description": "How much the greys lean toward --ts-neutral-hue. Default 0 (pure grey)."
+    },
+    "--ts-primary": {
+      "kind": "input",
+      "description": "Tone of default buttons. Default var(--ts-neutral); var(--ts-accent) for colored main buttons."
+    },
+    "--ts-radius": {
+      "kind": "input",
+      "description": "Base corner radius. Default 0.375rem. The other radii derive from it."
+    },
+    "--ts-badge-radius": {
+      "kind": "input",
+      "description": "Badge corner radius. Default 0.67 × --ts-radius; var(--ts-radius-full) for pills."
+    },
+    "--ts-font-sans": {
+      "kind": "input",
+      "description": "UI font stack. Default: system fonts."
+    },
+    "--ts-font-mono": {
+      "kind": "input",
+      "description": "Code font stack."
+    },
+    "--ts-heading-weight": {
+      "kind": "input",
+      "description": "Heading font weight. Default 600."
+    },
+    "--ts-heading-tracking": {
+      "kind": "input",
+      "description": "Heading letter spacing. Default -0.025em."
+    },
+    "--ts-duration": {
+      "kind": "input",
+      "description": "Transition duration. Default 150ms."
+    },
+    "--ts-ease": {
+      "kind": "input",
+      "description": "Transition easing."
+    },
+    "--ts-min": {
+      "kind": "input",
+      "optional": true,
+      "description": "Minimum column width for data-layout=\"grid\". Default 16rem."
+    },
+    "--ts-split": {
+      "kind": "input",
+      "optional": true,
+      "description": "Sidebar width for data-layout=\"split\". Default 16rem."
+    },
+    "--ts-measure": {
+      "kind": "input",
+      "optional": true,
+      "description": "Max width for data-layout=\"center\". Default 72rem."
+    },
+    "--ts-dialog-width": {
+      "kind": "input",
+      "optional": true,
+      "description": "Dialog width. Default 30rem."
+    },
+    "--ts-bg": {
+      "kind": "color",
+      "description": "Page background."
+    },
+    "--ts-surface": {
+      "kind": "color",
+      "description": "Cards, panes, inputs."
+    },
+    "--ts-surface-raised": {
+      "kind": "color",
+      "description": "Dialogs, popovers, menus."
+    },
+    "--ts-fill": {
+      "kind": "color",
+      "description": "Subtle fill: code, hover, neutral secondary buttons."
+    },
+    "--ts-field": {
+      "kind": "color",
+      "description": "Input background."
+    },
+    "--ts-field-border": {
+      "kind": "color",
+      "description": "Input border."
+    },
+    "--ts-border": {
+      "kind": "color",
+      "description": "Default hairline borders and dividers."
+    },
+    "--ts-border-strong": {
+      "kind": "color",
+      "description": "Stronger borders: inputs, outline buttons."
+    },
+    "--ts-text": {
+      "kind": "color",
+      "description": "Body text."
+    },
+    "--ts-text-muted": {
+      "kind": "color",
+      "description": "Secondary text."
+    },
+    "--ts-accent": {
+      "kind": "color",
+      "description": "Accent: selection, focus, links, checked controls."
+    },
+    "--ts-neutral": {
+      "kind": "color",
+      "description": "Neutral tone (near-black in light mode, near-white in dark mode)."
+    },
+    "--ts-danger": {
+      "kind": "color",
+      "description": "Danger tone."
+    },
+    "--ts-success": {
+      "kind": "color",
+      "description": "Success tone."
+    },
+    "--ts-warning": {
+      "kind": "color",
+      "description": "Warning tone."
+    },
+    "--ts-info": {
+      "kind": "color",
+      "description": "Info tone."
+    },
+    "--ts-tone": {
+      "kind": "color",
+      "description": "Current tone. Set it to any color to recolor an element and its children (e.g. calendar colors)."
+    },
+    "--ts-tone-ink": {
+      "kind": "color",
+      "derived": true,
+      "description": "Text-safe version of --ts-tone."
+    },
+    "--ts-tone-soft": {
+      "kind": "color",
+      "derived": true,
+      "description": "Tinted background from --ts-tone."
+    },
+    "--ts-tone-on": {
+      "kind": "color",
+      "derived": true,
+      "description": "Text color on a solid --ts-tone fill (black or white)."
+    },
+    "--ts-space-none": {
+      "kind": "space",
+      "description": "0"
+    },
+    "--ts-space-xs": {
+      "kind": "space",
+      "description": "0.25rem"
+    },
+    "--ts-space-sm": {
+      "kind": "space",
+      "description": "0.5rem"
+    },
+    "--ts-space-md": {
+      "kind": "space",
+      "description": "1rem"
+    },
+    "--ts-space-lg": {
+      "kind": "space",
+      "description": "1.5rem"
+    },
+    "--ts-space-xl": {
+      "kind": "space",
+      "description": "2.5rem"
+    },
+    "--ts-radius-sm": {
+      "kind": "radius",
+      "derived": true,
+      "description": "0.6 × --ts-radius"
+    },
+    "--ts-radius-lg": {
+      "kind": "radius",
+      "derived": true,
+      "description": "1.5 × --ts-radius. Cards and dialogs."
+    },
+    "--ts-radius-full": {
+      "kind": "radius",
+      "description": "Fully round."
+    },
+    "--ts-text-xs": {
+      "kind": "text",
+      "description": "0.75rem"
+    },
+    "--ts-text-sm": {
+      "kind": "text",
+      "description": "0.875rem"
+    },
+    "--ts-text-md": {
+      "kind": "text",
+      "description": "1rem"
+    },
+    "--ts-text-lg": {
+      "kind": "text",
+      "description": "1.25rem"
+    },
+    "--ts-text-xl": {
+      "kind": "text",
+      "description": "1.75rem"
+    },
+    "--ts-shadow-sm": {
+      "kind": "shadow",
+      "description": "Resting shadow (none in the default look)."
+    },
+    "--ts-shadow-lg": {
+      "kind": "shadow",
+      "description": "Overlay shadow: dialogs, popovers."
+    },
+    "--ts-control-h": {
+      "kind": "density",
+      "derived": true,
+      "description": "Height of buttons and inputs, set by data-density."
+    },
+    "--ts-control-px": {
+      "kind": "density",
+      "derived": true,
+      "description": "Horizontal padding of controls, set by data-density."
+    },
+    "--ts-control-font": {
+      "kind": "density",
+      "derived": true,
+      "description": "Font size of controls, set by data-density."
+    }
   }
 }

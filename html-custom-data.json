@@ -78,7 +78,7 @@
     },
     {
       "name": "data-layout",
-      "description": "tinystyle. On: any container. Lays out the element's children. Space between children comes from data-gap; children never get margins.",
+      "description": "tinystyle. On: any container. Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-gap, space around them from data-pad; children never get margins.",
       "values": [
         {
           "name": "stack",
@@ -104,7 +104,37 @@
     },
     {
       "name": "data-gap",
-      "description": "tinystyle. On: [data-layout]. Space between the children of a data-layout element. The only spacing control in tinystyle. Default md.",
+      "description": "tinystyle. On: [data-layout]. Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in tinystyle.",
+      "values": [
+        {
+          "name": "none",
+          "description": "0"
+        },
+        {
+          "name": "xs",
+          "description": "0.25rem"
+        },
+        {
+          "name": "sm",
+          "description": "0.5rem"
+        },
+        {
+          "name": "md",
+          "description": "1rem"
+        },
+        {
+          "name": "lg",
+          "description": "1.5rem"
+        },
+        {
+          "name": "xl",
+          "description": "2.5rem"
+        }
+      ]
+    },
+    {
+      "name": "data-pad",
+      "description": "tinystyle. On: any container: page wrappers, sections, panels, rows. Padding inside the element, on all sides. Use it instead of padding in style attributes. On data-layout=\"center\" the side padding never drops below md. Overrides a component's own padding (e.g. data-pad=\"sm\" on an article).",
       "values": [
         {
           "name": "none",

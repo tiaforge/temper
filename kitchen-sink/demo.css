@@ -14,7 +14,6 @@ body { min-block-size: 100dvh; }
 .wordmark span { color: var(--ts-text-muted); font-weight: 450; }
 .segmented { display: inline-flex; gap: 2px; padding: 2px; border-radius: calc(var(--ts-radius) + 2px); background: var(--ts-fill); }
 
-.page { padding-block: var(--ts-space-xl); }
 .section-head { max-inline-size: 44rem; }
 .section-head p { color: var(--ts-text-muted); }
 

@@ -1,8 +1,9 @@
 /* tinystyle core — prototype.
-   Rules: components own padding, layouts own gaps, nothing has an outer margin.
+   Rules: nothing has an outer margin. A parent sets the space between its children (data-gap)
+   and around them (data-pad). data-layout is last in the cascade, so it overrides a component's display.
    All selectors are wrapped in :where() and live in layers, so unlayered app CSS always wins. */
 
-@layer ts.reset, ts.base, ts.layout, ts.components;
+@layer ts.reset, ts.base, ts.components, ts.layout;
 
 /* ───────────── tokens ───────────── */
 @layer ts.base {
@@ -187,12 +188,23 @@
     inline-size: 100%; max-inline-size: var(--ts-measure, 72rem);
     margin-inline: auto; padding-inline: var(--ts-space-md);
   }
+  /* data-layout must not reveal a closed dialog or popover. */
+  [data-layout]:is(dialog:not([open]), [popover]:not(:popover-open)) { display: none; }
   :where([data-gap="none"]) { --_gap: 0; }
   :where([data-gap="xs"]) { --_gap: var(--ts-space-xs); }
   :where([data-gap="sm"]) { --_gap: var(--ts-space-sm); }
   :where([data-gap="md"]) { --_gap: var(--ts-space-md); }
   :where([data-gap="lg"]) { --_gap: var(--ts-space-lg); }
   :where([data-gap="xl"]) { --_gap: var(--ts-space-xl); }
+  :where([data-pad]) { padding: var(--_pad); }
+  :where([data-pad="none"]) { --_pad: 0; }
+  :where([data-pad="xs"]) { --_pad: var(--ts-space-xs); }
+  :where([data-pad="sm"]) { --_pad: var(--ts-space-sm); }
+  :where([data-pad="md"]) { --_pad: var(--ts-space-md); }
+  :where([data-pad="lg"]) { --_pad: var(--ts-space-lg); }
+  :where([data-pad="xl"]) { --_pad: var(--ts-space-xl); }
+  /* A centered page column keeps at least md side padding, so text never touches the screen edge. */
+  :where([data-layout="center"][data-pad]) { padding-inline: max(var(--ts-space-md), var(--_pad)); }
   :where([data-align="start"]) { align-items: start; }
   :where([data-align="center"]) { align-items: center; }
   :where([data-align="end"]) { align-items: end; }

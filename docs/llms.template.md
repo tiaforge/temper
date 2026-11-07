@@ -13,9 +13,10 @@
 3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute
    is one independent axis: `data-variant` is the style, `data-tone` is the color, `data-size` is the
    size. Do not invent classes or values for these.
-4. **Spacing:** components never have an outer margin. Space between elements comes only from the
-   parent: `data-layout` plus `data-gap`. Do not add `margin` to tinystyle elements. To add space
-   between two things, wrap them in a `data-layout` element.
+4. **Spacing:** nothing has an outer margin. The parent owns all space: `data-gap` between its
+   children (needs `data-layout`), `data-pad` around them. Do not write `margin` or `padding` in
+   `style` attributes. To add space between two things, wrap them in a `data-layout` element.
+   `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
 5. Sizes always use the same words: `xs sm md lg xl`. There are no numeric scales.
 6. Your own CSS always wins over tinystyle (tinystyle lives in `@layer ts.*`). Never use `!important`.
    In your own CSS, use the tokens (`var(--ts-text-muted)`, `var(--ts-space-sm)`), never hard-coded colors.
@@ -105,6 +106,15 @@ buttons to the end.
 <button aria-busy="true">Saving</button>
 ```
 
+### Settings rows
+
+```html
+<div data-layout="stack" data-gap="none" data-density="compact">
+  <label data-layout="row" data-justify="between" data-pad="sm">Email notifications <input type="checkbox" role="switch"></label>
+  <label data-layout="row" data-justify="between" data-pad="sm">Show week numbers <input type="checkbox" role="switch"></label>
+</div>
+```
+
 ### Label/value pairs
 
 ```html
@@ -117,7 +127,7 @@ buttons to the end.
 ### Page layout
 
 ```html
-<main data-layout="center" data-gap="xl">
+<main data-layout="center" data-gap="xl" data-pad="xl">
   <section data-layout="stack" data-gap="md">…</section>
   <section data-layout="grid" data-gap="lg" style="--ts-min: 20rem">…</section>
 </main>
@@ -132,6 +142,8 @@ buttons to the end.
 | `<button data-variant="primary">` | `<button>` (primary is the default) |
 | `<p class="error">` | `<p data-tone="danger">` or `<div data-callout data-tone="danger">` |
 | `style="margin-top: 1rem"` on a button or input | wrap the elements in `data-layout="stack" data-gap="md"` |
+| `style="padding: var(--ts-space-lg)"` | `data-pad="lg"` |
+| a custom class to turn a `label` into a flex row | `<label data-layout="row" data-justify="between">` |
 | `data-gap="4"` or `data-gap="16px"` | `data-gap="md"` |
 | `<button data-icon>×</button>` | `<button data-icon aria-label="Close">×</button>` |
 | `data-badge="true"` | `data-badge` |

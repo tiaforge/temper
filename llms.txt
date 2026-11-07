@@ -13,9 +13,10 @@
 3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute
    is one independent axis: `data-variant` is the style, `data-tone` is the color, `data-size` is the
    size. Do not invent classes or values for these.
-4. **Spacing:** components never have an outer margin. Space between elements comes only from the
-   parent: `data-layout` plus `data-gap`. Do not add `margin` to tinystyle elements. To add space
-   between two things, wrap them in a `data-layout` element.
+4. **Spacing:** nothing has an outer margin. The parent owns all space: `data-gap` between its
+   children (needs `data-layout`), `data-pad` around them. Do not write `margin` or `padding` in
+   `style` attributes. To add space between two things, wrap them in a `data-layout` element.
+   `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
 5. Sizes always use the same words: `xs sm md lg xl`. There are no numeric scales.
 6. Your own CSS always wins over tinystyle (tinystyle lives in `@layer ts.*`). Never use `!important`.
    In your own CSS, use the tokens (`var(--ts-text-muted)`, `var(--ts-space-sm)`), never hard-coded colors.
@@ -60,7 +61,7 @@ Requires one of: `aria-label`, `aria-labelledby`.
 
 ### `data-layout`
 
-On: any container. Lays out the element's children. Space between children comes from data-gap; children never get margins.
+On: any container. Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-gap, space around them from data-pad; children never get margins.
 
 - `stack`: Vertical column.
 - `row`: Horizontal row that wraps, items vertically centered.
@@ -70,7 +71,18 @@ On: any container. Lays out the element's children. Space between children comes
 
 ### `data-gap`
 
-On: [data-layout]. Space between the children of a data-layout element. The only spacing control in tinystyle. Default md.
+On: [data-layout]. Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in tinystyle.
+
+- `none`: 0
+- `xs`: 0.25rem
+- `sm`: 0.5rem
+- `md`: 1rem
+- `lg`: 1.5rem
+- `xl`: 2.5rem
+
+### `data-pad`
+
+On: any container: page wrappers, sections, panels, rows. Padding inside the element, on all sides. Use it instead of padding in style attributes. On data-layout="center" the side padding never drops below md. Overrides a component's own padding (e.g. data-pad="sm" on an article).
 
 - `none`: 0
 - `xs`: 0.25rem
@@ -288,6 +300,15 @@ buttons to the end.
 <button aria-busy="true">Saving</button>
 ```
 
+### Settings rows
+
+```html
+<div data-layout="stack" data-gap="none" data-density="compact">
+  <label data-layout="row" data-justify="between" data-pad="sm">Email notifications <input type="checkbox" role="switch"></label>
+  <label data-layout="row" data-justify="between" data-pad="sm">Show week numbers <input type="checkbox" role="switch"></label>
+</div>
+```
+
 ### Label/value pairs
 
 ```html
@@ -300,7 +321,7 @@ buttons to the end.
 ### Page layout
 
 ```html
-<main data-layout="center" data-gap="xl">
+<main data-layout="center" data-gap="xl" data-pad="xl">
   <section data-layout="stack" data-gap="md">…</section>
   <section data-layout="grid" data-gap="lg" style="--ts-min: 20rem">…</section>
 </main>
@@ -315,6 +336,8 @@ buttons to the end.
 | `<button data-variant="primary">` | `<button>` (primary is the default) |
 | `<p class="error">` | `<p data-tone="danger">` or `<div data-callout data-tone="danger">` |
 | `style="margin-top: 1rem"` on a button or input | wrap the elements in `data-layout="stack" data-gap="md"` |
+| `style="padding: var(--ts-space-lg)"` | `data-pad="lg"` |
+| a custom class to turn a `label` into a flex row | `<label data-layout="row" data-justify="between">` |
 | `data-gap="4"` or `data-gap="16px"` | `data-gap="md"` |
 | `<button data-icon>×</button>` | `<button data-icon aria-label="Close">×</button>` |
 | `data-badge="true"` | `data-badge` |
