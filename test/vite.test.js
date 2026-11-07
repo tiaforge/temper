@@ -96,3 +96,20 @@ test('enhance: the list matches src/enhance/', async () => {
   const files = readdirSync(new URL('../src/enhance/', import.meta.url)).filter(f => f.endsWith('.css')).map(f => f.slice(0, -4));
   assert.deepEqual([...ENHANCEMENTS].sort(), files.sort());
 });
+
+test('prune: build only, keeps what the project uses', async () => {
+  const { fileURLToPath } = await import('node:url');
+  const dir = project('<span data-badge data-tone="danger">x</span><div data-layout="stack" data-gap="sm"></div>');
+  const plugin = tinystyle({ prune: true });
+  const info = [];
+  plugin.configResolved({ root: dir, command: 'build', logger: { warn() {}, info: m => info.push(m) } });
+  const id = fileURLToPath(new URL('../dist/core.css', import.meta.url));
+  const css = ':where([data-tone="danger"]){--a:1}:where([data-tone="success"]){--b:1}:where([data-gap="sm"]){--c:1}:where([data-gap="xl"]){--d:1}:where([data-badge]){--e:1}:where([data-avatar]){--f:1}';
+  const out = plugin.transform.handler(css, id).code;
+  assert.equal(out, ':where([data-tone="danger"]){--a:1}:where([data-gap="sm"]){--c:1}:where([data-badge]){--e:1}');
+  assert.match(info[0], /pruned core\.css/);
+  // the dev server never prunes
+  const dev = tinystyle({ prune: true });
+  dev.configResolved({ root: dir, command: 'serve', logger: { warn() {} } });
+  assert.equal(dev.transform.handler(css, id), undefined);
+});

@@ -386,7 +386,7 @@ missing module imports (TS110). Still open, in this order:
     `padding: 16px` → `data-pad="md"`), `!important`, and rules that restyle tinystyle selectors
     (`[data-variant=…]`) instead of setting tokens. checkStyles already parses `--ts-*`; this needs a small
     declaration scanner, still no dependency.
-56. **Ship only the CSS a project uses (lowest priority).** The Vite plugin knows every static value in use,
+56. *Done: Vite option `prune` (builds only), lib/prune.js; `npm run visual:prune` renders the kitchen sink with full and pruned CSS (32 states, identical). caley: all.css 10.3 → 9.4 KB brotli; its icons and tones are computed, so they stay.* **Ship only the CSS a project uses (lowest priority).** The Vite plugin knows every static value in use,
     so it could drop unused rules (most of `data-cols`, unused tones and variants, icons it already handles).
     Core is about 5.4 KB brotli, so the saving is small, and it is only safe when computed values are fully
     known: with the types (or the checker's literal analysis) a value outside the literals is a type error, but plain JS

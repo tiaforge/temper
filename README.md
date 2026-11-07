@@ -258,9 +258,18 @@ export default {
     // tinystyle({ paths: ['src/contacts'] })
     // opt-in enhancements, appended to core.css / all.css (see Browser support):
     // tinystyle({ enhance: ['customizable-select'] })   or   enhance: 'all'
+    // smaller builds: drop rules for data-* attributes and values the project never uses
+    // tinystyle({ prune: true })
   ],
 };
 ```
+
+`prune` scans every source file under the Vite root (or `prune: { paths }`) and only drops a rule
+when an attribute or value it requires appears nowhere. Values it can't resolve (`data-icon={icon}`)
+keep every value of that attribute, and `data-*` names in scripts (`el.dataset.tone = …`) keep the
+whole attribute. Gains depend on how much is computed: about 8% of `all.css` for caley, where icons
+and tones are mostly computed. `npm run visual:prune` checks that pruning changes nothing visible in
+the kitchen sink.
 
 Icons from the plugin need `lucide-static` installed (optional peer dependency).
 

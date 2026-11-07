@@ -75,6 +75,7 @@
     "shots": "scripts/shoot.sh",
     "contrast": "node scripts/contrast.mjs",
     "visual": "node scripts/visual.mjs",
+    "visual:prune": "node scripts/prune-visual.mjs",
     "readme-shots": "node scripts/readme-shots.mjs",
     "prepublishOnly": "npm run gen && npm test && npm run build"
   },

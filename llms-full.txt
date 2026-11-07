@@ -25,6 +25,7 @@ export default { plugins: [tinystyle()] };
 // (then do not also import icons.css; the CLI equivalent is: npx tinystyle check --lucide --icons src/icons <paths>)
 // while migrating step by step, check only the migrated parts: tinystyle({ paths: ['src/contacts', 'contacts'] })
 // opt-in enhancements (newer CSS, fine to leave off): tinystyle({ enhance: ['customizable-select'] }) or enhance: 'all'
+// smaller builds: tinystyle({ prune: true }) drops rules for attributes and values the project never uses
 // without the plugin: import '@tiaforge-ui/tinystyle/enhance/customizable-select.css' after core.css
 ```
 
