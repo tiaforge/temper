@@ -375,6 +375,14 @@
     background-size: 0.3em 0.3em;
     background-repeat: no-repeat;
   }
+  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding-block: var(--ts-space-xs); }
+  :where(input[type="color"]) {
+    inline-size: calc(var(--ts-control-h) * 1.5); block-size: var(--ts-control-h); padding: 3px;
+    border: 1px solid var(--ts-field-border); border-radius: var(--ts-radius); background: var(--ts-field); cursor: pointer;
+  }
+  :where(input[type="color"])::-webkit-color-swatch-wrapper { padding: 0; }
+  :where(input[type="color"])::-webkit-color-swatch { border: 0; border-radius: var(--ts-radius-sm); }
+  :where(input[type="color"])::-moz-color-swatch { border: 0; border-radius: var(--ts-radius-sm); }
   :where(input[type="file"]) { max-inline-size: 100%; font-size: var(--ts-control-font); }
   :where(input[type="file"])::file-selector-button {
     block-size: var(--ts-control-h); padding-inline: var(--ts-control-px); margin-inline-end: var(--ts-space-sm);
@@ -444,6 +452,15 @@
   :where(progress)::-webkit-progress-bar { background: transparent; }
   :where(progress)::-webkit-progress-value { background: var(--ts-tone); border-radius: inherit; }
   :where(progress)::-moz-progress-bar { background: var(--ts-tone); border-radius: inherit; }
+  /* meter: like progress; the browser picks good (low/high/optimum), so-so or bad, shown as success, warning, danger */
+  :where(meter) { appearance: none; inline-size: 100%; block-size: 0.5rem; border-radius: var(--ts-radius-full); background: var(--ts-fill); overflow: hidden; }
+  :where(meter)::-webkit-meter-bar { block-size: 0.5rem; border: 0; border-radius: inherit; background: var(--ts-fill); }
+  :where(meter)::-webkit-meter-optimum-value { background: var(--ts-success); }
+  :where(meter)::-webkit-meter-suboptimum-value { background: var(--ts-warning); }
+  :where(meter)::-webkit-meter-even-less-good-value { background: var(--ts-danger); }
+  :where(meter):-moz-meter-optimum::-moz-meter-bar { background: var(--ts-success); }
+  :where(meter):-moz-meter-sub-optimum::-moz-meter-bar { background: var(--ts-warning); }
+  :where(meter):-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--ts-danger); }
 
   /* card */
   :where(article) {
