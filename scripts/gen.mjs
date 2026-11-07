@@ -89,10 +89,14 @@ export function renderAttributeTypes(vocab) {
       if (values.every(v => /^\d+$/.test(v))) type += ' | ' + values.join(' | ');
       if (a.allowEmpty) type += ` | '' | Empty`;
     }
+    const old = Object.keys(vocab.deprecated?.values?.[name] ?? {});
+    if (old.length) type += ' | ' + old.map(q).join(' | ') + ' /* deprecated */';
     const doc = (a.short ?? firstSentence(a.description)).replace(/\*\//g, '*\\/');
     const mod = a.module && a.module !== 'core' ? ` Needs ${a.module}.css.` : '';
     return `  /** ${doc}${mod} */\n  '${name}'?: ${type} | null | Removes;`;
   });
+  for (const [oldName, newName] of Object.entries(vocab.deprecated?.attributes ?? {}))
+    props.push(`  /** @deprecated Use ${newName}. */\n  '${oldName}'?: TinystyleAttributes<Removes, Empty>['${newName}'];`);
   return `// Generated from vocab.json by scripts/gen.mjs. Do not edit.
 // tinystyle's data-* attributes and their allowed values, so values computed at runtime are type-checked
 // like static ones are by \`tinystyle check\`. Use a framework file (svelte, react, vue, astro, sinter),

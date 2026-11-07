@@ -83,6 +83,11 @@ App.tsx(7,6): error TS2322: … Types of property ''data-collapsed'' are incompa
       Type 'boolean' is not assignable to type 'true | "" | null | undefined'.
 ```
 
+`tinystyle check --fix` applies the fixes that cannot go wrong: a value moved to its axis, a typo with
+exactly one close match, a value removed from a boolean attribute. Renames go through
+`deprecated` in vocab.json: old names keep working until the next major version, the checker warns,
+and `--fix` rewrites them.
+
 It also warns about inputs, selects and textareas that have no label (a placeholder doesn't count).
 It reads HTML, Svelte, Astro, Vue and JSX files, plus `--ts-*` tokens in CSS. The Vite plugin runs it
 in every build (errors fail the build, the dev server warns). With classes this isn't possible:

@@ -20,18 +20,35 @@ test('every vocab attribute and value has a CSS selector', () => {
   }
 });
 
+const dep = vocab.deprecated;
 test('every attribute selector in the CSS is in the vocab', () => {
   for (const s of selectors) {
     const [name, value] = s.split('=');
+    if (dep.attributes[name] || (value && dep.values[name]?.[value] !== undefined)) continue; // still styled until removed
     const spec = vocab.attributes[name];
     assert.ok(spec, `[${name}] is styled but missing from vocab.json`);
     if (value) assert.ok(spec.values?.[value] !== undefined, `[${name}="${value}"] is styled but missing from vocab.json`);
   }
 });
 
+test('deprecated names keep working until they are removed', () => {
+  for (const [old, now] of Object.entries(dep.attributes)) {
+    assert.ok(selectors.has(old), `deprecated [${old}] has no selector any more`);
+    assert.ok(vocab.attributes[now], `deprecated ${old} points to unknown ${now}`);
+  }
+  for (const [name, values] of Object.entries(dep.values)) for (const [old, now] of Object.entries(values)) {
+    assert.ok(selectors.has(`${name}=${old}`), `deprecated [${name}="${old}"] has no selector any more`);
+    assert.ok(vocab.attributes[name]?.values?.[now] !== undefined, `deprecated ${name}="${old}" points to unknown "${now}"`);
+  }
+  for (const [old, now] of Object.entries(dep.tokens)) {
+    assert.ok(declared.has(old), `deprecated ${old} is not declared any more (alias it: ${old}: var(${now}))`);
+    assert.ok(vocab.tokens[now], `deprecated ${old} points to unknown ${now}`);
+  }
+});
+
 test('every token in the CSS is in the vocab', () => {
   for (const t of new Set([...declared, ...used])) {
-    if (t.startsWith('--ts-icon-')) continue; // --ts-icon-<name>, one per icon
+    if (t.startsWith('--ts-icon-') || dep.tokens[t]) continue; // --ts-icon-<name>, one per icon
     assert.ok(vocab.tokens[t], `${t} is missing from vocab.json`);
   }
 });

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkMarkup, checkStyles, check } from '../lib/check.js';
+import { readFileSync } from 'node:fs';
+import { checkMarkup, checkStyles, check, applyFixes } from '../lib/check.js';
 
 const codes = r => r.map(d => d.code);
 
@@ -201,4 +202,64 @@ test('data-layout on table parts and data-num off cells', () => {
   assert.deepEqual(codes(checkMarkup('<table><tr><td data-layout="row">x</td></tr></table>')), ['TS108']);
   assert.deepEqual(codes(checkMarkup('<span data-num>3</span>')), ['TS108']);
   assert.deepEqual(codes(checkMarkup('<table><tr><td data-num><div data-layout="row">3</div></td></tr></table>')), []);
+});
+
+// ───── fixes and deprecations ─────
+
+const applyFixesTo = (src, diags) => applyFixes(src, diags).text;
+const fixed = (src, file = 'a.html', ctx) => applyFixesTo(src, checkMarkup(src, file, ctx));
+
+test('--fix: wrong axis, typos, boolean values, primary', () => {
+  assert.equal(fixed('<button data-variant="danger">x</button>'), '<button data-tone="danger">x</button>');
+  assert.equal(fixed('<div data-layout="stak"></div>'), '<div data-layout="stack"></div>');
+  assert.equal(fixed('<span data-badge="true">3</span>'), '<span data-badge>3</span>');
+  assert.equal(fixed('<button data-variant="primary" type="submit">x</button>'), '<button type="submit">x</button>');
+  assert.equal(fixed('<button data-varient="ghost">x</button>'), '<button data-variant="ghost">x</button>');
+  assert.equal(fixed('<span data-icon="maill"></span>'), '<span data-icon="mail"></span>');
+  // two fixes in one tag, both applied
+  assert.equal(fixed('<button data-variant="danger" data-size="smm">x</button>'), '<button data-tone="danger" data-size="sm">x</button>');
+});
+
+test('--fix leaves ambiguous and conflicting cases alone', () => {
+  // data-tone is already set: moving danger there would lose a value
+  const src = '<button data-variant="danger" data-tone="accent">x</button>';
+  assert.equal(fixed(src), src);
+  // computed values are reported, not rewritten
+  const svelte = `<span data-tone={x ? 'danger' : 'sucess'}>x</span>`;
+  assert.equal(fixed(svelte, 'A.svelte'), svelte);
+  // equally close candidates: no guess ("ss" is one edit from both sm and xs)
+  assert.equal(checkMarkup('<div data-layout="row" data-gap="ss"></div>')[0].fix, undefined);
+});
+
+test('--fix for tokens', () => {
+  const css = '.x { color: var(--ts-text-mute); }';
+  assert.equal(applyFixesTo(css, checkStyles(css)), '.x { color: var(--ts-text-muted); }');
+});
+
+test('deprecated names warn (TS112), keep working and get rewritten', () => {
+  const vocab = structuredClone(JSON.parse(readFileSync(new URL('../vocab.json', import.meta.url), 'utf8')));
+  vocab.deprecated = { attributes: { 'data-kind': 'data-variant' }, values: { 'data-variant': { subtle: 'ghost' } }, tokens: { '--ts-muted': '--ts-text-muted' } };
+  const r = checkMarkup('<button data-variant="subtle">x</button><button data-kind="outline">y</button>', 'a.html', { vocab });
+  assert.deepEqual(codes(r), ['TS112', 'TS112']);
+  assert.equal(r[0].severity, 'warning');
+  assert.equal(fixed('<button data-variant="subtle">x</button><button data-kind="outline">y</button>', 'a.html', { vocab }),
+    '<button data-variant="ghost">x</button><button data-variant="outline">y</button>');
+  // the old attribute's value is still checked against the new one
+  assert.deepEqual(codes(checkMarkup('<button data-kind="nope">x</button>', 'a.html', { vocab })), ['TS112', 'TS101']);
+  const css = ':root { --ts-muted: red; } .x { color: var(--ts-muted); }';
+  assert.equal(applyFixesTo(css, checkStyles(css, 'a.css', { vocab })), ':root { --ts-text-muted: red; } .x { color: var(--ts-text-muted); }');
+});
+
+test('the CLI fixes files and reports what is left', async () => {
+  const { mkdtempSync, writeFileSync, readFileSync: read } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { spawnSync } = await import('node:child_process');
+  const dir = mkdtempSync(tmpdir() + '/ts-fix-');
+  writeFileSync(dir + '/a.html', '<button data-variant="danger">x</button>\n<div data-gap="ss"></div>\n');
+  const before = spawnSync(process.execPath, [new URL('../bin/tinystyle.js', import.meta.url).pathname, 'check', dir], { encoding: 'utf8' });
+  assert.match(before.stdout, /1 fixable with --fix/);
+  const run = spawnSync(process.execPath, [new URL('../bin/tinystyle.js', import.meta.url).pathname, 'check', '--fix', dir], { encoding: 'utf8' });
+  assert.match(run.stdout, /Fixed 1 problem\(s\) in 1 file\(s\)/);
+  assert.match(run.stdout, /data-gap="ss" is not valid/);
+  assert.equal(read(dir + '/a.html', 'utf8'), '<button data-tone="danger">x</button>\n<div data-gap="ss"></div>\n');
 });

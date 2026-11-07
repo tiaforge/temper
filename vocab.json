@@ -785,5 +785,11 @@
       "pattern": true,
       "description": "The icon image for data-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --ts-icon-rocket: url(/icons/rocket.svg); } plus [data-icon=\"rocket\"] { --_icon: var(--ts-icon-rocket); }."
     }
+  },
+  "deprecated": {
+    "$comment": "Renamed names, old → new. They keep working (the CSS keeps a selector for them, the types accept them) until the next major version; tinystyle check warns (TS112) and --fix rewrites them. Not listed in the docs.",
+    "attributes": {},
+    "values": {},
+    "tokens": {}
   }
 }

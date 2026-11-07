@@ -375,7 +375,7 @@ Done in the same pass: types for computed values (`types/*.d.ts`; sinter's `Sint
 values reduced to their literals in `tinystyle check`, context rules from vocab.json (TS107–TS109) and
 missing module imports (TS110). Still open, in this order:
 
-54. **`tinystyle check --fix` and deprecations.** The checker already computes "did you mean"; apply the
+54. *Done: `--fix` (CLI), fixes on diagnostics, `deprecated` in vocab.json with TS112, types and a test that deprecated names stay styled.* **`tinystyle check --fix` and deprecations.** The checker already computes "did you mean"; apply the
     unambiguous ones (wrong axis `data-variant="danger"` → `data-tone="danger"`, value typos, `data-badge="true"`).
     A closed vocabulary turns every rename into a breaking change, so add `deprecated: { use: … }` entries to
     vocab.json: the checker warns (TS112), `--fix` rewrites, and the types keep accepting the old value until the
