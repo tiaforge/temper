@@ -126,3 +126,25 @@ browser's `margin: auto`. The kitchen sink only showed a static dialog preview, 
 18. **Dropdown caret** for `button[popovertarget]` (the agent wrote a `▾` span).
 19. **Dialog close button**: a recipe or default for the header `×` (every dialog repeats it).
 20. **Docs**: `data-size` also works on icon buttons; the search field in a toolbar wants `data-grow` (exists, but the agent did not find it). *Done: toolbar recipe uses `data-grow`, and `data-grow` now wraps onto its own line below `--ts-grow-basis` (10rem).*
+
+## Rerun v3 (CSS-only rail)
+
+| | v1 | v2 | v3 |
+|---|---|---|---|
+| Custom CSS (page + nav) | 84 | 14 | **0** |
+| Custom script for the rail | – | ~20 lines | ~8 lines (saving the collapsed state only) |
+| Nav markup | 59 | 40 | 25 lines |
+| Agent tokens / tool calls / minutes | 126k / 32 / 7.2 | 107k / 25 / 3.6 | 117k / 28 / 6.0 (also verified dialogs, menu, drawer) |
+
+Findings and what happened to them:
+- Saving the collapsed state needs script: documented as a 3-line snippet in the app shell recipe.
+- Drawer button needed on every page: the recipe puts it in the shared nav partial.
+- `data-shell` broke with sinter's custom elements next to the rail: the shell is now flex, so other children take no space.
+- Rail links and buttons had different font sizes under compact density, and the user name was not aligned with the icons: fixed in app.css.
+- An empty helper element inside a dialog adds a grid gap row: documented (use `hidden`).
+- `dialog > div > header` and `data-stretch` on a link button were undocumented: now in the recipes.
+
+Also added after v3 (fewer attributes to write):
+- An empty close button in a dialog or card header (`command="close"`, `hide-popover`, `popovertargetaction="hide"`) is drawn as a quiet × icon button; the checker requires an aria-label on it.
+- Buttons that open a popover get a dropdown caret (menu.css).
+- Vite plugin (`@tiaforge-ui/tinystyle/vite`) runs the checker in every build.

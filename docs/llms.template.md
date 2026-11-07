@@ -12,6 +12,12 @@ import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
 ```
 
+```js
+// vite.config.js: runs tinystyle check in every build (errors fail the build, the dev server warns)
+import tinystyle from '@tiaforge-ui/tinystyle/vite';
+export default { plugins: [tinystyle()] };
+```
+
 ## Rules
 
 1. Write semantic HTML first. `button`, `input`, `select`, `textarea`, `label`, `fieldset`, `dialog`,
@@ -35,7 +41,8 @@ import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
 8. Size and tune things with the documented custom properties in `style` (`style="--ts-min: 12rem"`,
    `style="--ts-tone: #e8590c"`, `style="--ts-avatar-size: 4rem"`). That is the intended way; do not
    write `width`, `margin` or `padding` there.
-9. Run `npx tinystyle check <dir>` after editing. It reports unknown attribute values and tokens.
+9. Run `npx tinystyle check <dir>` after editing (or use the Vite plugin, which runs it in every build).
+   It reports unknown attribute values and tokens, and unlabeled icon or close buttons.
 
 ## Attributes
 
@@ -89,7 +96,10 @@ buttons to the end.
 ```html
 <button commandfor="confirm" command="show-modal" data-tone="danger">Delete…</button>
 <dialog id="confirm">
-  <header><h2>Delete “Team retro”?</h2></header>
+  <header>
+    <h2>Delete “Team retro”?</h2>
+    <button commandfor="confirm" command="close" aria-label="Close"></button>
+  </header>
   <p>This sends a cancellation to all guests.</p>
   <footer>
     <button commandfor="confirm" command="close" data-variant="secondary">Keep</button>
@@ -97,6 +107,12 @@ buttons to the end.
   </footer>
 </dialog>
 ```
+
+An empty close button in the header (`command="close"`, `command="hide-popover"` or
+`popovertargetaction="hide"`) is drawn as a quiet × icon button; give it an `aria-label`. Header and
+footer also work through one wrapper (`dialog > form > footer`, a template-rendered `div`). The open
+dialog is a grid with a gap between its children, so an empty helper element inside it adds an empty
+row: give such elements the `hidden` attribute.
 
 ### Toolbar
 
@@ -110,7 +126,6 @@ buttons to the end.
 
 `data-grow` makes the search field fill the space between the heading and the button. For a fixed
 width instead, leave `data-grow` out and add `data-justify="between"` to the row.
-```
 
 ### Status
 
@@ -134,6 +149,9 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
 
 ```html
 <body data-shell>
+  <!-- shared nav partial: the drawer button and the rail -->
+  <button popovertarget="rail" data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu"
+          style="position: fixed; inset: var(--ts-space-sm) auto auto var(--ts-space-sm)">☰</button>
   <nav data-rail popover id="rail" aria-label="Main">
     <header>
       <span data-rail-label>Caley</span>
@@ -141,26 +159,33 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
     </header>
     <a href="/mail/"><svg>…</svg><span>Mail</span><span data-badge data-tone="accent">12</span></a>
     <a href="/contacts/" aria-current="page"><svg>…</svg><span>Contacts</span></a>
-    <footer><a href="/settings/"><svg>…</svg><span>Settings</span></a></footer>
+    <footer>
+      <span data-caption data-rail-label>Tia Heinrich</span>
+      <a href="/settings/"><svg>…</svg><span>Settings</span></a>
+    </footer>
   </nav>
-  <main data-layout="stack" data-gap="lg" data-pad="lg">
-    <div data-layout="row" data-gap="sm">
-      <button popovertarget="rail" data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu">☰</button>
-      <h1>Contacts</h1>
-    </div>
-    …
-  </main>
+  <main data-layout="stack" data-gap="lg" data-pad="lg">…</main>
   <button data-fab data-icon aria-label="New contact">+</button>
 </body>
 ```
 
 No script needed. On wide screens the rail sits next to `main`, and the checkbox collapses it to icons.
-Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click outside closes it.
+Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click outside closes it. Other
+children of `data-shell` (scripts, templates, framework elements) take no space. `aria-current` must
+be set in the markup; CSS cannot detect the current page.
+
+To keep the collapsed state across page loads, add this (CSS cannot store anything):
+
+```js
+const c = document.querySelector('[data-rail-collapse]');
+c.checked = localStorage.getItem('rail-collapsed') === '1';
+c.addEventListener('change', () => localStorage.setItem('rail-collapsed', c.checked ? '1' : '0'));
+```
 
 ### Dropdown menu (menu.css)
 
 ```html
-<button popovertarget="book-menu" data-variant="outline">Address books ▾</button>
+<button popovertarget="book-menu" data-variant="outline">Address books</button>
 <div popover id="book-menu" data-menu>
   <label><input type="checkbox" checked> Personal</label>
   <label><input type="checkbox"> Work</label>
@@ -169,6 +194,9 @@ Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click ou
 </div>
 ```
 
+Buttons that open a popover (`popovertarget`, `command="toggle-popover"`) get a ▾ caret automatically;
+icon buttons (`data-icon`) do not.
+
 ### Card grid with avatars, whole card clickable
 
 ```html
@@ -176,6 +204,7 @@ Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click ou
   <article data-layout="stack" data-gap="xs" data-align="center">
     <span data-avatar>MO</span>
     <a href="#mira" data-stretch><strong>Mira Okafor</strong></a>
+    <!-- or, when a click opens a dialog: <button data-stretch data-variant="link" commandfor="detail" command="show-modal">Mira Okafor</button> -->
     <a href="mailto:mira@okafor.io">mira@okafor.io</a>
     <small data-muted>Climbing club</small>
   </article>

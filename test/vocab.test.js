@@ -39,3 +39,8 @@ test('every vocab token is declared in the CSS, unless optional', () => {
     else assert.ok(declared.has(t), `${t} is in vocab.json but never declared`);
   }
 });
+
+test('llms.txt has balanced code fences', () => {
+  const llms = readFileSync(new URL('../llms.txt', import.meta.url), 'utf8');
+  assert.equal((llms.match(/^```/gm) ?? []).length % 2, 0, 'an unclosed ``` block in docs/llms.template.md');
+});

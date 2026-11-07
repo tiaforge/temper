@@ -5,21 +5,17 @@
      the browser provides the backdrop, Esc and click-outside. */
 
 @layer ts.components {
-  /* shell: rail + main area. The document scrolls; the rail sticks. */
-  :where([data-shell]) {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    min-block-size: 100dvh;
-  }
-  :where([data-shell]) > :where(main) { min-inline-size: 0; }
-  :where([data-shell]) > :where(main:last-of-type) { grid-column: -2 / -1; }
+  /* shell: rail + main area side by side. The document scrolls; the rail sticks. Flex, not grid, so
+     other children (script, template or framework elements such as <sn-resource>) take no space. */
+  :where([data-shell]) { display: flex; min-block-size: 100dvh; }
+  :where([data-shell]) > :where(main) { flex: 1 1 0; min-inline-size: 0; }
 
   /* rail */
   :where([data-rail]) {
     --_w: var(--ts-rail-width, 15rem);
     position: sticky; inset-block-start: 0;
     display: flex; flex-direction: column; gap: 2px;
-    inline-size: var(--_w); block-size: 100dvh; overflow-y: auto; overflow-x: hidden;
+    flex: none; inline-size: var(--_w); block-size: 100dvh; overflow-y: auto; overflow-x: hidden;
     padding: var(--ts-space-sm);
     inset: auto; margin: 0; min-inline-size: 0;
     border: 0; border-inline-end: 1px solid var(--ts-border); border-radius: 0; box-shadow: none;
@@ -35,6 +31,8 @@
     display: flex; flex-direction: column; gap: 2px;
     margin-block-start: auto; padding-block-start: var(--ts-space-sm); border-block-start: 1px solid var(--ts-border);
   }
+  /* text in the header and footer (brand, user name) lines up with the item icons */
+  :where([data-rail]) > :where(header, footer) > :where(:not(a, button, input, ul, ol, nav)) { padding-inline: calc((var(--ts-control-h) - 1.125rem) / 2); }
   :where([data-rail]) :where(ul) { display: flex; flex-direction: column; gap: 2px; padding: 0; list-style: none; }
 
   /* rail items: links and buttons look like quiet nav entries; aria-current marks the active one */
@@ -42,7 +40,7 @@
     --_bg: transparent; --_fg: var(--ts-text);
     justify-content: start; gap: var(--ts-space-sm);
     inline-size: 100%; block-size: var(--ts-control-h); padding-inline: calc((var(--ts-control-h) - 1.125rem) / 2);
-    border-radius: var(--ts-radius); font-weight: 500; text-decoration: none; white-space: nowrap;
+    border-radius: var(--ts-radius); font-size: var(--ts-control-font); font-weight: 500; text-decoration: none; white-space: nowrap;
   }
   :where([data-rail]) :where(a):not([data-variant], [data-icon]) {
     display: flex; align-items: center; color: var(--_fg); background: var(--_bg);
@@ -99,7 +97,6 @@
 
   /* narrow screens: a rail with the popover attribute becomes a drawer, opened by a popovertarget button */
   @media (width < 48rem) {
-    :where([data-shell]:has(> [data-rail][popover])) { grid-template-columns: minmax(0, 1fr); }
     :where([data-rail][popover]) {
       --_w: min(var(--ts-rail-width, 15rem), 85vw);
       position: fixed; inset-block: 0; inset-inline-start: 0; inset-inline-end: auto;

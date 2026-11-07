@@ -16,7 +16,8 @@
     "./all.css": "./dist/all.css",
     "./vocab.json": "./vocab.json",
     "./html-custom-data.json": "./html-custom-data.json",
-    "./check": "./lib/check.js"
+    "./check": "./lib/check.js",
+    "./vite": "./lib/vite.js"
   },
   "bin": {
     "tinystyle": "bin/tinystyle.js"

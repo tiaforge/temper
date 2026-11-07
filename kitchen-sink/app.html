@@ -38,7 +38,7 @@
   <a href="#" aria-current="page"><svg><use href="#i-users"/></svg><span>Contacts</span></a>
   <a href="#"><svg><use href="#i-search"/></svg><span>Search</span></a>
   <footer>
-    <small data-caption data-rail-label data-pad="xs">Tia Heinrich</small>
+    <span data-caption data-rail-label>Tia Heinrich</span>
     <a href="#"><svg><use href="#i-gear"/></svg><span>Settings</span></a>
   </footer>
 </nav>
@@ -48,7 +48,7 @@
     <button popovertarget="rail" data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu" id="open-drawer"><svg><use href="#i-menu"/></svg></button>
     <h1>Contacts</h1>
     <input type="search" data-grow placeholder="Filter contacts" aria-label="Filter contacts">
-    <button popovertarget="books" data-variant="outline" id="books-btn">Address books ▾</button>
+    <button popovertarget="books" data-variant="outline" id="books-btn">Address books</button>
   </div>
   <div popover id="books" data-menu>
     <label><input type="checkbox" checked> Personal</label>
@@ -88,6 +88,11 @@
     </div>
   </section>
 
+  <dialog id="detail">
+    <header><h2>Mira Okafor</h2><button commandfor="detail" command="close" aria-label="Close"></button></header>
+    <dl data-pairs><dt>Email</dt><dd>mira@okafor.io</dd><dt>Phone</dt><dd>+49 151 2345 6789</dd></dl>
+    <footer><button data-variant="secondary" commandfor="detail" command="close">Close</button><button>Edit</button></footer>
+  </dialog>
   <article data-layout="stack" data-gap="sm" style="max-inline-size: 28rem">
     <header><h3>Mira Okafor</h3><button data-icon data-variant="ghost" aria-label="Close">×</button></header>
     <dl data-pairs>
@@ -104,7 +109,8 @@
   { const q = new URLSearchParams(location.search);
     if (q.has('collapsed')) document.getElementById('collapse').checked = true;
     if (q.has('open')) document.getElementById('open-drawer').click();
-    if (q.has('menu')) document.getElementById('books-btn').click(); }
+    if (q.has('menu')) document.getElementById('books-btn').click();
+    if (q.has('dialog')) document.getElementById('detail').showModal(); }
 </script>
 </body>
 </html>

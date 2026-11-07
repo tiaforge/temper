@@ -427,6 +427,14 @@
   :where(dialog, article) > :where(footer),
   :where(dialog, article) > :where(div, form, section) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--ts-space-sm); }
   :where(dialog, article) :where(header) > :where(:not(h1, h2, h3, h4, h5, h6)) { flex-shrink: 0; }
+  /* Close buttons in a dialog or card header look like quiet icon buttons; an empty one draws an ×. */
+  :where(dialog, article) :where(header) > :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])) {
+    --_bg: transparent; --_fg: var(--ts-text-muted); inline-size: calc(var(--ts-control-h) * var(--_size, 1)); padding: 0;
+  }
+  :where(dialog, article) :where(header) > :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])):empty::before {
+    content: ""; inline-size: 1.125rem; block-size: 1.125rem; background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
   :where(dialog) > :where(header) :where(h1, h2, h3) { font-size: var(--ts-text-lg); }
 
   /* popover */
