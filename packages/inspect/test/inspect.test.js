@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { readdirSync } from 'node:fs';
+import { mkdtempSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -30,8 +30,10 @@ async function serve() {
 
 test('fixtures: every check on broken.html, a clean page, dialogs opened through their openers', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   const { srv, base } = await serve();
-  const profiles = () => readdirSync(tmpdir()).filter(n => n.startsWith('temper-inspect-'));
-  const before = profiles();
+  // A temp dir of its own: other test files launch browsers in parallel, and their profiles would show up in a shared one.
+  const tmp = mkdtempSync(join(tmpdir(), 'temper-inspect-test-'));
+  const prevTmp = process.env.TMPDIR;
+  process.env.TMPDIR = tmp;
   try {
     const { findings } = await inspect(['broken', 'rows', 'state'].map(f => `${base}${f}.html`), { settle: 200 });
     const of = (file, state = 'page') => findings.filter(f => f.url.endsWith(file) && f.state === state);
@@ -67,8 +69,10 @@ test('fixtures: every check on broken.html, a clean page, dialogs opened through
     assert.match(text, /5 error\(s\), 4 warning\(s\) \(\d+ info hidden/);
     assert.match(format(findings, { allWhere: all, verbose: true }), /rows\.html\n  dialog dialog#f\n    info opened/);
     // the browser profile is removed (also when the browser is a Flatpak, whose /tmp is not ours)
-    assert.deepEqual(profiles().filter(n => !before.includes(n)), []);
+    assert.deepEqual(readdirSync(tmp), []);
   } finally {
+    if (prevTmp === undefined) delete process.env.TMPDIR; else process.env.TMPDIR = prevTmp;
+    rmSync(tmp, { recursive: true, force: true });
     srv.close();
   }
 });
