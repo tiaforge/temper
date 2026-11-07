@@ -481,9 +481,10 @@
   :where(tbody tr):hover { background: color-mix(in oklab, var(--ts-fill) 60%, transparent); }
 
   /* label/value pairs */
-  :where(dl[data-pairs]) { display: grid; grid-template-columns: max-content 1fr; gap: var(--ts-space-xs) var(--ts-space-md); }
+  :where(dl[data-pairs]) { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--ts-space-xs) var(--ts-space-md); }
   :where(dl[data-pairs]) > :where(div) { display: contents; }
   :where(dl[data-pairs]) :where(dt) { color: var(--ts-text-muted); }
+  :where(dl[data-pairs]) :where(dd) { overflow-wrap: anywhere; }
 
   /* badge */
   :where([data-badge]) {

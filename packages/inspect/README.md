@@ -9,7 +9,12 @@ npx tinystyle-inspect http://localhost:5173/contacts/
 
 For each URL, it:
 - loads the page in headless Chrome or Chromium at each width (default 1280 and 390) and in light and dark mode,
-- opens every `<dialog>` and every closed `[popover]` in turn (through its `popovertarget` button when there is one),
+- opens every `<dialog>` and every closed `[popover]` in turn, the way a user does: by clicking a visible
+  button that opens it (`commandfor` + `command="show-modal"`, `popovertarget`), so the app sets its state
+  first (for example, which contact a detail dialog shows). If that button sits inside another closed
+  dialog or popover, that one is opened first. Only when no button opens it is the overlay opened
+  directly; the report then says so, and warns if it looks empty (its content probably depends on app
+  state),
 - reports problems as plain text, with a selector for each element.
 
 | Check | Severity |
@@ -33,4 +38,5 @@ replaces a dozen separate screenshots when you also need to judge how it looks.
 It needs no npm dependencies. It drives an installed Chrome or Chromium over the DevTools protocol,
 using Node's built-in WebSocket (Node 22+). It finds the browser through `CHROME_PATH`, `--browser`,
 common binary names, or Flatpak (`com.google.Chrome`, `org.chromium.Chromium`). Point it at your dev
-server, so the page has its real data.
+server, so the page has its real data. Clicking openers runs the page's own handlers, so use dev or
+mock data, not a production backend.

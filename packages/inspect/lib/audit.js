@@ -170,34 +170,71 @@ export function install(opts) {
     ...[...document.querySelectorAll('dialog:not([open])')].map(el => ({ kind: 'dialog', el })),
     ...[...document.querySelectorAll('[popover]')].filter(p => !p.matches(':popover-open') && !p.checkVisibility()).map(el => ({ kind: 'popover', el })),
   ];
-  let list = [], current = null;
+  // Overlays are opened the way a user opens them: by clicking a visible opener (commandfor/command,
+  // popovertarget), so the app sets its state first (e.g. which contact a detail dialog shows). An opener
+  // inside another closed overlay opens that one first. Only when there is no usable opener is the overlay
+  // opened directly, and the report says so.
+  const isOpen = el => el.matches('dialog') ? el.open : el.matches(':popover-open');
+  const openersOf = el => {
+    if (!el.id) return [];
+    const id = CSS.escape(el.id);
+    return [...document.querySelectorAll(el.matches('dialog')
+      ? `[commandfor="${id}"]:is([command="show-modal"], [command="show"])`
+      : `[popovertarget="${id}"]:not([popovertargetaction="hide"]), [commandfor="${id}"]:is([command="toggle-popover"], [command="show-popover"])`)];
+  };
+  let list = [], current = null, stack = [];
+
+  async function openOverlay(el, depth) {
+    for (const op of openersOf(el)) {
+      if (!op.checkVisibility()) {
+        const outer = op.parentElement?.closest('dialog:not([open]), [popover]:not(:popover-open)');
+        if (!outer || depth >= 3 || !(await openOverlay(outer, depth + 1))) continue;
+        if (!op.checkVisibility()) continue;
+      }
+      op.click();
+      await frames(); await sleep(opts.overlayWait);
+      if (isOpen(el)) { stack.push(el); return { via: op }; }
+    }
+    if (depth > 0) return null; // only the inspected overlay itself may be opened directly
+    try { el.matches('dialog') ? el.showModal() : el.showPopover(); } catch { return null; }
+    await frames(); await sleep(opts.overlayWait);
+    if (!isOpen(el)) return null;
+    stack.push(el);
+    return { direct: true, openers: openersOf(el).length };
+  }
+
   window.__tsi = {
     list() { list = opts.overlays ? overlays() : []; return list.length; },
     check(state) {
       findings = [];
-      if (current) { scope = current.el; checkOverlay(state, current.el); }
+      if (current) {
+        scope = current.el;
+        checkOverlay(state, current.el);
+        if (current.how.via) findings.push({ state, severity: 'info', code: 'opened', selector: sel(current.how.via), message: 'opened by clicking this' });
+        if (current.how.direct) {
+          const text = (current.el.innerText ?? '').replace(/\s+/g, ' ').trim();
+          const why = current.how.openers ? 'its button is hidden at this width' : 'no button opens it via commandfor or popovertarget';
+          if (text.length < 25) findings.push({ state, severity: 'warning', code: 'state', selector: sel(current.el).split(' "')[0],
+            message: `opened directly because ${why}, and it is nearly empty: its content probably depends on app state, so this check says little about it` });
+          else findings.push({ state, severity: 'info', code: 'state', selector: sel(current.el).split(' "')[0], message: `opened directly because ${why}` });
+        }
+      }
       check(state);
       scope = document.body;
       return findings;
     },
     async open(i) {
       const o = list[i];
-      if (o.kind === 'dialog') { try { o.el.showModal(); } catch { return null; } }
-      else {
-        const p = o.el;
-        const invoker = document.querySelector(`[popovertarget="${CSS.escape(p.id)}"], [commandfor="${CSS.escape(p.id)}"][command$="popover"]`);
-        try { invoker && invoker.checkVisibility() ? invoker.click() : p.showPopover(invoker ? { source: invoker } : undefined); } catch { return null; }
-        if (!p.matches(':popover-open')) return null;
-        o.note = invoker && !invoker.checkVisibility() ? ' (its button is hidden at this width)' : '';
-      }
-      await frames(); await sleep(opts.overlayWait);
-      current = o;
-      return `${o.kind} ${sel(o.el).split(' "')[0]}${o.note ?? ''}`;
+      if (isOpen(o.el)) return null; // opened as part of an earlier chain
+      stack = [];
+      const how = await openOverlay(o.el, 0);
+      if (!how) { for (const el of stack.reverse()) el.matches('dialog') ? el.close() : el.hidePopover(); stack = []; return null; }
+      current = { ...o, how };
+      return `${o.kind} ${sel(o.el).split(' "')[0]}`;
     },
-    async close(i) {
-      const o = list[i];
-      o.kind === 'dialog' ? o.el.close() : o.el.hidePopover();
-      current = null;
+    async close() {
+      for (const el of stack.reverse()) { try { el.matches('dialog') ? el.close() : el.hidePopover(); } catch {} }
+      stack = []; current = null;
       await frames();
     },
   };

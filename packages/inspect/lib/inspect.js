@@ -42,7 +42,7 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
           const state = await page.evaluate(`window.__tsi.open(${i})`);
           if (!state) continue;
           record(await page.evaluate(`window.__tsi.check(${JSON.stringify(state)})`));
-          await take(state.replace(/ \(its button is hidden at this width\)$/, ''));
+          await take(state);
           await page.evaluate(`window.__tsi.close(${i})`);
         }
       }
