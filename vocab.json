@@ -28,7 +28,7 @@
     },
     "data-size": {
       "module": "core",
-      "on": "button, input, select",
+      "on": "button (also icon buttons), input, select, [data-avatar]",
       "description": "Control size relative to the current density.",
       "values": {
         "sm": "0.8× height, smaller text.",
@@ -52,8 +52,8 @@
       "description": "Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-gap, space around them from data-pad; children never get margins.",
       "values": {
         "stack": "Vertical column.",
-        "row": "Horizontal row that wraps, items vertically centered.",
-        "grid": "Responsive columns, each at least --ts-min wide (default 16rem).",
+        "row": "Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-wrap.",
+        "grid": "Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row.",
         "split": "Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens.",
         "center": "Horizontally centered column with max width --ts-measure (default 72rem) and side padding."
       }
@@ -119,7 +119,7 @@
       "module": "core",
       "boolean": true,
       "on": "a child of data-layout=row or stack",
-      "description": "This child takes the remaining space (e.g. the search field in a toolbar, the input in an input + button row)."
+      "description": "This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 10rem): with less room the row wraps and it gets its own line."
     },
     "data-density": {
       "module": "core",
@@ -203,31 +203,25 @@
       "module": "app",
       "boolean": true,
       "on": "nav inside [data-shell]",
-      "description": "Navigation rail. Children: optional <header> (brand, collapse button), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\". Put item text in a <span> so it can hide when collapsed."
+      "description": "Navigation rail. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens."
     },
     "data-collapsed": {
       "module": "app",
       "boolean": true,
       "on": "[data-rail]",
-      "description": "Icon-only rail. Text spans and [data-rail-label] elements are hidden. Toggle it from script."
+      "description": "Icon-only rail, set in the markup (e.g. rendered by the server from a saved preference). For a toggle the user can click, use a data-rail-collapse checkbox instead."
     },
-    "data-open": {
+    "data-rail-collapse": {
       "module": "app",
       "boolean": true,
-      "on": "[data-rail]",
-      "description": "On narrow screens, slides the rail in as a drawer and shows the [data-backdrop] that follows it. Toggle it from script."
+      "on": "input type=\"checkbox\" inside [data-rail] (usually in its header)",
+      "description": "Collapse toggle drawn as a chevron icon button. Checked = icon-only rail. Needs an aria-label. CSS cannot remember it across page loads: render checked from a saved preference, or save it with a few lines of script."
     },
     "data-rail-label": {
       "module": "app",
       "boolean": true,
       "on": "any element inside [data-rail]",
       "description": "Hidden while the rail is collapsed (e.g. the user name in the rail footer)."
-    },
-    "data-backdrop": {
-      "module": "app",
-      "boolean": true,
-      "on": "an empty div right after the [data-rail]",
-      "description": "Dims the page behind the open mobile drawer. Close the drawer when it is clicked."
     },
     "data-fab": {
       "module": "app",
@@ -248,7 +242,7 @@
       "module": "menu",
       "boolean": true,
       "on": "[popover] (dropdown) or any container (static menu)",
-      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button."
+      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport)."
     }
   },
   "tokens": {
@@ -502,6 +496,11 @@
       "kind": "input",
       "optional": true,
       "description": "Width of a collapsed rail. Default: one icon button plus padding."
+    },
+    "--ts-grow-basis": {
+      "kind": "input",
+      "optional": true,
+      "description": "Width a data-grow child needs before its row wraps. Default 10rem."
     }
   }
 }

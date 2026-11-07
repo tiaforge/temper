@@ -55,7 +55,7 @@
     },
     {
       "name": "data-size",
-      "description": "tinystyle. On: button, input, select. Control size relative to the current density.",
+      "description": "tinystyle. On: button (also icon buttons), input, select, [data-avatar]. Control size relative to the current density.",
       "values": [
         {
           "name": "sm",
@@ -86,11 +86,11 @@
         },
         {
           "name": "row",
-          "description": "Horizontal row that wraps, items vertically centered."
+          "description": "Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-wrap."
         },
         {
           "name": "grid",
-          "description": "Responsive columns, each at least --ts-min wide (default 16rem)."
+          "description": "Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row."
         },
         {
           "name": "split",
@@ -215,7 +215,7 @@
     },
     {
       "name": "data-grow",
-      "description": "tinystyle. On: a child of data-layout=row or stack. This child takes the remaining space (e.g. the search field in a toolbar, the input in an input + button row).",
+      "description": "tinystyle. On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 10rem): with less room the row wraps and it gets its own line.",
       "valueSet": "v"
     },
     {
@@ -298,27 +298,22 @@
     },
     {
       "name": "data-rail",
-      "description": "tinystyle (app.css). On: nav inside [data-shell]. Navigation rail. Children: optional <header> (brand, collapse button), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\". Put item text in a <span> so it can hide when collapsed.",
+      "description": "tinystyle (app.css). On: nav inside [data-shell]. Navigation rail. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
       "valueSet": "v"
     },
     {
       "name": "data-collapsed",
-      "description": "tinystyle (app.css). On: [data-rail]. Icon-only rail. Text spans and [data-rail-label] elements are hidden. Toggle it from script.",
+      "description": "tinystyle (app.css). On: [data-rail]. Icon-only rail, set in the markup (e.g. rendered by the server from a saved preference). For a toggle the user can click, use a data-rail-collapse checkbox instead.",
       "valueSet": "v"
     },
     {
-      "name": "data-open",
-      "description": "tinystyle (app.css). On: [data-rail]. On narrow screens, slides the rail in as a drawer and shows the [data-backdrop] that follows it. Toggle it from script.",
+      "name": "data-rail-collapse",
+      "description": "tinystyle (app.css). On: input type=\"checkbox\" inside [data-rail] (usually in its header). Collapse toggle drawn as a chevron icon button. Checked = icon-only rail. Needs an aria-label. CSS cannot remember it across page loads: render checked from a saved preference, or save it with a few lines of script.",
       "valueSet": "v"
     },
     {
       "name": "data-rail-label",
       "description": "tinystyle (app.css). On: any element inside [data-rail]. Hidden while the rail is collapsed (e.g. the user name in the rail footer).",
-      "valueSet": "v"
-    },
-    {
-      "name": "data-backdrop",
-      "description": "tinystyle (app.css). On: an empty div right after the [data-rail]. Dims the page behind the open mobile drawer. Close the drawer when it is clicked.",
       "valueSet": "v"
     },
     {
@@ -342,7 +337,7 @@
     },
     {
       "name": "data-menu",
-      "description": "tinystyle (menu.css). On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button.",
+      "description": "tinystyle (menu.css). On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
       "valueSet": "v"
     }
   ]

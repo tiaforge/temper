@@ -28,10 +28,10 @@
   </defs>
 </svg>
 
-<nav data-rail id="rail" aria-label="Main">
+<nav data-rail popover id="rail" aria-label="Main">
   <header>
     <strong data-rail-label>Caley</strong>
-    <button data-icon data-variant="ghost" aria-label="Collapse menu" id="collapse"><svg><use href="#i-left"/></svg></button>
+    <input type="checkbox" data-rail-collapse aria-label="Collapse menu" id="collapse">
   </header>
   <a href="#"><svg><use href="#i-mail"/></svg><span>Mail</span><span data-badge data-tone="accent">12</span></a>
   <a href="#"><svg><use href="#i-cal"/></svg><span>Calendar</span></a>
@@ -42,14 +42,13 @@
     <a href="#"><svg><use href="#i-gear"/></svg><span>Settings</span></a>
   </footer>
 </nav>
-<div data-backdrop id="backdrop"></div>
 
 <main data-layout="stack" data-gap="lg" data-pad="lg">
-  <div data-layout="row" data-gap="sm" data-wrap="none">
-    <button data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu" id="open-drawer"><svg><use href="#i-menu"/></svg></button>
-    <h1 data-grow>Contacts</h1>
+  <div data-layout="row" data-gap="sm">
+    <button popovertarget="rail" data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu" id="open-drawer"><svg><use href="#i-menu"/></svg></button>
+    <h1>Contacts</h1>
+    <input type="search" data-grow placeholder="Filter contacts" aria-label="Filter contacts">
     <button popovertarget="books" data-variant="outline" id="books-btn">Address books ▾</button>
-    <input type="search" placeholder="Filter contacts" aria-label="Filter contacts" style="inline-size: 14rem">
   </div>
   <div popover id="books" data-menu>
     <label><input type="checkbox" checked> Personal</label>
@@ -101,16 +100,11 @@
 <button data-fab data-icon aria-label="New contact"><svg><use href="#i-plus"/></svg></button>
 
 <script>
-{
-  const q = new URLSearchParams(location.search), rail = document.getElementById('rail');
-  const toggle = (attr, on) => rail.toggleAttribute(attr, on);
-  if (q.has('collapsed')) toggle('data-collapsed', true);
-  if (q.has('open')) toggle('data-open', true);
-  document.getElementById('collapse').onclick = () => toggle('data-collapsed');
-  document.getElementById('open-drawer').onclick = () => toggle('data-open', true);
-  document.getElementById('backdrop').onclick = () => toggle('data-open', false);
-  if (q.has('menu')) document.getElementById('books-btn').click();
-}
+  // Screenshot helpers only; the page itself needs no script. ?collapsed ?open ?menu
+  { const q = new URLSearchParams(location.search);
+    if (q.has('collapsed')) document.getElementById('collapse').checked = true;
+    if (q.has('open')) document.getElementById('open-drawer').click();
+    if (q.has('menu')) document.getElementById('books-btn').click(); }
 </script>
 </body>
 </html>

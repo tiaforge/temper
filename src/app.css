@@ -1,7 +1,8 @@
 /* tinystyle app: application shell with a navigation rail, mobile drawer, floating action button.
-   Requires core.css. State is plain attributes, so any script (or sinter) can drive it:
-   data-collapsed on the rail (icon-only), data-open on the rail (mobile drawer shown).
-   Narrow screens are below 48rem. */
+   Requires core.css. No JavaScript needed:
+   - collapse (icon-only rail): a checkbox with data-rail-collapse inside the rail, or data-collapsed on the rail
+   - mobile drawer (< 48rem): give the rail the popover attribute and open it with a popovertarget button;
+     the browser provides the backdrop, Esc and click-outside. */
 
 @layer ts.components {
   /* shell: rail + main area. The document scrolls; the rail sticks. */
@@ -11,6 +12,7 @@
     min-block-size: 100dvh;
   }
   :where([data-shell]) > :where(main) { min-inline-size: 0; }
+  :where([data-shell]) > :where(main:last-of-type) { grid-column: -2 / -1; }
 
   /* rail */
   :where([data-rail]) {
@@ -19,11 +21,12 @@
     display: flex; flex-direction: column; gap: 2px;
     inline-size: var(--_w); block-size: 100dvh; overflow-y: auto; overflow-x: hidden;
     padding: var(--ts-space-sm);
-    border-inline-end: 1px solid var(--ts-border);
-    background: var(--ts-bg);
-    transition: inline-size var(--ts-duration) var(--ts-ease), translate var(--ts-duration) var(--ts-ease);
+    inset: auto; margin: 0; min-inline-size: 0;
+    border: 0; border-inline-end: 1px solid var(--ts-border); border-radius: 0; box-shadow: none;
+    background: var(--ts-bg); color: var(--ts-text);
+    transition: inline-size var(--ts-duration) var(--ts-ease), translate var(--ts-duration) var(--ts-ease),
+      display var(--ts-duration) allow-discrete, overlay var(--ts-duration) allow-discrete;
   }
-  :where([data-rail][data-collapsed]) { --_w: var(--ts-rail-width-collapsed, calc(var(--ts-control-h) + 2 * var(--ts-space-sm) + 1px)); }
   :where([data-rail]) > :where(header) {
     display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-xs);
     min-block-size: var(--ts-control-h); padding-block-end: var(--ts-space-sm); font-weight: 650;
@@ -54,19 +57,37 @@
   :where([data-rail]) :where(a, button) > :where([data-badge]) { margin-inline-start: auto; flex-shrink: 0; }
   :where([data-rail]) :where(svg) { inline-size: 1.125rem; block-size: 1.125rem; flex-shrink: 0; }
 
-  /* collapsed: icons only; text spans and anything marked data-rail-label disappear */
-  :where([data-rail][data-collapsed]) :where(a, button) > :where(span:not([data-badge])),
-  :where([data-rail][data-collapsed]) :where([data-rail-label]) { display: none; }
-  :where([data-rail][data-collapsed]) > :where(header) { justify-content: center; }
-  /* a count badge shrinks to a dot on the icon */
-  :where([data-rail][data-collapsed]) :where(a, button):has(> [data-badge]) { position: relative; }
-  :where([data-rail][data-collapsed]) :where(a, button) > :where([data-badge]) {
-    position: absolute; inset-block-start: 0.3rem; inset-inline-end: 0.3rem;
-    inline-size: 0.5rem; block-size: 0.5rem; padding: 0; font-size: 0; background: var(--ts-tone);
+  /* collapse toggle: a checkbox drawn as an icon button with a chevron */
+  [data-rail-collapse] {
+    appearance: none; display: inline-grid; place-content: center; flex-shrink: 0;
+    inline-size: var(--ts-control-h); block-size: var(--ts-control-h);
+    border: 0; border-radius: var(--ts-radius); background: transparent; color: var(--ts-text-muted); cursor: pointer;
   }
+  [data-rail-collapse]:hover { background: var(--ts-fill); color: var(--ts-text); }
+  [data-rail-collapse]:checked { background: transparent; }
+  [data-rail-collapse]::before, [data-rail-collapse]:checked::before {
+    content: ""; inline-size: 1.125rem; block-size: 1.125rem; border: 0; rotate: 0deg; scale: 1; translate: 0;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m11 17-5-5 5-5M18 17l-5-5 5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+    transition: rotate var(--ts-duration) var(--ts-ease);
+  }
+  [data-rail-collapse]:checked::before { rotate: 180deg; }
 
-  /* backdrop behind the open mobile drawer; the app closes the drawer when it is clicked */
-  :where([data-backdrop]) { display: none; }
+  /* collapsed (wide screens): icons only; text spans and data-rail-label elements disappear */
+  @media (width >= 48rem) {
+    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) {
+      --_w: var(--ts-rail-width-collapsed, calc(var(--ts-control-h) + 2 * var(--ts-space-sm) + 1px));
+    }
+    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button) > :where(span:not([data-badge])),
+    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where([data-rail-label]) { display: none; }
+    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) > :where(header) { justify-content: center; }
+    /* a count badge shrinks to a dot on the icon */
+    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button):has(> [data-badge]) { position: relative; }
+    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button) > :where([data-badge]) {
+      position: absolute; inset-block-start: 0.3rem; inset-inline-end: 0.3rem;
+      inline-size: 0.5rem; block-size: 0.5rem; padding: 0; font-size: 0; background: var(--ts-tone);
+    }
+  }
 
   /* floating action button */
   :where([data-fab]) {
@@ -76,26 +97,20 @@
   }
   :where([data-fab]) :where(svg) { inline-size: 1.5rem; block-size: 1.5rem; }
 
-  /* narrow screens: the rail becomes an off-canvas drawer */
+  /* narrow screens: a rail with the popover attribute becomes a drawer, opened by a popovertarget button */
   @media (width < 48rem) {
-    :where([data-shell]) { grid-template-columns: minmax(0, 1fr); }
-    :where([data-rail]) {
+    :where([data-shell]:has(> [data-rail][popover])) { grid-template-columns: minmax(0, 1fr); }
+    :where([data-rail][popover]) {
       --_w: min(var(--ts-rail-width, 15rem), 85vw);
-      position: fixed; inset-block: 0; inset-inline-start: 0; z-index: 30;
-      translate: -100% 0; box-shadow: var(--ts-shadow-lg);
+      position: fixed; inset-block: 0; inset-inline-start: 0; inset-inline-end: auto;
+      box-shadow: var(--ts-shadow-lg); translate: -100% 0;
     }
-    :where([data-rail][data-collapsed]) { --_w: min(var(--ts-rail-width, 15rem), 85vw); }
-    :where([data-rail][data-collapsed]) :where(a, button) > :where(span:not([data-badge])),
-    :where([data-rail][data-collapsed]) :where([data-rail-label]) { display: revert; }
-    :where([data-rail][data-collapsed]) :where(a, button) > :where([data-badge]) {
-      position: static; inline-size: auto; block-size: 1.375rem; padding-inline: 0.5rem; font-size: var(--ts-text-xs); background: var(--ts-tone-soft);
-    }
-    :where([data-rail][data-open]) { translate: 0 0; }
-    :where([data-rail][data-open] ~ [data-backdrop]) {
-      display: block; position: fixed; inset: 0; z-index: 29;
-      background: oklch(0.2 0.02 var(--ts-neutral-hue) / 0.45);
-    }
+    :where([data-rail][popover]:not(:popover-open)) { display: none; }
+    :where([data-rail][popover]:popover-open) { translate: 0 0; }
+    :where([data-rail][popover])::backdrop { background: oklch(0.2 0.02 var(--ts-neutral-hue) / 0.45); }
+    [data-rail][popover] [data-rail-collapse] { display: none; }
   }
+  @starting-style { :where([data-rail][popover]:popover-open) { translate: -100% 0; } }
 }
 
 @layer ts.layout {

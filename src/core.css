@@ -180,6 +180,7 @@
   :where([data-layout]) { --_gap: var(--ts-space-md); gap: var(--_gap); }
   :where([data-layout="stack"]) { display: flex; flex-direction: column; }
   :where([data-layout="row"]) { display: flex; flex-wrap: wrap; align-items: center; }
+  :where(:is(button, a, label)[data-layout="row"]:not([data-wrap])) { flex-wrap: nowrap; }
   :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(var(--ts-min, 16rem), 100%), 1fr)); }
   :where([data-layout="split"]) { display: flex; flex-wrap: wrap; }
   :where([data-layout="split"] > :nth-child(1 of :not(template))) { flex: 1 1 var(--ts-split, 16rem); }
@@ -199,7 +200,7 @@
   :where([data-gap="xl"]) { --_gap: var(--ts-space-xl); }
   :where([data-wrap="none"]) { flex-wrap: nowrap; }
   :where([data-wrap="wrap"]) { flex-wrap: wrap; }
-  :where([data-grow]) { flex: 1 1 0; min-inline-size: 0; }
+  :where([data-grow]) { flex: 1 1 var(--ts-grow-basis, 10rem); min-inline-size: 0; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
   :where([data-pad="xs"]) { --_pad: var(--ts-space-xs); }

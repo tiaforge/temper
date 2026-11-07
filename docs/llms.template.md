@@ -26,6 +26,7 @@ import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
    children (needs `data-layout`), `data-pad` around them. Do not write `margin` or `padding` in
    `style` attributes. To add space between two things, wrap them in a `data-layout` element.
    `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
+   `data-grow` on one child makes it take the remaining space (search fields, inputs next to a button).
 5. Sizes always use the same words: `xs sm md lg xl`. There are no numeric scales.
 6. Your own CSS always wins over tinystyle (tinystyle lives in `@layer ts.*`). Never use `!important`.
    In your own CSS, use the tokens (`var(--ts-text-muted)`, `var(--ts-space-sm)`), never hard-coded colors.
@@ -35,19 +36,6 @@ import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
    `style="--ts-tone: #e8590c"`, `style="--ts-avatar-size: 4rem"`). That is the intended way; do not
    write `width`, `margin` or `padding` there.
 9. Run `npx tinystyle check <dir>` after editing. It reports unknown attribute values and tokens.
-
-## Behavior worth knowing
-
-- `data-layout="row"` wraps by default; `data-wrap="none"` keeps one line. `data-grow` on a child makes it fill the rest.
-- `data-layout="grid"` makes columns at least `--ts-min` wide (default 16rem). Few items keep their column
-  width; they do not stretch across the row.
-- `data-layout` overrides an element's own display, so it works on `label`, `article`, `fieldset`, `dialog`.
-- A plain `[popover]` is centered in the viewport. For a dropdown under its button use `data-menu` (menu.css).
-- `article > header` / `footer` and `dialog > header` / `footer` also work through one wrapper element
-  (`dialog > form > footer`), so template-rendered bodies keep their layout.
-- `1rem` is 16px (the browser default). Pico enlarges the root font, so sizes copied from Pico look smaller.
-- Template engines that leave `<template>` elements in the DOM break `:first-child` in your own CSS; use
-  `:first-of-type` or `:nth-child(1 of :not(template))`.
 
 ## Attributes
 
@@ -113,13 +101,15 @@ buttons to the end.
 ### Toolbar
 
 ```html
-<div data-layout="row" data-gap="xs" data-justify="between">
+<div data-layout="row" data-gap="sm">
   <h2>Contacts</h2>
-  <div data-layout="row" data-gap="xs">
-    <input type="search" placeholder="Search" aria-label="Search">
-    <button data-icon data-variant="ghost" aria-label="Add contact">+</button>
-  </div>
+  <input type="search" data-grow placeholder="Search" aria-label="Search">
+  <button data-icon data-variant="ghost" aria-label="Add contact">+</button>
 </div>
+```
+
+`data-grow` makes the search field fill the space between the heading and the button. For a fixed
+width instead, leave `data-grow` out and add `data-justify="between"` to the row.
 ```
 
 ### Status
@@ -144,23 +134,28 @@ buttons to the end.
 
 ```html
 <body data-shell>
-  <nav data-rail aria-label="Main">
-    <header><span data-rail-label>Caley</span>
-      <button data-icon data-variant="ghost" aria-label="Collapse menu">«</button></header>
-    <a href="/mail/"><svg>…</svg><span>Mail</span></a>
+  <nav data-rail popover id="rail" aria-label="Main">
+    <header>
+      <span data-rail-label>Caley</span>
+      <input type="checkbox" data-rail-collapse aria-label="Collapse menu">
+    </header>
+    <a href="/mail/"><svg>…</svg><span>Mail</span><span data-badge data-tone="accent">12</span></a>
     <a href="/contacts/" aria-current="page"><svg>…</svg><span>Contacts</span></a>
     <footer><a href="/settings/"><svg>…</svg><span>Settings</span></a></footer>
   </nav>
-  <div data-backdrop></div>
   <main data-layout="stack" data-gap="lg" data-pad="lg">
-    <button data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu">☰</button>
+    <div data-layout="row" data-gap="sm">
+      <button popovertarget="rail" data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu">☰</button>
+      <h1>Contacts</h1>
+    </div>
     …
   </main>
   <button data-fab data-icon aria-label="New contact">+</button>
 </body>
 ```
 
-Toggle `data-collapsed` (icon-only rail) and `data-open` (mobile drawer) on the rail from script.
+No script needed. On wide screens the rail sits next to `main`, and the checkbox collapses it to icons.
+Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click outside closes it.
 
 ### Dropdown menu (menu.css)
 

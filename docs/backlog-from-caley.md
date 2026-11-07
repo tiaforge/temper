@@ -116,7 +116,7 @@ browser's `margin: auto`. The kitchen sink only showed a static dialog preview, 
 
 ### New findings (v2)
 
-16. **Rail behavior without script.** Collapse toggle, mobile drawer toggle, remembering the collapsed state
+16. **Rail behavior without script.** *Done (CSS only): the drawer is a native popover (`<nav data-rail popover>` opened by a `popovertarget` button), and collapse is a `data-rail-collapse` checkbox read with `:has()`. Still not possible in CSS: remembering "collapsed" across page loads (render `checked`/`data-collapsed` from the server, or 3 lines of script), and automatic `aria-current`, because no browser supports `:local-link`.* Originally: Collapse toggle, mobile drawer toggle, remembering the collapsed state
     and a mobile top bar (hamburger + brand) still took about 15 lines of TS and 7 of markup. Options:
     - a tiny optional `app.js` (or custom `command="--ts-toggle-rail"` invoker commands),
     - automatic `aria-current` for the rail link that matches `location.pathname`,
@@ -125,4 +125,4 @@ browser's `margin: auto`. The kitchen sink only showed a static dialog preview, 
     for shared components, plus a docs note that one page cannot load both. This cost a second nav partial and an 8-line bridge.
 18. **Dropdown caret** for `button[popovertarget]` (the agent wrote a `▾` span).
 19. **Dialog close button**: a recipe or default for the header `×` (every dialog repeats it).
-20. **Docs**: `data-size` also works on icon buttons; the search field in a toolbar wants `data-grow` (exists, but the agent did not find it).
+20. **Docs**: `data-size` also works on icon buttons; the search field in a toolbar wants `data-grow` (exists, but the agent did not find it). *Done: toolbar recipe uses `data-grow`, and `data-grow` now wraps onto its own line below `--ts-grow-basis` (10rem).*
