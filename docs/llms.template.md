@@ -221,6 +221,10 @@ the ☰ button first in each page's top row, where it takes its own space; it is
 children of `data-shell` (scripts, templates, framework elements) take no space. `aria-current` must
 be set in the markup; CSS cannot detect the current page.
 
+`[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
+moves to tinystyle page by page, keep the old nav partial for the old pages and add a second one with
+this markup for the migrated pages; delete the old one when the last page has moved.
+
 To keep the collapsed state across page loads, add this (CSS cannot store anything):
 
 ```js

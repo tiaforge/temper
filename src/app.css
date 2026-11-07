@@ -78,7 +78,7 @@
     }
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button) > :where(span:not([data-badge])),
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where([data-rail-label]) { display: none; }
-    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) > :where(header) { justify-content: center; }
+    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) > :where(header) { flex-direction: column; justify-content: center; gap: var(--ts-space-xs); }
     /* a count badge shrinks to a dot on the icon */
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button):has(> [data-badge]) { position: relative; }
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button) > :where([data-badge]) {

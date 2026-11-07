@@ -71,6 +71,7 @@ export default { plugins: [tinystyle()] };
 | `data-pad` | none, xs, sm, md, lg, xl | Padding inside the element, on all sides. |
 | `data-align` | start, center, end, stretch | Cross-axis alignment of children (align-items). |
 | `data-justify` | start, center, end, between | Main-axis distribution of children (justify-content). |
+| `data-self` | start, center, end, stretch | Aligns this one child (e.g. data-self="start" keeps a button in a stack from stretching). |
 | `data-wrap` | wrap, none | Whether a row wraps onto more lines. |
 | `data-grow` | (boolean) | This child takes the remaining space in its row or stack. |
 | `data-scroll` | (boolean) | Scrolls its content sideways when it is wider than the screen, instead of making the whole page scroll. |

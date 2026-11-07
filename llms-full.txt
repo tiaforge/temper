@@ -137,6 +137,12 @@ On: [data-layout]. Main-axis distribution of children (justify-content).
 - `end`
 - `between`: Space between the children.
 
+### `data-self`
+
+On: a child of data-layout (stack, row, grid). Aligns this one child across the layout, overriding data-align. Typical: an "Add" button in a stack that should not stretch to full width (data-self="start").
+
+Values: `start`, `center`, `end`, `stretch`.
+
 ### `data-wrap`
 
 On: [data-layout=row]. Whether a row wraps onto more lines. Rows wrap by default.
@@ -208,7 +214,7 @@ On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]
 
 ### `data-rail` (boolean, no value)
 
-On: nav inside [data-shell]. Navigation rail. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current="page" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget="…" data-show="narrow">; without popover the rail stays visible on narrow screens. Needs `app.css`.
+On: nav inside [data-shell]. Navigation rail. It must be a direct child of [data-shell]. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current="page" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget="…" data-show="narrow">; without popover the rail stays visible on narrow screens. Needs `app.css`.
 
 ### `data-collapsed` (boolean, no value)
 
@@ -470,6 +476,10 @@ Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click ou
 the ☰ button first in each page's top row, where it takes its own space; it is hidden on wide screens. Other
 children of `data-shell` (scripts, templates, framework elements) take no space. `aria-current` must
 be set in the markup; CSS cannot detect the current page.
+
+`[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
+moves to tinystyle page by page, keep the old nav partial for the old pages and add a second one with
+this markup for the migrated pages; delete the old one when the last page has moved.
 
 To keep the collapsed state across page loads, add this (CSS cannot store anything):
 

@@ -211,6 +211,10 @@
   :where([data-pad="xl"]) { --_pad: var(--ts-space-xl); }
   /* A centered page column keeps at least md side padding, so text never touches the screen edge. */
   :where([data-layout="center"][data-pad]) { padding-inline: max(var(--ts-space-md), var(--_pad)); }
+  :where([data-self="start"]) { align-self: start; }
+  :where([data-self="center"]) { align-self: center; }
+  :where([data-self="end"]) { align-self: end; }
+  :where([data-self="stretch"]) { align-self: stretch; }
   :where([data-align="start"]) { align-items: start; }
   :where([data-align="center"]) { align-items: center; }
   :where([data-align="end"]) { align-items: end; }

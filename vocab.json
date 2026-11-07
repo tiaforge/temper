@@ -164,6 +164,18 @@
         "between": "Space between the children."
       }
     },
+    "data-self": {
+      "module": "core",
+      "on": "a child of data-layout (stack, row, grid)",
+      "description": "Aligns this one child across the layout, overriding data-align. Typical: an \"Add\" button in a stack that should not stretch to full width (data-self=\"start\").",
+      "short": "Aligns this one child (e.g. data-self=\"start\" keeps a button in a stack from stretching).",
+      "values": {
+        "start": "",
+        "center": "",
+        "end": "",
+        "stretch": ""
+      }
+    },
     "data-wrap": {
       "module": "core",
       "on": "[data-layout=row]",
@@ -267,7 +279,7 @@
       "module": "app",
       "boolean": true,
       "on": "nav inside [data-shell]",
-      "description": "Navigation rail. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
+      "description": "Navigation rail. It must be a direct child of [data-shell]. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
       "short": "Navigation rail next to <main>; with popover it is a drawer on narrow screens."
     },
     "data-collapsed": {

@@ -369,6 +369,24 @@
       ]
     },
     {
+      "name": "data-self",
+      "description": "tinystyle. On: a child of data-layout (stack, row, grid). Aligns this one child across the layout, overriding data-align. Typical: an \"Add\" button in a stack that should not stretch to full width (data-self=\"start\").",
+      "values": [
+        {
+          "name": "start"
+        },
+        {
+          "name": "center"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "stretch"
+        }
+      ]
+    },
+    {
       "name": "data-wrap",
       "description": "tinystyle. On: [data-layout=row]. Whether a row wraps onto more lines. Rows wrap by default.",
       "values": [
@@ -472,7 +490,7 @@
     },
     {
       "name": "data-rail",
-      "description": "tinystyle (app.css). On: nav inside [data-shell]. Navigation rail. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
+      "description": "tinystyle (app.css). On: nav inside [data-shell]. Navigation rail. It must be a direct child of [data-shell]. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
       "valueSet": "v"
     },
     {

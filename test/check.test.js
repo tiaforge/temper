@@ -61,6 +61,12 @@ test('icon-only buttons need a label, icon + text buttons do not', () => {
   assert.deepEqual(codes(checkMarkup('<button data-icon><svg></svg></button>')), ['TS103']);
 });
 
+test('fields need a label (warning)', () => {
+  assert.deepEqual(codes(checkMarkup('<input type="search" placeholder="Search">')), ['TS106']);
+  assert.deepEqual(codes(checkMarkup('<label>Name <input></label><label for="e">Email</label><input id="e">')), []);
+  assert.deepEqual(codes(checkMarkup('<select aria-label="Type"></select><input data-sn-attr="{\'aria-label\': m.x()}"><input type="hidden">')), []);
+});
+
 test('misspelled attribute names are warnings', () => {
   const [d] = checkMarkup('<button data-varient="ghost">x</button>');
   assert.equal(d.severity, 'warning');
