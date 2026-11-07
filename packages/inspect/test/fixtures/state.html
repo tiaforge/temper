@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../../../dist/all.css"></head>
+<body data-layout="stack" data-pad="lg">
+<div data-layout="grid" style="--ts-min: 12rem">
+  <article><button data-stretch data-variant="link" commandfor="detail" command="show-modal" onclick="window.sel='Mira Okafor'">Mira Okafor</button></article>
+</div>
+<!-- detail content depends on state set by the opener -->
+<dialog id="detail"><header><h2 id="dn"></h2><button commandfor="detail" command="close" aria-label="Close"></button></header>
+  <p id="dp"></p><footer><button data-tone="danger" commandfor="confirm" command="show-modal">Delete</button></footer>
+  <dialog id="confirm"><header><h3>Delete contact?</h3></header><p>This cannot be undone.</p><footer><button data-variant="secondary" commandfor="confirm" command="close">Keep</button><button data-tone="danger">Delete</button></footer></dialog>
+</dialog>
+<dialog id="orphan"></dialog>
+<script>
+  document.getElementById('detail').addEventListener('toggle', e => { if (e.newState === 'open') {
+    document.getElementById('dn').textContent = window.sel ?? ''; document.getElementById('dp').textContent = window.sel ? 'mira@okafor.io, +49 151 2345 6789' : ''; } });
+</script>
+</body></html>

@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../../../dist/all.css">
+<style>dialog.bad { margin: 0 } .faint { color: #bbb } .wide { width: 1500px; height: 10px; background: var(--ts-fill) }
+.cover { position: relative } .cover::after { content: ""; position: absolute; inset: 0 }</style></head>
+<body data-layout="stack" data-pad="lg">
+  <p class="faint">This text is too light to read.</p>
+  <div class="wide"></div>
+  <button data-icon data-variant="ghost"><svg width="16" height="16"><circle cx="8" cy="8" r="6"/></svg></button>
+  <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="20" height="20">
+  <div class="cover"><button>Hidden under an overlay</button></div>
+  <input type="search" placeholder="Search">
+  <dialog class="bad" id="d1"><header><h2>Stuck dialog</h2><button commandfor="d1" command="close" aria-label="Close"></button></header><p>Body</p></dialog>
+</body></html>

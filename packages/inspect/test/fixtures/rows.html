@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../../../dist/all.css"></head>
+<body data-layout="stack" data-pad="lg">
+<button commandfor="f" command="show-modal">Open form</button>
+<dialog id="f"><header><h2>New contact</h2><button commandfor="f" command="close" aria-label="Close"></button></header>
+  <fieldset><legend>Email</legend>
+    <div data-layout="row" data-gap="xs"><input type="email" data-grow aria-label="Email" value="mira@okafor.io">
+      <select aria-label="Type"><option>Private</option><option>Work</option><option>Other</option></select>
+      <button data-icon data-variant="ghost" aria-label="Remove">×</button></div>
+  </fieldset>
+  <footer><button data-variant="secondary" commandfor="f" command="close">Cancel</button><button>Save</button></footer>
+</dialog>
+<div data-layout="grid" style="--ts-min: 12rem"><article><span data-avatar>MO</span><button data-stretch data-variant="link" commandfor="f" command="show-modal">Mira Okafor</button></article></div>
+<button popovertarget="m" data-variant="outline">Books</button><div popover id="m" data-menu><label><input type="checkbox"> Personal</label></div>
+</body></html>
