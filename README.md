@@ -59,7 +59,9 @@ Vue and JSX it follows expressions: `failed ? 'danger' : 'sucess'` is an error.
 </dialog>
 ```
 
-It animates in and out, blocks the page behind it and closes on Escape. That's the browser's own `<dialog>`, styled.
+`command="show-modal"` is the declarative `showModal()`: the button opens the dialog as a modal,
+with no script. It animates in and out, blocks the page behind it and closes on Escape. That's the
+browser's own `<dialog>`, styled.
 
 **Rebrand with two numbers.**
 
@@ -119,78 +121,42 @@ three-pane layout and the message list use a few lines of demo CSS):
 
 ## What it does differently
 
-**1. The vocabulary is closed and enforced.** Each attribute is one independent axis with a fixed
-list of values: `data-variant` is the style, `data-tone` the color, `data-size` the size. You can't
-write `data-variant="danger"` and get something half-working; `tinystyle check` rejects it and tells
-you which axis you meant:
+**1. The vocabulary is closed and enforced.** Each attribute is one axis with a fixed list of
+values, so the checker can do more than catch typos:
 
-```text
-$ npx tinystyle check src
-t.html:1:9  error TS101 data-variant="danger" is not valid. Did you mean data-tone="danger"? (allowed: secondary, outline, ghost, link)
-t.html:2:1  error TS103 <button data-icon="x"> has no visible text. Add aria-label.
-t.html:3:26 error TS101 data-gap="16px" is not valid. (allowed: none, xs, sm, md, lg, xl)
-t.html:5:7  error TS102 data-badge is a boolean attribute. Write it without a value: data-badge
-a.css:1:10  error TS201 --ts-text-mute is not a tinystyle token. Did you mean --ts-text-muted?
-```
+- **Placement:** `data-pairs` only on a `dl`, `data-rail` only as a direct child of `[data-shell]`,
+  `data-cols` only with `data-layout="grid"`, and `data-rail` needs `app.css` imported somewhere.
+- **Expressions:** in Svelte, Vue and JSX it works out every value an expression can produce, and
+  flags `cond && 'danger'`, which renders `data-tone="false"`.
+- **Types:** `@tiaforge-ui/tinystyle/react`, `/vue`, `/astro`, `/svelte` and `/sinter` let tsc
+  reject things like `data-collapsed={collapsed}`, where `false` would render `data-collapsed="false"`.
+- **Safe fixes and renames:** `--fix` only applies fixes that can't go wrong (a value moved to its
+  axis, a typo with one close match, a value dropped from a boolean). Deprecated names keep working
+  until the next major version, with a warning that `--fix` resolves.
+- **Accessibility:** buttons without a name and fields without a label (a placeholder doesn't count).
+- **Your own CSS**, as warnings, so it doesn't grow back after a migration: `!important`, fixed
+  colors that ignore dark mode, outer margins, spacing that equals a scale step (`16px` →
+  `var(--ts-space-md)`, fixable), rules that restyle `[data-variant]` instead of setting tokens, and
+  `margin`/`padding` in `style`. A `tinystyle-ignore` comment silences one line.
 
-It also knows where an attribute works: `data-pairs` only on a `dl`, `data-rail` only as a direct
-child of `[data-shell]`, `data-cols` only with `data-layout="grid"`, and `data-rail` needs `app.css`
-to be imported somewhere. Computed values are checked too. In Svelte, Vue and JSX it works out every
-literal an expression can produce (`failed ? 'danger' : 'sucess'` is an error), and it flags
-`cond && 'danger'`, which renders `data-tone="false"` when `cond` is false. Types in
-`@tiaforge-ui/tinystyle/react`, `/vue`, `/astro`, `/svelte` and `/sinter` let your framework's own
-type checker catch the rest. For `<nav data-rail data-collapsed={collapsed}>`, where `false` would
-render `data-collapsed="false"`, tsc says:
-
-```text
-App.tsx(7,6): error TS2322: … Types of property ''data-collapsed'' are incompatible.
-      Type 'boolean' is not assignable to type 'true | "" | null | undefined'.
-```
-
-`tinystyle check --fix` applies the fixes that cannot go wrong: a value moved to its axis, a typo with
-exactly one close match, a value removed from a boolean attribute. Renames go through
-`deprecated` in vocab.json: old names keep working until the next major version, the checker warns,
-and `--fix` rewrites them.
-
-It also warns about inputs, selects and textareas that have no label (a placeholder doesn't count).
-
-Your own CSS is checked against the same rules, as warnings, so an app's CSS doesn't grow back
-after a migration: `!important` (never needed, your CSS already wins), fixed colors in color
-properties (they ignore dark mode; use a token or one custom property with `light-dark()`), outer
-margins, spacing that is exactly a scale step (`16px` → `var(--ts-space-md)`, fixable), rules that
-restyle `[data-variant]` and friends instead of setting tokens, and `margin`/`padding` in `style`
-attributes (use `data-gap`/`data-pad`). A `tinystyle-ignore` comment on a line or the line before it
-silences that line.
-It reads HTML, Svelte, Astro, Vue and JSX files, plus `--ts-*` tokens in CSS. The Vite plugin runs it
-in every build (errors fail the build, the dev server warns). With classes this isn't possible:
-nothing knows that `.secondary.outline.contrast` is a contradiction.
+It reads HTML, Svelte, Astro, Vue and JSX, plus `--ts-*` tokens in CSS. With classes none of this is
+possible: nothing knows that `.secondary.outline.contrast` is a contradiction.
 
 **2. Nothing has an outer margin.** The parent owns all space: `data-gap` between children,
-`data-pad` inside. There is one size scale, `xs sm md lg xl`, used the same way everywhere. This
-removes the most common failure we saw with other libraries: agents stacking margin overrides
-against built-in margins, or mixing up four overlapping spacing variables.
+`data-pad` inside, one scale `xs sm md lg xl` everywhere. This removes the most common failure we saw
+with other libraries: agents stacking margin overrides against built-in margins.
 
-**3. State is HTML and ARIA, not extra classes.** `disabled`, `aria-invalid="true"` (error border),
-`aria-busy="true"` (spinner, blocks input), `aria-pressed`, `aria-current`, `:user-invalid`,
-`[open]`, `:popover-open`. Correct accessibility markup is also the styling, so it doesn't get left out.
+**3. State is HTML and ARIA.** `disabled`, `aria-invalid`, `aria-busy` (spinner, blocks input),
+`aria-pressed`, `aria-current`, `:user-invalid`, `[open]`, `:popover-open`. Correct accessibility
+markup is the styling, so it doesn't get left out.
 
-**4. Modern HTML works as-is.** `<dialog>` with `commandfor`/`command` invokers, `[popover]` with
-light dismiss, `role="switch"` checkboxes, `details`, `dl` as label/value pairs. Dialogs and
-popovers animate in and out with `@starting-style`. No JS components to wire up.
+**4. Modern HTML works as-is.** Dialog invokers, `[popover]` with light dismiss, `role="switch"`
+checkboxes, `details`, `dl` as label/value pairs, enter and exit animations with `@starting-style`.
+No JS components to wire up.
 
-**5. Your CSS always wins.** All of tinystyle lives in `@layer ts.*` with `:where()` selectors, so
-any plain selector in your app beats it. There is no specificity fight and never a reason for
-`!important`.
-
-**6. Theming from two numbers, contrast stays sane.** Every color is derived in OKLCH from
-`--ts-hue` and `--ts-chroma` at fixed lightness, and declared once with `light-dark()`. Dark mode
-is designed, not inverted (raised surfaces get lighter, accents get less saturated).
-`data-theme="dark"` works on **any element**, not just `<html>`, so a dark hero on a light page is
-one attribute.
-
-```css
-:root { --ts-hue: 180; --ts-chroma: 0.12; --ts-primary: var(--ts-accent); }  /* teal, colored main buttons */
-```
+**5. Dark mode is designed, not inverted.** Colors are declared once with `light-dark()` at fixed
+OKLCH lightness; raised surfaces get lighter and accents less saturated in the dark. Add
+`--ts-primary: var(--ts-accent)` to give main buttons the brand color.
 
 ## Does it work as expected?
 

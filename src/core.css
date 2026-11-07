@@ -375,7 +375,9 @@
     background-size: 0.3em 0.3em;
     background-repeat: no-repeat;
   }
-  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding-block: var(--ts-space-xs); }
+  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding-block: var(--ts-space-xs); scrollbar-color: var(--ts-border-strong) transparent; }
+  /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode) */
+  :where(select:is([multiple], [size]:not([size="1"]))) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--ts-text); --_sel: color-mix(in oklab, var(--ts-accent) 22%, var(--ts-field)); }
   :where(input[type="color"]) {
     inline-size: calc(var(--ts-control-h) * 1.5); block-size: var(--ts-control-h); padding: 3px;
     border: 1px solid var(--ts-field-border); border-radius: var(--ts-radius); background: var(--ts-field); cursor: pointer;
