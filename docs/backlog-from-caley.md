@@ -242,3 +242,50 @@ One run per version, so treat the differences as indications, not measurements.
     give a two-partial recipe for apps migrating page by page.
 31. **Share actions inside a menu** (download vCard, mail, system share) still need about 45 lines of
     script. That is app behaviour, not styling; out of scope for tinystyle.
+
+## Mail page (second page, built on v6's contacts migration)
+
+Scope: the mail page, the standalone message view and their shared reader partial. Same model and brief
+structure as v6.
+
+| | Pico | tinystyle |
+|---|---|---|
+| Mail page SCSS | 1,203 lines | 55 |
+| Reader SCSS (shared) | 729 lines | 51 (15 of them bridge `--pico-*` for unmigrated Svelte dialogs) |
+| Markup (mail + reader + view) | 991 lines | 829 |
+| Inline `<svg>` | ~45 | 0 (75 `data-icon`) |
+| Custom script (mail islands) | 515 lines | 479 (two custom elements removed; 34 lines remain for the pane resize handle) |
+| CSS shipped to the mail page (gzip) | 22.7 KB | 17.6 KB (incl. icons.css imported needlessly next to the plugin's icons) |
+| Agent tokens / tool calls / minutes | | 352k / 124 / 24 (about 55 screenshots, plus 7 contact sheets) |
+| Inspector on the result | | 3 errors, all in the unmigrated Svelte compose dialog (pre-existing) |
+
+Not migrated: five Svelte dialogs (compose 1,051 lines, thread, thread event, event detail, ICS import)
+still use Pico-era scoped CSS through a 15-line variable bridge. Event detail and ICS import are shared
+with the calendar page.
+
+Deliberate UI changes: a second rail for the folders (a drawer on phones), one "…" menu per account and
+virtual folder instead of three icons, and an icon-only reader toolbar. Sender and recipients sit in
+`<details>`, and the unread marker is an accent bar plus bold.
+
+### Findings (mail)
+
+32. **Resizable panes:** `data-resize` on a pane with a keyboard-operable separator writing a width
+    variable (optionally persisted). That would replace 34 lines of script and 7 of CSS, about 6–8k tokens.
+    It needs script, so it would be an optional behaviour, not CSS.
+33. **Nested shells and a second rail** work but are undocumented. A fixed-height shell
+    (`data-shell="fixed"`, panes scroll inside the viewport) is missing.
+34. **`data-grow` in a column** needs `min-block-size: 0` to shrink. A vertical scroll container
+    (`data-scroll="y"`) is missing too.
+35. **`pico-compat.css`:** shared Svelte components still read `--pico-*`. The 15-line bridge was written
+    for the second time (contacts and mail). Ship it.
+36. **List-row buttons:** there is no variant for full-width selectable rows (the message list). Ghost buttons
+    tint grey on `aria-current` unless `data-tone="accent"` is set.
+37. **`aria-busy`:** on a rail item it hides the label under the spinner; on forms (sinter sets it there)
+    it has no style.
+38. **Submit buttons ignore `commandfor`/`popovertarget`** (platform behaviour). Document it: use
+    `type="button"`, or close the popover in the submit handler.
+39. **Icons, fixed:** the checker CLI did not know the plugin's on-demand icons (19 false errors). It now has
+    `--lucide` and `--icons <dir>`. The docs now say to import only `virtual:tinystyle-icons.css` with the plugin.
+40. **Inspector, fixed:** false positives for dialogs inside panes hidden at a width (now reported as
+    not rendered), popovers opened without their button (no position check), and `data-sr-only` text
+    (not "clipped").

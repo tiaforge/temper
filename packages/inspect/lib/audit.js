@@ -103,7 +103,8 @@ export function install(opts) {
         if (c < min) add(c < 3 ? 'error' : 'warning', 'contrast', el, `text contrast ${c.toFixed(2)}:1, needs ${min}:1 (${hex(fg)} on ${hex(bg)})`);
       }
       const clipsX = ['hidden', 'clip'].includes(s.overflowX);
-      if (clipsX && el.scrollWidth > el.clientWidth + 1 && s.textOverflow !== 'ellipsis')
+      const visuallyHidden = s.clipPath !== 'none' || R(el).width <= 1 || el.closest('[data-sr-only]');
+      if (clipsX && !visuallyHidden && el.scrollWidth > el.clientWidth + 1 && s.textOverflow !== 'ellipsis')
         add('warning', 'clipped', el, 'text is cut off without an ellipsis');
     }
 
@@ -209,7 +210,16 @@ export function install(opts) {
       findings = [];
       if (current) {
         scope = current.el;
-        checkOverlay(state, current.el);
+        const box = R(current.el);
+        if (box.width < 1 || box.height < 1) {
+          // e.g. a dialog inside a pane that is hidden at this width: nothing to check
+          findings.push({ state, severity: 'info', code: 'state', selector: sel(current.el).split(' "')[0], message: 'not rendered at this width (it sits inside a hidden part of the page)' });
+          scope = document.body;
+          return findings;
+        }
+        // a popover opened without its button has no anchor, so its position says nothing
+        if (!(current.how.direct && current.kind === 'popover')) checkOverlay(state, current.el);
+        else if (current.el.scrollWidth > current.el.clientWidth + 1) checkOverlay(state, current.el);
         if (current.how.via) findings.push({ state, severity: 'info', code: 'opened', selector: sel(current.how.via), message: 'opened by clicking this' });
         if (current.how.direct) {
           const text = (current.el.innerText ?? '').replace(/\s+/g, ' ').trim();
