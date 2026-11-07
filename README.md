@@ -75,11 +75,12 @@ to be imported somewhere. Computed values are checked too. In Svelte, Vue and JS
 literal an expression can produce (`failed ? 'danger' : 'sucess'` is an error), and it flags
 `cond && 'danger'`, which renders `data-tone="false"` when `cond` is false. Types in
 `@tiaforge-ui/tinystyle/react`, `/vue`, `/astro`, `/svelte` and `/sinter` let your framework's own
-type checker catch the rest:
+type checker catch the rest. For `<nav data-rail data-collapsed={collapsed}>`, where `false` would
+render `data-collapsed="false"`, tsc says:
 
 ```text
-App.tsx(7,6): error TS2322: Type 'boolean' is not assignable to type 'true | "" | null | undefined'.
-   (<nav data-rail data-collapsed={collapsed}>: false would render data-collapsed="false")
+App.tsx(7,6): error TS2322: … Types of property ''data-collapsed'' are incompatible.
+      Type 'boolean' is not assignable to type 'true | "" | null | undefined'.
 ```
 
 It also warns about inputs, selects and textareas that have no label (a placeholder doesn't count).
