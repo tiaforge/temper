@@ -37,7 +37,7 @@
     --ts-text-muted: light-dark(oklch(0.5 var(--_n)), oklch(0.71 var(--_n)));
 
     /* tone roles */
-    --ts-accent: light-dark(oklch(0.53 var(--ts-chroma) var(--ts-hue)), oklch(0.72 calc(var(--ts-chroma) * 0.85) var(--ts-hue)));
+    --ts-accent: light-dark(oklch(0.47 var(--ts-chroma) var(--ts-hue)), oklch(0.72 calc(var(--ts-chroma) * 0.85) var(--ts-hue)));
     --ts-neutral: light-dark(oklch(0.25 var(--_n)), oklch(0.92 var(--_n)));
     --ts-danger: light-dark(oklch(0.55 0.2 27), oklch(0.68 0.18 25));
     --ts-success: light-dark(oklch(0.52 0.13 150), oklch(0.72 0.15 150));

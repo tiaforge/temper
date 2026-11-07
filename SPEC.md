@@ -178,11 +178,12 @@ tint; `--css`/`--root` load a theme block (for example `--css kitchen-sink/theme
 data-example-theme=ink`). `npm test` runs the `--own` check for the default look, Ink and Fjord
 (skipped without Chrome).
 
-Result for the defaults (chroma 0.19), 2026-11-07: dark mode passes for every hue. In light mode,
-green to cyan hues are too light at L 0.53 once they are clipped to sRGB, so the accent solid button
-and accent text on the accent soft fill drop to 4.1:1. Chroma caps: hue 155 → 0.18, 160 → 0.16,
-165 → 0.15, 170–180 → 0.14, 185–205 → 0.13, 210 → 0.14, 215 → 0.15, 220 → 0.16, 225 → 0.17.
-Yellow needs no cap: tone ink is capped at L 0.5 and the text on solid yellow switches to black.
+Result, 2026-11-07: with the light-mode accent at L 0.53, green to cyan hues (155–225) were too light
+once clipped to sRGB, and the accent solid button and accent text on the accent soft fill dropped to
+4.1:1. The light-mode accent is now L 0.47, the lightest value at which every hue passes at the
+default chroma 0.19 (dark mode passed already). Above the default, hues 170–205 need a cap: at chroma
+0.215 they reach 4.4:1, so keep teal accents at 0.20 or less. Yellow needs no cap: tone ink is
+capped at L 0.5 and the text on solid yellow switches to black.
 
 Role tokens (the only colors components use):
 

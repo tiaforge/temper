@@ -92,7 +92,7 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
     caps.push({ hue, cap });
   }
   set('--ts-hue', null); set('--ts-chroma', null); html.removeAttribute('data-theme');
-  return { results, caps, chroma: getComputedStyle(html).getPropertyValue('--ts-chroma').trim() };
+  return { results, caps, chroma: chroma != null ? String(chroma) : getComputedStyle(html).getPropertyValue('--ts-chroma').trim() };
 }
 
 export async function validate({ step = 5, hues, chroma, tints = [0, 0.02], css = [], rootAttrs = [], browser,
