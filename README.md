@@ -124,13 +124,24 @@ combine those two, badges with unreadable text, an icon button that wasn't squar
 the checker shows that the vocabulary itself carries most of the weight; the checker is the safety
 net. (It's a small sample: 10 tasks × 2 runs. The task list is in the eval harness.)
 
-**A real migration.** The contacts page of caley (a calendar and mail app) was moved from Pico CSS
-to tinystyle. The page's 494-line `contacts.scss` was deleted, and the page no longer loads Pico or
-the shared SCSS. What's left is inline custom properties like `style="--ts-min: 13rem"`. The avatar,
-card grid, clickable cards, dropdown checklist, label/value rows, dialogs, navigation rail with
-collapse and mobile drawer, and the floating action button all come from the library. A Pico rewrite
-of the same page, for comparison, still needed 134 lines of custom CSS. Gaps found during migration
-went back into the library and its docs.
+**A real migration.** caley, a calendar, mail and contacts app, was moved from Pico CSS to tinystyle
+page by page: contacts, mail, calendar, search, settings and login, including the Svelte components
+they share. A coding agent did the work from the docs, in four steps.
+
+| | Pico | tinystyle |
+|---|---|---|
+| App CSS (SCSS and component styles) | about 4,750 lines | about 210 lines |
+| CSS shipped to the contacts page (gzip) | about 15.8 KB | 6.5 KB |
+| Pico in sources or build output | everywhere | none |
+| Inspector errors on the six pages | | 0 |
+
+What's left in the app is mostly inline custom properties like `style="--ts-min: 13rem"` and a few
+app-specific rules. The navigation rail with collapse and phone drawer, avatars, clickable cards,
+dropdown menus and checklists, the combobox, calendar grids and event chips, tabs and list rows,
+dialogs and the floating action button all come from the library. For comparison, a separate Pico
+rewrite of the contacts page alone still needed 134 lines of custom CSS. Every gap the migration hit
+went back into the library or its docs; the ranked list is in
+[`docs/backlog-from-caley.md`](docs/backlog-from-caley.md).
 
 **Tests keep the docs honest.** `npm test` asserts that every attribute and value in `vocab.json`
 has a CSS selector and every selector has a vocab entry, that every documented token is declared,
