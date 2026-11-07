@@ -6,7 +6,7 @@ const opt = (name, fallback) => { const i = args.indexOf(`--${name}`); return i 
 const flag = name => { const i = args.indexOf(`--${name}`); return i >= 0 ? (args.splice(i, 1), true) : false; };
 
 if (!args.length || flag('help')) {
-  console.log(`Usage: tinystyle-inspect <url...> [options]
+  console.log(`Usage: temper-inspect <url...> [options]
 
 Loads each page in headless Chrome at each width and color scheme, opens every dialog and popover,
 and reports layout and accessibility problems as text: horizontal overflow, overlays stuck in a

@@ -4,9 +4,9 @@ import { check, applyFixes } from '../lib/check.js';
 
 const [cmd, ...args] = process.argv.slice(2);
 if (cmd !== 'check') {
-  console.log(`Usage: tinystyle check [paths...]
+  console.log(`Usage: temper check [paths...]
 
-Checks tinystyle attributes in HTML/Svelte/Astro/Vue/JSX files and --ts-* tokens in CSS.
+Checks temper attributes in HTML/Svelte/Astro/Vue/JSX files and --tm-* tokens in CSS.
 Exits with 1 when there are errors. --warnings-as-errors also fails on warnings.
 --fix applies the safe fixes (a value on the wrong axis, an unambiguous typo, a value on a
 boolean attribute, a deprecated name) and reports what is left.
@@ -42,7 +42,7 @@ const fixable = results.filter(r => r.fix).length;
 if (results.length) console.log(`\n${errors} error(s), ${warnings} warning(s)${fixable ? `; ${fixable} fixable with --fix` : ''}`);
 // Nudge toward checking the rendered result, which the static check cannot see.
 try {
-  (await import('node:module')).createRequire(process.cwd() + '/').resolve('@tiaforge-ui/tinystyle-inspect/package.json');
-  console.log('Next, check the rendered page: npx tinystyle-inspect <dev-server-url> --sheet <dir>  (every dialog and popover, wide and narrow, light and dark; one image per page)');
+  (await import('node:module')).createRequire(process.cwd() + '/').resolve('@tiaforge-ui/temper-inspect/package.json');
+  console.log('Next, check the rendered page: npx temper-inspect <dev-server-url> --sheet <dir>  (every dialog and popover, wide and narrow, light and dark; one image per page)');
 } catch {}
 process.exit(errors || (strict && warnings) ? 1 : 0);

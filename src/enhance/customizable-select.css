@@ -1,72 +1,72 @@
-/* tinystyle enhancement: customizable-select (web-features id). Requires core.css; load it after core.
-   Opts single-choice <select> into appearance: base-select, so the open list matches tinystyle
+/* temper enhancement: customizable-select (web-features id). Requires core.css; load it after core.
+   Opts single-choice <select> into appearance: base-select, so the open list matches temper
    (menu look, accent checkmark, light/dark) instead of the OS picker. Browsers without base-select
    keep the core select unchanged. Plain <option>s are enough; rich options work too:
    <select> <button><selectedcontent></selectedcontent></button> <option><svg>…</svg> Work</option> </select> */
 
-@layer ts.components {
+@layer tm.components {
   @supports (appearance: base-select) {
     :where(select:not([multiple], [size])),
     :where(select:not([multiple], [size]))::picker(select) { appearance: base-select; }
 
     :where(select:not([multiple], [size])) {
-      display: inline-flex; align-items: center; gap: var(--ts-space-sm);
-      padding-inline-end: var(--ts-control-px);
+      display: inline-flex; align-items: center; gap: var(--tm-space-sm);
+      padding-inline-end: var(--tm-control-px);
       background-image: none;
       cursor: pointer;
     }
     /* the optional author button only wraps <selectedcontent>; the select is already styled as the field */
     :where(select) > :where(button:first-child) { display: contents; }
     :where(select) :where(selectedcontent) {
-      display: flex; align-items: center; gap: var(--ts-space-sm); min-inline-size: 0;
+      display: flex; align-items: center; gap: var(--tm-space-sm); min-inline-size: 0;
       overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     }
     :where(select) :where(selectedcontent, option) :where(svg, img) { inline-size: 1rem; block-size: 1rem; flex-shrink: 0; }
 
     :where(select:not([multiple], [size]))::picker-icon {
       content: ""; inline-size: 0.875em; block-size: 0.875em; margin-inline-start: auto; flex-shrink: 0;
-      background: var(--ts-text-muted);
+      background: var(--tm-text-muted);
       mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
-      transition: rotate var(--ts-duration) var(--ts-ease);
+      transition: rotate var(--tm-duration) var(--tm-ease);
     }
     :where(select:open)::picker-icon { rotate: 180deg; }
-    :where(select:not([multiple], [size]):open) { border-color: var(--ts-accent); }
+    :where(select:not([multiple], [size]):open) { border-color: var(--tm-accent); }
 
     /* the list: same surface as [data-menu] */
     :where(select:not([multiple], [size]))::picker(select) {
       max-block-size: min(24rem, 80dvh);
-      margin-block: var(--ts-space-xs);
-      padding: var(--ts-space-xs);
-      border: 1px solid var(--ts-border); border-radius: var(--ts-radius);
-      background: var(--ts-surface-raised); color: var(--ts-text); box-shadow: var(--ts-shadow-lg);
+      margin-block: var(--tm-space-xs);
+      padding: var(--tm-space-xs);
+      border: 1px solid var(--tm-border); border-radius: var(--tm-radius);
+      background: var(--tm-surface-raised); color: var(--tm-text); box-shadow: var(--tm-shadow-lg);
       opacity: 0; translate: 0 -0.25rem;
-      transition: opacity var(--ts-duration) var(--ts-ease), translate var(--ts-duration) var(--ts-ease),
-        display var(--ts-duration) allow-discrete, overlay var(--ts-duration) allow-discrete;
+      transition: opacity var(--tm-duration) var(--tm-ease), translate var(--tm-duration) var(--tm-ease),
+        display var(--tm-duration) allow-discrete, overlay var(--tm-duration) allow-discrete;
     }
     :where(select:open)::picker(select) { opacity: 1; translate: 0; }
     @starting-style { :where(select:open)::picker(select) { opacity: 0; translate: 0 -0.25rem; } }
 
     :where(select:not([multiple], [size])) :where(option) {
-      display: flex; align-items: center; gap: var(--ts-space-sm);
-      min-block-size: calc(var(--ts-control-h) * 0.85); padding-inline: var(--ts-space-sm);
-      border-radius: var(--ts-radius-sm);
-      color: var(--ts-text); font-size: var(--ts-control-font); font-weight: 450; white-space: nowrap;
+      display: flex; align-items: center; gap: var(--tm-space-sm);
+      min-block-size: calc(var(--tm-control-h) * 0.85); padding-inline: var(--tm-space-sm);
+      border-radius: var(--tm-radius-sm);
+      color: var(--tm-text); font-size: var(--tm-control-font); font-weight: 450; white-space: nowrap;
       cursor: pointer; outline: none;
     }
-    :where(select:not([multiple], [size])) :where(option:is(:hover, :focus-visible)) { background: var(--ts-fill); }
+    :where(select:not([multiple], [size])) :where(option:is(:hover, :focus-visible)) { background: var(--tm-fill); }
     :where(select:not([multiple], [size])) :where(option:checked) { font-weight: 550; }
     :where(select:not([multiple], [size])) :where(option:disabled) { opacity: 0.5; cursor: not-allowed; background: none; }
     :where(select:not([multiple], [size])) :where(option)::checkmark {
       content: ""; order: 1; inline-size: 1rem; block-size: 1rem; margin-inline-start: auto; flex-shrink: 0;
-      background: var(--ts-accent);
+      background: var(--tm-accent);
       mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
     }
 
     :where(select:not([multiple], [size])) :where(optgroup) {
-      padding-block-start: var(--ts-space-xs);
-      color: var(--ts-text-muted); font-size: var(--ts-text-xs); font-weight: 600;
+      padding-block-start: var(--tm-space-xs);
+      color: var(--tm-text-muted); font-size: var(--tm-text-xs); font-weight: 600;
     }
-    :where(select:not([multiple], [size])) :where(optgroup > legend) { padding-inline: var(--ts-space-sm); }
-    :where(select:not([multiple], [size])) :where(hr) { margin-block: var(--ts-space-xs); }
+    :where(select:not([multiple], [size])) :where(optgroup > legend) { padding-inline: var(--tm-space-sm); }
+    :where(select:not([multiple], [size])) :where(hr) { margin-block: var(--tm-space-xs); }
   }
 }

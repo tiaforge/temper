@@ -1,1 +1,1 @@
-import type {} from '@tiaforge-ui/tinystyle/svelte';
+import type {} from '@tiaforge-ui/temper/svelte';

@@ -1,1 +1,1 @@
-import type {} from '@tiaforge-ui/tinystyle/vue';
+import type {} from '@tiaforge-ui/temper/vue';

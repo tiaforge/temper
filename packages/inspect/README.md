@@ -1,10 +1,10 @@
-# @tiaforge-ui/tinystyle-inspect
+# @tiaforge-ui/temper-inspect
 
 A text-only layout and accessibility report for a running page, built for coding agents: one command
-instead of a screenshot loop. It works on any page, with or without tinystyle.
+instead of a screenshot loop. It works on any page, with or without temper.
 
 ```sh
-npx tinystyle-inspect http://localhost:5173/contacts/
+npx temper-inspect http://localhost:5173/contacts/
 ```
 
 For each URL, it:

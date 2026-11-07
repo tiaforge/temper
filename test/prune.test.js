@@ -22,7 +22,7 @@ test('pruneCss drops selectors, then empty rules and groups; keeps the rest as i
 });
 
 test('projectUsage: literals, computed values, sinter entries and scripts', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'ts-prune-'));
+  const dir = mkdtempSync(join(tmpdir(), 'tm-prune-'));
   writeFileSync(join(dir, 'A.svelte'), `<span data-tone={x ? 'danger' : 'success'} data-size="sm" data-icon={icon}></span>`);
   writeFileSync(join(dir, 'b.html'), `<p data-sn-attr="{'data-variant': on ? 'ghost' : null}"></p><nav data-rail></nav>`);
   writeFileSync(join(dir, 'c.js'), `t.dataset.toast = ''; el.setAttribute('data-callout', '');`);

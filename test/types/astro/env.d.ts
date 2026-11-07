@@ -1,1 +1,1 @@
-import type {} from '@tiaforge-ui/tinystyle/astro';
+import type {} from '@tiaforge-ui/temper/astro';

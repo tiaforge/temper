@@ -1,10 +1,10 @@
-/* tinystyle app: application shell with a navigation rail, mobile drawer, floating action button.
+/* temper app: application shell with a navigation rail, mobile drawer, floating action button.
    Requires core.css. No JavaScript needed:
    - collapse (icon-only rail): a checkbox with data-rail-collapse inside the rail, or data-collapsed on the rail
    - mobile drawer (< 48rem): give the rail the popover attribute and open it with a popovertarget button;
      the browser provides the backdrop, Esc and click-outside. */
 
-@layer ts.components {
+@layer tm.components {
   /* shell: rail + main area side by side. The document scrolls; the rail sticks. Flex, not grid, so
      other children (script, template or framework elements such as <sn-resource>) take no space. */
   :where([data-shell]) { display: flex; min-block-size: 100dvh; }
@@ -15,43 +15,43 @@
 
   /* rail */
   :where([data-rail]) {
-    --_w: var(--ts-rail-width, 15rem);
+    --_w: var(--tm-rail-width, 15rem);
     position: sticky; inset-block-start: 0;
     display: flex; flex-direction: column; gap: 2px;
     flex: none; inline-size: var(--_w); block-size: 100dvh; overflow-y: auto; overflow-x: hidden;
-    padding: var(--ts-space-sm);
+    padding: var(--tm-space-sm);
     inset: auto; margin: 0; min-inline-size: 0;
-    border: 0; border-inline-end: 1px solid var(--ts-border); border-radius: 0; box-shadow: none;
-    background: var(--ts-bg); color: var(--ts-text);
-    transition: inline-size var(--ts-duration) var(--ts-ease), translate var(--ts-duration) var(--ts-ease),
-      display var(--ts-duration) allow-discrete, overlay var(--ts-duration) allow-discrete;
+    border: 0; border-inline-end: 1px solid var(--tm-border); border-radius: 0; box-shadow: none;
+    background: var(--tm-bg); color: var(--tm-text);
+    transition: inline-size var(--tm-duration) var(--tm-ease), translate var(--tm-duration) var(--tm-ease),
+      display var(--tm-duration) allow-discrete, overlay var(--tm-duration) allow-discrete;
   }
   :where([data-rail]) > :where(header) {
-    display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-xs);
-    min-block-size: var(--ts-control-h); padding-block-end: var(--ts-space-sm); font-weight: 650;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-xs);
+    min-block-size: var(--tm-control-h); padding-block-end: var(--tm-space-sm); font-weight: 650;
   }
   :where([data-rail]) > :where(footer) {
     display: flex; flex-direction: column; gap: 2px;
-    margin-block-start: auto; padding-block-start: var(--ts-space-sm); border-block-start: 1px solid var(--ts-border);
+    margin-block-start: auto; padding-block-start: var(--tm-space-sm); border-block-start: 1px solid var(--tm-border);
   }
   /* text in the header and footer (brand, user name) lines up with the item icons */
-  :where([data-rail]) > :where(header, footer) > :where(:not(a, button, input, ul, ol, nav)) { padding-inline: calc((var(--ts-control-h) - 1.125rem) / 2); }
+  :where([data-rail]) > :where(header, footer) > :where(:not(a, button, input, ul, ol, nav)) { padding-inline: calc((var(--tm-control-h) - 1.125rem) / 2); }
   :where([data-rail]) :where(ul) { display: flex; flex-direction: column; gap: 2px; padding: 0; list-style: none; }
 
   /* rail items: links and buttons look like quiet nav entries; aria-current marks the active one */
   :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
-    --_bg: transparent; --_fg: var(--ts-text);
-    justify-content: start; gap: var(--ts-space-sm);
-    inline-size: 100%; block-size: var(--ts-control-h); padding-inline: calc((var(--ts-control-h) - 1.125rem) / 2);
-    position: relative; border-radius: var(--ts-radius); font-size: var(--ts-control-font); font-weight: 500; text-decoration: none; white-space: nowrap;
+    --_bg: transparent; --_fg: var(--tm-text);
+    justify-content: start; gap: var(--tm-space-sm);
+    inline-size: 100%; block-size: var(--tm-control-h); padding-inline: calc((var(--tm-control-h) - 1.125rem) / 2);
+    position: relative; border-radius: var(--tm-radius); font-size: var(--tm-control-font); font-weight: 500; text-decoration: none; white-space: nowrap;
   }
   :where([data-rail]) :where(a):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
     display: flex; align-items: center; color: var(--_fg); background: var(--_bg);
-    transition: background-color var(--ts-duration) var(--ts-ease);
+    transition: background-color var(--tm-duration) var(--tm-ease);
   }
-  :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)):hover { background: var(--ts-fill); }
+  :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)):hover { background: var(--tm-fill); }
   :where([data-rail]) :where(a, button)[aria-current]:not([aria-current="false"]) {
-    --_bg: var(--ts-tone-soft); --_fg: var(--ts-tone-ink); --ts-tone: var(--ts-accent);
+    --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent);
     background: var(--_bg); color: var(--_fg); font-weight: 600;
   }
   :where([data-rail]) :where(a, button) > :where(span) { overflow: hidden; text-overflow: ellipsis; min-inline-size: 0; }
@@ -61,40 +61,40 @@
   /* collapse toggle: a checkbox drawn as an icon button with a chevron */
   [data-rail-collapse] {
     appearance: none; display: inline-grid; place-content: center; flex-shrink: 0;
-    inline-size: var(--ts-control-h); block-size: var(--ts-control-h);
-    border: 0; border-radius: var(--ts-radius); background: transparent; color: var(--ts-text-muted); cursor: pointer;
+    inline-size: var(--tm-control-h); block-size: var(--tm-control-h);
+    border: 0; border-radius: var(--tm-radius); background: transparent; color: var(--tm-text-muted); cursor: pointer;
   }
-  [data-rail-collapse]:hover { background: var(--ts-fill); color: var(--ts-text); }
+  [data-rail-collapse]:hover { background: var(--tm-fill); color: var(--tm-text); }
   [data-rail-collapse]:checked { background: transparent; }
   [data-rail-collapse]::before, [data-rail-collapse]:checked::before {
     content: ""; inline-size: 1.125rem; block-size: 1.125rem; border: 0; rotate: 0deg; scale: 1; translate: 0;
     background: currentColor;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m11 17-5-5 5-5M18 17l-5-5 5-5'/%3E%3C/svg%3E") center / contain no-repeat;
-    transition: rotate var(--ts-duration) var(--ts-ease);
+    transition: rotate var(--tm-duration) var(--tm-ease);
   }
   [data-rail-collapse]:checked::before { rotate: 180deg; }
 
   /* collapsed (wide screens): icons only; text spans and data-rail-label elements disappear */
   @media (width >= 48rem) {
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) {
-      --_w: var(--ts-rail-width-collapsed, calc(var(--ts-control-h) + 2 * var(--ts-space-sm) + 1px));
+      --_w: var(--tm-rail-width-collapsed, calc(var(--tm-control-h) + 2 * var(--tm-space-sm) + 1px));
     }
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button) > :where(span:not([data-badge])),
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where([data-rail-label]) { display: none; }
-    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) > :where(header) { flex-direction: column; justify-content: center; gap: var(--ts-space-xs); }
+    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) > :where(header) { flex-direction: column; justify-content: center; gap: var(--tm-space-xs); }
     /* a count badge shrinks to a dot on the icon */
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button):has(> [data-badge]) { position: relative; }
     :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button) > :where([data-badge]) {
       position: absolute; inset-block-start: 0.3rem; inset-inline-end: 0.3rem;
-      inline-size: 0.5rem; block-size: 0.5rem; padding: 0; font-size: 0; background: var(--ts-tone);
+      inline-size: 0.5rem; block-size: 0.5rem; padding: 0; font-size: 0; background: var(--tm-tone);
     }
   }
 
   /* floating action button */
   :where([data-fab]) {
-    position: fixed; inset-block-end: var(--ts-space-lg); inset-inline-end: var(--ts-space-lg); z-index: 10;
-    inline-size: calc(var(--ts-control-h) * 1.4); block-size: calc(var(--ts-control-h) * 1.4); padding: 0;
-    border-radius: 50%; box-shadow: var(--ts-shadow-lg), 0 2px 8px oklch(0 0 0 / 0.15);
+    position: fixed; inset-block-end: var(--tm-space-lg); inset-inline-end: var(--tm-space-lg); z-index: 10;
+    inline-size: calc(var(--tm-control-h) * 1.4); block-size: calc(var(--tm-control-h) * 1.4); padding: 0;
+    border-radius: 50%; box-shadow: var(--tm-shadow-lg), 0 2px 8px oklch(0 0 0 / 0.15);
     font-size: 1.5rem; font-weight: 400;
   }
   :where([data-fab]) :where(svg) { inline-size: 1.5rem; block-size: 1.5rem; }
@@ -102,19 +102,19 @@
   /* narrow screens: a rail with the popover attribute becomes a drawer, opened by a popovertarget button */
   @media (width < 48rem) {
     :where([data-rail][popover]) {
-      --_w: min(var(--ts-rail-width, 15rem), 85vw);
+      --_w: min(var(--tm-rail-width, 15rem), 85vw);
       position: fixed; inset-block: 0; inset-inline-start: 0; inset-inline-end: auto;
-      box-shadow: var(--ts-shadow-lg); translate: -100% 0;
+      box-shadow: var(--tm-shadow-lg); translate: -100% 0;
     }
     :where([data-rail][popover]:not(:popover-open)) { display: none; }
     :where([data-rail][popover]:popover-open) { translate: 0 0; }
-    :where([data-rail][popover])::backdrop { background: oklch(0.2 0.02 var(--ts-neutral-hue) / 0.45); }
+    :where([data-rail][popover])::backdrop { background: oklch(0.2 0.02 var(--tm-neutral-hue) / 0.45); }
     [data-rail][popover] [data-rail-collapse] { display: none; }
   }
   @starting-style { :where([data-rail][popover]:popover-open) { translate: -100% 0; } }
 }
 
-@layer ts.layout {
+@layer tm.layout {
   /* show an element only on narrow (< 48rem) or wide screens */
   @media (width < 48rem) { [data-show="wide"] { display: none; } }
   @media (width >= 48rem) { [data-show="narrow"] { display: none; } }

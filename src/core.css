@@ -1,111 +1,111 @@
-/* tinystyle core — prototype.
+/* temper core — prototype.
    Rules: nothing has an outer margin. A parent sets the space between its children (data-gap)
    and around them (data-pad). data-layout is last in the cascade, so it overrides a component's display.
    All selectors are wrapped in :where() and live in layers, so unlayered app CSS always wins. */
 
-@layer ts.reset, ts.base, ts.components, ts.layout;
+@layer tm.reset, tm.base, tm.components, tm.layout;
 
 /* ───────────── tokens ───────────── */
-@layer ts.base {
+@layer tm.base {
   :root {
     color-scheme: light dark;
 
     /* palette inputs */
-    --ts-hue: 255;
-    --ts-chroma: 0.19;
-    --ts-neutral-hue: var(--ts-hue);
-    --ts-neutral-tint: 0;
+    --tm-hue: 255;
+    --tm-chroma: 0.19;
+    --tm-neutral-hue: var(--tm-hue);
+    --tm-neutral-tint: 0;
 
     /* shape and type inputs */
-    --ts-radius: 0.375rem;
-    --ts-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, sans-serif;
-    --ts-font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-    --ts-heading-weight: 600;
-    --ts-heading-tracking: -0.025em;
+    --tm-radius: 0.375rem;
+    --tm-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, sans-serif;
+    --tm-font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --tm-heading-weight: 600;
+    --tm-heading-tracking: -0.025em;
 
     /* neutral roles */
-    --_n: var(--ts-neutral-tint) var(--ts-neutral-hue);
-    --ts-bg: light-dark(oklch(1 0 0), oklch(0.145 var(--_n)));
-    --ts-surface: light-dark(oklch(1 0 0), oklch(0.17 var(--_n)));
-    --ts-surface-raised: light-dark(oklch(1 0 0), oklch(0.2 var(--_n)));
-    --ts-fill: light-dark(oklch(0.965 var(--_n)), oklch(0.235 var(--_n)));
-    --ts-field: var(--ts-surface);
-    --ts-field-border: var(--ts-border-strong);
-    --ts-border: light-dark(oklch(0.9 var(--_n)), oklch(0.28 var(--_n)));
-    --ts-border-strong: light-dark(oklch(0.84 var(--_n)), oklch(0.37 var(--_n)));
-    --ts-text: light-dark(oklch(0.21 var(--_n)), oklch(0.94 var(--_n)));
-    --ts-text-muted: light-dark(oklch(0.5 var(--_n)), oklch(0.71 var(--_n)));
+    --_n: var(--tm-neutral-tint) var(--tm-neutral-hue);
+    --tm-bg: light-dark(oklch(1 0 0), oklch(0.145 var(--_n)));
+    --tm-surface: light-dark(oklch(1 0 0), oklch(0.17 var(--_n)));
+    --tm-surface-raised: light-dark(oklch(1 0 0), oklch(0.2 var(--_n)));
+    --tm-fill: light-dark(oklch(0.965 var(--_n)), oklch(0.235 var(--_n)));
+    --tm-field: var(--tm-surface);
+    --tm-field-border: var(--tm-border-strong);
+    --tm-border: light-dark(oklch(0.9 var(--_n)), oklch(0.28 var(--_n)));
+    --tm-border-strong: light-dark(oklch(0.84 var(--_n)), oklch(0.37 var(--_n)));
+    --tm-text: light-dark(oklch(0.21 var(--_n)), oklch(0.94 var(--_n)));
+    --tm-text-muted: light-dark(oklch(0.5 var(--_n)), oklch(0.71 var(--_n)));
 
     /* tone roles */
-    --ts-accent: light-dark(oklch(0.47 var(--ts-chroma) var(--ts-hue)), oklch(0.72 calc(var(--ts-chroma) * 0.85) var(--ts-hue)));
-    --ts-neutral: light-dark(oklch(0.25 var(--_n)), oklch(0.92 var(--_n)));
-    --ts-danger: light-dark(oklch(0.55 0.2 27), oklch(0.68 0.18 25));
-    --ts-success: light-dark(oklch(0.52 0.13 150), oklch(0.72 0.15 150));
-    --ts-warning: light-dark(oklch(0.76 0.15 75), oklch(0.8 0.14 80));
-    --ts-info: light-dark(oklch(0.55 0.12 240), oklch(0.72 0.12 240));
-    --ts-primary: var(--ts-neutral); /* main buttons are black (white in dark mode); set to var(--ts-accent) for colored ones */
-    --ts-tone: var(--ts-accent);
+    --tm-accent: light-dark(oklch(0.47 var(--tm-chroma) var(--tm-hue)), oklch(0.72 calc(var(--tm-chroma) * 0.85) var(--tm-hue)));
+    --tm-neutral: light-dark(oklch(0.25 var(--_n)), oklch(0.92 var(--_n)));
+    --tm-danger: light-dark(oklch(0.55 0.2 27), oklch(0.68 0.18 25));
+    --tm-success: light-dark(oklch(0.52 0.13 150), oklch(0.72 0.15 150));
+    --tm-warning: light-dark(oklch(0.76 0.15 75), oklch(0.8 0.14 80));
+    --tm-info: light-dark(oklch(0.55 0.12 240), oklch(0.72 0.12 240));
+    --tm-primary: var(--tm-neutral); /* main buttons are black (white in dark mode); set to var(--tm-accent) for colored ones */
+    --tm-tone: var(--tm-accent);
 
     /* scales */
-    --ts-space-none: 0;
-    --ts-space-xs: 0.25rem;
-    --ts-space-sm: 0.5rem;
-    --ts-space-md: 1rem;
-    --ts-space-lg: 1.5rem;
-    --ts-space-xl: 2.5rem;
-    --ts-radius-sm: calc(var(--ts-radius) * 0.6);
-    --ts-radius-lg: calc(var(--ts-radius) * 1.5);
-    --ts-radius-full: 999px;
-    --ts-badge-radius: calc(var(--ts-radius) * 0.67);
-    --ts-text-xs: 0.75rem;
-    --ts-text-sm: 0.875rem;
-    --ts-text-md: 1rem;
-    --ts-text-lg: 1.25rem;
-    --ts-text-xl: 1.75rem;
+    --tm-space-none: 0;
+    --tm-space-xs: 0.25rem;
+    --tm-space-sm: 0.5rem;
+    --tm-space-md: 1rem;
+    --tm-space-lg: 1.5rem;
+    --tm-space-xl: 2.5rem;
+    --tm-radius-sm: calc(var(--tm-radius) * 0.6);
+    --tm-radius-lg: calc(var(--tm-radius) * 1.5);
+    --tm-radius-full: 999px;
+    --tm-badge-radius: calc(var(--tm-radius) * 0.67);
+    --tm-text-xs: 0.75rem;
+    --tm-text-sm: 0.875rem;
+    --tm-text-md: 1rem;
+    --tm-text-lg: 1.25rem;
+    --tm-text-xl: 1.75rem;
 
-    --ts-shadow-sm: 0 0 #0000;
-    --ts-shadow-lg: 0 12px 32px -10px light-dark(oklch(0 0 0 / 0.16), oklch(0 0 0 / 0.7));
-    --ts-ease: cubic-bezier(0.2, 0, 0, 1);
-    --ts-duration: 150ms;
+    --tm-shadow-sm: 0 0 #0000;
+    --tm-shadow-lg: 0 12px 32px -10px light-dark(oklch(0 0 0 / 0.16), oklch(0 0 0 / 0.7));
+    --tm-ease: cubic-bezier(0.2, 0, 0, 1);
+    --tm-duration: 150ms;
   }
 
   /* density: comfortable is the default */
   :where(:root, [data-density="comfortable"]) {
-    --ts-control-h: 2.5rem;
-    --ts-control-px: 0.875rem;
-    --ts-control-font: 0.9375rem;
+    --tm-control-h: 2.5rem;
+    --tm-control-px: 0.875rem;
+    --tm-control-font: 0.9375rem;
   }
   :where([data-density="compact"]) {
-    --ts-control-h: 2rem;
-    --ts-control-px: 0.625rem;
-    --ts-control-font: 0.875rem;
+    --tm-control-h: 2rem;
+    --tm-control-px: 0.625rem;
+    --tm-control-font: 0.875rem;
   }
 
   [data-theme="light"] { color-scheme: light; }
   [data-theme="dark"] { color-scheme: dark; }
 
   /* Tone: every tone-aware element derives ink (text-safe), soft (tinted fill) and on (text on solid fill)
-     from one --ts-tone, so a custom color (style="--ts-tone: #e11") works everywhere. */
+     from one --tm-tone, so a custom color (style="--tm-tone: #e11") works everywhere. */
   :where(*) {
-    --ts-tone-ink: light-dark(oklch(from var(--ts-tone) min(l, 0.5) c h), oklch(from var(--ts-tone) max(l, 0.8) c h));
-    --ts-tone-soft: light-dark(color-mix(in oklab, var(--ts-tone) 11%, var(--ts-surface)), color-mix(in oklab, var(--ts-tone) 20%, var(--ts-surface)));
-    --ts-tone-on: oklch(from var(--ts-tone) clamp(0.2, calc((0.62 - l) * 100), 0.99) 0 0);
+    --tm-tone-ink: light-dark(oklch(from var(--tm-tone) min(l, 0.5) c h), oklch(from var(--tm-tone) max(l, 0.8) c h));
+    --tm-tone-soft: light-dark(color-mix(in oklab, var(--tm-tone) 11%, var(--tm-surface)), color-mix(in oklab, var(--tm-tone) 20%, var(--tm-surface)));
+    --tm-tone-on: oklch(from var(--tm-tone) clamp(0.2, calc((0.62 - l) * 100), 0.99) 0 0);
   }
-  :where([data-tone="accent"]) { --ts-tone: var(--ts-accent); }
-  :where([data-tone="danger"]) { --ts-tone: var(--ts-danger); }
-  :where([data-tone="success"]) { --ts-tone: var(--ts-success); }
-  :where([data-tone="warning"]) { --ts-tone: var(--ts-warning); }
-  :where([data-tone="info"]) { --ts-tone: var(--ts-info); }
+  :where([data-tone="accent"]) { --tm-tone: var(--tm-accent); }
+  :where([data-tone="danger"]) { --tm-tone: var(--tm-danger); }
+  :where([data-tone="success"]) { --tm-tone: var(--tm-success); }
+  :where([data-tone="warning"]) { --tm-tone: var(--tm-warning); }
+  :where([data-tone="info"]) { --tm-tone: var(--tm-info); }
   :where([data-tone="neutral"], [data-variant="secondary"], [data-variant="outline"], [data-variant="ghost"], [data-badge]):not([data-tone]),
   :where([data-tone="neutral"]) {
-    --ts-tone: var(--ts-neutral);
-    --ts-tone-ink: var(--ts-text);
-    --ts-tone-soft: var(--ts-fill);
+    --tm-tone: var(--tm-neutral);
+    --tm-tone-ink: var(--tm-text);
+    --tm-tone-soft: var(--tm-fill);
   }
 }
 
 /* ───────────── reset ───────────── */
-@layer ts.reset {
+@layer tm.reset {
   :where(*, ::before, ::after) { box-sizing: border-box; margin: 0; }
   :where(html) { -webkit-text-size-adjust: none; text-size-adjust: none; }
   :where(img, svg, video, canvas, picture) { display: block; max-inline-size: 100%; }
@@ -118,22 +118,22 @@
 }
 
 /* ───────────── base ───────────── */
-@layer ts.base {
+@layer tm.base {
   :where(html) {
-    font-family: var(--ts-font-sans);
+    font-family: var(--tm-font-sans);
     font-size: 100%;
     line-height: 1.5;
-    background: var(--ts-bg);
-    color: var(--ts-text);
-    accent-color: var(--ts-accent);
+    background: var(--tm-bg);
+    color: var(--tm-text);
+    accent-color: var(--tm-accent);
     -webkit-font-smoothing: antialiased;
   }
-  :where([data-theme]) { background: var(--ts-bg); color: var(--ts-text); }
+  :where([data-theme]) { background: var(--tm-bg); color: var(--tm-text); }
   :where(h1, h2, h3, h4, h5, h6) {
-    font-weight: var(--ts-heading-weight);
+    font-weight: var(--tm-heading-weight);
     line-height: 1.2;
     text-wrap: balance;
-    letter-spacing: var(--ts-heading-tracking);
+    letter-spacing: var(--tm-heading-tracking);
   }
   :where(h1) { font-size: 2rem; }
   :where(h2) { font-size: 1.5rem; }
@@ -141,32 +141,32 @@
   :where(h4) { font-size: 1.0625rem; }
   :where(h5, h6) { font-size: 1rem; letter-spacing: 0; }
   :where(p, li, dd) { text-wrap: pretty; }
-  :where(small) { font-size: var(--ts-text-sm); }
+  :where(small) { font-size: var(--tm-text-sm); }
   :where(a) {
-    color: var(--ts-tone-ink);
+    color: var(--tm-tone-ink);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
     text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
   }
   :where(a:hover) { text-decoration-color: currentColor; }
-  :where(a:not([role])[aria-current]:not([aria-current="false"])) { color: var(--ts-text); font-weight: 600; text-decoration: none; }
-  :where(hr) { border: 0; block-size: 1px; background: var(--ts-border); }
-  :where(code, kbd, samp, pre) { font-family: var(--ts-font-mono); font-size: 0.875em; }
-  :where(:not(pre) > code) { padding: 0.125em 0.375em; border-radius: var(--ts-radius-sm); background: var(--ts-fill); }
-  :where(pre) { padding: var(--ts-space-md); border-radius: var(--ts-radius); background: var(--ts-fill); overflow: auto; line-height: 1.6; }
+  :where(a:not([role])[aria-current]:not([aria-current="false"])) { color: var(--tm-text); font-weight: 600; text-decoration: none; }
+  :where(hr) { border: 0; block-size: 1px; background: var(--tm-border); }
+  :where(code, kbd, samp, pre) { font-family: var(--tm-font-mono); font-size: 0.875em; }
+  :where(:not(pre) > code) { padding: 0.125em 0.375em; border-radius: var(--tm-radius-sm); background: var(--tm-fill); }
+  :where(pre) { padding: var(--tm-space-md); border-radius: var(--tm-radius); background: var(--tm-fill); overflow: auto; line-height: 1.6; }
   :where(kbd) {
     padding: 0.1em 0.4em;
-    border: 1px solid var(--ts-border-strong);
+    border: 1px solid var(--tm-border-strong);
     border-block-end-width: 2px;
-    border-radius: var(--ts-radius-sm);
+    border-radius: var(--tm-radius-sm);
     font-size: 0.8125em;
   }
-  :where(mark) { background: color-mix(in oklab, var(--ts-warning) 35%, transparent); color: inherit; border-radius: 2px; }
+  :where(mark) { background: color-mix(in oklab, var(--tm-warning) 35%, transparent); color: inherit; border-radius: 2px; }
   :where(table, time, data) { font-variant-numeric: tabular-nums; }
-  :where(::selection) { background: color-mix(in oklab, var(--ts-accent) 28%, transparent); }
-  :where(:focus-visible) { outline: 2px solid var(--ts-accent); outline-offset: 2px; }
-  :where([data-tone]) { color: var(--ts-tone-ink); }
-  :where([data-muted]) { color: var(--ts-text-muted); }
+  :where(::selection) { background: color-mix(in oklab, var(--tm-accent) 28%, transparent); }
+  :where(:focus-visible) { outline: 2px solid var(--tm-accent); outline-offset: 2px; }
+  :where([data-tone]) { color: var(--tm-tone-ink); }
+  :where([data-muted]) { color: var(--tm-text-muted); }
   :where([data-truncate]) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-inline-size: 0; max-inline-size: 100%; }
   :where([data-clamp]) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--_clamp); overflow: hidden; min-inline-size: 0; }
   :where([data-clamp="2"]) { --_clamp: 2; }
@@ -179,47 +179,47 @@
 }
 
 /* ───────────── layout ───────────── */
-@layer ts.layout {
-  :where([data-layout]) { --_gap: var(--ts-space-md); gap: var(--_gap); }
+@layer tm.layout {
+  :where([data-layout]) { --_gap: var(--tm-space-md); gap: var(--_gap); }
   :where([data-layout="stack"]) { display: flex; flex-direction: column; }
   :where([data-layout="row"]) { display: flex; flex-wrap: wrap; align-items: center; }
   :where(:is(button, a, label)[data-layout="row"]:not([data-wrap])) { flex-wrap: nowrap; }
-  :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(var(--ts-min, 16rem), 100%), 1fr)); }
+  :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(var(--tm-min, 16rem), 100%), 1fr)); }
   :where([data-layout="grid"][data-cols]) { grid-template-columns: repeat(var(--_cols), minmax(0, 1fr)); }
   :where([data-cols="2"]) { --_cols: 2; } :where([data-cols="3"]) { --_cols: 3; } :where([data-cols="4"]) { --_cols: 4; }
   :where([data-cols="5"]) { --_cols: 5; } :where([data-cols="6"]) { --_cols: 6; } :where([data-cols="7"]) { --_cols: 7; }
   :where([data-layout="split"]) { display: flex; flex-wrap: wrap; }
-  :where([data-layout="split"] > :nth-child(1 of :not(template))) { flex: 1 1 var(--ts-split, 16rem); }
+  :where([data-layout="split"] > :nth-child(1 of :not(template))) { flex: 1 1 var(--tm-split, 16rem); }
   :where([data-layout="split"] > :nth-last-child(1 of :not(template))) { flex: 999 1 0; min-inline-size: 60%; }
   :where([data-layout="center"]) {
     display: flex; flex-direction: column;
-    --_px: var(--ts-space-md);
-    inline-size: 100%; max-inline-size: calc(var(--ts-measure, 72rem) + 2 * var(--_px)); /* --ts-measure is the content width */
+    --_px: var(--tm-space-md);
+    inline-size: 100%; max-inline-size: calc(var(--tm-measure, 72rem) + 2 * var(--_px)); /* --tm-measure is the content width */
     margin-inline: auto; padding-inline: var(--_px);
   }
   /* data-layout must not reveal a closed dialog or popover. */
   [data-layout]:is(dialog:not([open]), [popover]:not(:popover-open)) { display: none; }
   :where([data-gap="none"]) { --_gap: 0; }
-  :where([data-gap="xs"]) { --_gap: var(--ts-space-xs); }
-  :where([data-gap="sm"]) { --_gap: var(--ts-space-sm); }
-  :where([data-gap="md"]) { --_gap: var(--ts-space-md); }
-  :where([data-gap="lg"]) { --_gap: var(--ts-space-lg); }
-  :where([data-gap="xl"]) { --_gap: var(--ts-space-xl); }
+  :where([data-gap="xs"]) { --_gap: var(--tm-space-xs); }
+  :where([data-gap="sm"]) { --_gap: var(--tm-space-sm); }
+  :where([data-gap="md"]) { --_gap: var(--tm-space-md); }
+  :where([data-gap="lg"]) { --_gap: var(--tm-space-lg); }
+  :where([data-gap="xl"]) { --_gap: var(--tm-space-xl); }
   :where([data-wrap="none"]) { flex-wrap: nowrap; }
   :where([data-wrap="wrap"]) { flex-wrap: wrap; }
   :where([data-scroll]) { max-inline-size: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
   :where([data-scroll="y"]) { overflow: hidden auto; min-block-size: 0; overscroll-behavior: contain; }
   :where([data-scroll="both"]) { overflow: auto; min-block-size: 0; overscroll-behavior: contain; }
-  :where([data-grow]) { flex: 1 1 var(--ts-grow-basis, 8rem); min-inline-size: 0; min-block-size: 0; }
+  :where([data-grow]) { flex: 1 1 var(--tm-grow-basis, 8rem); min-inline-size: 0; min-block-size: 0; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
-  :where([data-pad="xs"]) { --_pad: var(--ts-space-xs); }
-  :where([data-pad="sm"]) { --_pad: var(--ts-space-sm); }
-  :where([data-pad="md"]) { --_pad: var(--ts-space-md); }
-  :where([data-pad="lg"]) { --_pad: var(--ts-space-lg); }
-  :where([data-pad="xl"]) { --_pad: var(--ts-space-xl); }
+  :where([data-pad="xs"]) { --_pad: var(--tm-space-xs); }
+  :where([data-pad="sm"]) { --_pad: var(--tm-space-sm); }
+  :where([data-pad="md"]) { --_pad: var(--tm-space-md); }
+  :where([data-pad="lg"]) { --_pad: var(--tm-space-lg); }
+  :where([data-pad="xl"]) { --_pad: var(--tm-space-xl); }
   /* A centered page column keeps at least md side padding, so text never touches the screen edge. */
-  :where([data-layout="center"][data-pad]) { --_px: max(var(--ts-space-md), var(--_pad)); padding-inline: var(--_px); }
+  :where([data-layout="center"][data-pad]) { --_px: max(var(--tm-space-md), var(--_pad)); padding-inline: var(--_px); }
   :where([data-self="start"]) { align-self: start; }
   :where([data-self="center"]) { align-self: center; }
   :where([data-self="end"]) { align-self: end; }
@@ -235,82 +235,82 @@
 }
 
 /* ───────────── components ───────────── */
-@layer ts.components {
+@layer tm.components {
   /* buttons */
   :where(button, [type="submit"], [type="button"], [type="reset"], a[role="button"]) {
-    --_bg: var(--ts-tone);
-    --_fg: var(--ts-tone-on);
+    --_bg: var(--tm-tone);
+    --_fg: var(--tm-tone-on);
     --_bd: transparent;
     display: inline-flex; align-items: center; justify-content: center; gap: 0.5em;
     position: relative;
-    min-block-size: calc(var(--ts-control-h) * var(--_size, 1));
-    padding: 0.25em calc(var(--ts-control-px) * var(--_size, 1));
+    min-block-size: calc(var(--tm-control-h) * var(--_size, 1));
+    padding: 0.25em calc(var(--tm-control-px) * var(--_size, 1));
     border: 1px solid var(--_bd);
-    border-radius: var(--ts-radius);
+    border-radius: var(--tm-radius);
     background: var(--_bg);
     color: var(--_fg);
-    font-size: var(--_font, var(--ts-control-font));
+    font-size: var(--_font, var(--tm-control-font));
     font-weight: 550;
     line-height: 1.2;
     text-align: center; text-wrap: balance; overflow-wrap: anywhere; hyphens: auto; /* a label wraps only when the button cannot fit (phones, long translations) */
     text-decoration: none;
     cursor: pointer;
     user-select: none;
-    transition: background-color var(--ts-duration) var(--ts-ease), border-color var(--ts-duration) var(--ts-ease),
-      color var(--ts-duration) var(--ts-ease), transform 80ms var(--ts-ease);
+    transition: background-color var(--tm-duration) var(--tm-ease), border-color var(--tm-duration) var(--tm-ease),
+      color var(--tm-duration) var(--tm-ease), transform 80ms var(--tm-ease);
   }
-  :where(button, [type="submit"], [type="button"], [type="reset"], a[role="button"]):not([data-variant], [data-tone]) { --ts-tone: var(--ts-primary); }
+  :where(button, [type="submit"], [type="button"], [type="reset"], a[role="button"]):not([data-variant], [data-tone]) { --tm-tone: var(--tm-primary); }
   :where(button, [type="submit"], [type="button"], [type="reset"], a[role="button"]):hover {
     background: color-mix(in oklab, var(--_bg), var(--_fg) 10%);
   }
   :where(button, [type="submit"], [type="button"], [type="reset"], a[role="button"]):active { transform: translateY(0.5px); }
-  :where([data-variant="secondary"]) { --_bg: var(--ts-tone-soft); --_fg: var(--ts-tone-ink); }
+  :where([data-variant="secondary"]) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); }
   :where([data-variant="outline"]) {
-    --_bg: transparent; --_fg: var(--ts-tone-ink);
-    --_bd: color-mix(in oklab, var(--ts-tone-ink) 22%, var(--ts-border-strong));
+    --_bg: transparent; --_fg: var(--tm-tone-ink);
+    --_bd: color-mix(in oklab, var(--tm-tone-ink) 22%, var(--tm-border-strong));
   }
-  :where([data-variant="outline"][data-tone]:not([data-tone="neutral"])) { --_bd: color-mix(in oklab, var(--ts-tone-ink) 65%, transparent); }
-  :where([data-variant="ghost"]) { --_bg: transparent; --_fg: var(--ts-tone-ink); }
-  :where([data-variant="outline"], [data-variant="ghost"]):hover { background: var(--ts-tone-soft); }
+  :where([data-variant="outline"][data-tone]:not([data-tone="neutral"])) { --_bd: color-mix(in oklab, var(--tm-tone-ink) 65%, transparent); }
+  :where([data-variant="ghost"]) { --_bg: transparent; --_fg: var(--tm-tone-ink); }
+  :where([data-variant="outline"], [data-variant="ghost"]):hover { background: var(--tm-tone-soft); }
   /* item: a full-width, multi-line list entry (message list, search results); selected = soft accent */
   :where(button, a)[data-variant="item"] {
-    --_bg: transparent; --_fg: var(--ts-text);
+    --_bg: transparent; --_fg: var(--tm-text);
     display: grid; justify-content: stretch; justify-items: start; align-content: center; gap: 0.125rem;
-    position: relative; inline-size: 100%; block-size: auto; min-block-size: var(--ts-control-h);
-    font-size: var(--ts-control-font);
-    padding: var(--ts-space-sm) var(--ts-space-md); border-radius: var(--ts-radius-sm);
+    position: relative; inline-size: 100%; block-size: auto; min-block-size: var(--tm-control-h);
+    font-size: var(--tm-control-font);
+    padding: var(--tm-space-sm) var(--tm-space-md); border-radius: var(--tm-radius-sm);
     background: var(--_bg); color: var(--_fg); font-weight: 400; line-height: 1.4; text-align: start;
     text-decoration: none; white-space: normal;
   }
-  :where(button, a)[data-variant="item"]:hover { background: var(--ts-fill); }
-  :where(button, a)[data-variant="item"][data-size="sm"] { min-block-size: 0; padding: 0.25rem var(--ts-space-sm); gap: 0; font-size: var(--ts-text-sm); }
-  :where([data-bar]) { border-inline-start: 3px solid var(--ts-tone); }
+  :where(button, a)[data-variant="item"]:hover { background: var(--tm-fill); }
+  :where(button, a)[data-variant="item"][data-size="sm"] { min-block-size: 0; padding: 0.25rem var(--tm-space-sm); gap: 0; font-size: var(--tm-text-sm); }
+  :where([data-bar]) { border-inline-start: 3px solid var(--tm-tone); }
   :where(button, a)[data-variant="item"]:is([aria-current]:not([aria-current="false"]), [aria-selected="true"], [aria-pressed="true"]) {
-    --ts-tone: var(--ts-accent); --_bg: var(--ts-tone-soft); --_fg: var(--ts-text); background: var(--_bg);
+    --tm-tone: var(--tm-accent); --_bg: var(--tm-tone-soft); --_fg: var(--tm-text); background: var(--_bg);
   }
   :where([data-variant="link"]) {
-    --_bg: transparent; --_fg: var(--ts-tone-ink);
+    --_bg: transparent; --_fg: var(--tm-tone-ink);
     min-block-size: 0; padding: 0; border: 0;
     text-decoration: underline; text-underline-offset: 0.2em;
     text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
   }
   :where([data-variant="link"]):hover { background: transparent; text-decoration-color: currentColor; }
-  :where([aria-pressed="true"], :is(button, a[role="button"])[aria-current]:not([aria-current="false"])) { --_bg: var(--ts-tone-soft); --_fg: var(--ts-tone-ink); --ts-tone: var(--ts-accent); }
+  :where([aria-pressed="true"], :is(button, a[role="button"])[aria-current]:not([aria-current="false"])) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent); }
   :where([data-size="sm"]) { --_size: 0.8; --_font: 0.8125rem; }
   :where([data-size="md"]) { --_size: 1; }
   :where([data-size="lg"]) { --_size: 1.2; --_font: 1rem; }
 
   /* tabs: role="tablist" holding role="tab" buttons; the selected tab (aria-selected="true") is underlined */
-  :where([role="tablist"]) { display: flex; flex-wrap: wrap; gap: var(--ts-space-xs); border-block-end: 1px solid var(--ts-border); }
-  :where([role="tablist"][aria-orientation="vertical"]) { flex-direction: column; border-block-end: 0; border-inline-end: 1px solid var(--ts-border); }
-  :where([role="tab"]) { --_bg: transparent; --_fg: var(--ts-text-muted); --_bd: transparent; border-radius: var(--ts-radius) var(--ts-radius) 0 0; }
-  :where([role="tablist"][aria-orientation="vertical"]) > :where([role="tab"]) { justify-content: start; border-radius: var(--ts-radius) 0 0 var(--ts-radius); }
-  :where([role="tab"]):hover { background: var(--ts-fill); color: var(--ts-text); }
-  :where([role="tab"][aria-selected="true"]) { --_fg: var(--ts-text); box-shadow: inset 0 -2px 0 var(--ts-accent); }
-  :where([role="tablist"][aria-orientation="vertical"]) > :where([role="tab"][aria-selected="true"]) { box-shadow: inset -2px 0 0 var(--ts-accent); }
-  :where(:is(button, a[role="button"])[data-icon]:is([data-icon=""], :empty)) { inline-size: calc(var(--ts-control-h) * var(--_size, 1)); padding: 0; flex-shrink: 0; }
+  :where([role="tablist"]) { display: flex; flex-wrap: wrap; gap: var(--tm-space-xs); border-block-end: 1px solid var(--tm-border); }
+  :where([role="tablist"][aria-orientation="vertical"]) { flex-direction: column; border-block-end: 0; border-inline-end: 1px solid var(--tm-border); }
+  :where([role="tab"]) { --_bg: transparent; --_fg: var(--tm-text-muted); --_bd: transparent; border-radius: var(--tm-radius) var(--tm-radius) 0 0; }
+  :where([role="tablist"][aria-orientation="vertical"]) > :where([role="tab"]) { justify-content: start; border-radius: var(--tm-radius) 0 0 var(--tm-radius); }
+  :where([role="tab"]):hover { background: var(--tm-fill); color: var(--tm-text); }
+  :where([role="tab"][aria-selected="true"]) { --_fg: var(--tm-text); box-shadow: inset 0 -2px 0 var(--tm-accent); }
+  :where([role="tablist"][aria-orientation="vertical"]) > :where([role="tab"][aria-selected="true"]) { box-shadow: inset -2px 0 0 var(--tm-accent); }
+  :where(:is(button, a[role="button"])[data-icon]:is([data-icon=""], :empty)) { inline-size: calc(var(--tm-control-h) * var(--_size, 1)); padding: 0; flex-shrink: 0; }
 
-  /* icons: data-icon="name" draws the icon from --ts-icon-<name> (icons.css, the Vite plugin, or your own CSS).
+  /* icons: data-icon="name" draws the icon from --tm-icon-<name> (icons.css, the Vite plugin, or your own CSS).
      On buttons and links the icon is a ::before in front of the text; anywhere else the element is the icon. */
   :where(:not(button, a, summary)[data-icon]:not([data-icon=""])),
   :where(button, a, summary)[data-icon]:not([data-icon=""])::before {
@@ -323,296 +323,296 @@
   :where(button, input, select, textarea):disabled { opacity: 0.5; cursor: not-allowed; }
   :where([aria-disabled="true"]) { opacity: 0.5; pointer-events: none; }
   :where(button, a[role="button"])[aria-busy="true"] { color: transparent; pointer-events: none; }
-  :where(form, fieldset, section, article, ul, ol, table, [data-layout])[aria-busy="true"] { opacity: 0.65; transition: opacity var(--ts-duration) var(--ts-ease); }
+  :where(form, fieldset, section, article, ul, ol, table, [data-layout])[aria-busy="true"] { opacity: 0.65; transition: opacity var(--tm-duration) var(--tm-ease); }
   :where(button, a[role="button"])[aria-busy="true"]::after {
     content: ""; position: absolute; inset: 0; margin: auto;
     inline-size: 1.1em; block-size: 1.1em; border-radius: 50%;
     border: 2px solid var(--_fg); border-inline-end-color: transparent;
-    animation: ts-spin 0.7s linear infinite;
+    animation: tm-spin 0.7s linear infinite;
   }
   :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"] { color: var(--_fg); }
   :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"]::after {
-    content: ""; position: absolute; inset-block: 0; inset-inline: auto var(--ts-space-sm); margin-block: auto;
+    content: ""; position: absolute; inset-block: 0; inset-inline: auto var(--tm-space-sm); margin-block: auto;
     inline-size: 0.875em; block-size: 0.875em; border-radius: 50%;
     border: 2px solid currentColor; border-inline-end-color: transparent; opacity: 0.7;
-    animation: ts-spin 0.7s linear infinite;
+    animation: tm-spin 0.7s linear infinite;
   }
-  @keyframes ts-spin { to { rotate: 1turn; } }
+  @keyframes tm-spin { to { rotate: 1turn; } }
 
   /* fields */
   :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea) {
     inline-size: 100%;
-    block-size: calc(var(--ts-control-h) * var(--_size, 1));
-    padding-inline: var(--ts-control-px);
-    border: 1px solid var(--ts-field-border);
-    border-radius: var(--ts-radius);
-    background-color: var(--ts-field);
-    font-size: var(--_font, var(--ts-control-font));
+    block-size: calc(var(--tm-control-h) * var(--_size, 1));
+    padding-inline: var(--tm-control-px);
+    border: 1px solid var(--tm-field-border);
+    border-radius: var(--tm-radius);
+    background-color: var(--tm-field);
+    font-size: var(--_font, var(--tm-control-font));
     font-weight: 400;
     outline: 2px solid transparent;
-    transition: border-color var(--ts-duration) var(--ts-ease), box-shadow var(--ts-duration) var(--ts-ease);
+    transition: border-color var(--tm-duration) var(--tm-ease), box-shadow var(--tm-duration) var(--tm-ease);
   }
-  :where(input, select, textarea):hover { border-color: color-mix(in oklab, var(--ts-border-strong), var(--ts-text) 18%); }
+  :where(input, select, textarea):hover { border-color: color-mix(in oklab, var(--tm-border-strong), var(--tm-text) 18%); }
   :where(input, select, textarea):focus-visible {
-    border-color: var(--ts-accent);
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--ts-accent) 25%, transparent);
+    border-color: var(--tm-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--tm-accent) 25%, transparent);
     outline-offset: 0;
   }
   :where(input, select, textarea):where(:user-invalid, [aria-invalid="true"]) {
-    border-color: var(--ts-danger);
-    --ts-accent: var(--ts-danger);
+    border-color: var(--tm-danger);
+    --tm-accent: var(--tm-danger);
   }
   /* In a row, fields take their natural width instead of 100%, so they don't push siblings onto a new line. */
   :where([data-layout="row"]) > :where(input, select) { inline-size: auto; min-inline-size: 0; }
   :where(textarea) { block-size: auto; min-block-size: 5.5em; padding-block: 0.5em; resize: vertical; line-height: 1.5; }
-  :where(::placeholder) { color: var(--ts-text-muted); opacity: 1; }
+  :where(::placeholder) { color: var(--tm-text-muted); opacity: 1; }
   :where(select:not([multiple], [size])) {
     appearance: none;
-    padding-inline-end: calc(var(--ts-control-px) + 1.25em);
-    background-image: linear-gradient(45deg, transparent 50%, var(--ts-text-muted) 50%),
-      linear-gradient(135deg, var(--ts-text-muted) 50%, transparent 50%);
-    background-position: right calc(var(--ts-control-px) + 0.3em) center, right var(--ts-control-px) center;
+    padding-inline-end: calc(var(--tm-control-px) + 1.25em);
+    background-image: linear-gradient(45deg, transparent 50%, var(--tm-text-muted) 50%),
+      linear-gradient(135deg, var(--tm-text-muted) 50%, transparent 50%);
+    background-position: right calc(var(--tm-control-px) + 0.3em) center, right var(--tm-control-px) center;
     background-size: 0.3em 0.3em;
     background-repeat: no-repeat;
   }
-  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding-block: var(--ts-space-xs); scrollbar-color: var(--ts-border-strong) transparent; }
+  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding-block: var(--tm-space-xs); scrollbar-color: var(--tm-border-strong) transparent; }
   /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode) */
-  :where(select:is([multiple], [size]:not([size="1"]))) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--ts-text); --_sel: color-mix(in oklab, var(--ts-accent) 22%, var(--ts-field)); }
+  :where(select:is([multiple], [size]:not([size="1"]))) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--tm-text); --_sel: color-mix(in oklab, var(--tm-accent) 22%, var(--tm-field)); }
   :where(input[type="color"]) {
-    inline-size: calc(var(--ts-control-h) * 1.5); block-size: var(--ts-control-h); padding: 3px;
-    border: 1px solid var(--ts-field-border); border-radius: var(--ts-radius); background: var(--ts-field); cursor: pointer;
+    inline-size: calc(var(--tm-control-h) * 1.5); block-size: var(--tm-control-h); padding: 3px;
+    border: 1px solid var(--tm-field-border); border-radius: var(--tm-radius); background: var(--tm-field); cursor: pointer;
   }
   :where(input[type="color"])::-webkit-color-swatch-wrapper { padding: 0; }
-  :where(input[type="color"])::-webkit-color-swatch { border: 0; border-radius: var(--ts-radius-sm); }
-  :where(input[type="color"])::-moz-color-swatch { border: 0; border-radius: var(--ts-radius-sm); }
-  :where(input[type="file"]) { max-inline-size: 100%; font-size: var(--ts-control-font); }
+  :where(input[type="color"])::-webkit-color-swatch { border: 0; border-radius: var(--tm-radius-sm); }
+  :where(input[type="color"])::-moz-color-swatch { border: 0; border-radius: var(--tm-radius-sm); }
+  :where(input[type="file"]) { max-inline-size: 100%; font-size: var(--tm-control-font); }
   :where(input[type="file"])::file-selector-button {
-    block-size: var(--ts-control-h); padding-inline: var(--ts-control-px); margin-inline-end: var(--ts-space-sm);
-    border: 1px solid var(--ts-border-strong); border-radius: var(--ts-radius);
-    background: var(--ts-field); color: var(--ts-text); font: inherit; font-weight: 550; cursor: pointer;
+    block-size: var(--tm-control-h); padding-inline: var(--tm-control-px); margin-inline-end: var(--tm-space-sm);
+    border: 1px solid var(--tm-border-strong); border-radius: var(--tm-radius);
+    background: var(--tm-field); color: var(--tm-text); font: inherit; font-weight: 550; cursor: pointer;
   }
 
   /* labels: a label wrapping a field stacks label text above it */
-  :where(label) { font-size: var(--ts-text-sm); font-weight: 550; }
+  :where(label) { font-size: var(--tm-text-sm); font-weight: 550; }
   :where(label:has(> input:not([type="checkbox"], [type="radio"]), > select, > textarea)) {
     display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.375rem; align-content: start;
   }
-  :where(label) > :where(small) { font-weight: 400; color: var(--ts-text-muted); }
-  :where(label) > :where(small[data-tone]) { color: var(--ts-tone-ink); }
+  :where(label) > :where(small) { font-weight: 400; color: var(--tm-text-muted); }
+  :where(label) > :where(small[data-tone]) { color: var(--tm-tone-ink); }
   :where(label:has(> input[type="checkbox"], > input[type="radio"])) {
-    display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 400; font-size: var(--ts-control-font); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 400; font-size: var(--tm-control-font); cursor: pointer;
   }
-  :where(fieldset) { display: grid; gap: var(--ts-space-sm); min-inline-size: 0; border: 0; padding: 0; }
-  :where(legend) { padding: 0 0 var(--ts-space-sm); font-size: var(--ts-text-sm); font-weight: 600; }
+  :where(fieldset) { display: grid; gap: var(--tm-space-sm); min-inline-size: 0; border: 0; padding: 0; }
+  :where(legend) { padding: 0 0 var(--tm-space-sm); font-size: var(--tm-text-sm); font-weight: 600; }
 
   /* checkbox, radio, switch */
   :where(input[type="checkbox"], input[type="radio"]) {
     appearance: none; flex-shrink: 0;
     display: inline-grid; place-content: center;
     inline-size: 1.125rem; block-size: 1.125rem;
-    border: 1.5px solid var(--ts-border-strong);
-    border-radius: var(--ts-radius-sm);
-    background: var(--ts-field);
+    border: 1.5px solid var(--tm-border-strong);
+    border-radius: var(--tm-radius-sm);
+    background: var(--tm-field);
     cursor: pointer;
-    transition: background-color var(--ts-duration) var(--ts-ease), border-color var(--ts-duration) var(--ts-ease);
+    transition: background-color var(--tm-duration) var(--tm-ease), border-color var(--tm-duration) var(--tm-ease);
   }
   :where(input[type="radio"]) { border-radius: 50%; }
-  :where(input[type="checkbox"], input[type="radio"]):checked { background: var(--ts-accent); border-color: var(--ts-accent); }
+  :where(input[type="checkbox"], input[type="radio"]):checked { background: var(--tm-accent); border-color: var(--tm-accent); }
   :where(input[type="checkbox"]:not([role="switch"]))::before {
     content: ""; inline-size: 0.3rem; block-size: 0.58rem;
-    border: solid var(--ts-tone-on); border-width: 0 2px 2px 0;
-    translate: 0 -0.06rem; rotate: 45deg; scale: 0; transition: scale 120ms var(--ts-ease);
+    border: solid var(--tm-tone-on); border-width: 0 2px 2px 0;
+    translate: 0 -0.06rem; rotate: 45deg; scale: 0; transition: scale 120ms var(--tm-ease);
   }
   :where(input[type="checkbox"]:not([role="switch"])):checked::before { scale: 1; }
-  :where(input[type="checkbox"]:not([role="switch"])):indeterminate { background: var(--ts-accent); border-color: var(--ts-accent); }
+  :where(input[type="checkbox"]:not([role="switch"])):indeterminate { background: var(--tm-accent); border-color: var(--tm-accent); }
   :where(input[type="checkbox"]:not([role="switch"])):indeterminate::before { block-size: 0; inline-size: 0.55rem; border-width: 0 0 2px; rotate: 0deg; scale: 1; translate: 0; }
   :where(input[type="radio"])::before {
     content: ""; inline-size: 0.45rem; block-size: 0.45rem; border-radius: 50%;
-    background: var(--ts-tone-on); scale: 0; transition: scale 120ms var(--ts-ease);
+    background: var(--tm-tone-on); scale: 0; transition: scale 120ms var(--tm-ease);
   }
   :where(input[type="radio"]):checked::before { scale: 1; }
   :where(input[type="checkbox"][role="switch"]) {
     inline-size: 2.25rem; block-size: 1.25rem; place-content: center start; padding-inline: 2px;
-    border: 0; border-radius: var(--ts-radius-full); background: var(--ts-border-strong);
+    border: 0; border-radius: var(--tm-radius-full); background: var(--tm-border-strong);
   }
   :where(input[type="checkbox"][role="switch"])::before {
     content: ""; inline-size: 1rem; block-size: 1rem; border-radius: 50%;
     background: light-dark(oklch(1 0 0), oklch(0.96 0 0));
     box-shadow: 0 1px 2px oklch(0 0 0 / 0.25);
-    transition: translate var(--ts-duration) var(--ts-ease);
+    transition: translate var(--tm-duration) var(--tm-ease);
   }
-  :where(input[type="checkbox"][role="switch"]):checked { background: var(--ts-accent); }
+  :where(input[type="checkbox"][role="switch"]):checked { background: var(--tm-accent); }
   :where(input[type="checkbox"][role="switch"]):checked::before { translate: 1rem 0; }
-  :where(input[type="checkbox"], input[type="radio"]):focus-visible { box-shadow: none; outline: 2px solid var(--ts-accent); outline-offset: 2px; }
+  :where(input[type="checkbox"], input[type="radio"]):focus-visible { box-shadow: none; outline: 2px solid var(--tm-accent); outline-offset: 2px; }
   :where(input[type="range"]) { inline-size: 100%; }
 
   /* progress and meter */
   :where(progress) {
     appearance: none; inline-size: 100%; block-size: 0.5rem; border: 0;
-    border-radius: var(--ts-radius-full); background: var(--ts-fill); overflow: hidden; color: var(--ts-tone);
+    border-radius: var(--tm-radius-full); background: var(--tm-fill); overflow: hidden; color: var(--tm-tone);
   }
   :where(progress)::-webkit-progress-bar { background: transparent; }
-  :where(progress)::-webkit-progress-value { background: var(--ts-tone); border-radius: inherit; }
-  :where(progress)::-moz-progress-bar { background: var(--ts-tone); border-radius: inherit; }
+  :where(progress)::-webkit-progress-value { background: var(--tm-tone); border-radius: inherit; }
+  :where(progress)::-moz-progress-bar { background: var(--tm-tone); border-radius: inherit; }
   /* meter: like progress; the browser picks good (low/high/optimum), so-so or bad, shown as success, warning, danger */
-  :where(meter) { appearance: none; inline-size: 100%; block-size: 0.5rem; border-radius: var(--ts-radius-full); background: var(--ts-fill); overflow: hidden; }
-  :where(meter)::-webkit-meter-bar { block-size: 0.5rem; border: 0; border-radius: inherit; background: var(--ts-fill); }
-  :where(meter)::-webkit-meter-optimum-value { background: var(--ts-success); }
-  :where(meter)::-webkit-meter-suboptimum-value { background: var(--ts-warning); }
-  :where(meter)::-webkit-meter-even-less-good-value { background: var(--ts-danger); }
-  :where(meter):-moz-meter-optimum::-moz-meter-bar { background: var(--ts-success); }
-  :where(meter):-moz-meter-sub-optimum::-moz-meter-bar { background: var(--ts-warning); }
-  :where(meter):-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--ts-danger); }
+  :where(meter) { appearance: none; inline-size: 100%; block-size: 0.5rem; border-radius: var(--tm-radius-full); background: var(--tm-fill); overflow: hidden; }
+  :where(meter)::-webkit-meter-bar { block-size: 0.5rem; border: 0; border-radius: inherit; background: var(--tm-fill); }
+  :where(meter)::-webkit-meter-optimum-value { background: var(--tm-success); }
+  :where(meter)::-webkit-meter-suboptimum-value { background: var(--tm-warning); }
+  :where(meter)::-webkit-meter-even-less-good-value { background: var(--tm-danger); }
+  :where(meter):-moz-meter-optimum::-moz-meter-bar { background: var(--tm-success); }
+  :where(meter):-moz-meter-sub-optimum::-moz-meter-bar { background: var(--tm-warning); }
+  :where(meter):-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--tm-danger); }
 
   /* card */
   :where(article) {
-    padding: var(--ts-space-lg);
-    border: 1px solid var(--ts-border);
-    border-radius: var(--ts-radius-lg);
-    background: var(--ts-surface);
-    box-shadow: var(--ts-shadow-sm);
+    padding: var(--tm-space-lg);
+    border: 1px solid var(--tm-border);
+    border-radius: var(--tm-radius-lg);
+    background: var(--tm-surface);
+    box-shadow: var(--tm-shadow-sm);
   }
 
   /* dialog */
   /* The reset removes margins; modal dialogs and popovers need the browser's margin: auto to stay centered. */
   :where(dialog, [popover]) { margin: auto; }
   :where(dialog) {
-    inline-size: min(var(--ts-dialog-width, 30rem), 100% - 2rem);
+    inline-size: min(var(--tm-dialog-width, 30rem), 100% - 2rem);
     max-block-size: calc(100dvh - 2rem);
-    padding: var(--ts-space-lg);
-    border: 1px solid var(--ts-border);
-    border-radius: var(--ts-radius-lg);
-    background: var(--ts-surface-raised);
-    color: var(--ts-text);
-    box-shadow: var(--ts-shadow-lg);
+    padding: var(--tm-space-lg);
+    border: 1px solid var(--tm-border);
+    border-radius: var(--tm-radius-lg);
+    background: var(--tm-surface-raised);
+    color: var(--tm-text);
+    box-shadow: var(--tm-shadow-lg);
     opacity: 0; scale: 0.97;
-    transition: opacity var(--ts-duration) var(--ts-ease), scale var(--ts-duration) var(--ts-ease),
-      overlay var(--ts-duration) allow-discrete, display var(--ts-duration) allow-discrete;
+    transition: opacity var(--tm-duration) var(--tm-ease), scale var(--tm-duration) var(--tm-ease),
+      overlay var(--tm-duration) allow-discrete, display var(--tm-duration) allow-discrete;
   }
-  :where(dialog[open]) { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ts-space-md); opacity: 1; scale: 1; }
+  :where(dialog[open]) { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--tm-space-md); opacity: 1; scale: 1; }
   @starting-style { :where(dialog[open]) { opacity: 0; scale: 0.97; } }
   :where(dialog)::backdrop {
-    background: oklch(0.2 0.02 var(--ts-neutral-hue) / 0.45);
+    background: oklch(0.2 0.02 var(--tm-neutral-hue) / 0.45);
     opacity: 0;
-    transition: opacity var(--ts-duration) var(--ts-ease), overlay var(--ts-duration) allow-discrete, display var(--ts-duration) allow-discrete;
+    transition: opacity var(--tm-duration) var(--tm-ease), overlay var(--tm-duration) allow-discrete, display var(--tm-duration) allow-discrete;
   }
   :where(dialog[open])::backdrop { opacity: 1; }
   @starting-style { :where(dialog[open])::backdrop { opacity: 0; } }
   :where(dialog) > :where(article) { display: contents; }
   :where(dialog, article) > :where(header),
-  :where(dialog, article) > :where(div, form, section, article) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-sm); }
+  :where(dialog, article) > :where(div, form, section, article) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-sm); }
   :where(dialog, article) > :where(footer),
-  :where(dialog, article) > :where(div, form, section, article) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--ts-space-sm); }
+  :where(dialog, article) > :where(div, form, section, article) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--tm-space-sm); }
   :where(dialog, article) :where(header) > :where(:not(h1, h2, h3, h4, h5, h6)) { flex-shrink: 0; }
   /* Close buttons in a dialog or card header look like quiet icon buttons; an empty one draws an ×. */
   :where(dialog, article) :where(header) :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])) {
-    --_bg: transparent; --_fg: var(--ts-text-muted); inline-size: calc(var(--ts-control-h) * var(--_size, 1)); padding: 0;
+    --_bg: transparent; --_fg: var(--tm-text-muted); inline-size: calc(var(--tm-control-h) * var(--_size, 1)); padding: 0;
   }
   :where(dialog, article) :where(header) :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])):empty::before {
     content: ""; inline-size: 1.125rem; block-size: 1.125rem; background: currentColor;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") center / contain no-repeat;
   }
-  :where(dialog) > :where(header) :where(h1, h2, h3) { font-size: var(--ts-text-lg); }
+  :where(dialog) > :where(header) :where(h1, h2, h3) { font-size: var(--tm-text-lg); }
 
   /* popover */
   :where([popover]) {
     min-inline-size: 12rem;
-    padding: var(--ts-space-xs);
-    border: 1px solid var(--ts-border);
-    border-radius: var(--ts-radius);
-    background: var(--ts-surface-raised);
-    color: var(--ts-text);
-    box-shadow: var(--ts-shadow-lg);
+    padding: var(--tm-space-xs);
+    border: 1px solid var(--tm-border);
+    border-radius: var(--tm-radius);
+    background: var(--tm-surface-raised);
+    color: var(--tm-text);
+    box-shadow: var(--tm-shadow-lg);
   }
 
   /* details */
-  :where(details) { border: 1px solid var(--ts-border); border-radius: var(--ts-radius); background: var(--ts-surface); padding-inline: var(--ts-space-md); }
-  :where(details[open]) { padding-block-end: var(--ts-space-md); }
+  :where(details) { border: 1px solid var(--tm-border); border-radius: var(--tm-radius); background: var(--tm-surface); padding-inline: var(--tm-space-md); }
+  :where(details[open]) { padding-block-end: var(--tm-space-md); }
   :where(summary) {
-    display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-sm);
-    min-block-size: var(--ts-control-h); font-weight: 550; cursor: pointer; list-style: none;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-sm);
+    min-block-size: var(--tm-control-h); font-weight: 550; cursor: pointer; list-style: none;
   }
   :where(summary)::-webkit-details-marker { display: none; }
   :where(summary)::after {
     content: ""; inline-size: 0.4em; block-size: 0.4em; flex-shrink: 0;
-    border: solid var(--ts-text-muted); border-width: 0 1.5px 1.5px 0;
-    rotate: 45deg; translate: 0 -0.15em; transition: rotate var(--ts-duration) var(--ts-ease);
+    border: solid var(--tm-text-muted); border-width: 0 1.5px 1.5px 0;
+    rotate: 45deg; translate: 0 -0.15em; transition: rotate var(--tm-duration) var(--tm-ease);
   }
   :where(details[open]) > :where(summary)::after { rotate: 225deg; translate: 0 0.1em; }
 
   /* table */
-  :where(table) { inline-size: 100%; border-collapse: collapse; font-size: var(--ts-text-sm); }
-  :where(th) { text-align: start; font-weight: 550; color: var(--ts-text-muted); font-size: var(--ts-text-xs); }
-  :where(th, td) { padding: var(--ts-space-sm) var(--ts-space-md); border-block-end: 1px solid var(--ts-border); }
-  :where(tbody tr):hover { background: color-mix(in oklab, var(--ts-fill) 60%, transparent); }
+  :where(table) { inline-size: 100%; border-collapse: collapse; font-size: var(--tm-text-sm); }
+  :where(th) { text-align: start; font-weight: 550; color: var(--tm-text-muted); font-size: var(--tm-text-xs); }
+  :where(th, td) { padding: var(--tm-space-sm) var(--tm-space-md); border-block-end: 1px solid var(--tm-border); }
+  :where(tbody tr):hover { background: color-mix(in oklab, var(--tm-fill) 60%, transparent); }
 
   /* label/value pairs */
-  :where(dl[data-pairs]) { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--ts-space-xs) var(--ts-space-md); }
+  :where(dl[data-pairs]) { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--tm-space-xs) var(--tm-space-md); }
   :where(dl[data-pairs]) > :where(div) { display: contents; }
-  :where(dl[data-pairs]) :where(dt) { color: var(--ts-text-muted); }
+  :where(dl[data-pairs]) :where(dt) { color: var(--tm-text-muted); }
   :where(dl[data-pairs]) :where(dd) { overflow-wrap: anywhere; }
 
   /* badge */
   :where([data-badge]) {
     display: inline-flex; align-items: center; gap: 0.3em;
     block-size: 1.375rem; padding-inline: 0.5rem;
-    border-radius: var(--ts-badge-radius);
-    background: var(--ts-tone-soft); color: var(--ts-tone-ink);
-    font-size: var(--ts-text-xs); font-weight: 600; line-height: 1; white-space: nowrap;
+    border-radius: var(--tm-badge-radius);
+    background: var(--tm-tone-soft); color: var(--tm-tone-ink);
+    font-size: var(--tm-text-xs); font-weight: 600; line-height: 1; white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
 
   /* callout */
   :where([data-callout]) {
-    display: grid; gap: var(--ts-space-xs);
-    padding: var(--ts-space-sm) var(--ts-space-md);
-    border: 1px solid color-mix(in oklab, var(--ts-tone) 30%, var(--ts-border));
-    border-radius: var(--ts-radius);
-    background: var(--ts-tone-soft);
-    color: var(--ts-text);
-    font-size: var(--ts-text-sm);
+    display: grid; gap: var(--tm-space-xs);
+    padding: var(--tm-space-sm) var(--tm-space-md);
+    border: 1px solid color-mix(in oklab, var(--tm-tone) 30%, var(--tm-border));
+    border-radius: var(--tm-radius);
+    background: var(--tm-tone-soft);
+    color: var(--tm-text);
+    font-size: var(--tm-text-sm);
   }
-  :where([data-callout]):not([data-tone]) { --ts-tone: var(--ts-info); }
-  :where([data-callout]) > :where(strong, b) { color: var(--ts-tone-ink); }
+  :where([data-callout]):not([data-tone]) { --tm-tone: var(--tm-info); }
+  :where([data-callout]) > :where(strong, b) { color: var(--tm-tone-ink); }
 
   /* caption: small secondary label text (dt, field captions, group headings) */
-  :where([data-caption]) { font-size: var(--ts-text-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ts-text-muted); }
+  :where([data-caption]) { font-size: var(--tm-text-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--tm-text-muted); }
 
   /* list: one bordered box; its children are rows separated by lines (settings lists, keys, devices) */
   :where([data-list]) {
     display: flex; flex-direction: column; padding: 0; list-style: none;
-    border: 1px solid var(--ts-border); border-radius: var(--ts-radius); background: var(--ts-surface);
+    border: 1px solid var(--tm-border); border-radius: var(--tm-radius); background: var(--tm-surface);
   }
-  :where([data-list]) > :where(*) { padding: var(--ts-space-sm) var(--ts-space-md); border: 0; border-radius: 0; background: none; box-shadow: none; }
-  :where([data-list]) > :where(:not(template) ~ :not(template)) { border-block-start: 1px solid var(--ts-border); }
+  :where([data-list]) > :where(*) { padding: var(--tm-space-sm) var(--tm-space-md); border: 0; border-radius: 0; background: none; box-shadow: none; }
+  :where([data-list]) > :where(:not(template) ~ :not(template)) { border-block-start: 1px solid var(--tm-border); }
 
   /* divider: a line with text in the middle ("or") */
-  :where([data-divider]) { display: flex; align-items: center; gap: var(--ts-space-sm); color: var(--ts-text-muted); font-size: var(--ts-text-sm); }
-  :where([data-divider])::before, :where([data-divider])::after { content: ""; flex: 1; border-block-start: 1px solid var(--ts-border); }
-  :where([aria-current="date"]:not(a, button)) { color: var(--ts-accent); font-weight: 650; }
+  :where([data-divider]) { display: flex; align-items: center; gap: var(--tm-space-sm); color: var(--tm-text-muted); font-size: var(--tm-text-sm); }
+  :where([data-divider])::before, :where([data-divider])::after { content: ""; flex: 1; border-block-start: 1px solid var(--tm-border); }
+  :where([aria-current="date"]:not(a, button)) { color: var(--tm-accent); font-weight: 650; }
 
   /* avatar: initials or a photo in a circle, colored by tone */
   :where([data-avatar]) {
-    --_av: calc(var(--ts-avatar-size, 2.5rem) * var(--_size, 1));
+    --_av: calc(var(--tm-avatar-size, 2.5rem) * var(--_size, 1));
     display: inline-grid; place-items: center; flex-shrink: 0;
     inline-size: var(--_av); block-size: var(--_av); border-radius: 50%; overflow: hidden;
-    background: var(--ts-tone-soft); color: var(--ts-tone-ink);
+    background: var(--tm-tone-soft); color: var(--tm-tone-ink);
     font-size: calc(var(--_av) * 0.4); font-weight: 600; line-height: 1; user-select: none;
   }
   :where([data-avatar]) > :where(img) { inline-size: 100%; block-size: 100%; object-fit: cover; }
 
   /* clickable card: [data-stretch] on the card's main link or button makes the whole card clickable */
-  :where(article:has([data-stretch])) { position: relative; transition: border-color var(--ts-duration) var(--ts-ease); }
-  :where(article:has([data-stretch])):hover { border-color: var(--ts-border-strong); }
-  :where(article:has([data-stretch]:focus-visible)) { outline: 2px solid var(--ts-accent); outline-offset: 2px; }
+  :where(article:has([data-stretch])) { position: relative; transition: border-color var(--tm-duration) var(--tm-ease); }
+  :where(article:has([data-stretch])):hover { border-color: var(--tm-border-strong); }
+  :where(article:has([data-stretch]:focus-visible)) { outline: 2px solid var(--tm-accent); outline-offset: 2px; }
   :where([data-stretch]):focus-visible { outline: none; }
   :where(a[data-stretch], [data-stretch][data-variant="link"]) { color: inherit; text-decoration: none; }
-  :where([data-stretch])::after { content: ""; position: absolute; inset: 0; border-radius: var(--ts-radius-lg); }
+  :where([data-stretch])::after { content: ""; position: absolute; inset: 0; border-radius: var(--tm-radius-lg); }
   :where(article:has([data-stretch])) :where(a, button, input, select, textarea, label):not([data-stretch]) { position: relative; z-index: 1; }
 }
 
-@layer ts.base {
+@layer tm.base {
   @media (prefers-contrast: more) {
-    :where(:root) { --ts-border: var(--ts-border-strong); --ts-text-muted: var(--ts-text); }
+    :where(:root) { --tm-border: var(--tm-border-strong); --tm-text-muted: var(--tm-text); }
   }
 }

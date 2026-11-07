@@ -1,6 +1,6 @@
-# tinystyle
+# temper
 
-> Tiny CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
+> CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
 > `data-*` attributes with fixed values. Light and dark mode switch automatically.
 
 <!-- short -->
@@ -12,35 +12,35 @@ This is the short version: enough for small edits. Before building whole pages o
 ## Setup
 
 ```js
-import '@tiaforge-ui/tinystyle/core.css';   // always
-import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
-import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
-import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
-import '@tiaforge-ui/tinystyle/table.css';  // data tables: sortable headers, selection, number columns
-import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
-import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
-// or everything: import '@tiaforge-ui/tinystyle/all.css';
+import '@tiaforge-ui/temper/core.css';   // always
+import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating action button
+import '@tiaforge-ui/temper/menu.css';   // dropdown menus
+import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
+import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selection, number columns
+import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
+import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
+// or everything: import '@tiaforge-ui/temper/all.css';
 ```
 
 ```js
-// vite.config.js: runs tinystyle check in every build (errors fail the build, the dev server warns)
-import tinystyle from '@tiaforge-ui/tinystyle/vite';
-export default { plugins: [tinystyle()] };
+// vite.config.js: runs temper check in every build (errors fail the build, the dev server warns)
+import temper from '@tiaforge-ui/temper/vite';
+export default { plugins: [temper()] };
 // with icons: every Lucide icon by name (only the used ones are emitted) plus your own SVG folder
-// export default { plugins: [tinystyle({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:tinystyle-icons.css';
-// (then do not also import icons.css; the CLI equivalent is: npx tinystyle check --lucide --icons src/icons <paths>)
-// while migrating step by step, check only the migrated parts: tinystyle({ paths: ['src/contacts', 'contacts'] })
-// opt-in enhancements (newer CSS, fine to leave off): tinystyle({ enhance: ['customizable-select'] }) or enhance: 'all'
-// smaller builds: tinystyle({ prune: true }) drops rules for attributes and values the project never uses
-// without the plugin: import '@tiaforge-ui/tinystyle/enhance/customizable-select.css' after core.css
+// export default { plugins: [temper({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:temper-icons.css';
+// (then do not also import icons.css; the CLI equivalent is: npx temper check --lucide --icons src/icons <paths>)
+// while migrating step by step, check only the migrated parts: temper({ paths: ['src/contacts', 'contacts'] })
+// opt-in enhancements (newer CSS, fine to leave off): temper({ enhance: ['customizable-select'] }) or enhance: 'all'
+// smaller builds: temper({ prune: true }) drops rules for attributes and values the project never uses
+// without the plugin: import '@tiaforge-ui/temper/enhance/customizable-select.css' after core.css
 ```
 
 <!-- full -->
 Types for computed values (`data-tone={failed ? 'danger' : 'success'}`), checked by your framework's
 type checker: reference one file once, e.g. in `src/env.d.ts`:
-`/// <reference types="@tiaforge-ui/tinystyle/react" />` (also `vue`, `astro`, `svelte`). For sinter,
-add `import type {} from '@tiaforge-ui/tinystyle/sinter';` to the sinter types module. svelte-check does
-not type attributes written on elements; `tinystyle check` checks those expressions itself.
+`/// <reference types="@tiaforge-ui/temper/react" />` (also `vue`, `astro`, `svelte`). For sinter,
+add `import type {} from '@tiaforge-ui/temper/sinter';` to the sinter types module. svelte-check does
+not type attributes written on elements; `temper check` checks those expressions itself.
 <!-- /full -->
 
 ## Rules
@@ -60,18 +60,18 @@ not type attributes written on elements; `tinystyle check` checks those expressi
    `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
    `data-grow` on one child makes it take the remaining space (search fields, inputs next to a button).
 5. Sizes always use the same words: `xs sm md lg xl`. There are no numeric scales.
-6. Your own CSS always wins over tinystyle (tinystyle lives in `@layer ts.*`). Never use `!important`.
-   In your own CSS, use the tokens (`var(--ts-text-muted)`, `var(--ts-space-sm)`), never hard-coded colors.
+6. Your own CSS always wins over temper (temper lives in `@layer ts.*`). Never use `!important`.
+   In your own CSS, use the tokens (`var(--tm-text-muted)`, `var(--tm-space-sm)`), never hard-coded colors.
 7. Use `class` only for your app's own components. `data-*` attributes from the list below belong to
-   tinystyle; do not use those names for anything else.
-8. Size and tune things with the documented custom properties in `style` (`style="--ts-min: 12rem"`,
-   `style="--ts-tone: #e8590c"`, `style="--ts-avatar-size: 4rem"`). That is the intended way; do not
+   temper; do not use those names for anything else.
+8. Size and tune things with the documented custom properties in `style` (`style="--tm-min: 12rem"`,
+   `style="--tm-tone: #e8590c"`, `style="--tm-avatar-size: 4rem"`). That is the intended way; do not
    write `width`, `margin` or `padding` there.
-9. Run `npx tinystyle check <dir>` (`--fix` applies the safe fixes) after editing (or use the Vite plugin, which runs it in every build).
+9. Run `npx temper check <dir>` (`--fix` applies the safe fixes) after editing (or use the Vite plugin, which runs it in every build).
    It reports bad values, misplaced attributes, missing module imports and
    unlabeled buttons. For "no attribute" use `null`, not `false`: `cond ? 'x' : null`.
-10. To see the result, prefer `npx tinystyle-inspect <dev-server-url>` (package
-    `@tiaforge-ui/tinystyle-inspect`, if installed) over screenshots. It opens every dialog and popover
+10. To see the result, prefer `npx temper-inspect <dev-server-url>` (package
+    `@tiaforge-ui/temper-inspect`, if installed) over screenshots. It opens every dialog and popover
     at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
     contrast, unlabeled controls and covered click targets as text. To judge how it looks, add
     `--sheet <dir>`: it writes one image per page with every state at every width and scheme, so one
@@ -104,9 +104,9 @@ Your own icons: put SVG files in the plugin's `icons.dir` (file name = icon name
 of the same name), or without the plugin:
 
 ```css
-:root { --ts-icon-mail: url(/icons/mail.svg); }            /* replace a default icon */
-:root { --ts-icon-rocket: url(/icons/rocket.svg); }         /* add one */
-[data-icon="rocket"] { --_icon: var(--ts-icon-rocket); }
+:root { --tm-icon-mail: url(/icons/mail.svg); }            /* replace a default icon */
+:root { --tm-icon-rocket: url(/icons/rocket.svg); }         /* add one */
+[data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }
 ```
 
 <!-- /full -->
@@ -120,7 +120,7 @@ Icons are one color (the text color); keep multicolor logos as `<img>`.
 ```html
 <form data-layout="stack" data-gap="md">
   <label>Name <input name="name" required></label>
-  <div data-layout="grid" data-gap="sm" style="--ts-min: 10rem">
+  <div data-layout="grid" data-gap="sm" style="--tm-min: 10rem">
     <label>Start <input type="date"></label>
     <label>Time <input type="time"></label>
   </div>
@@ -199,7 +199,7 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
 
 ```html
 <span data-badge data-tone="success">Synced</span>
-<span data-badge style="--ts-tone: #e8590c">Custom color</span>
+<span data-badge style="--tm-tone: #e8590c">Custom color</span>
 <div data-callout data-tone="warning" role="status"><strong>Password expires soon</strong>Update it before 1 December.</div>
 <button aria-busy="true">Saving</button>
 ```
@@ -285,7 +285,7 @@ children of `data-shell` (scripts, templates, framework elements) take no space.
 be set in the markup; CSS cannot detect the current page.
 
 `[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
-moves to tinystyle page by page, keep the old nav partial for the old pages and add a second one with
+moves to temper page by page, keep the old nav partial for the old pages and add a second one with
 this markup for the migrated pages; delete the old one when the last page has moved.
 
 To keep the collapsed state across page loads, add this (CSS cannot store anything):
@@ -393,7 +393,7 @@ Show and hide the list, and move `aria-selected` with the arrow keys, from scrip
 <div data-layout="grid" data-cols="7" data-gap="xs">
   <div data-layout="stack" data-gap="xs">
     <span data-caption aria-current="date">Sat 7</span>
-    <button data-variant="item" data-size="sm" data-bar style="--ts-tone: #4CAF50">
+    <button data-variant="item" data-size="sm" data-bar style="--tm-tone: #4CAF50">
       <small data-muted>10:00</small><span data-clamp="2">Market and brunch</span>
     </button>
   </div>
@@ -404,7 +404,7 @@ Show and hide the list, and move `aria-selected` with the arrow keys, from scrip
 ### Card grid with avatars, whole card clickable
 
 ```html
-<div data-layout="grid" data-gap="md" style="--ts-min: 13rem">
+<div data-layout="grid" data-gap="md" style="--tm-min: 13rem">
   <article data-layout="stack" data-gap="xs" data-align="center">
     <span data-avatar>MO</span>
     <a href="#mira" data-stretch><strong>Mira Okafor</strong></a>
@@ -431,7 +431,7 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 ```html
 <main data-layout="center" data-gap="xl" data-pad="xl">
   <section data-layout="stack" data-gap="md">…</section>
-  <section data-layout="grid" data-gap="lg" style="--ts-min: 20rem">…</section>
+  <section data-layout="grid" data-gap="lg" style="--tm-min: 20rem">…</section>
 </main>
 ```
 
@@ -445,11 +445,11 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 | `<button data-variant="primary">` | `<button>` (primary is the default) |
 | `<p class="error">` | `<p data-tone="danger">` or `<div data-callout data-tone="danger">` |
 | `style="margin-top: 1rem"` on a button or input | wrap the elements in `data-layout="stack" data-gap="md"` |
-| `style="padding: var(--ts-space-lg)"` | `data-pad="lg"` |
+| `style="padding: var(--tm-space-lg)"` | `data-pad="lg"` |
 | a custom class to turn a `label` into a flex row | `<label data-layout="row" data-justify="between">` |
 | `data-gap="4"` or `data-gap="16px"` | `data-gap="md"` |
 | `<button data-icon="x"></button>` | `<button data-icon="x" aria-label="Close"></button>` |
 | `<svg><path d="…"/></svg>` for a mail icon | `<span data-icon="mail"></span>` |
 | `data-badge="true"` | `data-badge` |
-| `color: #666` in app CSS | `color: var(--ts-text-muted)` |
-| `!important` to beat tinystyle | a plain selector; app CSS already wins |
+| `color: #666` in app CSS | `color: var(--tm-text-muted)` |
+| `!important` to beat temper | a plain selector; app CSS already wins |

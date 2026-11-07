@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>tinystyle kitchen sink</title>
+  <title>temper kitchen sink</title>
   <link rel="stylesheet" href="../src/core.css" id="core-css">
   <link rel="stylesheet" href="theme-examples.css">
   <link rel="stylesheet" href="demo.css">
@@ -41,7 +41,7 @@
 </svg>
 
 <header class="topbar" data-layout="row" data-gap="sm">
-  <div class="wordmark">tinystyle <span>kitchen sink</span></div>
+  <div class="wordmark">temper <span>kitchen sink</span></div>
   <div class="segmented" role="group" aria-label="Theme example" id="example">
     <button data-variant="ghost" data-size="sm" value="">Default</button>
     <button data-variant="ghost" data-size="sm" value="ink">Ink</button>
@@ -74,9 +74,9 @@
         <button data-variant="ghost"><svg><use href="#i-send"/></svg>Sent</button>
         <button data-variant="ghost"><svg><use href="#i-trash"/></svg>Trash</button>
         <h4>Calendars</h4>
-        <button data-variant="ghost" style="--ts-tone: oklch(0.6 0.15 250)"><span class="cal-dot"></span>Work</button>
-        <button data-variant="ghost" style="--ts-tone: oklch(0.65 0.16 150)"><span class="cal-dot"></span>Family</button>
-        <button data-variant="ghost" style="--ts-tone: oklch(0.68 0.16 55)"><span class="cal-dot"></span>Climbing club</button>
+        <button data-variant="ghost" style="--tm-tone: oklch(0.6 0.15 250)"><span class="cal-dot"></span>Work</button>
+        <button data-variant="ghost" style="--tm-tone: oklch(0.65 0.16 150)"><span class="cal-dot"></span>Family</button>
+        <button data-variant="ghost" style="--tm-tone: oklch(0.68 0.16 55)"><span class="cal-dot"></span>Climbing club</button>
       </nav>
 
       <div class="msgs">
@@ -93,7 +93,7 @@
         </ul>
       </div>
 
-      <article class="reader" style="border:0; border-radius:0; box-shadow:none; border-inline-start: 1px solid var(--ts-border)" data-layout="stack" data-gap="md">
+      <article class="reader" style="border:0; border-radius:0; box-shadow:none; border-inline-start: 1px solid var(--tm-border)" data-layout="stack" data-gap="md">
         <header>
           <h3>Re: CalDAV sync drops recurring exceptions</h3>
           <div data-layout="row" data-gap="xs">
@@ -131,16 +131,16 @@
       <p>A form with every field type and an invalid field, a confirmation dialog, a menu and a contact card.</p>
     </div>
 
-    <div data-layout="grid" data-gap="lg" style="--ts-min: 22rem; align-items:start">
+    <div data-layout="grid" data-gap="lg" style="--tm-min: 22rem; align-items:start">
       <article data-layout="stack" data-gap="md">
         <header><h3>Edit event</h3><button data-icon data-variant="ghost" aria-label="Close"><svg><use href="#i-x"/></svg></button></header>
         <form data-layout="stack" data-gap="md" onsubmit="return false">
           <label>Title <input value="Design review"></label>
-          <div data-layout="grid" data-gap="sm" style="--ts-min: 9rem">
+          <div data-layout="grid" data-gap="sm" style="--tm-min: 9rem">
             <label>Starts <input type="date" value="2026-11-12"></label>
             <label>Time <input type="time" value="14:00"></label>
           </div>
-          <div data-layout="grid" data-gap="sm" style="--ts-min: 9rem">
+          <div data-layout="grid" data-gap="sm" style="--tm-min: 9rem">
             <label>Calendar
               <select><option>Work</option><option>Family</option><option>Climbing club</option></select>
             </label>
@@ -197,7 +197,7 @@
 
           <article data-layout="stack" data-gap="sm" style="flex:1; min-inline-size: 14rem">
             <div data-layout="row" data-gap="sm" style="flex-wrap:nowrap">
-              <div class="avatar" style="--ts-tone: oklch(0.65 0.16 150)">MO</div>
+              <div class="avatar" style="--tm-tone: oklch(0.65 0.16 150)">MO</div>
               <div data-layout="stack" data-gap="none" style="min-inline-size:0">
                 <strong>Mira Okafor</strong>
                 <small data-muted data-truncate>mira@okafor.io</small>
@@ -254,17 +254,17 @@
         <span data-badge data-tone="success">Synced</span>
         <span data-badge data-tone="warning">Pending</span>
         <span data-badge data-tone="danger">Failed</span>
-        <span data-badge style="--ts-tone: oklch(0.6 0.2 330)">Custom colour</span>
+        <span data-badge style="--tm-tone: oklch(0.6 0.2 330)">Custom colour</span>
       </div>
 
-      <div data-layout="grid" data-gap="sm" style="--ts-min: 15rem">
+      <div data-layout="grid" data-gap="sm" style="--tm-min: 15rem">
         <div data-callout><strong>Sync paused</strong>Caley syncs again when you are back online.</div>
         <div data-callout data-tone="success"><strong>Calendar imported</strong>48 events added to Work.</div>
         <div data-callout data-tone="warning"><strong>Password expires soon</strong>Update it before 1 December to keep syncing.</div>
         <div data-callout data-tone="danger" role="alert"><strong>Could not send</strong>The SMTP server refused the login. Check the password in Settings.</div>
       </div>
 
-      <div data-layout="grid" data-gap="lg" style="--ts-min: 15rem">
+      <div data-layout="grid" data-gap="lg" style="--tm-min: 15rem">
         <div data-layout="stack" data-gap="sm">
           <label><input type="checkbox" checked> Checked</label>
           <label><input type="checkbox"> Unchecked</label>
@@ -283,7 +283,7 @@
         </div>
       </div>
 
-      <div data-layout="grid" data-gap="lg" style="--ts-min: 22rem">
+      <div data-layout="grid" data-gap="lg" style="--tm-min: 22rem">
         <div data-layout="stack" data-gap="md">
           <div role="tablist" aria-label="Settings">
             <button role="tab" aria-selected="true">General</button>
@@ -301,7 +301,7 @@
             </li>
           </ul>
         </div>
-        <div data-layout="center" data-gap="sm" style="--ts-measure: 14rem" lang="de">
+        <div data-layout="center" data-gap="sm" style="--tm-measure: 14rem" lang="de">
           <button data-variant="secondary">Mit einem Passkey anmelden</button>
           <p data-divider>oder</p>
           <button>Wiederherstellungsschlüssel herunterladen</button>
@@ -320,16 +320,16 @@
       <p>Body text with a <a href="#">link to settings</a>, <mark>highlighted search hits</mark>, inline <code>RRULE:FREQ=WEEKLY</code> and a shortcut: press <kbd>C</kbd> to compose.</p>
 
       <div class="swatches">
-        <div class="swatch"><i style="background:var(--ts-bg)"></i>bg</div>
-        <div class="swatch"><i style="background:var(--ts-surface)"></i>surface</div>
-        <div class="swatch"><i style="background:var(--ts-fill)"></i>fill</div>
-        <div class="swatch"><i style="background:var(--ts-border-strong)"></i>border-strong</div>
-        <div class="swatch"><i style="background:var(--ts-text-muted)"></i>text-muted</div>
-        <div class="swatch"><i style="background:var(--ts-text)"></i>text</div>
-        <div class="swatch"><i style="background:var(--ts-accent)"></i>accent</div>
-        <div class="swatch"><i style="background:var(--ts-danger)"></i>danger</div>
-        <div class="swatch"><i style="background:var(--ts-success)"></i>success</div>
-        <div class="swatch"><i style="background:var(--ts-warning)"></i>warning</div>
+        <div class="swatch"><i style="background:var(--tm-bg)"></i>bg</div>
+        <div class="swatch"><i style="background:var(--tm-surface)"></i>surface</div>
+        <div class="swatch"><i style="background:var(--tm-fill)"></i>fill</div>
+        <div class="swatch"><i style="background:var(--tm-border-strong)"></i>border-strong</div>
+        <div class="swatch"><i style="background:var(--tm-text-muted)"></i>text-muted</div>
+        <div class="swatch"><i style="background:var(--tm-text)"></i>text</div>
+        <div class="swatch"><i style="background:var(--tm-accent)"></i>accent</div>
+        <div class="swatch"><i style="background:var(--tm-danger)"></i>danger</div>
+        <div class="swatch"><i style="background:var(--tm-success)"></i>success</div>
+        <div class="swatch"><i style="background:var(--tm-warning)"></i>warning</div>
       </div>
     </article>
   </section>

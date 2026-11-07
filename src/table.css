@@ -1,19 +1,19 @@
-/* tinystyle table: data tables. Requires core.css. State is HTML and ARIA, as everywhere:
+/* temper table: data tables. Requires core.css. State is HTML and ARIA, as everywhere:
    <th aria-sort="ascending"><button>Name</button></th>   sortable column (your code sorts and sets aria-sort)
    <td data-num>1,204.50</td>                              numbers: right-aligned, tabular figures
    a checked checkbox in the first cell (or aria-selected="true" on the row) highlights the row.
    The header sticks to the top while the page (or a data-scroll="y|both" wrapper) scrolls. */
 
-@layer ts.components {
-  :where(caption) { padding-block-end: var(--ts-space-sm); caption-side: top; text-align: start; font-weight: 600; }
+@layer tm.components {
+  :where(caption) { padding-block-end: var(--tm-space-sm); caption-side: top; text-align: start; font-weight: 600; }
   :where(thead) :where(th) {
     position: sticky; inset-block-start: 0; z-index: 1;
-    background: var(--ts-surface);
-    border-block-end: 0; box-shadow: inset 0 -1px var(--ts-border); /* collapsed borders do not stick */
+    background: var(--tm-surface);
+    border-block-end: 0; box-shadow: inset 0 -1px var(--tm-border); /* collapsed borders do not stick */
     white-space: nowrap;
   }
-  :where(tfoot) :where(th, td) { border-block-end: 0; border-block-start: 1px solid var(--ts-border-strong); font-weight: 600; color: var(--ts-text); }
-  :where(tbody) :where(th) { color: var(--ts-text); font-size: inherit; font-weight: 550; }
+  :where(tfoot) :where(th, td) { border-block-end: 0; border-block-start: 1px solid var(--tm-border-strong); font-weight: 600; color: var(--tm-text); }
+  :where(tbody) :where(th) { color: var(--tm-text); font-size: inherit; font-weight: 550; }
   :where(td) { vertical-align: middle; }
   :where(th, td)[data-num] { text-align: end; font-variant-numeric: tabular-nums; }
 
@@ -21,14 +21,14 @@
   :where(th[aria-sort]) > :where(button) {
     --_bg: transparent; --_fg: inherit;
     gap: 0.25em; min-block-size: 0; margin-inline: -0.25em; padding: 0.125em 0.25em;
-    border-radius: var(--ts-radius-sm); font: inherit; color: inherit; text-align: inherit;
+    border-radius: var(--tm-radius-sm); font: inherit; color: inherit; text-align: inherit;
   }
-  :where(th[aria-sort]) > :where(button):hover { background: var(--ts-fill); color: var(--ts-text); }
+  :where(th[aria-sort]) > :where(button):hover { background: var(--tm-fill); color: var(--tm-text); }
   :where(th[aria-sort]) > :where(button)::after {
     content: ""; inline-size: 0.875em; block-size: 0.875em; flex-shrink: 0; background: currentColor; opacity: 0.35;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 9 5-5 5 5M7 15l5 5 5-5'/%3E%3C/svg%3E") center / contain no-repeat;
   }
-  :where(th[aria-sort="ascending"], th[aria-sort="descending"]) { color: var(--ts-text); }
+  :where(th[aria-sort="ascending"], th[aria-sort="descending"]) { color: var(--tm-text); }
   :where(th[aria-sort="ascending"], th[aria-sort="descending"]) > :where(button)::after {
     opacity: 1;
     mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 19V5M6 11l6-6 6 6'/%3E%3C/svg%3E");
@@ -41,9 +41,9 @@
   :where(th, td):has(> input[type="checkbox"]:only-child) { inline-size: 1%; padding-inline-end: 0; }
   :where(th, td) > :where(input[type="checkbox"]:only-child) { vertical-align: middle; }
   :where(tbody tr):is([aria-selected="true"], :has(> :first-child > input[type="checkbox"]:only-child:checked)) {
-    background: color-mix(in oklab, var(--ts-accent) 9%, transparent);
+    background: color-mix(in oklab, var(--tm-accent) 9%, transparent);
   }
   :where(tbody tr):is([aria-selected="true"], :has(> :first-child > input[type="checkbox"]:only-child:checked)):hover {
-    background: color-mix(in oklab, var(--ts-accent) 14%, transparent);
+    background: color-mix(in oklab, var(--tm-accent) 14%, transparent);
   }
 }

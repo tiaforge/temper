@@ -1,39 +1,39 @@
-# tinystyle
+# temper
 
-> Tiny CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
+> CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
 > `data-*` attributes with fixed values. Light and dark mode switch automatically.
 
 ## Setup
 
 ```js
-import '@tiaforge-ui/tinystyle/core.css';   // always
-import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
-import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
-import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
-import '@tiaforge-ui/tinystyle/table.css';  // data tables: sortable headers, selection, number columns
-import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
-import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
-// or everything: import '@tiaforge-ui/tinystyle/all.css';
+import '@tiaforge-ui/temper/core.css';   // always
+import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating action button
+import '@tiaforge-ui/temper/menu.css';   // dropdown menus
+import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
+import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selection, number columns
+import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
+import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
+// or everything: import '@tiaforge-ui/temper/all.css';
 ```
 
 ```js
-// vite.config.js: runs tinystyle check in every build (errors fail the build, the dev server warns)
-import tinystyle from '@tiaforge-ui/tinystyle/vite';
-export default { plugins: [tinystyle()] };
+// vite.config.js: runs temper check in every build (errors fail the build, the dev server warns)
+import temper from '@tiaforge-ui/temper/vite';
+export default { plugins: [temper()] };
 // with icons: every Lucide icon by name (only the used ones are emitted) plus your own SVG folder
-// export default { plugins: [tinystyle({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:tinystyle-icons.css';
-// (then do not also import icons.css; the CLI equivalent is: npx tinystyle check --lucide --icons src/icons <paths>)
-// while migrating step by step, check only the migrated parts: tinystyle({ paths: ['src/contacts', 'contacts'] })
-// opt-in enhancements (newer CSS, fine to leave off): tinystyle({ enhance: ['customizable-select'] }) or enhance: 'all'
-// smaller builds: tinystyle({ prune: true }) drops rules for attributes and values the project never uses
-// without the plugin: import '@tiaforge-ui/tinystyle/enhance/customizable-select.css' after core.css
+// export default { plugins: [temper({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:temper-icons.css';
+// (then do not also import icons.css; the CLI equivalent is: npx temper check --lucide --icons src/icons <paths>)
+// while migrating step by step, check only the migrated parts: temper({ paths: ['src/contacts', 'contacts'] })
+// opt-in enhancements (newer CSS, fine to leave off): temper({ enhance: ['customizable-select'] }) or enhance: 'all'
+// smaller builds: temper({ prune: true }) drops rules for attributes and values the project never uses
+// without the plugin: import '@tiaforge-ui/temper/enhance/customizable-select.css' after core.css
 ```
 
 Types for computed values (`data-tone={failed ? 'danger' : 'success'}`), checked by your framework's
 type checker: reference one file once, e.g. in `src/env.d.ts`:
-`/// <reference types="@tiaforge-ui/tinystyle/react" />` (also `vue`, `astro`, `svelte`). For sinter,
-add `import type {} from '@tiaforge-ui/tinystyle/sinter';` to the sinter types module. svelte-check does
-not type attributes written on elements; `tinystyle check` checks those expressions itself.
+`/// <reference types="@tiaforge-ui/temper/react" />` (also `vue`, `astro`, `svelte`). For sinter,
+add `import type {} from '@tiaforge-ui/temper/sinter';` to the sinter types module. svelte-check does
+not type attributes written on elements; `temper check` checks those expressions itself.
 
 ## Rules
 
@@ -52,18 +52,18 @@ not type attributes written on elements; `tinystyle check` checks those expressi
    `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
    `data-grow` on one child makes it take the remaining space (search fields, inputs next to a button).
 5. Sizes always use the same words: `xs sm md lg xl`. There are no numeric scales.
-6. Your own CSS always wins over tinystyle (tinystyle lives in `@layer ts.*`). Never use `!important`.
-   In your own CSS, use the tokens (`var(--ts-text-muted)`, `var(--ts-space-sm)`), never hard-coded colors.
+6. Your own CSS always wins over temper (temper lives in `@layer ts.*`). Never use `!important`.
+   In your own CSS, use the tokens (`var(--tm-text-muted)`, `var(--tm-space-sm)`), never hard-coded colors.
 7. Use `class` only for your app's own components. `data-*` attributes from the list below belong to
-   tinystyle; do not use those names for anything else.
-8. Size and tune things with the documented custom properties in `style` (`style="--ts-min: 12rem"`,
-   `style="--ts-tone: #e8590c"`, `style="--ts-avatar-size: 4rem"`). That is the intended way; do not
+   temper; do not use those names for anything else.
+8. Size and tune things with the documented custom properties in `style` (`style="--tm-min: 12rem"`,
+   `style="--tm-tone: #e8590c"`, `style="--tm-avatar-size: 4rem"`). That is the intended way; do not
    write `width`, `margin` or `padding` there.
-9. Run `npx tinystyle check <dir>` (`--fix` applies the safe fixes) after editing (or use the Vite plugin, which runs it in every build).
+9. Run `npx temper check <dir>` (`--fix` applies the safe fixes) after editing (or use the Vite plugin, which runs it in every build).
    It reports bad values, misplaced attributes, missing module imports and
    unlabeled buttons. For "no attribute" use `null`, not `false`: `cond ? 'x' : null`.
-10. To see the result, prefer `npx tinystyle-inspect <dev-server-url>` (package
-    `@tiaforge-ui/tinystyle-inspect`, if installed) over screenshots. It opens every dialog and popover
+10. To see the result, prefer `npx temper-inspect <dev-server-url>` (package
+    `@tiaforge-ui/temper-inspect`, if installed) over screenshots. It opens every dialog and popover
     at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
     contrast, unlabeled controls and covered click targets as text. To judge how it looks, add
     `--sheet <dir>`: it writes one image per page with every state at every width and scheme, so one
@@ -83,7 +83,7 @@ On: button, a[role=button], input[type=submit|button|reset]. Button style. Leave
 
 ### `data-tone`
 
-On: button, [data-badge], [data-callout], progress, any text element. Color role. Independent of data-variant. On text it sets the text color. For a custom color use style="--ts-tone: <color>" instead.
+On: button, [data-badge], [data-callout], progress, any text element. Color role. Independent of data-variant. On text it sets the text color. For a custom color use style="--tm-tone: <color>" instead.
 
 - `accent`: The accent color (blue by default).
 - `neutral`: Grey. Default for secondary/outline/ghost buttons and badges.
@@ -114,9 +114,9 @@ On: any container. Lays out the element's children. Wins over the element's own 
 
 - `stack`: Vertical column.
 - `row`: Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-wrap.
-- `grid`: Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row.
-- `split`: Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens.
-- `center`: Horizontally centered column with side padding. Its content is at most --ts-measure wide (default 72rem); the padding comes on top.
+- `grid`: Responsive columns, each at least --tm-min wide (default 16rem). A few items keep their column width instead of stretching across the row.
+- `split`: Sidebar + content. First child is the sidebar (--tm-split, default 16rem); wraps on narrow screens.
+- `center`: Horizontally centered column with side padding. Its content is at most --tm-measure wide (default 72rem); the padding comes on top.
 
 ### `data-cols`
 
@@ -126,7 +126,7 @@ Values: `2`, `3`, `4`, `5`, `6`, `7`.
 
 ### `data-gap`
 
-On: [data-layout]. Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in tinystyle.
+On: [data-layout]. Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in temper.
 
 - `none`: 0
 - `xs`: 0.25rem
@@ -176,7 +176,7 @@ On: [data-layout=row]. Whether a row wraps onto more lines. Rows wrap by default
 
 ### `data-grow` (boolean, no value)
 
-On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type="search" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line.
+On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type="search" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --tm-grow-basis (default 8rem): with less room the row wraps and it gets its own line.
 
 ### `data-scroll`
 
@@ -203,7 +203,7 @@ On: html or any subtree. Forces light or dark mode. Leave it out to follow the o
 
 ### `data-badge` (boolean, no value)
 
-On: span. Small status label (counts, tags, states). Color with data-tone or style="--ts-tone: …".
+On: span. Small status label (counts, tags, states). Color with data-tone or style="--tm-tone: …".
 
 ### `data-callout` (boolean, no value)
 
@@ -225,7 +225,7 @@ Values: `2`, `3`.
 
 ### `data-bar` (boolean, no value)
 
-On: any element, usually a data-variant="item" row or a card. A colored bar on the start edge in the element's tone. Event chips: <button data-variant="item" data-size="sm" data-bar style="--ts-tone: #4CAF50">.
+On: any element, usually a data-variant="item" row or a card. A colored bar on the start edge in the element's tone. Event chips: <button data-variant="item" data-size="sm" data-bar style="--tm-tone: #4CAF50">.
 
 ### `data-sr-only` (boolean, no value)
 
@@ -249,7 +249,7 @@ On: any text element. A horizontal line with the element's text in the middle, e
 
 ### `data-avatar` (boolean, no value)
 
-On: span, div. Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style="--ts-avatar-size: 4rem".
+On: span, div. Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style="--tm-avatar-size: 4rem".
 
 ### `data-stretch` (boolean, no value)
 
@@ -322,85 +322,85 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 
 ### Inputs (set these)
 
-- `--ts-hue`: Accent hue in OKLCH degrees. Default 255.
-- `--ts-chroma`: Accent saturation. Default 0.19.
-- `--ts-neutral-hue`: Hue the greys lean toward. Default: --ts-hue.
-- `--ts-neutral-tint`: How much the greys lean toward --ts-neutral-hue. Default 0 (pure grey).
-- `--ts-primary`: Tone of default buttons. Default var(--ts-neutral); var(--ts-accent) for colored main buttons.
-- `--ts-radius`: Base corner radius. Default 0.375rem. The other radii derive from it.
-- `--ts-badge-radius`: Badge corner radius. Default 0.67 × --ts-radius; var(--ts-radius-full) for pills.
-- `--ts-font-sans`: UI font stack. Default: system fonts.
-- `--ts-font-mono`: Code font stack.
-- `--ts-heading-weight`: Heading font weight. Default 600.
-- `--ts-heading-tracking`: Heading letter spacing. Default -0.025em.
-- `--ts-duration`: Transition duration. Default 150ms.
-- `--ts-ease`: Transition easing.
-- `--ts-min`: Minimum column width for data-layout="grid". Default 16rem.
-- `--ts-split`: Sidebar width for data-layout="split". Default 16rem.
-- `--ts-measure`: Max width for data-layout="center". Default 72rem.
-- `--ts-dialog-width`: Dialog width. Default 30rem.
-- `--ts-avatar-size`: Avatar diameter. Default 2.5rem (scaled by data-size).
-- `--ts-rail-width`: Width of [data-rail]. Default 15rem.
-- `--ts-rail-width-collapsed`: Width of a collapsed rail. Default: one icon button plus padding.
-- `--ts-grow-basis`: Width a data-grow child needs before its row wraps. Default 8rem.
-- `--ts-icon-<name>`: The icon image for data-icon="<name>", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --ts-icon-rocket: url(/icons/rocket.svg); } plus [data-icon="rocket"] { --_icon: var(--ts-icon-rocket); }.
+- `--tm-hue`: Accent hue in OKLCH degrees. Default 255.
+- `--tm-chroma`: Accent saturation. Default 0.19.
+- `--tm-neutral-hue`: Hue the greys lean toward. Default: --tm-hue.
+- `--tm-neutral-tint`: How much the greys lean toward --tm-neutral-hue. Default 0 (pure grey).
+- `--tm-primary`: Tone of default buttons. Default var(--tm-neutral); var(--tm-accent) for colored main buttons.
+- `--tm-radius`: Base corner radius. Default 0.375rem. The other radii derive from it.
+- `--tm-badge-radius`: Badge corner radius. Default 0.67 × --tm-radius; var(--tm-radius-full) for pills.
+- `--tm-font-sans`: UI font stack. Default: system fonts.
+- `--tm-font-mono`: Code font stack.
+- `--tm-heading-weight`: Heading font weight. Default 600.
+- `--tm-heading-tracking`: Heading letter spacing. Default -0.025em.
+- `--tm-duration`: Transition duration. Default 150ms.
+- `--tm-ease`: Transition easing.
+- `--tm-min`: Minimum column width for data-layout="grid". Default 16rem.
+- `--tm-split`: Sidebar width for data-layout="split". Default 16rem.
+- `--tm-measure`: Max width for data-layout="center". Default 72rem.
+- `--tm-dialog-width`: Dialog width. Default 30rem.
+- `--tm-avatar-size`: Avatar diameter. Default 2.5rem (scaled by data-size).
+- `--tm-rail-width`: Width of [data-rail]. Default 15rem.
+- `--tm-rail-width-collapsed`: Width of a collapsed rail. Default: one icon button plus padding.
+- `--tm-grow-basis`: Width a data-grow child needs before its row wraps. Default 8rem.
+- `--tm-icon-<name>`: The icon image for data-icon="<name>", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }.
 
 ### Colors
 
-- `--ts-bg`: Page background.
-- `--ts-surface`: Cards, panes, inputs.
-- `--ts-surface-raised`: Dialogs, popovers, menus.
-- `--ts-fill`: Subtle fill: code, hover, neutral secondary buttons.
-- `--ts-field`: Input background.
-- `--ts-field-border`: Input border.
-- `--ts-border`: Default hairline borders and dividers.
-- `--ts-border-strong`: Stronger borders: inputs, outline buttons.
-- `--ts-text`: Body text.
-- `--ts-text-muted`: Secondary text.
-- `--ts-accent`: Accent: selection, focus, links, checked controls.
-- `--ts-neutral`: Neutral tone (near-black in light mode, near-white in dark mode).
-- `--ts-danger`: Danger tone.
-- `--ts-success`: Success tone.
-- `--ts-warning`: Warning tone.
-- `--ts-info`: Info tone.
-- `--ts-tone`: Current tone. Set it to any color to recolor an element and its children (e.g. calendar colors).
-- `--ts-tone-ink`: Text-safe version of --ts-tone. (derived, read only)
-- `--ts-tone-soft`: Tinted background from --ts-tone. (derived, read only)
-- `--ts-tone-on`: Text color on a solid --ts-tone fill (black or white). (derived, read only)
+- `--tm-bg`: Page background.
+- `--tm-surface`: Cards, panes, inputs.
+- `--tm-surface-raised`: Dialogs, popovers, menus.
+- `--tm-fill`: Subtle fill: code, hover, neutral secondary buttons.
+- `--tm-field`: Input background.
+- `--tm-field-border`: Input border.
+- `--tm-border`: Default hairline borders and dividers.
+- `--tm-border-strong`: Stronger borders: inputs, outline buttons.
+- `--tm-text`: Body text.
+- `--tm-text-muted`: Secondary text.
+- `--tm-accent`: Accent: selection, focus, links, checked controls.
+- `--tm-neutral`: Neutral tone (near-black in light mode, near-white in dark mode).
+- `--tm-danger`: Danger tone.
+- `--tm-success`: Success tone.
+- `--tm-warning`: Warning tone.
+- `--tm-info`: Info tone.
+- `--tm-tone`: Current tone. Set it to any color to recolor an element and its children (e.g. calendar colors).
+- `--tm-tone-ink`: Text-safe version of --tm-tone. (derived, read only)
+- `--tm-tone-soft`: Tinted background from --tm-tone. (derived, read only)
+- `--tm-tone-on`: Text color on a solid --tm-tone fill (black or white). (derived, read only)
 
 ### Space
 
-- `--ts-space-none`: 0
-- `--ts-space-xs`: 0.25rem
-- `--ts-space-sm`: 0.5rem
-- `--ts-space-md`: 1rem
-- `--ts-space-lg`: 1.5rem
-- `--ts-space-xl`: 2.5rem
+- `--tm-space-none`: 0
+- `--tm-space-xs`: 0.25rem
+- `--tm-space-sm`: 0.5rem
+- `--tm-space-md`: 1rem
+- `--tm-space-lg`: 1.5rem
+- `--tm-space-xl`: 2.5rem
 
 ### Radius
 
-- `--ts-radius-sm`: 0.6 × --ts-radius (derived, read only)
-- `--ts-radius-lg`: 1.5 × --ts-radius. Cards and dialogs. (derived, read only)
-- `--ts-radius-full`: Fully round.
+- `--tm-radius-sm`: 0.6 × --tm-radius (derived, read only)
+- `--tm-radius-lg`: 1.5 × --tm-radius. Cards and dialogs. (derived, read only)
+- `--tm-radius-full`: Fully round.
 
 ### Text sizes
 
-- `--ts-text-xs`: 0.75rem
-- `--ts-text-sm`: 0.875rem
-- `--ts-text-md`: 1rem
-- `--ts-text-lg`: 1.25rem
-- `--ts-text-xl`: 1.75rem
+- `--tm-text-xs`: 0.75rem
+- `--tm-text-sm`: 0.875rem
+- `--tm-text-md`: 1rem
+- `--tm-text-lg`: 1.25rem
+- `--tm-text-xl`: 1.75rem
 
 ### Shadows
 
-- `--ts-shadow-sm`: Resting shadow (none in the default look).
-- `--ts-shadow-lg`: Overlay shadow: dialogs, popovers.
+- `--tm-shadow-sm`: Resting shadow (none in the default look).
+- `--tm-shadow-lg`: Overlay shadow: dialogs, popovers.
 
 ### Density (read only)
 
-- `--ts-control-h`: Height of buttons and inputs, set by data-density. (derived, read only)
-- `--ts-control-px`: Horizontal padding of controls, set by data-density. (derived, read only)
-- `--ts-control-font`: Font size of controls, set by data-density. (derived, read only)
+- `--tm-control-h`: Height of buttons and inputs, set by data-density. (derived, read only)
+- `--tm-control-px`: Horizontal padding of controls, set by data-density. (derived, read only)
+- `--tm-control-font`: Font size of controls, set by data-density. (derived, read only)
 
 ## Icons
 
@@ -418,9 +418,9 @@ Your own icons: put SVG files in the plugin's `icons.dir` (file name = icon name
 of the same name), or without the plugin:
 
 ```css
-:root { --ts-icon-mail: url(/icons/mail.svg); }            /* replace a default icon */
-:root { --ts-icon-rocket: url(/icons/rocket.svg); }         /* add one */
-[data-icon="rocket"] { --_icon: var(--ts-icon-rocket); }
+:root { --tm-icon-mail: url(/icons/mail.svg); }            /* replace a default icon */
+:root { --tm-icon-rocket: url(/icons/rocket.svg); }         /* add one */
+[data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }
 ```
 
 Icons are one color (the text color); keep multicolor logos as `<img>`.
@@ -432,7 +432,7 @@ Icons are one color (the text color); keep multicolor logos as `<img>`.
 ```html
 <form data-layout="stack" data-gap="md">
   <label>Name <input name="name" required></label>
-  <div data-layout="grid" data-gap="sm" style="--ts-min: 10rem">
+  <div data-layout="grid" data-gap="sm" style="--tm-min: 10rem">
     <label>Start <input type="date"></label>
     <label>Time <input type="time"></label>
   </div>
@@ -511,7 +511,7 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
 
 ```html
 <span data-badge data-tone="success">Synced</span>
-<span data-badge style="--ts-tone: #e8590c">Custom color</span>
+<span data-badge style="--tm-tone: #e8590c">Custom color</span>
 <div data-callout data-tone="warning" role="status"><strong>Password expires soon</strong>Update it before 1 December.</div>
 <button aria-busy="true">Saving</button>
 ```
@@ -597,7 +597,7 @@ children of `data-shell` (scripts, templates, framework elements) take no space.
 be set in the markup; CSS cannot detect the current page.
 
 `[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
-moves to tinystyle page by page, keep the old nav partial for the old pages and add a second one with
+moves to temper page by page, keep the old nav partial for the old pages and add a second one with
 this markup for the migrated pages; delete the old one when the last page has moved.
 
 To keep the collapsed state across page loads, add this (CSS cannot store anything):
@@ -705,7 +705,7 @@ Show and hide the list, and move `aria-selected` with the arrow keys, from scrip
 <div data-layout="grid" data-cols="7" data-gap="xs">
   <div data-layout="stack" data-gap="xs">
     <span data-caption aria-current="date">Sat 7</span>
-    <button data-variant="item" data-size="sm" data-bar style="--ts-tone: #4CAF50">
+    <button data-variant="item" data-size="sm" data-bar style="--tm-tone: #4CAF50">
       <small data-muted>10:00</small><span data-clamp="2">Market and brunch</span>
     </button>
   </div>
@@ -716,7 +716,7 @@ Show and hide the list, and move `aria-selected` with the arrow keys, from scrip
 ### Card grid with avatars, whole card clickable
 
 ```html
-<div data-layout="grid" data-gap="md" style="--ts-min: 13rem">
+<div data-layout="grid" data-gap="md" style="--tm-min: 13rem">
   <article data-layout="stack" data-gap="xs" data-align="center">
     <span data-avatar>MO</span>
     <a href="#mira" data-stretch><strong>Mira Okafor</strong></a>
@@ -743,7 +743,7 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 ```html
 <main data-layout="center" data-gap="xl" data-pad="xl">
   <section data-layout="stack" data-gap="md">…</section>
-  <section data-layout="grid" data-gap="lg" style="--ts-min: 20rem">…</section>
+  <section data-layout="grid" data-gap="lg" style="--tm-min: 20rem">…</section>
 </main>
 ```
 
@@ -756,11 +756,11 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 | `<button data-variant="primary">` | `<button>` (primary is the default) |
 | `<p class="error">` | `<p data-tone="danger">` or `<div data-callout data-tone="danger">` |
 | `style="margin-top: 1rem"` on a button or input | wrap the elements in `data-layout="stack" data-gap="md"` |
-| `style="padding: var(--ts-space-lg)"` | `data-pad="lg"` |
+| `style="padding: var(--tm-space-lg)"` | `data-pad="lg"` |
 | a custom class to turn a `label` into a flex row | `<label data-layout="row" data-justify="between">` |
 | `data-gap="4"` or `data-gap="16px"` | `data-gap="md"` |
 | `<button data-icon="x"></button>` | `<button data-icon="x" aria-label="Close"></button>` |
 | `<svg><path d="…"/></svg>` for a mail icon | `<span data-icon="mail"></span>` |
 | `data-badge="true"` | `data-badge` |
-| `color: #666` in app CSS | `color: var(--ts-text-muted)` |
-| `!important` to beat tinystyle | a plain selector; app CSS already wins |
+| `color: #666` in app CSS | `color: var(--tm-text-muted)` |
+| `!important` to beat temper | a plain selector; app CSS already wins |

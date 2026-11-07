@@ -1,4 +1,4 @@
-# tinystyle — spec (v0)
+# temper — spec (v0)
 
 Status, 2026-11-07: core look decided, `src/core.css` prototyped. See §8 for what is built and what
 is missing.
@@ -47,16 +47,16 @@ First consumer: caley (replacing Pico CSS). Second: tia.vision (Astro marketing/
 
    Prose content (`data-prose`) is the only exception, where the rhythm comes from the text flow.
 5. **One size scale everywhere:** `xs sm md lg xl`, used the same way in `data-gap`, `data-size`,
-   `--ts-space-*`, `--ts-radius-*` and `--ts-text-*`. No numeric scales, because agents would
+   `--tm-space-*`, `--tm-radius-*` and `--tm-text-*`. No numeric scales, because agents would
    read `4` as Tailwind's 1rem.
 6. **The vocabulary comes from one machine-readable source.** `vocab.json` generates:
    - `llms.txt`: rules, the full vocabulary, copy-paste recipes and anti-patterns (sinter does the same).
    - `html-custom-data.json` for VS Code and other editors.
-   - `tinystyle check`, a CLI and Vite plugin that fails the build on unknown attribute values or
-     unknown `--ts-*` tokens, with a "did you mean" suggestion. It warns on hard-coded colors and on
+   - `temper check`, a CLI and Vite plugin that fails the build on unknown attribute values or
+     unknown `--tm-*` tokens, with a "did you mean" suggestion. It warns on hard-coded colors and on
      margins set on library elements. It is standalone, with no sinter dependency.
    - A test that asserts every vocab entry has a CSS selector, and every selector has a vocab entry.
-7. **App CSS always wins.** All library CSS lives in `@layer ts.reset, ts.base, ts.layout, ts.components`,
+7. **App CSS always wins.** All library CSS lives in `@layer tm.reset, tm.base, tm.layout, tm.components`,
    with selectors wrapped in `:where()`. Unlayered app CSS beats it without `!important` or tricks.
 8. **Recipes over components.** `llms.txt` ships about 15 exact HTML recipes: app shell, toolbar,
    form, settings section, list + detail split, empty state, confirm dialog, menu, tabs, and so on.
@@ -98,23 +98,23 @@ CI enforces the budgets (`size-limit`).
 
 ### 1.4 Consistent, modern look: "Graphite" (decided)
 
-- Pure grey neutrals (`--ts-neutral-tint: 0`), white surfaces in light mode, graphite (L 0.145)
+- Pure grey neutrals (`--tm-neutral-tint: 0`), white surfaces in light mode, graphite (L 0.145)
   in dark mode. Structure comes from 1px borders; there are no resting shadows. Only overlays
   (dialog, popover) get a shadow.
 - **Main buttons are monochrome:** black in light mode, white in dark mode
-  (`--ts-primary: var(--ts-neutral)`). The accent is reserved for selection, focus, links and checked
+  (`--tm-primary: var(--tm-neutral)`). The accent is reserved for selection, focus, links and checked
   controls. So black means "do this" and blue means "this is selected or interactive".
-- Default radius `--ts-radius` = 0.375rem. Everything else is derived from it (`sm` = 0.6×,
+- Default radius `--tm-radius` = 0.375rem. Everything else is derived from it (`sm` = 0.6×,
   `lg` = 1.5×, badges 0.67×, `full`).
 - Headings: weight 600, tracking −0.025em.
-- **One control height.** Button, input, select and icon-button are all `--ts-control-h`
+- **One control height.** Button, input, select and icon-button are all `--tm-control-h`
   (comfortable 2.5rem, compact 2rem), so toolbars line up without extra work.
 - `data-density="compact|comfortable"` can go on any subtree and scales control padding and height.
   Caley sets `compact` on `<html>`. tia.vision keeps the default.
-- Focus: `outline: 2px solid var(--ts-accent); outline-offset: 2px` on `:focus-visible` only.
+- Focus: `outline: 2px solid var(--tm-accent); outline-offset: 2px` on `:focus-visible` only.
 - Motion: 150 ms ease-out. Dialogs and popovers animate in and out with `@starting-style` and
   `transition-behavior: allow-discrete`.
-- Type: system font stack (zero bytes) through `--ts-font-sans` / `--ts-font-mono`. App UI uses a
+- Type: system font stack (zero bytes) through `--tm-font-sans` / `--tm-font-mono`. App UI uses a
   fixed rem scale. Only the `prose` module uses fluid `clamp()`. `text-wrap: balance` on headings,
   `pretty` on paragraphs, `tabular-nums` in tables and `<time>`.
 
@@ -140,12 +140,12 @@ only when you opt in:
 
 ```js
 // vite.config.js
-tinystyle({ enhance: ['customizable-select', 'field-sizing'] })  // or enhance: 'all'
+temper({ enhance: ['customizable-select', 'field-sizing'] })  // or enhance: 'all'
 ```
 
 The partials live in `src/enhance/<id>.css` and build to `dist/enhance/<id>.css`. The Vite plugin
 appends the chosen ones to `core.css`/`all.css` wherever the app imports them; without the plugin, import
-`@tiaforge-ui/tinystyle/enhance/<id>.css` after `core.css`. Unknown ids fail with a suggestion.
+`@tiaforge-ui/temper/enhance/<id>.css` after `core.css`. Unknown ids fail with a suggestion.
 Implemented: `customizable-select` (2026-11-07).
 
 The precompiled `dist/*.css` files are the default (all-engine) build, so a build step is optional.
@@ -158,10 +158,10 @@ The palette is driven by a few inputs (defaults shown):
 
 ```css
 :root {
-  --ts-hue: 255;            /* accent hue, OKLCH degrees ("Vivid" blue) */
-  --ts-chroma: 0.19;        /* accent saturation */
-  --ts-neutral-tint: 0;     /* how much the greys lean toward --ts-neutral-hue; 0 = pure grey */
-  --ts-primary: var(--ts-neutral); /* main buttons; var(--ts-accent) for colored ones */
+  --tm-hue: 255;            /* accent hue, OKLCH degrees ("Vivid" blue) */
+  --tm-chroma: 0.19;        /* accent saturation */
+  --tm-neutral-tint: 0;     /* how much the greys lean toward --tm-neutral-hue; 0 = pure grey */
+  --tm-primary: var(--tm-neutral); /* main buttons; var(--tm-accent) for colored ones */
 }
 ```
 
@@ -188,25 +188,25 @@ capped at L 0.5 and the text on solid yellow switches to black.
 Role tokens (the only colors components use):
 
 ```
---ts-bg  --ts-surface  --ts-surface-raised  --ts-fill  --ts-field  --ts-field-border
---ts-text  --ts-text-muted  --ts-border  --ts-border-strong
---ts-accent  --ts-neutral  --ts-danger  --ts-success  --ts-warning  --ts-info
---ts-primary   (the tone of default buttons: accent, or neutral for a monochrome look)
---ts-tone      (current tone; derived per element: --ts-tone-ink, --ts-tone-soft, --ts-tone-on)
+--tm-bg  --tm-surface  --tm-surface-raised  --tm-fill  --tm-field  --tm-field-border
+--tm-text  --tm-text-muted  --tm-border  --tm-border-strong
+--tm-accent  --tm-neutral  --tm-danger  --tm-success  --tm-warning  --tm-info
+--tm-primary   (the tone of default buttons: accent, or neutral for a monochrome look)
+--tm-tone      (current tone; derived per element: --tm-tone-ink, --tm-tone-soft, --tm-tone-on)
 ```
 
 Any role can also be set directly with a literal color (brand colors). Caley's old `#2563eb` is
-`--ts-hue: 263; --ts-chroma: 0.215`.
+`--tm-hue: 263; --tm-chroma: 0.215`.
 
 ## 2. Vocabulary (complete list for core)
 
 | Attribute | Values | Applies to | Notes |
 |---|---|---|---|
 | `data-variant` | `secondary outline ghost link` (default = primary/solid) | button, `a[role=button]`, input[type=submit] | Same names as shadcn, which models have seen a lot. |
-| `data-tone` | `accent neutral danger success warning info` | button, badge, callout, text, progress | Sets `--ts-tone`. It works with every variant. A custom color can be set via `style="--ts-tone: …"` (calendar colors through sinter `data-sn-style`). |
+| `data-tone` | `accent neutral danger success warning info` | button, badge, callout, text, progress | Sets `--tm-tone`. It works with every variant. A custom color can be set via `style="--tm-tone: …"` (calendar colors through sinter `data-sn-style`). |
 | `data-size` | `sm md lg` | button, input, select, badge | |
-| `data-icon` | boolean | button | Square, `--ts-control-h` wide. Requires an `aria-label` (the checker enforces this). Replaces icon-btn, close-btn and nav-btn. |
-| `data-layout` | `stack row grid split center` | any container | stack = vertical flow, row = horizontal wrapping cluster, grid = auto-fit columns (`--ts-min` sets the column minimum), split = sidebar + content, center = max-width container |
+| `data-icon` | boolean | button | Square, `--tm-control-h` wide. Requires an `aria-label` (the checker enforces this). Replaces icon-btn, close-btn and nav-btn. |
+| `data-layout` | `stack row grid split center` | any container | stack = vertical flow, row = horizontal wrapping cluster, grid = auto-fit columns (`--tm-min` sets the column minimum), split = sidebar + content, center = max-width container |
 | `data-gap` | `none xs sm md lg xl` | any `data-layout` | **The only spacing control.** |
 | `data-align` / `data-justify` | `start center end stretch` / `start center end between` | any `data-layout` | |
 | `data-density` | `compact comfortable` | any subtree | |
@@ -232,16 +232,16 @@ and `:user-invalid` get the danger border and message styling.
 ## 3. Feature split
 
 ```
-tinystyle/core.css       tokens, reset, typography, layout primitives, buttons, forms, dialog,
+temper/core.css       tokens, reset, typography, layout primitives, buttons, forms, dialog,
                          popover, details, table, card, badge, callout, aria-busy
-tinystyle/app.css        full-height app shell: nav rail/sidebar, collapsible rail, scroll containers (caley)
-tinystyle/menu.css       popover menus and dropdowns, anchor positioning, menu separators
-tinystyle/nav.css        tabs, segmented control, breadcrumbs, pagination
-tinystyle/data.css       dense list rows (mail list), selection states, sticky headers, resize handle
-tinystyle/feedback.css   toast stack, skeleton, empty state
-tinystyle/prose.css      long-form text (`data-prose`), fluid type: email reader, blog, tia.vision
-tinystyle/site.css       marketing: hero, section, feature grid, timeline, nav bar (tia.vision)
-tinystyle/all.css        everything
+temper/app.css        full-height app shell: nav rail/sidebar, collapsible rail, scroll containers (caley)
+temper/menu.css       popover menus and dropdowns, anchor positioning, menu separators
+temper/nav.css        tabs, segmented control, breadcrumbs, pagination
+temper/data.css       dense list rows (mail list), selection states, sticky headers, resize handle
+temper/feedback.css   toast stack, skeleton, empty state
+temper/prose.css      long-form text (`data-prose`), fluid type: email reader, blog, tia.vision
+temper/site.css       marketing: hero, section, feature grid, timeline, nav bar (tia.vision)
+temper/all.css        everything
 ```
 
 Every module uses only core tokens and adds to the same `vocab.json`. The checker only accepts
@@ -249,17 +249,17 @@ attributes from modules that are actually imported.
 
 ## 4. Integration with sinter
 
-**Decided 2026-11-07: no coupling.** tinystyle knows nothing about sinter and the reverse. They
+**Decided 2026-11-07: no coupling.** temper knows nothing about sinter and the reverse. They
 meet only through web standards: ARIA attributes and plain custom properties.
 
 - Style `aria-busy`, which sinter sets on elements while their request runs.
-- `tinystyle check` is a standalone CLI/Vite plugin. Editors can load both `html-custom-data.json`
+- `temper check` is a standalone CLI/Vite plugin. Editors can load both `html-custom-data.json`
   files side by side.
 - Later, not now: a marker for rows pending an optimistic update.
-- Tokens are plain custom properties, so `data-sn-style="{'--ts-tone': cal.color}"` colors
+- Tokens are plain custom properties, so `data-sn-style="{'--tm-tone': cal.color}"` colors
   badges, dots and event chips.
 - Verify that sinter's own elements (`sn-resource`, `sn-sync`, `sn-event`) never take up layout space.
-  Use `display: contents` or `none`, in sinter itself, not in tinystyle.
+  Use `display: contents` or `none`, in sinter itself, not in temper.
 
 ## 5. Engineering
 
@@ -267,17 +267,17 @@ meet only through web standards: ARIA attributes and plain custom properties.
   data, contrast validator, size check).
 - Tests: Playwright screenshots of a kitchen-sink page in {light, dark} × {compact, comfortable} ×
   3 hues. Also the vocab ↔ selector consistency test, contrast sweep, size budgets and agent evals.
-- Package: `@tiaforge-ui/tinystyle` (to be confirmed), ESM-free CSS exports per module, MIT.
+- Package: `@tiaforge-ui/temper` (to be confirmed), ESM-free CSS exports per module, MIT.
 - Version the vocabulary with semver. Removing or renaming an attribute value is a major version.
 
 ## 6. Caley migration plan
 
-1. Map the Pico tokens caley uses to tinystyle roles (`--pico-muted-color` → `--ts-text-muted`, …).
+1. Map the Pico tokens caley uses to temper roles (`--pico-muted-color` → `--tm-text-muted`, …).
    A codemod can do most of this.
 2. Replace `.secondary/.outline/.contrast/.small` with `data-variant`/`data-tone`/`data-size`.
 3. Delete the local reinventions listed in §0.
 4. Delete the `margin: 0` overrides. They should become unnecessary.
-5. Run `tinystyle check` in CI. Then, page by page, move layouts to `data-layout` + `data-gap`.
+5. Run `temper check` in CI. Then, page by page, move layouts to `data-layout` + `data-gap`.
 
 Expected result: Pico (83 KB) plus a large share of the 2,900 lines of SCSS goes away.
 
@@ -285,14 +285,14 @@ Expected result: Pico (83 KB) plus a large share of the 2,900 lines of SCSS goes
 
 All 2026-11-07.
 
-1. Attributes are unprefixed (`data-variant`, `data-tone`, …). Tokens use the `--ts-*` prefix. Apps
+1. Attributes are unprefixed (`data-variant`, `data-tone`, …). Tokens use the `--tm-*` prefix. Apps
    must not use these attribute names for their own purposes; the checker flags it.
-2. Name `tinystyle`, package `@tiaforge-ui/tinystyle` (agreed in principle).
+2. Name `temper`, package `@tiaforge-ui/temper` (agreed in principle).
 3. Look: Graphite, accent "Vivid" (hue 255, chroma 0.19), black/white main buttons, badges as small
-   rounded rectangles (`--ts-badge-radius`).
+   rounded rectangles (`--tm-badge-radius`).
 4. `role="switch"` checkboxes and `dl[data-pairs]` are in core.
 5. Progressive enhancements (customizable `<select>` and so on) are opt-in at build time (§1.5).
-6. tinystyle and sinter stay decoupled (§4). A pending-row marker is deferred.
+6. temper and sinter stay decoupled (§4). A pending-row marker is deferred.
 
 ## 8. Status
 
@@ -310,20 +310,20 @@ Lessons:
 - Derived tone tokens are declared on `*`, so a tone set on a parent reaches its children.
 - `light-dark()` only accepts colors, so shadows put it around the color, not the whole shadow.
 
-- Package `@tiaforge-ui/tinystyle`: `npm run build` bundles `src/*.css` to `dist/` with Lightning
+- Package `@tiaforge-ui/temper`: `npm run build` bundles `src/*.css` to `dist/` with Lightning
   CSS (targets Chrome 123, Firefox 120, Safari 17.5, so nothing modern is lowered) and fails above
   the size budgets. Core: 3,955 B brotli, 4,499 B gzip.
 - `vocab.json` is the single source. `npm run gen` writes `llms.txt` (from
   `docs/llms.template.md`) and `html-custom-data.json`. `npm test` fails when they are stale or when
   vocab and CSS disagree.
-- `tinystyle check [paths]` (`lib/check.js`): TS101 invalid value (suggests the right axis, e.g.
-  `data-variant="danger"` → `data-tone="danger"`), TS102 boolean with value, TS103 icon button
-  without label, TS104 misspelled attribute, TS201 unknown token, TS202 reserved `--ts-` prefix,
-  TS203 derived token set. Later: TS107 needs another attribute, TS108 wrong element, TS109 wrong
-  parent or missing ancestor, TS110 module not imported, TS111 `false` renders the attribute
-  (all driven by `tags`, `with`, `parent` and `inside` in vocab.json), TS112 deprecated name;
-  app CSS warnings TS204 `!important`, TS205 fixed color, TS206 outer margin (and margin/padding
-  in `style`), TS207 a space-scale value written out, TS208 restyled tinystyle variant. Computed values are reduced
+- `temper check [paths]` (`lib/check.js`): TM101 invalid value (suggests the right axis, e.g.
+  `data-variant="danger"` → `data-tone="danger"`), TM102 boolean with value, TM103 icon button
+  without label, TM104 misspelled attribute, TM201 unknown token, TM202 reserved `--tm-` prefix,
+  TM203 derived token set. Later: TM107 needs another attribute, TM108 wrong element, TM109 wrong
+  parent or missing ancestor, TM110 module not imported, TM111 `false` renders the attribute
+  (all driven by `tags`, `with`, `parent` and `inside` in vocab.json), TM112 deprecated name;
+  app CSS warnings TM204 `!important`, TM205 fixed color, TM206 outer margin (and margin/padding
+  in `style`), TM207 a space-scale value written out, TM208 restyled temper variant. Computed values are reduced
   to the literals they can produce; `types/*.d.ts` (generated) types them for React, Vue, Astro,
   Svelte component props and sinter's `data-sn-attr`. No findings on caley's current frontend.
 

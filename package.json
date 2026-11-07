@@ -1,9 +1,17 @@
 {
-  "name": "@tiaforge-ui/tinystyle",
+  "name": "@tiaforge-ui/temper",
   "version": "0.1.0",
-  "description": "Tiny, AI-first CSS for semantic HTML: data-* variants with a checked vocabulary, automatic light and dark mode.",
+  "description": "AI-first CSS for semantic HTML: data-* variants with a checked vocabulary, automatic light and dark mode.",
   "license": "MIT",
   "author": "Tia Heinrich",
+  "homepage": "https://github.com/tiaforge/temper#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiaforge/temper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tiaforge/temper/issues"
+  },
   "type": "module",
   "sideEffects": [
     "*.css"
@@ -43,7 +51,7 @@
     "./enhance/*": "./dist/enhance/*"
   },
   "bin": {
-    "tinystyle": "bin/tinystyle.js"
+    "temper": "bin/temper.js"
   },
   "files": [
     "dist",
@@ -55,7 +63,8 @@
     "llms.txt",
     "html-custom-data.json",
     "llms-full.txt",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "css",
@@ -70,7 +79,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "gen": "node scripts/gen.mjs",
-    "check": "node bin/tinystyle.js check kitchen-sink",
+    "check": "node bin/temper.js check kitchen-sink",
     "test": "node scripts/gen.mjs --check && node --test test/*.test.js",
     "shots": "scripts/shoot.sh",
     "contrast": "node scripts/contrast.mjs",
@@ -90,7 +99,7 @@
     "vue-tsc": "^3.3.14"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "peerDependencies": {
     "lucide-static": ">=0.400.0"

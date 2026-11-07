@@ -1,10 +1,10 @@
 // Generated from vocab.json by scripts/gen.mjs. Do not edit.
-// tinystyle's data-* attributes and their allowed values, so values computed at runtime are type-checked
-// like static ones are by `tinystyle check`. Use a framework file (svelte, react, vue, astro, sinter),
+// temper's data-* attributes and their allowed values, so values computed at runtime are type-checked
+// like static ones are by `temper check`. Use a framework file (svelte, react, vue, astro, sinter),
 // which plugs this into the framework's own element types.
 
-/** The icon names tinystyle ships. Any other string is accepted too (your own icons, Lucide via the Vite plugin). */
-export type TinystyleIcon =
+/** The icon names temper ships. Any other string is accepted too (your own icons, Lucide via the Vite plugin). */
+export type TemperIcon =
   | 'mail'
   | 'inbox'
   | 'send'
@@ -69,15 +69,15 @@ export type TinystyleIcon =
  * `Empty`: a non-string value that renders the attribute without a value: true in sinter. Elsewhere true renders
  * "true", which is fine for boolean attributes but not a valid value for the others.
  */
-export interface TinystyleAttributes<Removes = never, Empty = never> {
+export interface TemperAttributes<Removes = never, Empty = never> {
   /** Button style; leave it out for the solid main button. */
   'data-variant'?: 'secondary' | 'outline' | 'ghost' | 'link' | 'item' | null | Removes;
-  /** Color, independent of the style; for any other color use style="--ts-tone: …". */
+  /** Color, independent of the style; for any other color use style="--tm-tone: …". */
   'data-tone'?: 'accent' | 'neutral' | 'danger' | 'success' | 'warning' | 'info' | null | Removes;
   /** Control size relative to the current density. */
   'data-size'?: 'sm' | 'md' | 'lg' | null | Removes;
   /** Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label). */
-  'data-icon'?: TinystyleIcon | (string & {}) | '' | Empty | null | Removes;
+  'data-icon'?: TemperIcon | (string & {}) | '' | Empty | null | Removes;
   /** Lays out the element's children (overrides its own display). */
   'data-layout'?: 'stack' | 'row' | 'grid' | 'split' | 'center' | null | Removes;
   /** Exactly this many equal grid columns. */

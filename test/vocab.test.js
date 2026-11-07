@@ -10,8 +10,8 @@ const css = ['', 'enhance/'].flatMap(dir => readdirSync(new URL('../src/' + dir,
   .join('\n');
 
 const selectors = new Set([...css.matchAll(/\[(data-[a-z-]+)(?:="([^"]*)")?\]/g)].map(m => m[2] ? `${m[1]}=${m[2]}` : m[1]));
-const declared = new Set([...css.matchAll(/(--ts-[a-z0-9-]+)\s*:/g)].map(m => m[1]));
-const used = new Set([...css.matchAll(/var\((--ts-[a-z0-9-]+)/g)].map(m => m[1]));
+const declared = new Set([...css.matchAll(/(--tm-[a-z0-9-]+)\s*:/g)].map(m => m[1]));
+const used = new Set([...css.matchAll(/var\((--tm-[a-z0-9-]+)/g)].map(m => m[1]));
 
 test('every vocab attribute and value has a CSS selector', () => {
   for (const [name, spec] of Object.entries(vocab.attributes)) {
@@ -48,7 +48,7 @@ test('deprecated names keep working until they are removed', () => {
 
 test('every token in the CSS is in the vocab', () => {
   for (const t of new Set([...declared, ...used])) {
-    if (t.startsWith('--ts-icon-') || dep.tokens[t]) continue; // --ts-icon-<name>, one per icon
+    if (t.startsWith('--tm-icon-') || dep.tokens[t]) continue; // --tm-icon-<name>, one per icon
     assert.ok(vocab.tokens[t], `${t} is missing from vocab.json`);
   }
 });

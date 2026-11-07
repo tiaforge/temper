@@ -1,16 +1,25 @@
 {
-  "name": "@tiaforge-ui/tinystyle-inspect",
+  "name": "@tiaforge-ui/temper-inspect",
   "version": "0.1.0",
   "description": "Text-only layout and accessibility report for a running page: opens every dialog and popover at several widths and color schemes. Built for coding agents, replaces screenshot loops.",
   "license": "MIT",
   "author": "Tia Heinrich",
+  "homepage": "https://github.com/tiaforge/temper/tree/main/packages/inspect#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiaforge/temper.git",
+    "directory": "packages/inspect"
+  },
+  "bugs": {
+    "url": "https://github.com/tiaforge/temper/issues"
+  },
   "type": "module",
   "exports": {
     ".": "./lib/inspect.js",
     "./package.json": "./package.json"
   },
   "bin": {
-    "tinystyle-inspect": "bin/tinystyle-inspect.js"
+    "temper-inspect": "bin/temper-inspect.js"
   },
   "files": [
     "bin",

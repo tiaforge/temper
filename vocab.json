@@ -1,5 +1,5 @@
 {
-  "$comment": "Single source of truth for tinystyle's vocabulary. Generates llms.txt and html-custom-data.json (npm run gen) and drives tinystyle check. A test keeps it in sync with src/*.css. Context rules for tinystyle check: tags (the elements it works on; tagsFor overrides per value; notTags: elements it breaks), with (attributes it needs on the same element; null = any value), parent (what its parent must match), inside (an ancestor it needs), loose (parent/inside are warnings, and only for plain parents without class or style).",
+  "$comment": "Single source of truth for temper's vocabulary. Generates llms.txt and html-custom-data.json (npm run gen) and drives temper check. A test keeps it in sync with src/*.css. Context rules for temper check: tags (the elements it works on; tagsFor overrides per value; notTags: elements it breaks), with (attributes it needs on the same element; null = any value), parent (what its parent must match), inside (an ancestor it needs), loose (parent/inside are warnings, and only for plain parents without class or style).",
   "version": 1,
   "attributes": {
     "data-variant": {
@@ -33,7 +33,7 @@
     "data-tone": {
       "module": "core",
       "on": "button, [data-badge], [data-callout], progress, any text element",
-      "description": "Color role. Independent of data-variant. On text it sets the text color. For a custom color use style=\"--ts-tone: <color>\" instead.",
+      "description": "Color role. Independent of data-variant. On text it sets the text color. For a custom color use style=\"--tm-tone: <color>\" instead.",
       "values": {
         "accent": "The accent color (blue by default).",
         "neutral": "Grey. Default for secondary/outline/ghost buttons and badges.",
@@ -42,7 +42,7 @@
         "warning": "Needs attention soon.",
         "info": "Neutral information. Default for callouts."
       },
-      "short": "Color, independent of the style; for any other color use style=\"--ts-tone: …\"."
+      "short": "Color, independent of the style; for any other color use style=\"--tm-tone: …\"."
     },
     "data-size": {
       "module": "core",
@@ -126,9 +126,9 @@
       "values": {
         "stack": "Vertical column.",
         "row": "Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-wrap.",
-        "grid": "Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row.",
-        "split": "Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens.",
-        "center": "Horizontally centered column with side padding. Its content is at most --ts-measure wide (default 72rem); the padding comes on top."
+        "grid": "Responsive columns, each at least --tm-min wide (default 16rem). A few items keep their column width instead of stretching across the row.",
+        "split": "Sidebar + content. First child is the sidebar (--tm-split, default 16rem); wraps on narrow screens.",
+        "center": "Horizontally centered column with side padding. Its content is at most --tm-measure wide (default 72rem); the padding comes on top."
       },
       "short": "Lays out the element's children (overrides its own display).",
       "notTags": [
@@ -162,7 +162,7 @@
     "data-gap": {
       "module": "core",
       "on": "[data-layout]",
-      "description": "Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in tinystyle.",
+      "description": "Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in temper.",
       "values": {
         "none": "0",
         "xs": "0.25rem",
@@ -261,7 +261,7 @@
       "module": "core",
       "boolean": true,
       "on": "a child of data-layout=row or stack",
-      "description": "This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
+      "description": "This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --tm-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
       "parent": [
         "[data-layout]",
         "header",
@@ -311,7 +311,7 @@
       "module": "core",
       "boolean": true,
       "on": "span",
-      "description": "Small status label (counts, tags, states). Color with data-tone or style=\"--ts-tone: …\"."
+      "description": "Small status label (counts, tags, states). Color with data-tone or style=\"--tm-tone: …\"."
     },
     "data-callout": {
       "module": "core",
@@ -345,7 +345,7 @@
       "module": "core",
       "boolean": true,
       "on": "any element, usually a data-variant=\"item\" row or a card",
-      "description": "A colored bar on the start edge in the element's tone. Event chips: <button data-variant=\"item\" data-size=\"sm\" data-bar style=\"--ts-tone: #4CAF50\">."
+      "description": "A colored bar on the start edge in the element's tone. Event chips: <button data-variant=\"item\" data-size=\"sm\" data-bar style=\"--tm-tone: #4CAF50\">."
     },
     "data-sr-only": {
       "module": "core",
@@ -386,7 +386,7 @@
       "module": "core",
       "boolean": true,
       "on": "span, div",
-      "description": "Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style=\"--ts-avatar-size: 4rem\"."
+      "description": "Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style=\"--tm-avatar-size: 4rem\"."
     },
     "data-stretch": {
       "module": "core",
@@ -523,271 +523,271 @@
     }
   },
   "tokens": {
-    "--ts-hue": {
+    "--tm-hue": {
       "kind": "input",
       "description": "Accent hue in OKLCH degrees. Default 255."
     },
-    "--ts-chroma": {
+    "--tm-chroma": {
       "kind": "input",
       "description": "Accent saturation. Default 0.19."
     },
-    "--ts-neutral-hue": {
+    "--tm-neutral-hue": {
       "kind": "input",
-      "description": "Hue the greys lean toward. Default: --ts-hue."
+      "description": "Hue the greys lean toward. Default: --tm-hue."
     },
-    "--ts-neutral-tint": {
+    "--tm-neutral-tint": {
       "kind": "input",
-      "description": "How much the greys lean toward --ts-neutral-hue. Default 0 (pure grey)."
+      "description": "How much the greys lean toward --tm-neutral-hue. Default 0 (pure grey)."
     },
-    "--ts-primary": {
+    "--tm-primary": {
       "kind": "input",
-      "description": "Tone of default buttons. Default var(--ts-neutral); var(--ts-accent) for colored main buttons."
+      "description": "Tone of default buttons. Default var(--tm-neutral); var(--tm-accent) for colored main buttons."
     },
-    "--ts-radius": {
+    "--tm-radius": {
       "kind": "input",
       "description": "Base corner radius. Default 0.375rem. The other radii derive from it."
     },
-    "--ts-badge-radius": {
+    "--tm-badge-radius": {
       "kind": "input",
-      "description": "Badge corner radius. Default 0.67 × --ts-radius; var(--ts-radius-full) for pills."
+      "description": "Badge corner radius. Default 0.67 × --tm-radius; var(--tm-radius-full) for pills."
     },
-    "--ts-font-sans": {
+    "--tm-font-sans": {
       "kind": "input",
       "description": "UI font stack. Default: system fonts."
     },
-    "--ts-font-mono": {
+    "--tm-font-mono": {
       "kind": "input",
       "description": "Code font stack."
     },
-    "--ts-heading-weight": {
+    "--tm-heading-weight": {
       "kind": "input",
       "description": "Heading font weight. Default 600."
     },
-    "--ts-heading-tracking": {
+    "--tm-heading-tracking": {
       "kind": "input",
       "description": "Heading letter spacing. Default -0.025em."
     },
-    "--ts-duration": {
+    "--tm-duration": {
       "kind": "input",
       "description": "Transition duration. Default 150ms."
     },
-    "--ts-ease": {
+    "--tm-ease": {
       "kind": "input",
       "description": "Transition easing."
     },
-    "--ts-min": {
+    "--tm-min": {
       "kind": "input",
       "optional": true,
       "description": "Minimum column width for data-layout=\"grid\". Default 16rem."
     },
-    "--ts-split": {
+    "--tm-split": {
       "kind": "input",
       "optional": true,
       "description": "Sidebar width for data-layout=\"split\". Default 16rem."
     },
-    "--ts-measure": {
+    "--tm-measure": {
       "kind": "input",
       "optional": true,
       "description": "Max width for data-layout=\"center\". Default 72rem."
     },
-    "--ts-dialog-width": {
+    "--tm-dialog-width": {
       "kind": "input",
       "optional": true,
       "description": "Dialog width. Default 30rem."
     },
-    "--ts-bg": {
+    "--tm-bg": {
       "kind": "color",
       "description": "Page background."
     },
-    "--ts-surface": {
+    "--tm-surface": {
       "kind": "color",
       "description": "Cards, panes, inputs."
     },
-    "--ts-surface-raised": {
+    "--tm-surface-raised": {
       "kind": "color",
       "description": "Dialogs, popovers, menus."
     },
-    "--ts-fill": {
+    "--tm-fill": {
       "kind": "color",
       "description": "Subtle fill: code, hover, neutral secondary buttons."
     },
-    "--ts-field": {
+    "--tm-field": {
       "kind": "color",
       "description": "Input background."
     },
-    "--ts-field-border": {
+    "--tm-field-border": {
       "kind": "color",
       "description": "Input border."
     },
-    "--ts-border": {
+    "--tm-border": {
       "kind": "color",
       "description": "Default hairline borders and dividers."
     },
-    "--ts-border-strong": {
+    "--tm-border-strong": {
       "kind": "color",
       "description": "Stronger borders: inputs, outline buttons."
     },
-    "--ts-text": {
+    "--tm-text": {
       "kind": "color",
       "description": "Body text."
     },
-    "--ts-text-muted": {
+    "--tm-text-muted": {
       "kind": "color",
       "description": "Secondary text."
     },
-    "--ts-accent": {
+    "--tm-accent": {
       "kind": "color",
       "description": "Accent: selection, focus, links, checked controls."
     },
-    "--ts-neutral": {
+    "--tm-neutral": {
       "kind": "color",
       "description": "Neutral tone (near-black in light mode, near-white in dark mode)."
     },
-    "--ts-danger": {
+    "--tm-danger": {
       "kind": "color",
       "description": "Danger tone."
     },
-    "--ts-success": {
+    "--tm-success": {
       "kind": "color",
       "description": "Success tone."
     },
-    "--ts-warning": {
+    "--tm-warning": {
       "kind": "color",
       "description": "Warning tone."
     },
-    "--ts-info": {
+    "--tm-info": {
       "kind": "color",
       "description": "Info tone."
     },
-    "--ts-tone": {
+    "--tm-tone": {
       "kind": "color",
       "description": "Current tone. Set it to any color to recolor an element and its children (e.g. calendar colors)."
     },
-    "--ts-tone-ink": {
+    "--tm-tone-ink": {
       "kind": "color",
       "derived": true,
-      "description": "Text-safe version of --ts-tone."
+      "description": "Text-safe version of --tm-tone."
     },
-    "--ts-tone-soft": {
+    "--tm-tone-soft": {
       "kind": "color",
       "derived": true,
-      "description": "Tinted background from --ts-tone."
+      "description": "Tinted background from --tm-tone."
     },
-    "--ts-tone-on": {
+    "--tm-tone-on": {
       "kind": "color",
       "derived": true,
-      "description": "Text color on a solid --ts-tone fill (black or white)."
+      "description": "Text color on a solid --tm-tone fill (black or white)."
     },
-    "--ts-space-none": {
+    "--tm-space-none": {
       "kind": "space",
       "description": "0"
     },
-    "--ts-space-xs": {
+    "--tm-space-xs": {
       "kind": "space",
       "description": "0.25rem"
     },
-    "--ts-space-sm": {
+    "--tm-space-sm": {
       "kind": "space",
       "description": "0.5rem"
     },
-    "--ts-space-md": {
+    "--tm-space-md": {
       "kind": "space",
       "description": "1rem"
     },
-    "--ts-space-lg": {
+    "--tm-space-lg": {
       "kind": "space",
       "description": "1.5rem"
     },
-    "--ts-space-xl": {
+    "--tm-space-xl": {
       "kind": "space",
       "description": "2.5rem"
     },
-    "--ts-radius-sm": {
+    "--tm-radius-sm": {
       "kind": "radius",
       "derived": true,
-      "description": "0.6 × --ts-radius"
+      "description": "0.6 × --tm-radius"
     },
-    "--ts-radius-lg": {
+    "--tm-radius-lg": {
       "kind": "radius",
       "derived": true,
-      "description": "1.5 × --ts-radius. Cards and dialogs."
+      "description": "1.5 × --tm-radius. Cards and dialogs."
     },
-    "--ts-radius-full": {
+    "--tm-radius-full": {
       "kind": "radius",
       "description": "Fully round."
     },
-    "--ts-text-xs": {
+    "--tm-text-xs": {
       "kind": "text",
       "description": "0.75rem"
     },
-    "--ts-text-sm": {
+    "--tm-text-sm": {
       "kind": "text",
       "description": "0.875rem"
     },
-    "--ts-text-md": {
+    "--tm-text-md": {
       "kind": "text",
       "description": "1rem"
     },
-    "--ts-text-lg": {
+    "--tm-text-lg": {
       "kind": "text",
       "description": "1.25rem"
     },
-    "--ts-text-xl": {
+    "--tm-text-xl": {
       "kind": "text",
       "description": "1.75rem"
     },
-    "--ts-shadow-sm": {
+    "--tm-shadow-sm": {
       "kind": "shadow",
       "description": "Resting shadow (none in the default look)."
     },
-    "--ts-shadow-lg": {
+    "--tm-shadow-lg": {
       "kind": "shadow",
       "description": "Overlay shadow: dialogs, popovers."
     },
-    "--ts-control-h": {
+    "--tm-control-h": {
       "kind": "density",
       "derived": true,
       "description": "Height of buttons and inputs, set by data-density."
     },
-    "--ts-control-px": {
+    "--tm-control-px": {
       "kind": "density",
       "derived": true,
       "description": "Horizontal padding of controls, set by data-density."
     },
-    "--ts-control-font": {
+    "--tm-control-font": {
       "kind": "density",
       "derived": true,
       "description": "Font size of controls, set by data-density."
     },
-    "--ts-avatar-size": {
+    "--tm-avatar-size": {
       "kind": "input",
       "optional": true,
       "description": "Avatar diameter. Default 2.5rem (scaled by data-size)."
     },
-    "--ts-rail-width": {
+    "--tm-rail-width": {
       "kind": "input",
       "optional": true,
       "description": "Width of [data-rail]. Default 15rem."
     },
-    "--ts-rail-width-collapsed": {
+    "--tm-rail-width-collapsed": {
       "kind": "input",
       "optional": true,
       "description": "Width of a collapsed rail. Default: one icon button plus padding."
     },
-    "--ts-grow-basis": {
+    "--tm-grow-basis": {
       "kind": "input",
       "optional": true,
       "description": "Width a data-grow child needs before its row wraps. Default 8rem."
     },
-    "--ts-icon-<name>": {
+    "--tm-icon-<name>": {
       "kind": "input",
       "optional": true,
       "pattern": true,
-      "description": "The icon image for data-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --ts-icon-rocket: url(/icons/rocket.svg); } plus [data-icon=\"rocket\"] { --_icon: var(--ts-icon-rocket); }."
+      "description": "The icon image for data-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon=\"rocket\"] { --_icon: var(--tm-icon-rocket); }."
     }
   },
   "deprecated": {
-    "$comment": "Renamed names, old → new. They keep working (the CSS keeps a selector for them, the types accept them) until the next major version; tinystyle check warns (TS112) and --fix rewrites them. Not listed in the docs.",
+    "$comment": "Renamed names, old → new. They keep working (the CSS keeps a selector for them, the types accept them) until the next major version; temper check warns (TM112) and --fix rewrites them. Not listed in the docs.",
     "attributes": {},
     "values": {},
     "tokens": {}

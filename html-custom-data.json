@@ -3,7 +3,7 @@
   "globalAttributes": [
     {
       "name": "data-variant",
-      "description": "tinystyle. On: button, a[role=button], input[type=submit|button|reset]. Button style. Leave it out for the default solid main button (black in light mode, white in dark mode). Combine with data-tone for color.",
+      "description": "temper. On: button, a[role=button], input[type=submit|button|reset]. Button style. Leave it out for the default solid main button (black in light mode, white in dark mode). Combine with data-tone for color.",
       "values": [
         {
           "name": "secondary",
@@ -29,7 +29,7 @@
     },
     {
       "name": "data-tone",
-      "description": "tinystyle. On: button, [data-badge], [data-callout], progress, any text element. Color role. Independent of data-variant. On text it sets the text color. For a custom color use style=\"--ts-tone: <color>\" instead.",
+      "description": "temper. On: button, [data-badge], [data-callout], progress, any text element. Color role. Independent of data-variant. On text it sets the text color. For a custom color use style=\"--tm-tone: <color>\" instead.",
       "values": [
         {
           "name": "accent",
@@ -59,7 +59,7 @@
     },
     {
       "name": "data-size",
-      "description": "tinystyle. On: button (also icon buttons), input, select, [data-avatar]. Control size relative to the current density.",
+      "description": "temper. On: button (also icon buttons), input, select, [data-avatar]. Control size relative to the current density.",
       "values": [
         {
           "name": "sm",
@@ -77,7 +77,7 @@
     },
     {
       "name": "data-icon",
-      "description": "tinystyle. On: button, a, or any element (span) for a standalone icon. An icon by name (Lucide names). <span data-icon=\"mail\"></span> is an icon; <button data-icon=\"plus\">New</button> puts it before the text; an empty <button data-icon=\"plus\" aria-label=\"New contact\"></button> is a square icon-only button and needs an aria-label. Without a value (<button data-icon aria-label=\"…\"><svg>…</svg></button>) it makes a square icon button around your own svg. The default set needs icons.css (or all.css); the Vite plugin makes every Lucide icon and your own SVG folder available.",
+      "description": "temper. On: button, a, or any element (span) for a standalone icon. An icon by name (Lucide names). <span data-icon=\"mail\"></span> is an icon; <button data-icon=\"plus\">New</button> puts it before the text; an empty <button data-icon=\"plus\" aria-label=\"New contact\"></button> is a square icon-only button and needs an aria-label. Without a value (<button data-icon aria-label=\"…\"><svg>…</svg></button>) it makes a square icon button around your own svg. The default set needs icons.css (or all.css); the Vite plugin makes every Lucide icon and your own SVG folder available.",
       "values": [
         {
           "name": "mail"
@@ -251,7 +251,7 @@
     },
     {
       "name": "data-layout",
-      "description": "tinystyle. On: any container. Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-gap, space around them from data-pad; children never get margins.",
+      "description": "temper. On: any container. Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-gap, space around them from data-pad; children never get margins.",
       "values": [
         {
           "name": "stack",
@@ -263,21 +263,21 @@
         },
         {
           "name": "grid",
-          "description": "Responsive columns, each at least --ts-min wide (default 16rem). A few items keep their column width instead of stretching across the row."
+          "description": "Responsive columns, each at least --tm-min wide (default 16rem). A few items keep their column width instead of stretching across the row."
         },
         {
           "name": "split",
-          "description": "Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens."
+          "description": "Sidebar + content. First child is the sidebar (--tm-split, default 16rem); wraps on narrow screens."
         },
         {
           "name": "center",
-          "description": "Horizontally centered column with side padding. Its content is at most --ts-measure wide (default 72rem); the padding comes on top."
+          "description": "Horizontally centered column with side padding. Its content is at most --tm-measure wide (default 72rem); the padding comes on top."
         }
       ]
     },
     {
       "name": "data-cols",
-      "description": "tinystyle. On: [data-layout=grid]. Exactly this many equal columns instead of responsive ones (week and month grids, a 7-day picker). Columns never wrap; use data-show to swap in another layout on phones.",
+      "description": "temper. On: [data-layout=grid]. Exactly this many equal columns instead of responsive ones (week and month grids, a 7-day picker). Columns never wrap; use data-show to swap in another layout on phones.",
       "values": [
         {
           "name": "2"
@@ -301,7 +301,7 @@
     },
     {
       "name": "data-gap",
-      "description": "tinystyle. On: [data-layout]. Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in tinystyle.",
+      "description": "temper. On: [data-layout]. Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in temper.",
       "values": [
         {
           "name": "none",
@@ -331,7 +331,7 @@
     },
     {
       "name": "data-pad",
-      "description": "tinystyle. On: any container: page wrappers, sections, panels, rows. Padding inside the element, on all sides. Use it instead of padding in style attributes. On data-layout=\"center\" the side padding never drops below md. Overrides a component's own padding (e.g. data-pad=\"sm\" on an article).",
+      "description": "temper. On: any container: page wrappers, sections, panels, rows. Padding inside the element, on all sides. Use it instead of padding in style attributes. On data-layout=\"center\" the side padding never drops below md. Overrides a component's own padding (e.g. data-pad=\"sm\" on an article).",
       "values": [
         {
           "name": "none",
@@ -361,7 +361,7 @@
     },
     {
       "name": "data-align",
-      "description": "tinystyle. On: [data-layout]. Cross-axis alignment of children (align-items).",
+      "description": "temper. On: [data-layout]. Cross-axis alignment of children (align-items).",
       "values": [
         {
           "name": "start"
@@ -379,7 +379,7 @@
     },
     {
       "name": "data-justify",
-      "description": "tinystyle. On: [data-layout]. Main-axis distribution of children (justify-content).",
+      "description": "temper. On: [data-layout]. Main-axis distribution of children (justify-content).",
       "values": [
         {
           "name": "start"
@@ -398,7 +398,7 @@
     },
     {
       "name": "data-self",
-      "description": "tinystyle. On: a child of data-layout (stack, row, grid). Aligns this one child across the layout, overriding data-align. Typical: an \"Add\" button in a stack that should not stretch to full width (data-self=\"start\").",
+      "description": "temper. On: a child of data-layout (stack, row, grid). Aligns this one child across the layout, overriding data-align. Typical: an \"Add\" button in a stack that should not stretch to full width (data-self=\"start\").",
       "values": [
         {
           "name": "start"
@@ -416,7 +416,7 @@
     },
     {
       "name": "data-wrap",
-      "description": "tinystyle. On: [data-layout=row]. Whether a row wraps onto more lines. Rows wrap by default.",
+      "description": "temper. On: [data-layout=row]. Whether a row wraps onto more lines. Rows wrap by default.",
       "values": [
         {
           "name": "wrap",
@@ -430,12 +430,12 @@
     },
     {
       "name": "data-grow",
-      "description": "tinystyle. On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
+      "description": "temper. On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --tm-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
       "valueSet": "v"
     },
     {
       "name": "data-scroll",
-      "description": "tinystyle. On: a wrapper around wide or tall content (table, code, list pane). Scroll container. Without a value it scrolls sideways when the content is wider than the screen, instead of making the whole page scroll (wrap wide tables in it). data-scroll=\"y\" scrolls vertically inside a fixed-height area (panes in a data-shell=\"fixed\" app, message lists).",
+      "description": "temper. On: a wrapper around wide or tall content (table, code, list pane). Scroll container. Without a value it scrolls sideways when the content is wider than the screen, instead of making the whole page scroll (wrap wide tables in it). data-scroll=\"y\" scrolls vertically inside a fixed-height area (panes in a data-shell=\"fixed\" app, message lists).",
       "values": [
         {
           "name": "y",
@@ -449,7 +449,7 @@
     },
     {
       "name": "data-density",
-      "description": "tinystyle. On: html or any subtree. Control height and padding for everything inside.",
+      "description": "temper. On: html or any subtree. Control height and padding for everything inside.",
       "values": [
         {
           "name": "comfortable",
@@ -463,7 +463,7 @@
     },
     {
       "name": "data-theme",
-      "description": "tinystyle. On: html or any subtree. Forces light or dark mode. Leave it out to follow the operating system.",
+      "description": "temper. On: html or any subtree. Forces light or dark mode. Leave it out to follow the operating system.",
       "values": [
         {
           "name": "light",
@@ -477,27 +477,27 @@
     },
     {
       "name": "data-badge",
-      "description": "tinystyle. On: span. Small status label (counts, tags, states). Color with data-tone or style=\"--ts-tone: …\".",
+      "description": "temper. On: span. Small status label (counts, tags, states). Color with data-tone or style=\"--tm-tone: …\".",
       "valueSet": "v"
     },
     {
       "name": "data-callout",
-      "description": "tinystyle. On: div, [role=alert], [role=status]. Tinted message box. Put the title in <strong>. Color with data-tone (default info).",
+      "description": "temper. On: div, [role=alert], [role=status]. Tinted message box. Put the title in <strong>. Color with data-tone (default info).",
       "valueSet": "v"
     },
     {
       "name": "data-muted",
-      "description": "tinystyle. On: any text element. Secondary text color.",
+      "description": "temper. On: any text element. Secondary text color.",
       "valueSet": "v"
     },
     {
       "name": "data-truncate",
-      "description": "tinystyle. On: any element. Single line, cut off with an ellipsis.",
+      "description": "temper. On: any element. Single line, cut off with an ellipsis.",
       "valueSet": "v"
     },
     {
       "name": "data-clamp",
-      "description": "tinystyle. On: any text element. Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version).",
+      "description": "temper. On: any text element. Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version).",
       "values": [
         {
           "name": "2"
@@ -509,47 +509,47 @@
     },
     {
       "name": "data-bar",
-      "description": "tinystyle. On: any element, usually a data-variant=\"item\" row or a card. A colored bar on the start edge in the element's tone. Event chips: <button data-variant=\"item\" data-size=\"sm\" data-bar style=\"--ts-tone: #4CAF50\">.",
+      "description": "temper. On: any element, usually a data-variant=\"item\" row or a card. A colored bar on the start edge in the element's tone. Event chips: <button data-variant=\"item\" data-size=\"sm\" data-bar style=\"--tm-tone: #4CAF50\">.",
       "valueSet": "v"
     },
     {
       "name": "data-sr-only",
-      "description": "tinystyle. On: any element. Hidden visually, still read by screen readers.",
+      "description": "temper. On: any element. Hidden visually, still read by screen readers.",
       "valueSet": "v"
     },
     {
       "name": "data-pairs",
-      "description": "tinystyle. On: dl. Shows dt/dd pairs as a two-column label/value grid.",
+      "description": "temper. On: dl. Shows dt/dd pairs as a two-column label/value grid.",
       "valueSet": "v"
     },
     {
       "name": "data-caption",
-      "description": "tinystyle. On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
+      "description": "temper. On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
       "valueSet": "v"
     },
     {
       "name": "data-list",
-      "description": "tinystyle. On: ul, ol or any container of rows. One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-pad on a child overrides it); give a child data-layout=\"row\" data-justify=\"between\" for label + action rows. Card styling of article children is removed, so <article role=\"listitem\"> rows need no extra attributes. A leading <template> child does not count as the first row.",
+      "description": "temper. On: ul, ol or any container of rows. One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-pad on a child overrides it); give a child data-layout=\"row\" data-justify=\"between\" for label + action rows. Card styling of article children is removed, so <article role=\"listitem\"> rows need no extra attributes. A leading <template> child does not count as the first row.",
       "valueSet": "v"
     },
     {
       "name": "data-divider",
-      "description": "tinystyle. On: any text element. A horizontal line with the element's text in the middle, e.g. <p data-divider>or</p> between two sign-in options. Empty, it is a plain line.",
+      "description": "temper. On: any text element. A horizontal line with the element's text in the middle, e.g. <p data-divider>or</p> between two sign-in options. Empty, it is a plain line.",
       "valueSet": "v"
     },
     {
       "name": "data-avatar",
-      "description": "tinystyle. On: span, div. Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style=\"--ts-avatar-size: 4rem\".",
+      "description": "temper. On: span, div. Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style=\"--tm-avatar-size: 4rem\".",
       "valueSet": "v"
     },
     {
       "name": "data-stretch",
-      "description": "tinystyle. On: the main link or button inside an article. Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button.",
+      "description": "temper. On: the main link or button inside an article. Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button.",
       "valueSet": "v"
     },
     {
       "name": "data-shell",
-      "description": "tinystyle (app.css). On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll=\"y\").",
+      "description": "temper (app.css). On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll=\"y\").",
       "values": [
         {
           "name": "fixed",
@@ -559,32 +559,32 @@
     },
     {
       "name": "data-rail",
-      "description": "tinystyle (app.css). On: nav inside [data-shell]. Navigation rail. It must be a direct child of [data-shell]. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
+      "description": "temper (app.css). On: nav inside [data-shell]. Navigation rail. It must be a direct child of [data-shell]. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
       "valueSet": "v"
     },
     {
       "name": "data-collapsed",
-      "description": "tinystyle (app.css). On: [data-rail]. Icon-only rail, set in the markup (e.g. rendered by the server from a saved preference). For a toggle the user can click, use a data-rail-collapse checkbox instead.",
+      "description": "temper (app.css). On: [data-rail]. Icon-only rail, set in the markup (e.g. rendered by the server from a saved preference). For a toggle the user can click, use a data-rail-collapse checkbox instead.",
       "valueSet": "v"
     },
     {
       "name": "data-rail-collapse",
-      "description": "tinystyle (app.css). On: input type=\"checkbox\" inside [data-rail] (usually in its header). Collapse toggle drawn as a chevron icon button. Checked = icon-only rail. Needs an aria-label. CSS cannot remember it across page loads: render checked from a saved preference, or save it with a few lines of script.",
+      "description": "temper (app.css). On: input type=\"checkbox\" inside [data-rail] (usually in its header). Collapse toggle drawn as a chevron icon button. Checked = icon-only rail. Needs an aria-label. CSS cannot remember it across page loads: render checked from a saved preference, or save it with a few lines of script.",
       "valueSet": "v"
     },
     {
       "name": "data-rail-label",
-      "description": "tinystyle (app.css). On: any element inside [data-rail]. Hidden while the rail is collapsed (e.g. the user name in the rail footer).",
+      "description": "temper (app.css). On: any element inside [data-rail]. Hidden while the rail is collapsed (e.g. the user name in the rail footer).",
       "valueSet": "v"
     },
     {
       "name": "data-fab",
-      "description": "tinystyle (app.css). On: button. Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label.",
+      "description": "temper (app.css). On: button. Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label.",
       "valueSet": "v"
     },
     {
       "name": "data-show",
-      "description": "tinystyle (app.css). On: any element. Shows the element only on narrow (< 48rem) or wide screens.",
+      "description": "temper (app.css). On: any element. Shows the element only on narrow (< 48rem) or wide screens.",
       "values": [
         {
           "name": "narrow",
@@ -598,32 +598,32 @@
     },
     {
       "name": "data-menu",
-      "description": "tinystyle (menu.css). On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
+      "description": "temper (menu.css). On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
       "valueSet": "v"
     },
     {
       "name": "data-combo",
-      "description": "tinystyle (menu.css). On: a wrapper around an input and its suggestion list. Combobox: the data-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
+      "description": "temper (menu.css). On: a wrapper around an input and its suggestion list. Combobox: the data-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
       "valueSet": "v"
     },
     {
       "name": "data-toasts",
-      "description": "tinystyle (feedback.css). On: one div per page, at the end of <body> (role=\"status\"; popover=\"manual\" to show above modal dialogs). Toast region: fixed to the bottom corner (bottom center on phones), stacks its [data-toast] children with the newest at the bottom. Give it role=\"status\" so screen readers announce new toasts. Optionally popover=\"manual\": it then sits in the top layer above an open modal dialog (call showPopover() on it again after opening a dialog).",
+      "description": "temper (feedback.css). On: one div per page, at the end of <body> (role=\"status\"; popover=\"manual\" to show above modal dialogs). Toast region: fixed to the bottom corner (bottom center on phones), stacks its [data-toast] children with the newest at the bottom. Give it role=\"status\" so screen readers announce new toasts. Optionally popover=\"manual\": it then sits in the top layer above an open modal dialog (call showPopover() on it again after opening a dialog).",
       "valueSet": "v"
     },
     {
       "name": "data-toast",
-      "description": "tinystyle (feedback.css). On: a div inside [data-toasts]. A toast: a short message with optional actions (data-variant=\"link\" or \"ghost\" buttons, data-size=\"sm\") and a close button (data-icon=\"x\" with aria-label). data-tone adds a colored bar. Your code appends it to [data-toasts] (it slides in) and removes it after a few seconds; set hidden first to fade it out. Use role=\"alert\" on the toast for errors.",
+      "description": "temper (feedback.css). On: a div inside [data-toasts]. A toast: a short message with optional actions (data-variant=\"link\" or \"ghost\" buttons, data-size=\"sm\") and a close button (data-icon=\"x\" with aria-label). data-tone adds a colored bar. Your code appends it to [data-toasts] (it slides in) and removes it after a few seconds; set hidden first to fade it out. Use role=\"alert\" on the toast for errors.",
       "valueSet": "v"
     },
     {
       "name": "data-tooltip",
-      "description": "tinystyle (feedback.css). On: buttons, links and any focusable element. Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space).",
+      "description": "temper (feedback.css). On: buttons, links and any focusable element. Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space).",
       "values": []
     },
     {
       "name": "data-num",
-      "description": "tinystyle (table.css). On: th and td of a number column. A number cell: right-aligned with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
+      "description": "temper (table.css). On: th and td of a number column. A number cell: right-aligned with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
       "valueSet": "v"
     }
   ]

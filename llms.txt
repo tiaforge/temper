@@ -1,6 +1,6 @@
-# tinystyle
+# temper
 
-> Tiny CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
+> CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
 > `data-*` attributes with fixed values. Light and dark mode switch automatically.
 
 This is the short version: enough for small edits. Before building whole pages or migrating, read
@@ -10,27 +10,27 @@ This is the short version: enough for small edits. Before building whole pages o
 ## Setup
 
 ```js
-import '@tiaforge-ui/tinystyle/core.css';   // always
-import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
-import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
-import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
-import '@tiaforge-ui/tinystyle/table.css';  // data tables: sortable headers, selection, number columns
-import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
-import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
-// or everything: import '@tiaforge-ui/tinystyle/all.css';
+import '@tiaforge-ui/temper/core.css';   // always
+import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating action button
+import '@tiaforge-ui/temper/menu.css';   // dropdown menus
+import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
+import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selection, number columns
+import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
+import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
+// or everything: import '@tiaforge-ui/temper/all.css';
 ```
 
 ```js
-// vite.config.js: runs tinystyle check in every build (errors fail the build, the dev server warns)
-import tinystyle from '@tiaforge-ui/tinystyle/vite';
-export default { plugins: [tinystyle()] };
+// vite.config.js: runs temper check in every build (errors fail the build, the dev server warns)
+import temper from '@tiaforge-ui/temper/vite';
+export default { plugins: [temper()] };
 // with icons: every Lucide icon by name (only the used ones are emitted) plus your own SVG folder
-// export default { plugins: [tinystyle({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:tinystyle-icons.css';
-// (then do not also import icons.css; the CLI equivalent is: npx tinystyle check --lucide --icons src/icons <paths>)
-// while migrating step by step, check only the migrated parts: tinystyle({ paths: ['src/contacts', 'contacts'] })
-// opt-in enhancements (newer CSS, fine to leave off): tinystyle({ enhance: ['customizable-select'] }) or enhance: 'all'
-// smaller builds: tinystyle({ prune: true }) drops rules for attributes and values the project never uses
-// without the plugin: import '@tiaforge-ui/tinystyle/enhance/customizable-select.css' after core.css
+// export default { plugins: [temper({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:temper-icons.css';
+// (then do not also import icons.css; the CLI equivalent is: npx temper check --lucide --icons src/icons <paths>)
+// while migrating step by step, check only the migrated parts: temper({ paths: ['src/contacts', 'contacts'] })
+// opt-in enhancements (newer CSS, fine to leave off): temper({ enhance: ['customizable-select'] }) or enhance: 'all'
+// smaller builds: temper({ prune: true }) drops rules for attributes and values the project never uses
+// without the plugin: import '@tiaforge-ui/temper/enhance/customizable-select.css' after core.css
 ```
 
 
@@ -51,18 +51,18 @@ export default { plugins: [tinystyle()] };
    `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
    `data-grow` on one child makes it take the remaining space (search fields, inputs next to a button).
 5. Sizes always use the same words: `xs sm md lg xl`. There are no numeric scales.
-6. Your own CSS always wins over tinystyle (tinystyle lives in `@layer ts.*`). Never use `!important`.
-   In your own CSS, use the tokens (`var(--ts-text-muted)`, `var(--ts-space-sm)`), never hard-coded colors.
+6. Your own CSS always wins over temper (temper lives in `@layer ts.*`). Never use `!important`.
+   In your own CSS, use the tokens (`var(--tm-text-muted)`, `var(--tm-space-sm)`), never hard-coded colors.
 7. Use `class` only for your app's own components. `data-*` attributes from the list below belong to
-   tinystyle; do not use those names for anything else.
-8. Size and tune things with the documented custom properties in `style` (`style="--ts-min: 12rem"`,
-   `style="--ts-tone: #e8590c"`, `style="--ts-avatar-size: 4rem"`). That is the intended way; do not
+   temper; do not use those names for anything else.
+8. Size and tune things with the documented custom properties in `style` (`style="--tm-min: 12rem"`,
+   `style="--tm-tone: #e8590c"`, `style="--tm-avatar-size: 4rem"`). That is the intended way; do not
    write `width`, `margin` or `padding` there.
-9. Run `npx tinystyle check <dir>` (`--fix` applies the safe fixes) after editing (or use the Vite plugin, which runs it in every build).
+9. Run `npx temper check <dir>` (`--fix` applies the safe fixes) after editing (or use the Vite plugin, which runs it in every build).
    It reports bad values, misplaced attributes, missing module imports and
    unlabeled buttons. For "no attribute" use `null`, not `false`: `cond ? 'x' : null`.
-10. To see the result, prefer `npx tinystyle-inspect <dev-server-url>` (package
-    `@tiaforge-ui/tinystyle-inspect`, if installed) over screenshots. It opens every dialog and popover
+10. To see the result, prefer `npx temper-inspect <dev-server-url>` (package
+    `@tiaforge-ui/temper-inspect`, if installed) over screenshots. It opens every dialog and popover
     at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
     contrast, unlabeled controls and covered click targets as text. To judge how it looks, add
     `--sheet <dir>`: it writes one image per page with every state at every width and scheme, so one
@@ -73,7 +73,7 @@ export default { plugins: [tinystyle()] };
 | Attribute | Values | What it does |
 |---|---|---|
 | `data-variant` | secondary, outline, ghost, link, item | Button style; leave it out for the solid main button. |
-| `data-tone` | accent, neutral, danger, success, warning, info | Color, independent of the style; for any other color use style="--ts-tone: …". |
+| `data-tone` | accent, neutral, danger, success, warning, info | Color, independent of the style; for any other color use style="--tm-tone: …". |
 | `data-size` | sm, md, lg | Control size relative to the current density. |
 | `data-icon` | an icon name (see Icons), or none | Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label). |
 | `data-layout` | stack, row, grid, split, center | Lays out the element's children (overrides its own display). |
@@ -119,12 +119,12 @@ export default { plugins: [tinystyle()] };
 
 Set inputs on `:root` in your own CSS to change the theme. Use the rest in your own CSS.
 
-- Inputs (set these): `--ts-hue`, `--ts-chroma`, `--ts-neutral-hue`, `--ts-neutral-tint`, `--ts-primary`, `--ts-radius`, `--ts-badge-radius`, `--ts-font-sans`, `--ts-font-mono`, `--ts-heading-weight`, `--ts-heading-tracking`, `--ts-duration`, `--ts-ease`, `--ts-min`, `--ts-split`, `--ts-measure`, `--ts-dialog-width`, `--ts-avatar-size`, `--ts-rail-width`, `--ts-rail-width-collapsed`, `--ts-grow-basis`, `--ts-icon-<name>`
-- Colors: `--ts-bg`, `--ts-surface`, `--ts-surface-raised`, `--ts-fill`, `--ts-field`, `--ts-field-border`, `--ts-border`, `--ts-border-strong`, `--ts-text`, `--ts-text-muted`, `--ts-accent`, `--ts-neutral`, `--ts-danger`, `--ts-success`, `--ts-warning`, `--ts-info`, `--ts-tone`, `--ts-tone-ink`, `--ts-tone-soft`, `--ts-tone-on`
-- Space: `--ts-space-none`, `--ts-space-xs`, `--ts-space-sm`, `--ts-space-md`, `--ts-space-lg`, `--ts-space-xl`
-- Radius: `--ts-radius-full`
-- Text sizes: `--ts-text-xs`, `--ts-text-sm`, `--ts-text-md`, `--ts-text-lg`, `--ts-text-xl`
-- Shadows: `--ts-shadow-sm`, `--ts-shadow-lg`
+- Inputs (set these): `--tm-hue`, `--tm-chroma`, `--tm-neutral-hue`, `--tm-neutral-tint`, `--tm-primary`, `--tm-radius`, `--tm-badge-radius`, `--tm-font-sans`, `--tm-font-mono`, `--tm-heading-weight`, `--tm-heading-tracking`, `--tm-duration`, `--tm-ease`, `--tm-min`, `--tm-split`, `--tm-measure`, `--tm-dialog-width`, `--tm-avatar-size`, `--tm-rail-width`, `--tm-rail-width-collapsed`, `--tm-grow-basis`, `--tm-icon-<name>`
+- Colors: `--tm-bg`, `--tm-surface`, `--tm-surface-raised`, `--tm-fill`, `--tm-field`, `--tm-field-border`, `--tm-border`, `--tm-border-strong`, `--tm-text`, `--tm-text-muted`, `--tm-accent`, `--tm-neutral`, `--tm-danger`, `--tm-success`, `--tm-warning`, `--tm-info`, `--tm-tone`, `--tm-tone-ink`, `--tm-tone-soft`, `--tm-tone-on`
+- Space: `--tm-space-none`, `--tm-space-xs`, `--tm-space-sm`, `--tm-space-md`, `--tm-space-lg`, `--tm-space-xl`
+- Radius: `--tm-radius-full`
+- Text sizes: `--tm-text-xs`, `--tm-text-sm`, `--tm-text-md`, `--tm-text-lg`, `--tm-text-xl`
+- Shadows: `--tm-shadow-sm`, `--tm-shadow-lg`
 
 ## Icons
 
@@ -149,11 +149,11 @@ Icons are one color (the text color); keep multicolor logos as `<img>`.
 | `<button data-variant="primary">` | `<button>` (primary is the default) |
 | `<p class="error">` | `<p data-tone="danger">` or `<div data-callout data-tone="danger">` |
 | `style="margin-top: 1rem"` on a button or input | wrap the elements in `data-layout="stack" data-gap="md"` |
-| `style="padding: var(--ts-space-lg)"` | `data-pad="lg"` |
+| `style="padding: var(--tm-space-lg)"` | `data-pad="lg"` |
 | a custom class to turn a `label` into a flex row | `<label data-layout="row" data-justify="between">` |
 | `data-gap="4"` or `data-gap="16px"` | `data-gap="md"` |
 | `<button data-icon="x"></button>` | `<button data-icon="x" aria-label="Close"></button>` |
 | `<svg><path d="…"/></svg>` for a mail icon | `<span data-icon="mail"></span>` |
 | `data-badge="true"` | `data-badge` |
-| `color: #666` in app CSS | `color: var(--ts-text-muted)` |
-| `!important` to beat tinystyle | a plain selector; app CSS already wins |
+| `color: #666` in app CSS | `color: var(--tm-text-muted)` |
+| `!important` to beat temper | a plain selector; app CSS already wins |

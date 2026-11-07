@@ -1,13 +1,13 @@
 # Backlog from the caley contacts migration (2026-11-07)
 
 Three Sonnet agents migrated caley's contacts page (sinter, about 500 lines of SCSS) in separate
-worktrees: to tinystyle, to Tailwind v4 + daisyUI 5, and as a fresh Pico rewrite. Each kept a
+worktrees: to temper, to Tailwind v4 + daisyUI 5, and as a fresh Pico rewrite. Each kept a
 `MIGRATION-NOTES.md` listing every place its library fell short. This file merges those notes into a
-ranked backlog for tinystyle. "Hit by" says which of the three migrations needed custom work for it.
+ranked backlog for temper. "Hit by" says which of the three migrations needed custom work for it.
 
 ## Results
 
-| | Baseline (Pico) | tinystyle | daisyUI | Pico rewrite |
+| | Baseline (Pico) | temper | daisyUI | Pico rewrite |
 |---|---|---|---|---|
 | Custom CSS for page + nav | 494 + 213 + main.scss 219 | 34 + 50 = **84** | **13** (+ utilities in markup) | 67 + 67 = 134 |
 | Class tokens in page + nav markup | 150 | **4** | 509 | 34 |
@@ -19,7 +19,7 @@ Notes: daisyUI moved its styling into 509 utility and component classes in the m
 comparable 1:1. daisyUI's Vite build failed on daisyUI's own CSS (`@scope (.join)`), and the
 workaround drops its `join` focus rules. The Pico rewrite replaced the floating "+" button with a toolbar
 button and needed 3 lines of JS for dialog light dismiss, because Pico's modal is a full-screen
-overlay. The tinystyle version duplicated the nav partial, because Pico pages still use the old one.
+overlay. The temper version duplicated the nav partial, because Pico pages still use the old one.
 Baseline CSS was measured from the main worktree's last build (6 Nov), so it is approximate.
 
 ## Backlog, ranked by savings × frequency
@@ -27,26 +27,26 @@ Baseline CSS was measured from the main worktree's last build (6 Nov), so it is 
 ### Core quick wins (small, do first)
 
 1. **`data-layout="grid"` should not stretch lone items.** It uses `auto-fit`, so a group with one card
-   stretched across the full width. Switch to `auto-fill` (columns stay at least `--ts-min`, empty
-   tracks are kept). Hit by: tinystyle, Pico.
+   stretched across the full width. Switch to `auto-fill` (columns stay at least `--tm-min`, empty
+   tracks are kept). Hit by: temper, Pico.
 2. **`data-grow`**: boolean on a child of a row or stack (`flex: 1 1 0; min-inline-size: 0`). Use it for search
    fields in toolbars, and for input + select + remove rows. daisyUI needed `w-full` about 30 times for the
-   same thing. Hit by: tinystyle, daisyUI.
+   same thing. Hit by: temper, daisyUI.
 3. **`data-wrap="none"`** on rows (icon + label in nav items must not wrap). Also document that `row`
-   wraps by default. Hit by: tinystyle.
+   wraps by default. Hit by: temper.
 4. **Style `aria-current`** on links and buttons like `aria-pressed` (soft accent fill), so nav items only
    set the ARIA state. daisyUI's `aria-current` style was near-black and needed a `!` override. Hit by: all three.
 5. **`dl[data-pairs]` accepts `div` wrappers** around `dt` + `dd` (via `display: contents`), so one
-   `data-sn-show` can hide a pair. Hit by: tinystyle.
+   `data-sn-show` can hide a pair. Hit by: temper.
 6. **Dialog/card header and footer through one wrapper.** sinter renders a `for` row as a wrapper
-   `div`, so `dialog > header` misses. Also match `dialog > :is(div, form) > header|footer`. Hit by: tinystyle.
-7. **Checker: understand bound labels.** TS103 should accept `aria-label` set via `data-sn-attr`,
-   Svelte/Vue bindings, and so on. The agent added fake `aria-label="…"` attributes to silence it. Hit by: tinystyle.
+   `div`, so `dialog > header` misses. Also match `dialog > :is(div, form) > header|footer`. Hit by: temper.
+7. **Checker: understand bound labels.** TM103 should accept `aria-label` set via `data-sn-attr`,
+   Svelte/Vue bindings, and so on. The agent added fake `aria-label="…"` attributes to silence it. Hit by: temper.
 
 ### Modules (larger, biggest savings)
 
 8. **`app.css`: app shell + navigation rail.** This was the largest custom block in all three migrations:
-   tinystyle 50 lines, Pico rewrite about 100 lines, and daisyUI needed a custom variant on about 12 elements.
+   temper 50 lines, Pico rewrite about 100 lines, and daisyUI needed a custom variant on about 12 elements.
    About 6k agent tokens each. It needs:
    - a rail + content shell,
    - a fixed rail with a width token,
@@ -57,7 +57,7 @@ Baseline CSS was measured from the main worktree's last build (6 Nov), so it is 
 
    Hit by: all three.
 9. **`menu.css`: popover menus and dropdowns anchored to their trigger.** By default a `[popover]` is
-   centered in the viewport. tinystyle needed one `position-area` rule. The Pico rewrite needed about 15 lines
+   centered in the viewport. temper needed one `position-area` rule. The Pico rewrite needed about 15 lines
    (its most expensive item, about 2k tokens). daisyUI needed inline `anchor-name`/`position-anchor` styles.
    Needs:
    - `[popover][data-menu]` placed under its invoker, using the implicit anchor from `popovertarget`
@@ -67,12 +67,12 @@ Baseline CSS was measured from the main worktree's last build (6 Nov), so it is 
 
    Hit by: all three.
 10. **`data-avatar`**: a round container for initials or a photo, with `data-size`, colored by tone, and
-    `object-fit` for an `img` child. tinystyle and Pico needed 11–14 lines each; daisyUI has it built in. Hit by: tinystyle, Pico.
+    `object-fit` for an `img` child. temper and Pico needed 11–14 lines each; daisyUI has it built in. Hit by: temper, Pico.
 11. **Clickable card** (`article[data-interactive]` or `data-stretch` on its main button or link): the whole
     card is clickable, inner links stay clickable, with hover border and focus ring. 7–9 lines each, and agents had to
     rediscover the z-order trick. Hit by: all three.
 12. **Floating action button**: fixed in the bottom-right corner, round, with a shadow. All three wrote
-    custom code or a workaround (daisyUI has `fab`; the Pico rewrite dropped it). Probably part of `app.css`. Hit by: tinystyle, Pico.
+    custom code or a workaround (daisyUI has `fab`; the Pico rewrite dropped it). Probably part of `app.css`. Hit by: temper, Pico.
 
 ### Smaller / documentation
 
@@ -82,18 +82,18 @@ Baseline CSS was measured from the main worktree's last build (6 Nov), so it is 
     - that rows wrap,
     - how grid columns behave,
     - how popovers are positioned,
-    - that custom properties in `style` (`--ts-min`, `--ts-tone`, `--ts-dialog-width`, …) are the sanctioned way to size things,
+    - that custom properties in `style` (`--tm-min`, `--tm-tone`, `--tm-dialog-width`, …) are the sanctioned way to size things,
     - that `rem` is 16px (Pico scales the root to 125%, so 1:1 copied sizes look smaller after migrating),
     - a recipe for a `<template>`-rendered list (`:first-child` traps).
-15. **Migration guide from Pico**: a token map (`--pico-muted-color` → `--ts-text-muted`, …) and a class map
-    (`.secondary` → `data-variant="secondary"`, …). The tinystyle agent had to add `var(--ts-x, var(--pico-x))`
+15. **Migration guide from Pico**: a token map (`--pico-muted-color` → `--tm-text-muted`, …) and a class map
+    (`.secondary` → `data-variant="secondary"`, …). The temper agent had to add `var(--tm-x, var(--pico-x))`
     fallbacks to shared Svelte components.
 
 ## Already strong (keep)
 
-- **Dialogs.** The tinystyle `<dialog>` is the box itself, so `closedby="any"` light dismiss keeps working. In Pico
+- **Dialogs.** The temper `<dialog>` is the box itself, so `closedby="any"` light dismiss keeps working. In Pico
   it broke, because Pico's modal is a full-screen overlay.
-- **Automatic dark mode.** It needed zero code in tinystyle and daisyUI.
+- **Automatic dark mode.** It needed zero code in temper and daisyUI.
 - **Nav items.** They worked with no CSS as `a[role=button]` + `data-variant` toggled by sinter.
 - **Size.** The smallest shipped CSS (5.9 KB gzip) and the fewest classes, with the fewest tokens and the
   shortest time spent by the agent.
@@ -102,9 +102,9 @@ Baseline CSS was measured from the main worktree's last build (6 Nov), so it is 
 
 The same Sonnet brief, run again from the same baseline after the core fixes and the two modules landed.
 
-| | tinystyle v1 | tinystyle v2 |
+| | temper v1 | temper v2 |
 |---|---|---|
-| Custom CSS (page + nav) | 34 + 50 = 84 lines | **14 + 0** lines (8 of the 14 map `--pico-*` to `--ts-*` for the shared Svelte ShareMenu) |
+| Custom CSS (page + nav) | 34 + 50 = 84 lines | **14 + 0** lines (8 of the 14 map `--pico-*` to `--tm-*` for the shared Svelte ShareMenu) |
 | Custom classes in markup | 4 | **0** |
 | Nav partial | 59 lines | 40 lines |
 | Nav script | unchanged nav.ts | nav-ts.ts: 85 → 91 lines, about 20 changed (collapse, drawer, localStorage) |
@@ -118,14 +118,14 @@ browser's `margin: auto`. The kitchen sink only showed a static dialog preview, 
 
 16. **Rail behavior without script.** *Done (CSS only): the drawer is a native popover (`<nav data-rail popover>` opened by a `popovertarget` button), and collapse is a `data-rail-collapse` checkbox read with `:has()`. Still not possible in CSS: remembering "collapsed" across page loads (render `checked`/`data-collapsed` from the server, or 3 lines of script), and automatic `aria-current`, because no browser supports `:local-link`.* Originally: Collapse toggle, mobile drawer toggle, remembering the collapsed state
     and a mobile top bar (hamburger + brand) still took about 15 lines of TS and 7 of markup. Options:
-    - a tiny optional `app.js` (or custom `command="--ts-toggle-rail"` invoker commands),
+    - a tiny optional `app.js` (or custom `command="--tm-toggle-rail"` invoker commands),
     - automatic `aria-current` for the rail link that matches `location.pathname`,
     - a documented mobile bar recipe.
-17. **Pico coexistence during a gradual migration.** A `pico-compat.css` alias file (`--pico-*` → `--ts-*`)
+17. **Pico coexistence during a gradual migration.** A `pico-compat.css` alias file (`--pico-*` → `--tm-*`)
     for shared components, plus a docs note that one page cannot load both. This cost a second nav partial and an 8-line bridge.
 18. **Dropdown caret** for `button[popovertarget]` (the agent wrote a `▾` span).
 19. **Dialog close button**: a recipe or default for the header `×` (every dialog repeats it).
-20. **Docs**: `data-size` also works on icon buttons; the search field in a toolbar wants `data-grow` (exists, but the agent did not find it). *Done: toolbar recipe uses `data-grow`, and `data-grow` now wraps onto its own line below `--ts-grow-basis` (10rem).*
+20. **Docs**: `data-size` also works on icon buttons; the search field in a toolbar wants `data-grow` (exists, but the agent did not find it). *Done: toolbar recipe uses `data-grow`, and `data-grow` now wraps onto its own line below `--tm-grow-basis` (10rem).*
 
 ## Rerun v3 (CSS-only rail)
 
@@ -147,9 +147,9 @@ Findings and what happened to them:
 Also added after v3 (fewer attributes to write):
 - An empty close button in a dialog or card header (`command="close"`, `hide-popover`, `popovertargetaction="hide"`) is drawn as a quiet × icon button; the checker requires an aria-label on it.
 - Buttons that open a popover get a dropdown caret (menu.css).
-- Vite plugin (`@tiaforge-ui/tinystyle/vite`) runs the checker in every build.
+- Vite plugin (`@tiaforge-ui/temper/vite`) runs the checker in every build.
 
-## Rerun v4 (tinystyle-inspect installed, not mentioned in the brief)
+## Rerun v4 (temper-inspect installed, not mentioned in the brief)
 
 | | v3 | v4 |
 |---|---|---|
@@ -170,7 +170,7 @@ went up (0 findings), token use went up 21%.
     trigger belongs in the page's top row (or a dedicated mobile bar). Fix the recipe.
 22. **Icons dominate nav markup.** Seven inline SVGs (the gear alone about 1 KB) were about 4k tokens. Option: an
     optional icon module (CSS mask icons such as `data-icon-name="mail"`) for the 15 or so standard app icons.
-23. **Checker false positive.** TS103 flags close or cancel buttons whose text comes from `data-sn-text`
+23. **Checker false positive.** TM103 flags close or cancel buttons whose text comes from `data-sn-text`
     (empty in source, filled at runtime). The agent added static text only to silence it. Treat
     bound-content attributes (`data-sn-text`, `data-sn-html`) as content.
 24. **Narrow form rows.** An input (`data-grow`) + select + remove button row overflowed a phone-width
@@ -194,13 +194,13 @@ went up (0 findings), token use went up 21%.
 | Inline `<svg>` in page + nav | 8 | **0** (18 `data-icon` uses) |
 | Nav partial | 5,173 bytes | **2,301 bytes** (−55%) |
 | Agent tokens / tool calls / minutes | 142k / 60 / 7.2 | 144k / 50 / 6.6 |
-| Used tinystyle-inspect | yes (2 runs) | **no** |
+| Used temper-inspect | yes (2 runs) | **no** |
 | Screenshots | ~16 | ~30 |
 | Inspector findings on the result | 0 / 0 | 0 / 0 after the dialog fix (before it: 1 error, see below) |
 
 Did the changes deliver?
 - **Named icons: yes.** No inline SVG left, and the nav markup halved.
-- **Contact sheet: not used.** The agent never ran the inspector, so it took about 30 screenshots. v4 used the inspector under the same brief, so adoption is not reliable from llms.txt alone. Added: `tinystyle check` now prints the inspector command when the inspector is installed.
+- **Contact sheet: not used.** The agent never ran the inspector, so it took about 30 screenshots. v4 used the inspector under the same brief, so adoption is not reliable from llms.txt alone. Added: `temper check` now prints the inspector command when the inspector is installed.
 - **Short llms.txt: no visible harm.** Token use was flat (+1%) despite twice the screenshots. Whether it read llms-full.txt is unknown.
 - **v4 fixes: held.** Drawer button in the top row, narrow form rows wrap correctly, FAB round.
 
@@ -218,14 +218,14 @@ Found by v5 or by inspecting v5:
 | Custom CSS (page + nav) | 0 | 0 | 0 |
 | Inline `<svg>` | 8 | 0 | 0 |
 | Agent tokens / tool calls / minutes | 142k / 60 / 7.2 | 144k / 50 / 6.6 | **126k / 35 / 5.3** |
-| Used tinystyle-inspect / contact sheet | yes / – | no / no | **yes / yes** (2 runs) |
+| Used temper-inspect / contact sheet | yes / – | no / no | **yes / yes** (2 runs) |
 | Screenshots | ~16 | ~30 | **11** |
 | Inspector findings on the result | 0 / 0 | 1 error before the dialog fix | **0 / 0** |
 
 The changes delivered this time. The checker's hint got the agent to the inspector and the contact
 sheet without the brief mentioning them. Its first inspector run found 3 unlabeled controls that the
 checker misses. Screenshots dropped from ~30 to 11, and tokens fell 13% against v5. It also added
-`tinystyle({ paths })` to the Vite config on its own, so the build checks the migrated parts only.
+`temper({ paths })` to the Vite config on its own, so the build checks the migrated parts only.
 One run per version, so treat the differences as indications, not measurements.
 
 ### New findings (v6)
@@ -233,7 +233,7 @@ One run per version, so treat the differences as indications, not measurements.
 27. **Collapsed rail header.** The logo link and the collapse toggle sit side by side and do not fit one
     icon's width, so the logo is clipped. Stack them vertically when collapsed. (The "chevron points up"
     report was a mid-transition screenshot; at rest it points right.)
-28. **Static label check.** `tinystyle check` could flag inputs and selects with no `<label>`,
+28. **Static label check.** `temper check` could flag inputs and selects with no `<label>`,
     `aria-label`, `aria-labelledby` or `title` as a warning. Today only the inspector catches them
     (3 times now, in v4, v5 and v6).
 29. **Per-child alignment.** `data-self="start|center|end|stretch"` on a child of a stack or row. The agent wrapped
@@ -241,14 +241,14 @@ One run per version, so treat the differences as indications, not measurements.
 30. **Docs:** `[data-rail]` must be a direct child of `[data-shell]`. Say so in the attribute description, and
     give a two-partial recipe for apps migrating page by page.
 31. **Share actions inside a menu** (download vCard, mail, system share) still need about 45 lines of
-    script. That is app behaviour, not styling; out of scope for tinystyle.
+    script. That is app behaviour, not styling; out of scope for temper.
 
 ## Mail page (second page, built on v6's contacts migration)
 
 Scope: the mail page, the standalone message view and their shared reader partial. Same model and brief
 structure as v6.
 
-| | Pico | tinystyle |
+| | Pico | temper |
 |---|---|---|
 | Mail page SCSS | 1,203 lines | 55 |
 | Reader SCSS (shared) | 729 lines | 51 (15 of them bridge `--pico-*` for unmigrated Svelte dialogs) |
@@ -285,14 +285,14 @@ virtual folder instead of three icons, and an icon-only reader toolbar. Sender a
 38. **Submit buttons ignore `commandfor`/`popovertarget`** (platform behaviour). Document it: use
     `type="button"`, or close the popover in the submit handler.
 39. **Icons, fixed:** the checker CLI did not know the plugin's on-demand icons (19 false errors). It now has
-    `--lucide` and `--icons <dir>`. The docs now say to import only `virtual:tinystyle-icons.css` with the plugin.
+    `--lucide` and `--icons <dir>`. The docs now say to import only `virtual:temper-icons.css` with the plugin.
 40. **Inspector, fixed:** false positives for dialogs inside panes hidden at a width (now reported as
     not rendered), popovers opened without their button (no position check), and `data-sr-only` text
     (not "clipped").
 
 ## Calendar page + the remaining Svelte dialogs (third step, built on the mail step)
 
-The calendar is a Svelte app (not sinter), so this step also tested tinystyle attributes and the checker inside
+The calendar is a Svelte app (not sinter), so this step also tested temper attributes and the checker inside
 Svelte components.
 
 | | before | after |
@@ -308,19 +308,19 @@ markup) and `Combo` (the autocomplete list that was duplicated in the event form
 day-by-day agenda list.
 
 Still on Pico: the search and settings pages. `ImportDialog` keeps an `<article>` wrapper and its
-`.close-btn` for the Pico settings page; on tinystyle pages one rule makes the article transparent.
+`.close-btn` for the Pico settings page; on temper pages one rule makes the article transparent.
 
 Mock: the stock mock had no month-grid endpoint (`/api/calendar?month=`), so the agent wrote its own copy.
 The mock now has it.
 
 ### Findings (calendar)
 
-41. **Fixed-column grids:** `data-layout="grid"` cannot say "exactly 7 columns". Proposed: `--ts-cols`
+41. **Fixed-column grids:** `data-layout="grid"` cannot say "exactly 7 columns". Proposed: `--tm-cols`
     (with a narrow-screen fallback). About 30 lines across the week, month and picker grids.
 42. **`aria-current="date"`** (today in a calendar) has no styling.
 43. **Autocomplete list under an input** (combobox): an anchored, non-popover `data-menu` with
     `aria-selected` styling would replace the 25-line component + 8 lines of CSS, used 6 times.
-44. **Event chip:** a `data-variant="item"` with a `--ts-tone` start bar, a compact size and `data-clamp="2"`
+44. **Event chip:** a `data-variant="item"` with a `--tm-tone` start bar, a compact size and `data-clamp="2"`
     (multi-line truncation). 18 lines today.
 45. **`data-truncate` on a grid child** does not work (grid items need `min-inline-size: 0`).
 46. **Checker:** it does not flag `data-justify`/`data-align`/`data-gap` without `data-layout`.
@@ -345,7 +345,7 @@ The mock now has it.
 
 ### Whole migration (contacts, mail, calendar, search, settings, login)
 
-| | Pico | tinystyle |
+| | Pico | temper |
 |---|---|---|
 | App CSS (SCSS + scoped styles) | about 4,750 lines | about 210 lines |
 | Agent effort for the whole app | | about 940k tokens over four steps |
@@ -364,27 +364,27 @@ already the case before the migration.
     Allow wrapping (`white-space: normal`) for buttons in narrow containers, or add `data-wrap` on buttons.
 52. *Done: `data-list` (one bordered box, rows separated by lines, article card styling removed); recipe in llms.txt.* **Bordered list rows:** `article role="listitem"` with 5 attributes, 9 times. A bordered variant of the
     item row, or a `data-list` container that separates its children.
-53. *Done: `--ts-measure` is now the content width, `data-divider` draws a line with text, `closedby="any"` is in the dialog docs.* **Smaller items:**
-    - `--ts-measure` includes the side padding,
+53. *Done: `--tm-measure` is now the content width, `data-divider` draws a line with text, `closedby="any"` is in the dialog docs.* **Smaller items:**
+    - `--tm-measure` includes the side padding,
     - a divider with text ("or") is missing,
     - document `closedby="any"` (it replaces backdrop-click handlers; seven of them in caley).
 
 ## Checker and build (from a review of the compile step, 2026-11-07)
 
 Done in the same pass: types for computed values (`types/*.d.ts`; sinter's `SinterAttributes`), computed
-values reduced to their literals in `tinystyle check`, context rules from vocab.json (TS107–TS109) and
-missing module imports (TS110). Still open, in this order:
+values reduced to their literals in `temper check`, context rules from vocab.json (TM107–TM109) and
+missing module imports (TM110). Still open, in this order:
 
-54. *Done: `--fix` (CLI), fixes on diagnostics, `deprecated` in vocab.json with TS112, types and a test that deprecated names stay styled.* **`tinystyle check --fix` and deprecations.** The checker already computes "did you mean"; apply the
+54. *Done: `--fix` (CLI), fixes on diagnostics, `deprecated` in vocab.json with TM112, types and a test that deprecated names stay styled.* **`temper check --fix` and deprecations.** The checker already computes "did you mean"; apply the
     unambiguous ones (wrong axis `data-variant="danger"` → `data-tone="danger"`, value typos, `data-badge="true"`).
     A closed vocabulary turns every rename into a breaking change, so add `deprecated: { use: … }` entries to
-    vocab.json: the checker warns (TS112), `--fix` rewrites, and the types keep accepting the old value until the
+    vocab.json: the checker warns (TM112), `--fix` rewrites, and the types keep accepting the old value until the
     next major. Needed before 1.0, so caley and tia.vision can follow renames mechanically.
-55. *Done: TS204–TS208 in CSS files, `<style>` blocks and `style` attributes; `tinystyle-ignore` comments. On caley's migrated frontend: one finding (a 0.25rem gap).* **Lint app CSS against the library's rules (warnings).** caley went from about 4,750 lines of app CSS to
+55. *Done: TM204–TM208 in CSS files, `<style>` blocks and `style` attributes; `temper-ignore` comments. On caley's migrated frontend: one finding (a 0.25rem gap).* **Lint app CSS against the library's rules (warnings).** caley went from about 4,750 lines of app CSS to
     about 210; keep it from growing back: `margin` on children of `[data-layout]` (or on anything, outside
-    `@layer`), raw colors and `px` spacing where a token exists (`#666` → `var(--ts-text-muted)`,
-    `padding: 16px` → `data-pad="md"`), `!important`, and rules that restyle tinystyle selectors
-    (`[data-variant=…]`) instead of setting tokens. checkStyles already parses `--ts-*`; this needs a small
+    `@layer`), raw colors and `px` spacing where a token exists (`#666` → `var(--tm-text-muted)`,
+    `padding: 16px` → `data-pad="md"`), `!important`, and rules that restyle temper selectors
+    (`[data-variant=…]`) instead of setting tokens. checkStyles already parses `--tm-*`; this needs a small
     declaration scanner, still no dependency.
 56. *Done: Vite option `prune` (builds only), lib/prune.js; `npm run visual:prune` renders the kitchen sink with full and pruned CSS (32 states, identical). caley: all.css 10.3 → 9.4 KB brotli; its icons and tones are computed, so they stay.* **Ship only the CSS a project uses (lowest priority).** The Vite plugin knows every static value in use,
     so it could drop unused rules (most of `data-cols`, unused tones and variants, icons it already handles).

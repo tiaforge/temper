@@ -28,7 +28,7 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
   // A fresh probe per read: Chrome can return a stale computed color for a reused element whose style was replaced.
   const read = (expr, tone) => {
     const probe = document.body.appendChild(document.createElement('div'));
-    if (tone === 'primary') probe.style.setProperty('--ts-tone', 'var(--ts-primary)');
+    if (tone === 'primary') probe.style.setProperty('--tm-tone', 'var(--tm-primary)');
     else if (tone) probe.dataset.tone = tone;
     probe.style.color = `var(${expr})`;
     const c = rgba(getComputedStyle(probe).color);
@@ -42,24 +42,24 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
   };
 
   // [group, label, fg, bg, tone, minimum]. 4.5 = WCAG AA body text, 3 = non-text UI (1.4.11).
-  const text = [['--ts-bg', 'bg'], ['--ts-surface', 'surface'], ['--ts-surface-raised', 'raised'], ['--ts-fill', 'fill']];
+  const text = [['--tm-bg', 'bg'], ['--tm-surface', 'surface'], ['--tm-surface-raised', 'raised'], ['--tm-fill', 'fill']];
   const tonePairs = tone => [
-    ...text.slice(0, 3).map(([bg, n]) => [`${tone} text on ${n}`, '--ts-tone-ink', bg, tone, 4.5]),
-    [`${tone} text on ${tone}-soft`, '--ts-tone-ink', '--ts-tone-soft', tone, 4.5],
-    [`${tone} solid button`, '--ts-tone-on', '--ts-tone', tone, 4.5],
+    ...text.slice(0, 3).map(([bg, n]) => [`${tone} text on ${n}`, '--tm-tone-ink', bg, tone, 4.5]),
+    [`${tone} text on ${tone}-soft`, '--tm-tone-ink', '--tm-tone-soft', tone, 4.5],
+    [`${tone} solid button`, '--tm-tone-on', '--tm-tone', tone, 4.5],
   ];
   const checks = {
     neutral: [
-      ...text.map(([bg, n]) => [`text on ${n}`, '--ts-text', bg, null, 4.5]),
-      ...text.map(([bg, n]) => [`muted text on ${n}`, '--ts-text-muted', bg, null, 4.5]),
-      ['muted text on field (placeholder)', '--ts-text-muted', '--ts-field', null, 4.5],
-      ['main button', '--ts-tone-on', '--ts-tone', 'primary', 4.5],
+      ...text.map(([bg, n]) => [`text on ${n}`, '--tm-text', bg, null, 4.5]),
+      ...text.map(([bg, n]) => [`muted text on ${n}`, '--tm-text-muted', bg, null, 4.5]),
+      ['muted text on field (placeholder)', '--tm-text-muted', '--tm-field', null, 4.5],
+      ['main button', '--tm-tone-on', '--tm-tone', 'primary', 4.5],
     ],
     accent: [
       ...tonePairs('accent'),
-      ['text on accent-soft (selected row)', '--ts-text', '--ts-tone-soft', 'accent', 4.5],
-      ['accent on bg (focus ring, checked box)', '--ts-accent', '--ts-bg', null, 3],
-      ['accent on surface (focus ring, checked box)', '--ts-accent', '--ts-surface', null, 3],
+      ['text on accent-soft (selected row)', '--tm-text', '--tm-tone-soft', 'accent', 4.5],
+      ['accent on bg (focus ring, checked box)', '--tm-accent', '--tm-bg', null, 3],
+      ['accent on surface (focus ring, checked box)', '--tm-accent', '--tm-surface', null, 3],
     ],
     status: ['danger', 'success', 'warning', 'info'].flatMap(tonePairs),
   };
@@ -69,30 +69,30 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
   const results = [], caps = [];
   for (const scheme of ['light', 'dark']) {
     html.dataset.theme = scheme;
-    set('--ts-chroma', chroma);
+    set('--tm-chroma', chroma);
     for (const tint of tints) {
-      set('--ts-neutral-tint', tint);
-      for (const hue of hues) { set('--ts-hue', hue); results.push(...run('neutral', scheme, { hue, tint })); }
+      set('--tm-neutral-tint', tint);
+      for (const hue of hues) { set('--tm-hue', hue); results.push(...run('neutral', scheme, { hue, tint })); }
     }
-    set('--ts-neutral-tint', null);
-    for (const hue of hues) { set('--ts-hue', hue); results.push(...run('accent', scheme, { hue })); }
-    set('--ts-hue', null);
+    set('--tm-neutral-tint', null);
+    for (const hue of hues) { set('--tm-hue', hue); results.push(...run('accent', scheme, { hue })); }
+    set('--tm-hue', null);
     results.push(...run('status', scheme, {}));
   }
   // chroma cap: the highest chroma (scanning upward) at which every accent pair passes in both schemes
   for (const hue of hues) {
-    set('--ts-hue', hue);
+    set('--tm-hue', hue);
     let cap = null;
     for (let c = capFrom; c <= capTo + 1e-9; c += capStep) {
-      set('--ts-chroma', c.toFixed(3));
+      set('--tm-chroma', c.toFixed(3));
       const ok = ['light', 'dark'].every(s => { html.dataset.theme = s; return run('accent', s, {}).every(r => r.ratio >= r.min); });
       if (!ok) break;
       cap = +c.toFixed(3);
     }
     caps.push({ hue, cap });
   }
-  set('--ts-hue', null); set('--ts-chroma', null); html.removeAttribute('data-theme');
-  return { results, caps, chroma: chroma != null ? String(chroma) : getComputedStyle(html).getPropertyValue('--ts-chroma').trim() };
+  set('--tm-hue', null); set('--tm-chroma', null); html.removeAttribute('data-theme');
+  return { results, caps, chroma: chroma != null ? String(chroma) : getComputedStyle(html).getPropertyValue('--tm-chroma').trim() };
 }
 
 export async function validate({ step = 5, hues, chroma, tints = [0, 0.02], css = [], rootAttrs = [], browser,

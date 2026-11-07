@@ -1,46 +1,46 @@
-/* tinystyle menu: dropdown menus and checklists. Requires core.css.
+/* temper menu: dropdown menus and checklists. Requires core.css.
    <button popovertarget="m">Options</button>
    <div popover id="m" data-menu> <button>Rename</button> <hr> <button data-tone="danger">Delete</button> </div>
    A [popover][data-menu] opens under the button that opened it (CSS anchor positioning, implicit anchor from
    popovertarget). Where anchor positioning is not supported it stays centered, as popovers do by default. */
 
-@layer ts.components {
+@layer tm.components {
   :where([data-menu]) {
     display: flex; flex-direction: column; gap: 1px;
     min-inline-size: 12rem; max-block-size: min(24rem, 80dvh); overflow-y: auto;
-    padding: var(--ts-space-xs);
-    border: 1px solid var(--ts-border); border-radius: var(--ts-radius);
-    background: var(--ts-surface-raised); color: var(--ts-text); box-shadow: var(--ts-shadow-lg);
+    padding: var(--tm-space-xs);
+    border: 1px solid var(--tm-border); border-radius: var(--tm-radius);
+    background: var(--tm-surface-raised); color: var(--tm-text); box-shadow: var(--tm-shadow-lg);
   }
   :where([popover][data-menu]:not(:popover-open)) { display: none; }
   :where([data-menu]) :where(ul, ol) { display: flex; flex-direction: column; gap: 1px; padding: 0; margin: 0; list-style: none; }
 
   /* items: buttons, links and checklist labels */
   :where([data-menu]) :where(button, a):not([data-variant]) {
-    --_bg: transparent; --_fg: var(--ts-tone-ink);
-    display: flex; align-items: center; justify-content: start; gap: var(--ts-space-sm);
-    inline-size: 100%; min-block-size: 0; block-size: calc(var(--ts-control-h) * 0.85); padding-inline: var(--ts-space-sm);
-    border-radius: var(--ts-radius-sm); background: var(--_bg); color: var(--_fg);
+    --_bg: transparent; --_fg: var(--tm-tone-ink);
+    display: flex; align-items: center; justify-content: start; gap: var(--tm-space-sm);
+    inline-size: 100%; min-block-size: 0; block-size: calc(var(--tm-control-h) * 0.85); padding-inline: var(--tm-space-sm);
+    border-radius: var(--tm-radius-sm); background: var(--_bg); color: var(--_fg);
     font-weight: 450; text-decoration: none; white-space: nowrap;
   }
-  :where([data-menu]) :where(button, a):not([data-variant], [data-tone]) { --ts-tone: var(--ts-neutral); --ts-tone-ink: var(--ts-text); }
+  :where([data-menu]) :where(button, a):not([data-variant], [data-tone]) { --tm-tone: var(--tm-neutral); --tm-tone-ink: var(--tm-text); }
   :where([data-menu]) :where(button, a):not([data-variant]):hover,
-  :where([data-menu]) :where(button, a):not([data-variant]):focus-visible { background: var(--ts-fill); outline: none; }
+  :where([data-menu]) :where(button, a):not([data-variant]):focus-visible { background: var(--tm-fill); outline: none; }
   :where([data-menu]) :where(label:has(> input[type="checkbox"], > input[type="radio"])) {
-    display: flex; inline-size: 100%; min-block-size: calc(var(--ts-control-h) * 0.85);
-    padding-inline: var(--ts-space-sm); border-radius: var(--ts-radius-sm); font-size: var(--ts-control-font);
+    display: flex; inline-size: 100%; min-block-size: calc(var(--tm-control-h) * 0.85);
+    padding-inline: var(--tm-space-sm); border-radius: var(--tm-radius-sm); font-size: var(--tm-control-font);
   }
-  :where([data-menu]) :where(label):hover { background: var(--ts-fill); }
-  :where([data-menu]) :where(hr) { margin-block: var(--ts-space-xs); }
+  :where([data-menu]) :where(label):hover { background: var(--tm-fill); }
+  :where([data-menu]) :where(hr) { margin-block: var(--tm-space-xs); }
   /* combobox: a non-popover data-menu (role=listbox) inside a data-combo wrapper opens under the field */
   :where([data-combo]) { position: relative; }
-  :where([data-combo]) > :where([data-menu]) { position: absolute; inset-block-start: calc(100% + var(--ts-space-xs)); inset-inline: 0; z-index: 20; }
+  :where([data-combo]) > :where([data-menu]) { position: absolute; inset-block-start: calc(100% + var(--tm-space-xs)); inset-inline: 0; z-index: 20; }
   :where([data-menu]) :where([role="option"]) {
-    display: flex; align-items: center; gap: var(--ts-space-sm); min-block-size: calc(var(--ts-control-h) * 0.85);
-    padding-inline: var(--ts-space-sm); border-radius: var(--ts-radius-sm); cursor: pointer;
+    display: flex; align-items: center; gap: var(--tm-space-sm); min-block-size: calc(var(--tm-control-h) * 0.85);
+    padding-inline: var(--tm-space-sm); border-radius: var(--tm-radius-sm); cursor: pointer;
   }
-  :where([data-menu]) :where([role="option"]):hover { background: var(--ts-fill); }
-  :where([data-menu]) :where([role="option"][aria-selected="true"]) { background: var(--ts-tone-soft); --ts-tone: var(--ts-accent); }
+  :where([data-menu]) :where([role="option"]):hover { background: var(--tm-fill); }
+  :where([data-menu]) :where([role="option"][aria-selected="true"]) { background: var(--tm-tone-soft); --tm-tone: var(--tm-accent); }
   :where([data-menu]) :where(svg) { inline-size: 1rem; block-size: 1rem; flex-shrink: 0; }
 
   /* Buttons that open a popover get a dropdown caret (not icon buttons, not close buttons). */
@@ -52,7 +52,7 @@
 
   @supports (position-area: block-end) {
     :where([popover][data-menu]) {
-      inset: auto; margin: var(--ts-space-xs) 0 0;
+      inset: auto; margin: var(--tm-space-xs) 0 0;
       position-area: block-end span-inline-end;
       position-try-fallbacks: flip-block, flip-inline;
     }

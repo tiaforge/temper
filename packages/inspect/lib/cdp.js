@@ -23,7 +23,7 @@ export function findBrowser(explicit = process.env.CHROME_PATH) {
 }
 
 export async function launch(browserCmd = findBrowser()) {
-  const profile = mkdtempSync(join(tmpdir(), 'tinystyle-inspect-'));
+  const profile = mkdtempSync(join(tmpdir(), 'temper-inspect-'));
   const [cmd, ...pre] = browserCmd;
   const proc = spawn(cmd, [...pre, '--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`,
     '--no-first-run', '--no-default-browser-check', '--disable-gpu', '--hide-scrollbars', 'about:blank'],

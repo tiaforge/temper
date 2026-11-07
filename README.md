@@ -1,13 +1,13 @@
-# tinystyle
+# temper
 
-Tiny CSS for plain, semantic HTML, designed so coding agents get it right the first time.
+CSS for plain, semantic HTML with a checked vocabulary, designed so coding agents get it right the first time.
 
 **5.4 KB** core (brotli) · **20 / 20** agent tasks correct, against 11 for Pico and 10 for daisyUI ·
 **4,750 → 210** lines of app CSS in a real migration · **no** JS, build step or dependencies
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/app-dark.png">
-  <img alt="An app shell built with tinystyle and no CSS of its own: navigation rail, contact cards with avatars, a toolbar with a filter field and an open dropdown checklist" src="docs/screenshots/app-light.png">
+  <img alt="An app shell built with temper and no CSS of its own: navigation rail, contact cards with avatars, a toolbar with a filter field and an open dropdown checklist" src="docs/screenshots/app-light.png">
 </picture>
 
 This app shell ([`kitchen-sink/app.html`](kitchen-sink/app.html)) has no CSS of its own. The
@@ -36,9 +36,9 @@ outline danger button is just both. `aria-invalid` is the error state *and* the 
 **A typo fails the build, and the error tells you the fix.**
 
 ```text
-$ npx tinystyle check src
-page.html:4:13 error TS101 data-variant="danger" is not valid. Did you mean data-tone="danger"? (allowed: secondary, outline, ghost, link, item)
-page.html:7:3 error TS103 <button data-icon="x"> has no visible text. Add aria-label.
+$ npx temper check src
+page.html:4:13 error TM101 data-variant="danger" is not valid. Did you mean data-tone="danger"? (allowed: secondary, outline, ghost, link, item)
+page.html:7:3 error TM103 <button data-icon="x"> has no visible text. Add aria-label.
 
 2 error(s), 0 warning(s); 1 fixable with --fix
 ```
@@ -66,7 +66,7 @@ browser's own `<dialog>`, styled.
 **Rebrand with two numbers.**
 
 ```css
-:root { --ts-hue: 180; --ts-chroma: 0.12; }   /* teal, in light and dark mode */
+:root { --tm-hue: 180; --tm-chroma: 0.12; }   /* teal, in light and dark mode */
 ```
 
 Every color is derived from those in OKLCH, and a test sweeps all 360 hues to keep text and buttons
@@ -84,18 +84,18 @@ beats it. You never need `!important`.
 ## Quick start
 
 ```sh
-npm install @tiaforge-ui/tinystyle
+npm install @tiaforge-ui/temper
 ```
 
 ```js
-import '@tiaforge-ui/tinystyle/core.css';
+import '@tiaforge-ui/temper/core.css';
 ```
 
 Then tell your agent about it, in `CLAUDE.md` or `AGENTS.md`:
 
 ```md
-UI uses tinystyle. Read node_modules/@tiaforge-ui/tinystyle/llms.txt before editing markup
-(llms-full.txt before building whole pages). Run `npx tinystyle check src` after editing.
+UI uses temper. Read node_modules/@tiaforge-ui/temper/llms.txt before editing markup
+(llms-full.txt before building whole pages). Run `npx temper check src` after editing.
 ```
 
 The optional modules, the Vite plugin and use without a bundler are under [Install](#install).
@@ -128,7 +128,7 @@ values, so the checker can do more than catch typos:
   `data-cols` only with `data-layout="grid"`, and `data-rail` needs `app.css` imported somewhere.
 - **Expressions:** in Svelte, Vue and JSX it works out every value an expression can produce, and
   flags `cond && 'danger'`, which renders `data-tone="false"`.
-- **Types:** `@tiaforge-ui/tinystyle/react`, `/vue`, `/astro`, `/svelte` and `/sinter` let tsc
+- **Types:** `@tiaforge-ui/temper/react`, `/vue`, `/astro`, `/svelte` and `/sinter` let tsc
   reject things like `data-collapsed={collapsed}`, where `false` would render `data-collapsed="false"`.
 - **Safe fixes and renames:** `--fix` only applies fixes that can't go wrong (a value moved to its
   axis, a typo with one close match, a value dropped from a boolean). Deprecated names keep working
@@ -136,10 +136,10 @@ values, so the checker can do more than catch typos:
 - **Accessibility:** buttons without a name and fields without a label (a placeholder doesn't count).
 - **Your own CSS**, as warnings, so it doesn't grow back after a migration: `!important`, fixed
   colors that ignore dark mode, outer margins, spacing that equals a scale step (`16px` →
-  `var(--ts-space-md)`, fixable), rules that restyle `[data-variant]` instead of setting tokens, and
-  `margin`/`padding` in `style`. A `tinystyle-ignore` comment silences one line.
+  `var(--tm-space-md)`, fixable), rules that restyle `[data-variant]` instead of setting tokens, and
+  `margin`/`padding` in `style`. A `temper-ignore` comment silences one line.
 
-It reads HTML, Svelte, Astro, Vue and JSX, plus `--ts-*` tokens in CSS. With classes none of this is
+It reads HTML, Svelte, Astro, Vue and JSX, plus `--tm-*` tokens in CSS. With classes none of this is
 possible: nothing knows that `.secondary.outline.contrast` is a contradiction.
 
 **2. Nothing has an outer margin.** The parent owns all space: `data-gap` between children,
@@ -156,7 +156,7 @@ No JS components to wire up.
 
 **5. Dark mode is designed, not inverted.** Colors are declared once with `light-dark()` at fixed
 OKLCH lightness; raised surfaces get lighter and accents less saturated in the dark. Add
-`--ts-primary: var(--ts-accent)` to give main buttons the brand color.
+`--tm-primary: var(--tm-accent)` to give main buttons the brand color.
 
 ## Does it work as expected?
 
@@ -170,8 +170,8 @@ docs as context, two runs per library. A grader then measured the result in head
 
 | Library | Tasks fully correct | Checks passed | Classes used |
 |---|---|---|---|
-| **tinystyle** | **20 / 20** | **142 / 142** | 3 |
-| tinystyle, without running the checker | 20 / 20 | 142 / 142 | 2 |
+| **temper** | **20 / 20** | **142 / 142** | 3 |
+| temper, without running the checker | 20 / 20 | 142 / 142 | 2 |
 | Pico CSS | 11 / 20 | 131 / 142 | 58 |
 | daisyUI | 10 / 20 | 130 / 142 | 243 |
 
@@ -181,18 +181,18 @@ combine those two, badges with unreadable text, an icon button that wasn't squar
 the checker shows that the vocabulary itself carries most of the weight; the checker is the safety
 net. (It's a small sample: 10 tasks × 2 runs. The task list is in the eval harness.)
 
-**A real migration.** caley, a calendar, mail and contacts app, was moved from Pico CSS to tinystyle
+**A real migration.** caley, a calendar, mail and contacts app, was moved from Pico CSS to temper
 page by page: contacts, mail, calendar, search, settings and login, including the Svelte components
 they share. A coding agent did the work from the docs, in four steps.
 
-| | Pico | tinystyle |
+| | Pico | temper |
 |---|---|---|
 | App CSS (SCSS and component styles) | about 4,750 lines | about 210 lines |
 | CSS shipped to the contacts page (gzip) | about 15.8 KB | 6.5 KB |
 | Pico in sources or build output | everywhere | none |
 | Inspector errors on the six pages | | 0 |
 
-What's left in the app is mostly inline custom properties like `style="--ts-min: 13rem"` and a few
+What's left in the app is mostly inline custom properties like `style="--tm-min: 13rem"` and a few
 app-specific rules. The navigation rail with collapse and phone drawer, avatars, clickable cards,
 dropdown menus and checklists, the combobox, calendar grids and event chips, tabs and list rows,
 dialogs and the floating action button all come from the library. For comparison, a separate Pico
@@ -239,8 +239,8 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 - **Names that don't collide with habits.** No numeric spacing (agents read `4` as Tailwind's 1rem),
   no `.btn-primary`. Values like `secondary outline ghost link` follow shadcn, which models have seen
   a lot.
-- **`tinystyle check`** gives the agent a precise, fixable error instead of a silently wrong page.
-- **[`tinystyle-inspect`](packages/inspect/README.md)** replaces the screenshot loop. It loads a running
+- **`temper check`** gives the agent a precise, fixable error instead of a silently wrong page.
+- **[`temper-inspect`](packages/inspect/README.md)** replaces the screenshot loop. It loads a running
   page in headless Chrome at a wide and a narrow width, in light and dark mode, opens every dialog and
   popover through its real button, and reports horizontal overflow, misplaced overlays, low contrast,
   unlabeled controls and covered click targets as text, with a selector for each. `--sheet` writes
@@ -251,17 +251,17 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 ## Install
 
 ```sh
-npm install @tiaforge-ui/tinystyle
+npm install @tiaforge-ui/temper
 ```
 
 ```js
-import '@tiaforge-ui/tinystyle/core.css';   // always
-import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
-import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
-import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
-import '@tiaforge-ui/tinystyle/table.css';  // data tables
-import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set
-// or everything: import '@tiaforge-ui/tinystyle/all.css';
+import '@tiaforge-ui/temper/core.css';   // always
+import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating action button
+import '@tiaforge-ui/temper/menu.css';   // dropdown menus
+import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
+import '@tiaforge-ui/temper/table.css';  // data tables
+import '@tiaforge-ui/temper/icons.css';  // the default icon set
+// or everything: import '@tiaforge-ui/temper/all.css';
 ```
 
 Add `<meta name="color-scheme" content="light dark">` to avoid a flash of the wrong theme on load.
@@ -270,19 +270,19 @@ Add `<meta name="color-scheme" content="light dark">` to avoid a flash of the wr
 
 ```js
 // vite.config.js
-import tinystyle from '@tiaforge-ui/tinystyle/vite';
+import temper from '@tiaforge-ui/temper/vite';
 
 export default {
   plugins: [
-    tinystyle(),
+    temper(),
     // every Lucide icon by name, only the used ones emitted, plus your own SVG folder:
-    // tinystyle({ icons: { dir: 'src/icons' } })   and   import 'virtual:tinystyle-icons.css';
+    // temper({ icons: { dir: 'src/icons' } })   and   import 'virtual:temper-icons.css';
     // migrating step by step? check only the migrated parts:
-    // tinystyle({ paths: ['src/contacts'] })
+    // temper({ paths: ['src/contacts'] })
     // opt-in enhancements, appended to core.css / all.css (see Browser support):
-    // tinystyle({ enhance: ['customizable-select'] })   or   enhance: 'all'
+    // temper({ enhance: ['customizable-select'] })   or   enhance: 'all'
     // smaller builds: drop rules for data-* attributes and values the project never uses
-    // tinystyle({ prune: true })
+    // temper({ prune: true })
   ],
 };
 ```
@@ -298,7 +298,7 @@ Icons from the plugin need `lucide-static` installed (optional peer dependency).
 
 ### Without a bundler
 
-The files in `dist/` are plain CSS. Link them directly and run `npx tinystyle check` in CI.
+The files in `dist/` are plain CSS. Link them directly and run `npx temper check` in CI.
 Enhancements are separate files: link `dist/enhance/<id>.css` after `core.css`.
 
 ## Browser support
@@ -309,7 +309,7 @@ prefixes and no fallbacks for older browsers; that is part of how it stays small
 Newer features that not every engine has yet are **opt-in enhancements**, one file each, named by
 their [web-features](https://github.com/web-platform-dx/web-features) id. Without them everything
 still looks finished. Turn them on with the Vite plugin's `enhance` option, or import
-`@tiaforge-ui/tinystyle/enhance/<id>.css` after `core.css`.
+`@tiaforge-ui/temper/enhance/<id>.css` after `core.css`.
 
 | Enhancement | What it does | Where it works |
 |---|---|---|

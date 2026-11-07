@@ -1,1 +1,1 @@
-import type {} from '@tiaforge-ui/tinystyle/react';
+import type {} from '@tiaforge-ui/temper/react';

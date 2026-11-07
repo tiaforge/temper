@@ -1,53 +1,53 @@
-/* tinystyle pico-compat: maps Pico CSS v2 variables to tinystyle tokens, so components written for Pico
-   (scoped Svelte/Vue styles reading --pico-*) look right on a tinystyle page while an app migrates page by page.
-   Opt-in; drop it once nothing reads --pico-* anymore. Light/dark follow tinystyle automatically. */
-@layer ts.base {
+/* temper pico-compat: maps Pico CSS v2 variables to temper tokens, so components written for Pico
+   (scoped Svelte/Vue styles reading --pico-*) look right on a temper page while an app migrates page by page.
+   Opt-in; drop it once nothing reads --pico-* anymore. Light/dark follow temper automatically. */
+@layer tm.base {
   :root {
-    --pico-font-family: var(--ts-font-sans);
+    --pico-font-family: var(--tm-font-sans);
     --pico-line-height: 1.5;
-    --pico-border-radius: var(--ts-radius);
+    --pico-border-radius: var(--tm-radius);
     --pico-border-width: 1px;
-    --pico-spacing: var(--ts-space-md);
-    --pico-form-element-spacing-vertical: calc((var(--ts-control-h) - 1.5em) / 2);
-    --pico-form-element-spacing-horizontal: var(--ts-control-px);
+    --pico-spacing: var(--tm-space-md);
+    --pico-form-element-spacing-vertical: calc((var(--tm-control-h) - 1.5em) / 2);
+    --pico-form-element-spacing-horizontal: var(--tm-control-px);
 
-    --pico-background-color: var(--ts-bg);
-    --pico-color: var(--ts-text);
-    --pico-h1-color: var(--ts-text);
-    --pico-h2-color: var(--ts-text);
-    --pico-h3-color: var(--ts-text);
-    --pico-muted-color: var(--ts-text-muted);
-    --pico-muted-border-color: var(--ts-border);
-    --pico-muted-background-color: var(--ts-fill);
-    --pico-card-background-color: var(--ts-surface);
-    --pico-card-border-color: var(--ts-border);
-    --pico-card-sectioning-background-color: var(--ts-fill);
-    --pico-dropdown-background-color: var(--ts-surface-raised);
-    --pico-code-background-color: var(--ts-fill);
-    --pico-box-shadow: var(--ts-shadow-lg);
+    --pico-background-color: var(--tm-bg);
+    --pico-color: var(--tm-text);
+    --pico-h1-color: var(--tm-text);
+    --pico-h2-color: var(--tm-text);
+    --pico-h3-color: var(--tm-text);
+    --pico-muted-color: var(--tm-text-muted);
+    --pico-muted-border-color: var(--tm-border);
+    --pico-muted-background-color: var(--tm-fill);
+    --pico-card-background-color: var(--tm-surface);
+    --pico-card-border-color: var(--tm-border);
+    --pico-card-sectioning-background-color: var(--tm-fill);
+    --pico-dropdown-background-color: var(--tm-surface-raised);
+    --pico-code-background-color: var(--tm-fill);
+    --pico-box-shadow: var(--tm-shadow-lg);
 
-    --pico-primary: var(--ts-accent);
-    --pico-primary-background: var(--ts-accent);
-    --pico-primary-border: var(--ts-accent);
-    --pico-primary-hover: color-mix(in oklab, var(--ts-accent), var(--ts-text) 15%);
-    --pico-primary-hover-background: color-mix(in oklab, var(--ts-accent), var(--ts-text) 15%);
-    --pico-primary-inverse: oklch(from var(--ts-accent) clamp(0.2, calc((0.62 - l) * 100), 0.99) 0 0);
-    --pico-primary-focus: color-mix(in oklab, var(--ts-accent) 25%, transparent);
-    --pico-secondary: var(--ts-text-muted);
-    --pico-secondary-background: var(--ts-fill);
-    --pico-secondary-border: var(--ts-border-strong);
-    --pico-secondary-inverse: var(--ts-text);
-    --pico-contrast: var(--ts-text);
-    --pico-contrast-inverse: var(--ts-bg);
+    --pico-primary: var(--tm-accent);
+    --pico-primary-background: var(--tm-accent);
+    --pico-primary-border: var(--tm-accent);
+    --pico-primary-hover: color-mix(in oklab, var(--tm-accent), var(--tm-text) 15%);
+    --pico-primary-hover-background: color-mix(in oklab, var(--tm-accent), var(--tm-text) 15%);
+    --pico-primary-inverse: oklch(from var(--tm-accent) clamp(0.2, calc((0.62 - l) * 100), 0.99) 0 0);
+    --pico-primary-focus: color-mix(in oklab, var(--tm-accent) 25%, transparent);
+    --pico-secondary: var(--tm-text-muted);
+    --pico-secondary-background: var(--tm-fill);
+    --pico-secondary-border: var(--tm-border-strong);
+    --pico-secondary-inverse: var(--tm-text);
+    --pico-contrast: var(--tm-text);
+    --pico-contrast-inverse: var(--tm-bg);
 
-    --pico-form-element-background-color: var(--ts-field);
-    --pico-form-element-border-color: var(--ts-field-border);
-    --pico-form-element-color: var(--ts-text);
-    --pico-form-element-placeholder-color: var(--ts-text-muted);
+    --pico-form-element-background-color: var(--tm-field);
+    --pico-form-element-border-color: var(--tm-field-border);
+    --pico-form-element-color: var(--tm-text);
+    --pico-form-element-placeholder-color: var(--tm-text-muted);
 
-    --pico-del-color: var(--ts-danger);
-    --pico-ins-color: var(--ts-success);
-    --pico-color-red-500: var(--ts-danger);
-    --pico-color-green-500: var(--ts-success);
+    --pico-del-color: var(--tm-danger);
+    --pico-ins-color: var(--tm-success);
+    --pico-color-red-500: var(--tm-danger);
+    --pico-color-green-500: var(--tm-success);
   }
 }
