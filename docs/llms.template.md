@@ -16,6 +16,7 @@ import '@tiaforge-ui/tinystyle/core.css';   // always
 import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
 import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
 import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
+import '@tiaforge-ui/tinystyle/table.css';  // data tables: sortable headers, selection, number columns
 import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
@@ -44,7 +45,7 @@ not type attributes written on elements; `tinystyle check` checks those expressi
 ## Rules
 
 1. Write semantic HTML first. `button`, `input`, `select`, `textarea`, `label`, `fieldset`, `dialog`,
-   `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `code`, `kbd` are styled
+   `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `meter`, `code`, `kbd` are styled
    without any attributes.
 2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner),
    `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`,
@@ -337,6 +338,39 @@ function toast(text, tone) {
 In a framework, render the region once and the toasts from a list (`{#each toasts as t (t.id)}<div data-toast …>`).
 To show toasts above an open modal dialog, give the region `popover="manual"` and call `region.showPopover()`
 after the dialog opens (the top layer stacks in opening order).
+
+### Data table (table.css)
+
+```html
+<div data-scroll>                       <!-- scrolls sideways on phones; data-scroll="y" + a height for a fixed header area -->
+  <table>
+    <caption>Invoices</caption>
+    <thead><tr>
+      <th><input type="checkbox" aria-label="Select all"></th>
+      <th aria-sort="ascending"><button>Customer</button></th>   <!-- your code sorts, then sets aria-sort -->
+      <th aria-sort="none"><button>Status</button></th>
+      <th data-num aria-sort="none"><button>Amount</button></th>
+      <th><span data-sr-only>Actions</span></th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td><input type="checkbox" aria-label="Select Acme" checked></td>   <!-- checked: the row is highlighted -->
+        <th scope="row">Acme Corp</th>
+        <td><span data-badge data-tone="success">Paid</span></td>
+        <td data-num>1,204.50</td>
+        <td><div data-layout="row" data-gap="xs" data-justify="end">
+          <button data-variant="ghost" data-size="sm" data-icon="pencil" aria-label="Edit"></button>
+        </div></td>
+      </tr>
+    </tbody>
+    <tfoot><tr><td></td><th scope="row" colspan="2">Total</th><td data-num>1,204.50</td><td></td></tr></tfoot>
+  </table>
+</div>
+```
+
+The header sticks while the page scrolls. Put `data-num` on every cell of a number column. Never put
+`data-layout` on a `td` (it stops being a cell); wrap the cell content instead. No rows: one
+`<tr><td colspan="5" data-muted>No invoices yet.</td></tr>`.
 
 ### Combobox (menu.css)
 

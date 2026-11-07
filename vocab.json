@@ -1,5 +1,5 @@
 {
-  "$comment": "Single source of truth for tinystyle's vocabulary. Generates llms.txt and html-custom-data.json (npm run gen) and drives tinystyle check. A test keeps it in sync with src/*.css. Context rules for tinystyle check: tags (the elements it works on; tagsFor overrides per value), with (attributes it needs on the same element; null = any value), parent (what its parent must match), inside (an ancestor it needs), loose (parent/inside are warnings, and only for plain parents without class or style).",
+  "$comment": "Single source of truth for tinystyle's vocabulary. Generates llms.txt and html-custom-data.json (npm run gen) and drives tinystyle check. A test keeps it in sync with src/*.css. Context rules for tinystyle check: tags (the elements it works on; tagsFor overrides per value; notTags: elements it breaks), with (attributes it needs on the same element; null = any value), parent (what its parent must match), inside (an ancestor it needs), loose (parent/inside are warnings, and only for plain parents without class or style).",
   "version": 1,
   "attributes": {
     "data-variant": {
@@ -130,7 +130,15 @@
         "split": "Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens.",
         "center": "Horizontally centered column with side padding. Its content is at most --ts-measure wide (default 72rem); the padding comes on top."
       },
-      "short": "Lays out the element's children (overrides its own display)."
+      "short": "Lays out the element's children (overrides its own display).",
+      "notTags": [
+        "td",
+        "th",
+        "tr",
+        "thead",
+        "tbody",
+        "tfoot"
+      ]
     },
     "data-cols": {
       "module": "core",
@@ -501,6 +509,17 @@
       "on": "buttons, links and any focusable element",
       "description": "Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space).",
       "short": "Tooltip: the given text, or the aria-label when empty."
+    },
+    "data-num": {
+      "module": "table",
+      "boolean": true,
+      "on": "th and td of a number column",
+      "tags": [
+        "th",
+        "td"
+      ],
+      "description": "A number cell: right-aligned with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
+      "short": "Number cell: right-aligned, tabular figures (on th and every td of the column)."
     }
   },
   "tokens": {

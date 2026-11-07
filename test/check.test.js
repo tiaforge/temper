@@ -196,3 +196,9 @@ test('an empty data-tooltip needs an aria-label to show', () => {
   assert.deepEqual(codes(checkMarkup('<button data-tooltip>Save</button>')), ['TS103']);
   assert.deepEqual(codes(checkMarkup('<button data-tooltip aria-label="Save" data-icon="check"></button><span data-tooltip="Synced">x</span>')), []);
 });
+
+test('data-layout on table parts and data-num off cells', () => {
+  assert.deepEqual(codes(checkMarkup('<table><tr><td data-layout="row">x</td></tr></table>')), ['TS108']);
+  assert.deepEqual(codes(checkMarkup('<span data-num>3</span>')), ['TS108']);
+  assert.deepEqual(codes(checkMarkup('<table><tr><td data-num><div data-layout="row">3</div></td></tr></table>')), []);
+});

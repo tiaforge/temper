@@ -152,4 +152,6 @@ export interface TinystyleAttributes<Removes = never, Empty = never> {
   'data-toast'?: true | '' | null | Removes;
   /** Tooltip: the given text, or the aria-label when empty. Needs feedback.css. */
   'data-tooltip'?: string | Empty | null | Removes;
+  /** Number cell: right-aligned, tabular figures (on th and every td of the column). Needs table.css. */
+  'data-num'?: true | '' | null | Removes;
 }

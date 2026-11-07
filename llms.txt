@@ -14,6 +14,7 @@ import '@tiaforge-ui/tinystyle/core.css';   // always
 import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
 import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
 import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
+import '@tiaforge-ui/tinystyle/table.css';  // data tables: sortable headers, selection, number columns
 import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/tinystyle/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
@@ -35,7 +36,7 @@ export default { plugins: [tinystyle()] };
 ## Rules
 
 1. Write semantic HTML first. `button`, `input`, `select`, `textarea`, `label`, `fieldset`, `dialog`,
-   `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `code`, `kbd` are styled
+   `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `meter`, `code`, `kbd` are styled
    without any attributes.
 2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner),
    `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`,
@@ -111,6 +112,7 @@ export default { plugins: [tinystyle()] };
 | `data-toasts` (feedback.css) | (boolean) | Toast region (one per page, role="status"); holds data-toast children. |
 | `data-toast` (feedback.css) | (boolean) | A toast inside data-toasts; data-tone colors its bar. |
 | `data-tooltip` (feedback.css) | any text, or none | Tooltip: the given text, or the aria-label when empty. |
+| `data-num` (table.css) | (boolean) | Number cell: right-aligned, tabular figures (on th and every td of the column). |
 
 ## Tokens
 

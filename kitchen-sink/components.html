@@ -7,6 +7,7 @@
   <title>tinystyle components</title>
   <link rel="stylesheet" href="../src/core.css">
   <link rel="stylesheet" href="../src/feedback.css">
+  <link rel="stylesheet" href="../src/table.css">
   <link rel="stylesheet" href="../src/icons.css">
   <script>
     // ?t=light|dark, ?tip (focus the first tooltip button, for screenshots)
@@ -29,6 +30,85 @@
       <button data-variant="ghost" data-icon="share-2" aria-label="Share" data-tooltip="Share with your team"></button>
       <span data-badge data-tone="warning" tabindex="0" data-tooltip="Synced 3 hours ago">Stale</span>
     </div>
+  </section>
+
+  <!-- ───────── Data table ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <h2>Data table <small data-muted>table.css</small></h2>
+    <div data-scroll>
+      <table>
+        <caption>Invoices</caption>
+        <thead><tr>
+          <th><input type="checkbox" aria-label="Select all"></th>
+          <th aria-sort="ascending"><button>Customer</button></th>
+          <th aria-sort="none"><button>Status</button></th>
+          <th>Issued</th>
+          <th data-num aria-sort="none"><button>Amount</button></th>
+          <th><span data-sr-only>Actions</span></th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox" aria-label="Select Acme" checked></td>
+            <th scope="row">Acme Corp</th>
+            <td><span data-badge data-tone="success">Paid</span></td>
+            <td><time datetime="2026-10-02">Oct 2, 2026</time></td>
+            <td data-num>1,204.50</td>
+            <td><div data-layout="row" data-gap="xs" data-justify="end">
+              <button data-variant="ghost" data-size="sm" data-icon="pencil" aria-label="Edit Acme"></button>
+              <button data-variant="ghost" data-size="sm" data-icon="trash-2" aria-label="Delete Acme"></button>
+            </div></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" aria-label="Select Globex"></td>
+            <th scope="row">Globex</th>
+            <td><span data-badge data-tone="warning">Due</span></td>
+            <td><time datetime="2026-10-14">Oct 14, 2026</time></td>
+            <td data-num>86.00</td>
+            <td><div data-layout="row" data-gap="xs" data-justify="end">
+              <button data-variant="ghost" data-size="sm" data-icon="pencil" aria-label="Edit Globex"></button>
+              <button data-variant="ghost" data-size="sm" data-icon="trash-2" aria-label="Delete Globex"></button>
+            </div></td>
+          </tr>
+          <tr aria-selected="true">
+            <td><input type="checkbox" aria-label="Select Initech"></td>
+            <th scope="row">Initech</th>
+            <td><span data-badge data-tone="danger">Overdue</span></td>
+            <td><time datetime="2026-09-01">Sep 1, 2026</time></td>
+            <td data-num>12,950.00</td>
+            <td><div data-layout="row" data-gap="xs" data-justify="end">
+              <button data-variant="ghost" data-size="sm" data-icon="pencil" aria-label="Edit Initech"></button>
+              <button data-variant="ghost" data-size="sm" data-icon="trash-2" aria-label="Delete Initech"></button>
+            </div></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td></td><th scope="row" colspan="3">Total</th><td data-num>14,240.50</td><td></td></tr></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── Form controls ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <h2>Form controls</h2>
+    <form data-layout="grid" data-gap="md" style="--ts-min: 14rem">
+      <label>Volume <input type="range" value="60"></label>
+      <label>Disabled range <input type="range" value="30" disabled></label>
+      <label>Color <input type="color" value="#2f6fde"></label>
+      <label>Date <input type="date" value="2026-11-07"></label>
+      <label>Time <input type="time" value="09:30"></label>
+      <label>Starts <input type="datetime-local" value="2026-11-07T09:30"></label>
+      <label>Month <input type="month" value="2026-11"></label>
+      <label>Guests <input type="number" value="4" min="1"></label>
+      <label>Search <input type="search" value="invoices"></label>
+      <label>Attachment <input type="file"></label>
+      <label>Read-only <input value="INV-2041" readonly></label>
+      <label>Disabled <input value="Locked" disabled></label>
+      <label>Calendars <select multiple><option selected>Personal</option><option>Work</option><option selected>Family</option><option>Holidays</option></select></label>
+      <label>Size 3 <select size="3"><option>One</option><option selected>Two</option><option>Three</option><option>Four</option></select></label>
+      <label>Storage <meter min="0" max="100" low="70" high="90" optimum="20" value="35">35%</meter></label>
+      <label>Storage, high <meter min="0" max="100" low="70" high="90" optimum="20" value="80">80%</meter></label>
+      <label>Storage, full <meter min="0" max="100" low="70" high="90" optimum="20" value="96">96%</meter></label>
+      <label>Upload <progress value="40" max="100">40%</progress></label>
+    </form>
   </section>
 </main>
 
