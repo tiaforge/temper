@@ -177,11 +177,13 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 
 | File | brotli | What's in it |
 |---|---|---|
-| `core.css` | 5.4 KB | tokens, reset, type, layout, buttons, forms, dialog, popover, details, table, card, badge, callout, avatar |
+| `core.css` | 5.4 KB | tokens, reset, type, layout, buttons, forms (incl. meter, color, multi-row select), dialog, popover, details, table, card, badge, callout, avatar |
 | `app.css` | 1.4 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button |
 | `menu.css` | 0.9 KB | dropdown menus |
+| `feedback.css` | 0.8 KB | toasts, tooltips (anchor-positioned, never clipped by a scroll container) |
+| `table.css` | 0.7 KB | data tables: sortable headers (`aria-sort`), row selection, number columns, sticky header |
 | `icons.css` | 3.0 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
-| `all.css` | 8.6 KB | everything |
+| `all.css` | 10.0 KB | everything |
 | `enhance/customizable-select.css` | 0.9 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 
 ## Built for LLMs and coding agents
@@ -220,6 +222,8 @@ npm install @tiaforge-ui/tinystyle
 import '@tiaforge-ui/tinystyle/core.css';   // always
 import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
 import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
+import '@tiaforge-ui/tinystyle/feedback.css'; // toasts, tooltips
+import '@tiaforge-ui/tinystyle/table.css';  // data tables
 import '@tiaforge-ui/tinystyle/icons.css';  // the default icon set
 // or everything: import '@tiaforge-ui/tinystyle/all.css';
 ```
