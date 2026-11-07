@@ -10,10 +10,10 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const bin = name => root + 'node_modules/.bin/' + name;
 const fixtures = {
   svelte: [bin('svelte-check'), '--tsconfig', './tsconfig.json', '--output', 'machine'],
-  react: [bin('tsc'), '-p', '.'],
-  vue: [bin('vue-tsc'), '-p', '.'],
-  astro: [bin('tsc'), '-p', '.'],
-  sinter: [bin('tsc'), '-p', '.'],
+  react: [bin('tsc'), '-p', '.', '--pretty', 'false'],
+  vue: [bin('vue-tsc'), '-p', '.', '--pretty', 'false'],
+  astro: [bin('tsc'), '-p', '.', '--pretty', 'false'],
+  sinter: [bin('tsc'), '-p', '.', '--pretty', 'false'],
 };
 
 for (const [name, [cmd, ...args]] of Object.entries(fixtures)) {
