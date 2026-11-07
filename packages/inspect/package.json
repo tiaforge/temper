@@ -1,0 +1,13 @@
+{
+  "name": "@tiaforge-ui/tinystyle-inspect",
+  "version": "0.1.0",
+  "description": "Text-only layout and accessibility report for a running page: opens every dialog and popover at several widths and color schemes. Built for coding agents, replaces screenshot loops.",
+  "license": "MIT",
+  "author": "Tia Heinrich",
+  "type": "module",
+  "exports": { ".": "./lib/inspect.js" },
+  "bin": { "tinystyle-inspect": "bin/tinystyle-inspect.js" },
+  "files": ["bin", "lib"],
+  "engines": { "node": ">=22" },
+  "keywords": ["accessibility", "layout", "contrast", "headless", "chrome", "devtools-protocol", "llm", "ai"]
+}

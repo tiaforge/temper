@@ -43,6 +43,10 @@ export default { plugins: [tinystyle()] };
    write `width`, `margin` or `padding` there.
 9. Run `npx tinystyle check <dir>` after editing (or use the Vite plugin, which runs it in every build).
    It reports unknown attribute values and tokens, and unlabeled icon or close buttons.
+10. To see the result, prefer `npx tinystyle-inspect <dev-server-url>` (package
+    `@tiaforge-ui/tinystyle-inspect`, if installed) over screenshots. It opens every dialog and popover
+    at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
+    contrast, unlabeled controls and covered click targets as text.
 
 ## Attributes
 
@@ -139,6 +143,10 @@ On: [data-layout=row]. Whether a row wraps onto more lines. Rows wrap by default
 ### `data-grow` (boolean, no value)
 
 On: a child of data-layout=row or stack. This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type="search" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 10rem): with less room the row wraps and it gets its own line.
+
+### `data-scroll` (boolean, no value)
+
+On: a wrapper around wide content (table, long code, wide grids). Scrolls its content sideways when it is wider than the screen, instead of making the whole page scroll. Wrap tables that can get wide: <div data-scroll><table>…</table></div>.
 
 ### `data-density`
 

@@ -206,7 +206,7 @@
     </div>
 
     <article data-layout="stack" data-gap="lg">
-      <div style="overflow-x:auto">
+      <div data-scroll>
         <table class="matrix">
           <thead><tr><th></th><th>default</th><th>accent</th><th>danger</th><th>success</th><th>warning</th></tr></thead>
           <tbody>
@@ -228,7 +228,7 @@
         <button data-variant="secondary" aria-busy="true">Syncing</button>
         <button disabled>Disabled</button>
         <button data-variant="outline" aria-pressed="true">Pressed</button>
-        <input placeholder="Inputs match button height" style="inline-size: 16rem">
+        <input placeholder="Inputs match button height" aria-label="Example input" style="inline-size: 16rem">
       </div>
 
       <div data-layout="row" data-gap="sm">
@@ -267,14 +267,14 @@
         </div>
       </div>
 
-      <table>
+      <div data-scroll><table>
         <thead><tr><th>Account</th><th>Type</th><th>Last sync</th><th>Status</th></tr></thead>
         <tbody>
           <tr><td>tia@posteo.de</td><td>IMAP</td><td><time>08:15</time></td><td><span data-badge data-tone="success">Synced</span></td></tr>
           <tr><td>Nextcloud</td><td>CalDAV</td><td><time>08:14</time></td><td><span data-badge data-tone="success">Synced</span></td></tr>
           <tr><td>Work Exchange</td><td>CardDAV</td><td><time>Yesterday</time></td><td><span data-badge data-tone="danger">Login failed</span></td></tr>
         </tbody>
-      </table>
+      </table></div>
 
       <p>Body text with a <a href="#">link to settings</a>, <mark>highlighted search hits</mark>, inline <code>RRULE:FREQ=WEEKLY</code> and a shortcut: press <kbd>C</kbd> to compose.</p>
 

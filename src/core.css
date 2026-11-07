@@ -40,7 +40,7 @@
     --ts-accent: light-dark(oklch(0.53 var(--ts-chroma) var(--ts-hue)), oklch(0.72 calc(var(--ts-chroma) * 0.85) var(--ts-hue)));
     --ts-neutral: light-dark(oklch(0.25 var(--_n)), oklch(0.92 var(--_n)));
     --ts-danger: light-dark(oklch(0.55 0.2 27), oklch(0.68 0.18 25));
-    --ts-success: light-dark(oklch(0.55 0.13 150), oklch(0.72 0.15 150));
+    --ts-success: light-dark(oklch(0.52 0.13 150), oklch(0.72 0.15 150));
     --ts-warning: light-dark(oklch(0.76 0.15 75), oklch(0.8 0.14 80));
     --ts-info: light-dark(oklch(0.55 0.12 240), oklch(0.72 0.12 240));
     --ts-primary: var(--ts-neutral); /* main buttons are black (white in dark mode); set to var(--ts-accent) for colored ones */
@@ -200,6 +200,7 @@
   :where([data-gap="xl"]) { --_gap: var(--ts-space-xl); }
   :where([data-wrap="none"]) { flex-wrap: nowrap; }
   :where([data-wrap="wrap"]) { flex-wrap: wrap; }
+  :where([data-scroll]) { max-inline-size: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
   :where([data-grow]) { flex: 1 1 var(--ts-grow-basis, 10rem); min-inline-size: 0; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
@@ -318,7 +319,7 @@
     background-size: 0.3em 0.3em;
     background-repeat: no-repeat;
   }
-  :where(input[type="file"]) { font-size: var(--ts-control-font); }
+  :where(input[type="file"]) { max-inline-size: 100%; font-size: var(--ts-control-font); }
   :where(input[type="file"])::file-selector-button {
     block-size: var(--ts-control-h); padding-inline: var(--ts-control-px); margin-inline-end: var(--ts-space-sm);
     border: 1px solid var(--ts-border-strong); border-radius: var(--ts-radius);
@@ -328,7 +329,7 @@
   /* labels: a label wrapping a field stacks label text above it */
   :where(label) { font-size: var(--ts-text-sm); font-weight: 550; }
   :where(label:has(> input:not([type="checkbox"], [type="radio"]), > select, > textarea)) {
-    display: grid; gap: 0.375rem; align-content: start;
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.375rem; align-content: start;
   }
   :where(label) > :where(small) { font-weight: 400; color: var(--ts-text-muted); }
   :where(label) > :where(small[data-tone]) { color: var(--ts-tone-ink); }

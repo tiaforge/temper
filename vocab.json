@@ -121,6 +121,12 @@
       "on": "a child of data-layout=row or stack",
       "description": "This child takes the remaining space in its row or stack. Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --ts-grow-basis (default 10rem): with less room the row wraps and it gets its own line."
     },
+    "data-scroll": {
+      "module": "core",
+      "boolean": true,
+      "on": "a wrapper around wide content (table, long code, wide grids)",
+      "description": "Scrolls its content sideways when it is wider than the screen, instead of making the whole page scroll. Wrap tables that can get wide: <div data-scroll><table>…</table></div>."
+    },
     "data-density": {
       "module": "core",
       "on": "html or any subtree",

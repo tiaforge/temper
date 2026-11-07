@@ -43,6 +43,10 @@ export default { plugins: [tinystyle()] };
    write `width`, `margin` or `padding` there.
 9. Run `npx tinystyle check <dir>` after editing (or use the Vite plugin, which runs it in every build).
    It reports unknown attribute values and tokens, and unlabeled icon or close buttons.
+10. To see the result, prefer `npx tinystyle-inspect <dev-server-url>` (package
+    `@tiaforge-ui/tinystyle-inspect`, if installed) over screenshots. It opens every dialog and popover
+    at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
+    contrast, unlabeled controls and covered click targets as text.
 
 ## Attributes
 

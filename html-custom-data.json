@@ -219,6 +219,11 @@
       "valueSet": "v"
     },
     {
+      "name": "data-scroll",
+      "description": "tinystyle. On: a wrapper around wide content (table, long code, wide grids). Scrolls its content sideways when it is wider than the screen, instead of making the whole page scroll. Wrap tables that can get wide: <div data-scroll><table>…</table></div>.",
+      "valueSet": "v"
+    },
+    {
       "name": "data-density",
       "description": "tinystyle. On: html or any subtree. Control height and padding for everything inside.",
       "values": [
