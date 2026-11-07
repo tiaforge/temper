@@ -1,0 +1,31 @@
+{
+  "name": "@tiaforge-ui/tinystyle",
+  "version": "0.1.0",
+  "description": "Tiny, AI-first CSS for semantic HTML: data-* variants with a checked vocabulary, automatic light and dark mode.",
+  "license": "MIT",
+  "author": "Tia Heinrich",
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "exports": {
+    ".": "./dist/core.css",
+    "./core.css": "./dist/core.css",
+    "./vocab.json": "./vocab.json",
+    "./html-custom-data.json": "./html-custom-data.json",
+    "./check": "./lib/check.js"
+  },
+  "bin": { "tinystyle": "bin/tinystyle.js" },
+  "files": ["dist", "lib", "bin", "vocab.json", "llms.txt", "html-custom-data.json"],
+  "keywords": ["css", "classless", "dark-mode", "light-dark", "oklch", "design-system", "llm", "ai"],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "gen": "node scripts/gen.mjs",
+    "check": "node bin/tinystyle.js check kitchen-sink",
+    "test": "node scripts/gen.mjs --check && node --test test/*.test.js",
+    "shots": "scripts/shoot.sh",
+    "prepublishOnly": "npm run gen && npm test && npm run build"
+  },
+  "devDependencies": {
+    "lightningcss": "^1.33.0"
+  },
+  "engines": { "node": ">=20" }
+}

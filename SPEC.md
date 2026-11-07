@@ -293,12 +293,21 @@ Lessons:
 - Derived tone tokens are declared on `*`, so a tone set on a parent reaches its children.
 - `light-dark()` only accepts colors, so shadows put it around the color, not the whole shadow.
 
+- Package `@tiaforge-ui/tinystyle`: `npm run build` bundles `src/*.css` to `dist/` with Lightning
+  CSS (targets Chrome 123, Firefox 120, Safari 17.5, so nothing modern is lowered) and fails above
+  the size budgets. Core: 3,955 B brotli, 4,499 B gzip.
+- `vocab.json` is the single source. `npm run gen` writes `llms.txt` (from
+  `docs/llms.template.md`) and `html-custom-data.json`. `npm test` fails when they are stale or when
+  vocab and CSS disagree.
+- `tinystyle check [paths]` (`lib/check.js`): TS101 invalid value (suggests the right axis, e.g.
+  `data-variant="danger"` → `data-tone="danger"`), TS102 boolean with value, TS103 icon button
+  without label, TS104 misspelled attribute, TS201 unknown token, TS202 reserved `--ts-` prefix,
+  TS203 derived token set. Dynamic values (`{…}`) and `data-sn-*` are skipped. No findings on
+  caley's current frontend.
+
 Missing, roughly in order:
-1. Package scaffolding: `package.json`, Lightning CSS build to `dist/`, size budget check.
-2. `vocab.json` as the single source, generating `llms.txt` and `html-custom-data.json`, plus the
-   vocab ↔ selector consistency test.
-3. `tinystyle check` (CLI, later a Vite plugin).
-4. Contrast validator (hue sweep, WCAG AA).
-5. Modules for caley: `app`, `menu`, `data`, `nav`, `feedback`, `prose`. Later `site` for tia.vision.
-6. Enhancement partials and the build option for them.
-7. Visual regression tests, agent evals, README.
+1. Vite plugin for the checker, and enhancement partials with the build option for them.
+2. Trim `llms.txt` (322 lines now; goal about 200).
+3. Contrast validator (hue sweep, WCAG AA).
+4. Modules for caley: `app`, `menu`, `data`, `nav`, `feedback`, `prose`. Later `site` for tia.vision.
+5. Visual regression tests, agent evals (tinystyle vs. daisyUI and Pico on the same caley tasks), README.

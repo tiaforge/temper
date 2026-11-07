@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>tinystyle kitchen sink</title>
-  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/core.css" id="core-css">
   <link rel="stylesheet" href="theme-examples.css">
   <link rel="stylesheet" href="demo.css">
   <script>
     // Apply ?d=ink|graphite|fjord, ?t=light|dark, ?density=compact before first paint.
     { const q = new URLSearchParams(location.search), h = document.documentElement;
+    // ?css=dist loads the built, minified file instead of the source.
+    if (q.get('css') === 'dist') document.getElementById('core-css').href = '../dist/core.css';
     if (q.get('example')) h.dataset.exampleTheme = q.get('example');
     if (q.get('t')) h.dataset.theme = q.get('t');
     if (q.get('density')) h.dataset.density = q.get('density'); }

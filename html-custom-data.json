@@ -1,0 +1,231 @@
+{
+  "version": 1.1,
+  "globalAttributes": [
+    {
+      "name": "data-variant",
+      "description": "tinystyle. On: button, a[role=button], input[type=submit|button|reset]. Button style. Leave it out for the default solid main button (black in light mode, white in dark mode). Combine with data-tone for color.",
+      "values": [
+        {
+          "name": "secondary",
+          "description": "Tinted fill, no border. Second most important action."
+        },
+        {
+          "name": "outline",
+          "description": "Transparent with a border."
+        },
+        {
+          "name": "ghost",
+          "description": "Transparent, fill on hover. Toolbars, icon buttons, Cancel."
+        },
+        {
+          "name": "link",
+          "description": "Looks like a link, keeps button semantics."
+        }
+      ]
+    },
+    {
+      "name": "data-tone",
+      "description": "tinystyle. On: button, [data-badge], [data-callout], progress, any text element. Color role. Independent of data-variant. On text it sets the text color. For a custom color use style=\"--ts-tone: <color>\" instead.",
+      "values": [
+        {
+          "name": "accent",
+          "description": "The accent color (blue by default)."
+        },
+        {
+          "name": "neutral",
+          "description": "Grey. Default for secondary/outline/ghost buttons and badges."
+        },
+        {
+          "name": "danger",
+          "description": "Destructive actions and errors."
+        },
+        {
+          "name": "success",
+          "description": "Completed or healthy states."
+        },
+        {
+          "name": "warning",
+          "description": "Needs attention soon."
+        },
+        {
+          "name": "info",
+          "description": "Neutral information. Default for callouts."
+        }
+      ]
+    },
+    {
+      "name": "data-size",
+      "description": "tinystyle. On: button, input, select. Control size relative to the current density.",
+      "values": [
+        {
+          "name": "sm",
+          "description": "0.8× height, smaller text."
+        },
+        {
+          "name": "md",
+          "description": "Default size."
+        },
+        {
+          "name": "lg",
+          "description": "1.2× height, larger text."
+        }
+      ]
+    },
+    {
+      "name": "data-icon",
+      "description": "tinystyle. On: button, a[role=button]. Square icon-only button. Must have an aria-label. Usually combined with data-variant=\"ghost\".",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-layout",
+      "description": "tinystyle. On: any container. Lays out the element's children. Space between children comes from data-gap; children never get margins.",
+      "values": [
+        {
+          "name": "stack",
+          "description": "Vertical column."
+        },
+        {
+          "name": "row",
+          "description": "Horizontal row that wraps, items vertically centered."
+        },
+        {
+          "name": "grid",
+          "description": "Responsive columns, each at least --ts-min wide (default 16rem)."
+        },
+        {
+          "name": "split",
+          "description": "Sidebar + content. First child is the sidebar (--ts-split, default 16rem); wraps on narrow screens."
+        },
+        {
+          "name": "center",
+          "description": "Horizontally centered column with max width --ts-measure (default 72rem) and side padding."
+        }
+      ]
+    },
+    {
+      "name": "data-gap",
+      "description": "tinystyle. On: [data-layout]. Space between the children of a data-layout element. The only spacing control in tinystyle. Default md.",
+      "values": [
+        {
+          "name": "none",
+          "description": "0"
+        },
+        {
+          "name": "xs",
+          "description": "0.25rem"
+        },
+        {
+          "name": "sm",
+          "description": "0.5rem"
+        },
+        {
+          "name": "md",
+          "description": "1rem"
+        },
+        {
+          "name": "lg",
+          "description": "1.5rem"
+        },
+        {
+          "name": "xl",
+          "description": "2.5rem"
+        }
+      ]
+    },
+    {
+      "name": "data-align",
+      "description": "tinystyle. On: [data-layout]. Cross-axis alignment of children (align-items).",
+      "values": [
+        {
+          "name": "start"
+        },
+        {
+          "name": "center"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "stretch"
+        }
+      ]
+    },
+    {
+      "name": "data-justify",
+      "description": "tinystyle. On: [data-layout]. Main-axis distribution of children (justify-content).",
+      "values": [
+        {
+          "name": "start"
+        },
+        {
+          "name": "center"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "between",
+          "description": "Space between the children."
+        }
+      ]
+    },
+    {
+      "name": "data-density",
+      "description": "tinystyle. On: html or any subtree. Control height and padding for everything inside.",
+      "values": [
+        {
+          "name": "comfortable",
+          "description": "Default. 2.5rem controls."
+        },
+        {
+          "name": "compact",
+          "description": "2rem controls, smaller text. For dense apps."
+        }
+      ]
+    },
+    {
+      "name": "data-theme",
+      "description": "tinystyle. On: html or any subtree. Forces light or dark mode. Leave it out to follow the operating system.",
+      "values": [
+        {
+          "name": "light",
+          "description": "Always light."
+        },
+        {
+          "name": "dark",
+          "description": "Always dark."
+        }
+      ]
+    },
+    {
+      "name": "data-badge",
+      "description": "tinystyle. On: span. Small status label (counts, tags, states). Color with data-tone or style=\"--ts-tone: …\".",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-callout",
+      "description": "tinystyle. On: div, [role=alert], [role=status]. Tinted message box. Put the title in <strong>. Color with data-tone (default info).",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-muted",
+      "description": "tinystyle. On: any text element. Secondary text color.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-truncate",
+      "description": "tinystyle. On: any element. Single line, cut off with an ellipsis.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-sr-only",
+      "description": "tinystyle. On: any element. Hidden visually, still read by screen readers.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-pairs",
+      "description": "tinystyle. On: dl. Shows dt/dd pairs as a two-column label/value grid.",
+      "valueSet": "v"
+    }
+  ]
+}
