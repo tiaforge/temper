@@ -9,6 +9,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      # every Node version reports its own result instead of being cancelled by the first failure
+      fail-fast: false
       matrix:
         node: [22, 24, 26]
     steps:
@@ -20,6 +22,9 @@ jobs:
       - run: npm ci
       # gen --check (generated docs, types and icons are current), unit tests, type fixtures
       - run: npm test
+        env:
+          # failing tests also become annotations on the run page (scripts/github-reporter.mjs)
+          NODE_OPTIONS: --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/github-reporter.mjs --test-reporter-destination=stdout
       # size budgets
       - run: npm run build
       # the kitchen sink passes its own checker

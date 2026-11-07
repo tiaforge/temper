@@ -196,7 +196,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     let current = '';
     try { current = readFileSync(root + file, 'utf8'); } catch {}
     if (current === content) continue;
-    if (check) { console.error(`${file} is out of date. Run npm run gen.`); stale = true; }
+    if (check) { console.error(`${process.env.GITHUB_ACTIONS ? "::error::" : ""}${file} is out of date. Run npm run gen.`); stale = true; }
     else { writeFileSync(root + file, content); console.log(`wrote ${file}`); }
   }
   if (stale) process.exit(1);
