@@ -1,0 +1,42 @@
+/* tinystyle menu: dropdown menus and checklists. Requires core.css.
+   <button popovertarget="m">Options</button>
+   <div popover id="m" data-menu> <button>Rename</button> <hr> <button data-tone="danger">Delete</button> </div>
+   A [popover][data-menu] opens under the button that opened it (CSS anchor positioning, implicit anchor from
+   popovertarget). Where anchor positioning is not supported it stays centered, as popovers do by default. */
+
+@layer ts.components {
+  :where([data-menu]) {
+    display: flex; flex-direction: column; gap: 1px;
+    min-inline-size: 12rem; max-block-size: min(24rem, 80dvh); overflow-y: auto;
+    padding: var(--ts-space-xs);
+  }
+  :where([popover][data-menu]:not(:popover-open)) { display: none; }
+  :where([data-menu]) :where(ul, ol) { display: flex; flex-direction: column; gap: 1px; padding: 0; margin: 0; list-style: none; }
+
+  /* items: buttons, links and checklist labels */
+  :where([data-menu]) :where(button, a):not([data-variant]) {
+    --_bg: transparent; --_fg: var(--ts-tone-ink);
+    display: flex; align-items: center; justify-content: start; gap: var(--ts-space-sm);
+    inline-size: 100%; block-size: calc(var(--ts-control-h) * 0.85); padding-inline: var(--ts-space-sm);
+    border-radius: var(--ts-radius-sm); background: var(--_bg); color: var(--_fg);
+    font-weight: 450; text-decoration: none; white-space: nowrap;
+  }
+  :where([data-menu]) :where(button, a):not([data-variant], [data-tone]) { --ts-tone: var(--ts-neutral); --ts-tone-ink: var(--ts-text); }
+  :where([data-menu]) :where(button, a):not([data-variant]):hover,
+  :where([data-menu]) :where(button, a):not([data-variant]):focus-visible { background: var(--ts-fill); outline: none; }
+  :where([data-menu]) :where(label:has(> input[type="checkbox"], > input[type="radio"])) {
+    display: flex; inline-size: 100%; min-block-size: calc(var(--ts-control-h) * 0.85);
+    padding-inline: var(--ts-space-sm); border-radius: var(--ts-radius-sm); font-size: var(--ts-control-font);
+  }
+  :where([data-menu]) :where(label):hover { background: var(--ts-fill); }
+  :where([data-menu]) :where(hr) { margin-block: var(--ts-space-xs); }
+  :where([data-menu]) :where(svg) { inline-size: 1rem; block-size: 1rem; flex-shrink: 0; }
+
+  @supports (position-area: block-end) {
+    :where([popover][data-menu]) {
+      inset: auto; margin: var(--ts-space-xs) 0 0;
+      position-area: block-end span-inline-end;
+      position-try-fallbacks: flip-block, flip-inline;
+    }
+  }
+}

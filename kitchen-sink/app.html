@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>tinystyle app shell</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/app.css">
+  <link rel="stylesheet" href="../src/menu.css">
+  <script>
+    // ?t=light|dark, ?collapsed, ?open (drawer), ?menu (open the dropdown)
+    { const q = new URLSearchParams(location.search);
+      if (q.get('t')) document.documentElement.dataset.theme = q.get('t'); }
+  </script>
+</head>
+<body data-shell data-density="compact">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></symbol>
+  </defs>
+</svg>
+
+<nav data-rail id="rail" aria-label="Main">
+  <header>
+    <strong data-rail-label>Caley</strong>
+    <button data-icon data-variant="ghost" aria-label="Collapse menu" id="collapse"><svg><use href="#i-left"/></svg></button>
+  </header>
+  <a href="#"><svg><use href="#i-mail"/></svg><span>Mail</span><span data-badge data-tone="accent">12</span></a>
+  <a href="#"><svg><use href="#i-cal"/></svg><span>Calendar</span></a>
+  <a href="#" aria-current="page"><svg><use href="#i-users"/></svg><span>Contacts</span></a>
+  <a href="#"><svg><use href="#i-search"/></svg><span>Search</span></a>
+  <footer>
+    <small data-caption data-rail-label data-pad="xs">Tia Heinrich</small>
+    <a href="#"><svg><use href="#i-gear"/></svg><span>Settings</span></a>
+  </footer>
+</nav>
+<div data-backdrop id="backdrop"></div>
+
+<main data-layout="stack" data-gap="lg" data-pad="lg">
+  <div data-layout="row" data-gap="sm" data-wrap="none">
+    <button data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu" id="open-drawer"><svg><use href="#i-menu"/></svg></button>
+    <h1 data-grow>Contacts</h1>
+    <button popovertarget="books" data-variant="outline" id="books-btn">Address books ▾</button>
+    <input type="search" placeholder="Filter contacts" aria-label="Filter contacts" style="inline-size: 14rem">
+  </div>
+  <div popover id="books" data-menu>
+    <label><input type="checkbox" checked> Personal</label>
+    <label><input type="checkbox" checked> Work</label>
+    <label><input type="checkbox"> Climbing club</label>
+    <hr>
+    <button>Manage address books</button>
+  </div>
+
+  <section data-layout="stack" data-gap="sm">
+    <h2 data-caption>M</h2>
+    <div data-layout="grid" data-gap="md" style="--ts-min: 13rem">
+      <article data-layout="stack" data-gap="xs" data-align="center">
+        <span data-avatar data-size="lg" style="--ts-tone: oklch(0.6 0.15 150)">MO</span>
+        <a href="#mira" data-stretch><strong>Mira Okafor</strong></a>
+        <a href="mailto:mira@okafor.io">mira@okafor.io</a>
+        <small data-muted>Climbing club</small>
+      </article>
+    </div>
+  </section>
+
+  <section data-layout="stack" data-gap="sm">
+    <h2 data-caption>P</h2>
+    <div data-layout="grid" data-gap="md" style="--ts-min: 13rem">
+      <article data-layout="stack" data-gap="xs" data-align="center">
+        <span data-avatar data-size="lg">PR</span>
+        <a href="#priya" data-stretch><strong>Priya Raman</strong></a>
+        <a href="mailto:priya@raman.dev">priya@raman.dev</a>
+        <small data-muted>Work</small>
+      </article>
+      <article data-layout="stack" data-gap="xs" data-align="center">
+        <span data-avatar data-size="lg" style="--ts-tone: oklch(0.68 0.16 55)">PS</span>
+        <a href="#paul" data-stretch><strong>Paul Schulz</strong></a>
+        <a href="tel:+493012345">+49 30 12345</a>
+        <small data-muted>Personal</small>
+      </article>
+    </div>
+  </section>
+
+  <article data-layout="stack" data-gap="sm" style="max-inline-size: 28rem">
+    <header><h3>Mira Okafor</h3><button data-icon data-variant="ghost" aria-label="Close">×</button></header>
+    <dl data-pairs>
+      <dt>Email</dt><dd>mira@okafor.io</dd>
+      <div><dt>Phone</dt><dd>+49 151 2345 6789</dd></div>
+      <dt>Address</dt><dd>Karl-Liebknecht-Str. 12, 04107 Leipzig</dd>
+    </dl>
+  </article>
+</main>
+<button data-fab data-icon aria-label="New contact"><svg><use href="#i-plus"/></svg></button>
+
+<script>
+{
+  const q = new URLSearchParams(location.search), rail = document.getElementById('rail');
+  const toggle = (attr, on) => rail.toggleAttribute(attr, on);
+  if (q.has('collapsed')) toggle('data-collapsed', true);
+  if (q.has('open')) toggle('data-open', true);
+  document.getElementById('collapse').onclick = () => toggle('data-collapsed');
+  document.getElementById('open-drawer').onclick = () => toggle('data-open', true);
+  document.getElementById('backdrop').onclick = () => toggle('data-open', false);
+  if (q.has('menu')) document.getElementById('books-btn').click();
+}
+</script>
+</body>
+</html>

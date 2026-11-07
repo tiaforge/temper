@@ -1,0 +1,105 @@
+/* tinystyle app: application shell with a navigation rail, mobile drawer, floating action button.
+   Requires core.css. State is plain attributes, so any script (or sinter) can drive it:
+   data-collapsed on the rail (icon-only), data-open on the rail (mobile drawer shown).
+   Narrow screens are below 48rem. */
+
+@layer ts.components {
+  /* shell: rail + main area. The document scrolls; the rail sticks. */
+  :where([data-shell]) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    min-block-size: 100dvh;
+  }
+  :where([data-shell]) > :where(main) { min-inline-size: 0; }
+
+  /* rail */
+  :where([data-rail]) {
+    --_w: var(--ts-rail-width, 15rem);
+    position: sticky; inset-block-start: 0;
+    display: flex; flex-direction: column; gap: 2px;
+    inline-size: var(--_w); block-size: 100dvh; overflow-y: auto; overflow-x: hidden;
+    padding: var(--ts-space-sm);
+    border-inline-end: 1px solid var(--ts-border);
+    background: var(--ts-bg);
+    transition: inline-size var(--ts-duration) var(--ts-ease), translate var(--ts-duration) var(--ts-ease);
+  }
+  :where([data-rail][data-collapsed]) { --_w: var(--ts-rail-width-collapsed, calc(var(--ts-control-h) + 2 * var(--ts-space-sm) + 1px)); }
+  :where([data-rail]) > :where(header) {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-xs);
+    min-block-size: var(--ts-control-h); padding-block-end: var(--ts-space-sm); font-weight: 650;
+  }
+  :where([data-rail]) > :where(footer) {
+    display: flex; flex-direction: column; gap: 2px;
+    margin-block-start: auto; padding-block-start: var(--ts-space-sm); border-block-start: 1px solid var(--ts-border);
+  }
+  :where([data-rail]) :where(ul) { display: flex; flex-direction: column; gap: 2px; padding: 0; list-style: none; }
+
+  /* rail items: links and buttons look like quiet nav entries; aria-current marks the active one */
+  :where([data-rail]) :where(a, button):not([data-variant], [data-icon]) {
+    --_bg: transparent; --_fg: var(--ts-text);
+    justify-content: start; gap: var(--ts-space-sm);
+    inline-size: 100%; block-size: var(--ts-control-h); padding-inline: calc((var(--ts-control-h) - 1.125rem) / 2);
+    border-radius: var(--ts-radius); font-weight: 500; text-decoration: none; white-space: nowrap;
+  }
+  :where([data-rail]) :where(a):not([data-variant], [data-icon]) {
+    display: flex; align-items: center; color: var(--_fg); background: var(--_bg);
+    transition: background-color var(--ts-duration) var(--ts-ease);
+  }
+  :where([data-rail]) :where(a, button):not([data-variant], [data-icon]):hover { background: var(--ts-fill); }
+  :where([data-rail]) :where(a, button)[aria-current]:not([aria-current="false"]) {
+    --_bg: var(--ts-tone-soft); --_fg: var(--ts-tone-ink); --ts-tone: var(--ts-accent);
+    background: var(--_bg); color: var(--_fg); font-weight: 600;
+  }
+  :where([data-rail]) :where(a, button) > :where(span) { overflow: hidden; text-overflow: ellipsis; min-inline-size: 0; }
+  :where([data-rail]) :where(a, button) > :where([data-badge]) { margin-inline-start: auto; flex-shrink: 0; }
+  :where([data-rail]) :where(svg) { inline-size: 1.125rem; block-size: 1.125rem; flex-shrink: 0; }
+
+  /* collapsed: icons only; text spans and anything marked data-rail-label disappear */
+  :where([data-rail][data-collapsed]) :where(a, button) > :where(span:not([data-badge])),
+  :where([data-rail][data-collapsed]) :where([data-rail-label]) { display: none; }
+  :where([data-rail][data-collapsed]) > :where(header) { justify-content: center; }
+  /* a count badge shrinks to a dot on the icon */
+  :where([data-rail][data-collapsed]) :where(a, button):has(> [data-badge]) { position: relative; }
+  :where([data-rail][data-collapsed]) :where(a, button) > :where([data-badge]) {
+    position: absolute; inset-block-start: 0.3rem; inset-inline-end: 0.3rem;
+    inline-size: 0.5rem; block-size: 0.5rem; padding: 0; font-size: 0; background: var(--ts-tone);
+  }
+
+  /* backdrop behind the open mobile drawer; the app closes the drawer when it is clicked */
+  :where([data-backdrop]) { display: none; }
+
+  /* floating action button */
+  :where([data-fab]) {
+    position: fixed; inset-block-end: var(--ts-space-lg); inset-inline-end: var(--ts-space-lg); z-index: 10;
+    inline-size: calc(var(--ts-control-h) * 1.4); block-size: calc(var(--ts-control-h) * 1.4); padding: 0;
+    border-radius: 50%; box-shadow: var(--ts-shadow-lg), 0 2px 8px oklch(0 0 0 / 0.15);
+  }
+  :where([data-fab]) :where(svg) { inline-size: 1.5rem; block-size: 1.5rem; }
+
+  /* narrow screens: the rail becomes an off-canvas drawer */
+  @media (width < 48rem) {
+    :where([data-shell]) { grid-template-columns: minmax(0, 1fr); }
+    :where([data-rail]) {
+      --_w: min(var(--ts-rail-width, 15rem), 85vw);
+      position: fixed; inset-block: 0; inset-inline-start: 0; z-index: 30;
+      translate: -100% 0; box-shadow: var(--ts-shadow-lg);
+    }
+    :where([data-rail][data-collapsed]) { --_w: min(var(--ts-rail-width, 15rem), 85vw); }
+    :where([data-rail][data-collapsed]) :where(a, button) > :where(span:not([data-badge])),
+    :where([data-rail][data-collapsed]) :where([data-rail-label]) { display: revert; }
+    :where([data-rail][data-collapsed]) :where(a, button) > :where([data-badge]) {
+      position: static; inline-size: auto; block-size: 1.375rem; padding-inline: 0.5rem; font-size: var(--ts-text-xs); background: var(--ts-tone-soft);
+    }
+    :where([data-rail][data-open]) { translate: 0 0; }
+    :where([data-rail][data-open] ~ [data-backdrop]) {
+      display: block; position: fixed; inset: 0; z-index: 29;
+      background: oklch(0.2 0.02 var(--ts-neutral-hue) / 0.45);
+    }
+  }
+}
+
+@layer ts.layout {
+  /* show an element only on narrow (< 48rem) or wide screens */
+  @media (width < 48rem) { [data-show="wide"] { display: none; } }
+  @media (width >= 48rem) { [data-show="narrow"] { display: none; } }
+}

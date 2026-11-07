@@ -149,6 +149,7 @@
     text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
   }
   :where(a:hover) { text-decoration-color: currentColor; }
+  :where(a:not([role])[aria-current]:not([aria-current="false"])) { color: var(--ts-text); font-weight: 600; text-decoration: none; }
   :where(hr) { border: 0; block-size: 1px; background: var(--ts-border); }
   :where(code, kbd, samp, pre) { font-family: var(--ts-font-mono); font-size: 0.875em; }
   :where(:not(pre) > code) { padding: 0.125em 0.375em; border-radius: var(--ts-radius-sm); background: var(--ts-fill); }
@@ -179,10 +180,10 @@
   :where([data-layout]) { --_gap: var(--ts-space-md); gap: var(--_gap); }
   :where([data-layout="stack"]) { display: flex; flex-direction: column; }
   :where([data-layout="row"]) { display: flex; flex-wrap: wrap; align-items: center; }
-  :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(var(--ts-min, 16rem), 100%), 1fr)); }
+  :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(var(--ts-min, 16rem), 100%), 1fr)); }
   :where([data-layout="split"]) { display: flex; flex-wrap: wrap; }
-  :where([data-layout="split"] > :first-child) { flex: 1 1 var(--ts-split, 16rem); }
-  :where([data-layout="split"] > :last-child) { flex: 999 1 0; min-inline-size: 60%; }
+  :where([data-layout="split"] > :nth-child(1 of :not(template))) { flex: 1 1 var(--ts-split, 16rem); }
+  :where([data-layout="split"] > :nth-last-child(1 of :not(template))) { flex: 999 1 0; min-inline-size: 60%; }
   :where([data-layout="center"]) {
     display: flex; flex-direction: column;
     inline-size: 100%; max-inline-size: var(--ts-measure, 72rem);
@@ -196,6 +197,9 @@
   :where([data-gap="md"]) { --_gap: var(--ts-space-md); }
   :where([data-gap="lg"]) { --_gap: var(--ts-space-lg); }
   :where([data-gap="xl"]) { --_gap: var(--ts-space-xl); }
+  :where([data-wrap="none"]) { flex-wrap: nowrap; }
+  :where([data-wrap="wrap"]) { flex-wrap: wrap; }
+  :where([data-grow]) { flex: 1 1 0; min-inline-size: 0; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
   :where([data-pad="xs"]) { --_pad: var(--ts-space-xs); }
@@ -260,7 +264,7 @@
     text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
   }
   :where([data-variant="link"]):hover { background: transparent; text-decoration-color: currentColor; }
-  :where([aria-pressed="true"]) { --_bg: var(--ts-tone-soft); --_fg: var(--ts-tone-ink); --ts-tone: var(--ts-accent); }
+  :where([aria-pressed="true"], :is(button, a[role="button"])[aria-current]:not([aria-current="false"])) { --_bg: var(--ts-tone-soft); --_fg: var(--ts-tone-ink); --ts-tone: var(--ts-accent); }
   :where([data-size="sm"]) { --_size: 0.8; --_font: 0.8125rem; }
   :where([data-size="md"]) { --_size: 1; }
   :where([data-size="lg"]) { --_size: 1.2; --_font: 1rem; }
@@ -415,9 +419,11 @@
   }
   :where(dialog[open])::backdrop { opacity: 1; }
   @starting-style { :where(dialog[open])::backdrop { opacity: 0; } }
-  :where(dialog, article) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-sm); }
-  :where(dialog, article) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--ts-space-sm); }
-  :where(dialog, article) > :where(header) > :where(:not(h1, h2, h3, h4, h5, h6)) { flex-shrink: 0; }
+  :where(dialog, article) > :where(header),
+  :where(dialog, article) > :where(div, form, section) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--ts-space-sm); }
+  :where(dialog, article) > :where(footer),
+  :where(dialog, article) > :where(div, form, section) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--ts-space-sm); }
+  :where(dialog, article) :where(header) > :where(:not(h1, h2, h3, h4, h5, h6)) { flex-shrink: 0; }
   :where(dialog) > :where(header) :where(h1, h2, h3) { font-size: var(--ts-text-lg); }
 
   /* popover */
@@ -454,7 +460,8 @@
 
   /* label/value pairs */
   :where(dl[data-pairs]) { display: grid; grid-template-columns: max-content 1fr; gap: var(--ts-space-xs) var(--ts-space-md); }
-  :where(dl[data-pairs]) > :where(dt) { color: var(--ts-text-muted); }
+  :where(dl[data-pairs]) > :where(div) { display: contents; }
+  :where(dl[data-pairs]) :where(dt) { color: var(--ts-text-muted); }
 
   /* badge */
   :where([data-badge]) {
@@ -478,6 +485,28 @@
   }
   :where([data-callout]):not([data-tone]) { --ts-tone: var(--ts-info); }
   :where([data-callout]) > :where(strong, b) { color: var(--ts-tone-ink); }
+
+  /* caption: small secondary label text (dt, field captions, group headings) */
+  :where([data-caption]) { font-size: var(--ts-text-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ts-text-muted); }
+
+  /* avatar: initials or a photo in a circle, colored by tone */
+  :where([data-avatar]) {
+    --_av: calc(var(--ts-avatar-size, 2.5rem) * var(--_size, 1));
+    display: inline-grid; place-items: center; flex-shrink: 0;
+    inline-size: var(--_av); block-size: var(--_av); border-radius: 50%; overflow: hidden;
+    background: var(--ts-tone-soft); color: var(--ts-tone-ink);
+    font-size: calc(var(--_av) * 0.4); font-weight: 600; line-height: 1; user-select: none;
+  }
+  :where([data-avatar]) > :where(img) { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+  /* clickable card: [data-stretch] on the card's main link or button makes the whole card clickable */
+  :where(article:has([data-stretch])) { position: relative; transition: border-color var(--ts-duration) var(--ts-ease); }
+  :where(article:has([data-stretch])):hover { border-color: var(--ts-border-strong); }
+  :where(article:has([data-stretch]:focus-visible)) { outline: 2px solid var(--ts-accent); outline-offset: 2px; }
+  :where([data-stretch]):focus-visible { outline: none; }
+  :where(a[data-stretch]) { color: inherit; text-decoration: none; }
+  :where([data-stretch])::after { content: ""; position: absolute; inset: 0; border-radius: var(--ts-radius-lg); }
+  :where(article:has([data-stretch])) :where(a, button, input, select, textarea, label):not([data-stretch]) { position: relative; z-index: 1; }
 }
 
 @layer ts.base {

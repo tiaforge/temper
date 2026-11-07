@@ -5,17 +5,40 @@
   "license": "MIT",
   "author": "Tia Heinrich",
   "type": "module",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
     ".": "./dist/core.css",
     "./core.css": "./dist/core.css",
+    "./app.css": "./dist/app.css",
+    "./menu.css": "./dist/menu.css",
+    "./all.css": "./dist/all.css",
     "./vocab.json": "./vocab.json",
     "./html-custom-data.json": "./html-custom-data.json",
     "./check": "./lib/check.js"
   },
-  "bin": { "tinystyle": "bin/tinystyle.js" },
-  "files": ["dist", "lib", "bin", "vocab.json", "llms.txt", "html-custom-data.json"],
-  "keywords": ["css", "classless", "dark-mode", "light-dark", "oklch", "design-system", "llm", "ai"],
+  "bin": {
+    "tinystyle": "bin/tinystyle.js"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "bin",
+    "vocab.json",
+    "llms.txt",
+    "html-custom-data.json"
+  ],
+  "keywords": [
+    "css",
+    "classless",
+    "dark-mode",
+    "light-dark",
+    "oklch",
+    "design-system",
+    "llm",
+    "ai"
+  ],
   "scripts": {
     "build": "node scripts/build.mjs",
     "gen": "node scripts/gen.mjs",
@@ -27,5 +50,7 @@
   "devDependencies": {
     "lightningcss": "^1.33.0"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

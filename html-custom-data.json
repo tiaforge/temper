@@ -200,6 +200,25 @@
       ]
     },
     {
+      "name": "data-wrap",
+      "description": "tinystyle. On: [data-layout=row]. Whether a row wraps onto more lines. Rows wrap by default.",
+      "values": [
+        {
+          "name": "wrap",
+          "description": "Default for rows."
+        },
+        {
+          "name": "none",
+          "description": "Keep everything on one line (nav items, icon + label)."
+        }
+      ]
+    },
+    {
+      "name": "data-grow",
+      "description": "tinystyle. On: a child of data-layout=row or stack. This child takes the remaining space (e.g. the search field in a toolbar, the input in an input + button row).",
+      "valueSet": "v"
+    },
+    {
       "name": "data-density",
       "description": "tinystyle. On: html or any subtree. Control height and padding for everything inside.",
       "values": [
@@ -255,6 +274,75 @@
     {
       "name": "data-pairs",
       "description": "tinystyle. On: dl. Shows dt/dd pairs as a two-column label/value grid.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-caption",
+      "description": "tinystyle. On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-avatar",
+      "description": "tinystyle. On: span, div. Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style=\"--ts-avatar-size: 4rem\".",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-stretch",
+      "description": "tinystyle. On: the main link or button inside an article. Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-shell",
+      "description": "tinystyle (app.css). On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-rail",
+      "description": "tinystyle (app.css). On: nav inside [data-shell]. Navigation rail. Children: optional <header> (brand, collapse button), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\". Put item text in a <span> so it can hide when collapsed.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-collapsed",
+      "description": "tinystyle (app.css). On: [data-rail]. Icon-only rail. Text spans and [data-rail-label] elements are hidden. Toggle it from script.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-open",
+      "description": "tinystyle (app.css). On: [data-rail]. On narrow screens, slides the rail in as a drawer and shows the [data-backdrop] that follows it. Toggle it from script.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-rail-label",
+      "description": "tinystyle (app.css). On: any element inside [data-rail]. Hidden while the rail is collapsed (e.g. the user name in the rail footer).",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-backdrop",
+      "description": "tinystyle (app.css). On: an empty div right after the [data-rail]. Dims the page behind the open mobile drawer. Close the drawer when it is clicked.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-fab",
+      "description": "tinystyle (app.css). On: button. Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-show",
+      "description": "tinystyle (app.css). On: any element. Shows the element only on narrow (< 48rem) or wide screens.",
+      "values": [
+        {
+          "name": "narrow",
+          "description": "Only below 48rem (e.g. the button that opens the drawer)."
+        },
+        {
+          "name": "wide",
+          "description": "Only from 48rem."
+        }
+      ]
+    },
+    {
+      "name": "data-menu",
+      "description": "tinystyle (menu.css). On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button.",
       "valueSet": "v"
     }
   ]

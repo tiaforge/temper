@@ -3,6 +3,15 @@
 > Tiny CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
 > `data-*` attributes with fixed values. Light and dark mode switch automatically.
 
+## Setup
+
+```js
+import '@tiaforge-ui/tinystyle/core.css';   // always
+import '@tiaforge-ui/tinystyle/app.css';    // app shell, navigation rail, floating action button
+import '@tiaforge-ui/tinystyle/menu.css';   // dropdown menus
+// or everything: import '@tiaforge-ui/tinystyle/all.css';
+```
+
 ## Rules
 
 1. Write semantic HTML first. `button`, `input`, `select`, `textarea`, `label`, `fieldset`, `dialog`,
@@ -22,7 +31,23 @@
    In your own CSS, use the tokens (`var(--ts-text-muted)`, `var(--ts-space-sm)`), never hard-coded colors.
 7. Use `class` only for your app's own components. `data-*` attributes from the list below belong to
    tinystyle; do not use those names for anything else.
-8. Run `npx tinystyle check <dir>` after editing. It reports unknown attribute values and tokens.
+8. Size and tune things with the documented custom properties in `style` (`style="--ts-min: 12rem"`,
+   `style="--ts-tone: #e8590c"`, `style="--ts-avatar-size: 4rem"`). That is the intended way; do not
+   write `width`, `margin` or `padding` there.
+9. Run `npx tinystyle check <dir>` after editing. It reports unknown attribute values and tokens.
+
+## Behavior worth knowing
+
+- `data-layout="row"` wraps by default; `data-wrap="none"` keeps one line. `data-grow` on a child makes it fill the rest.
+- `data-layout="grid"` makes columns at least `--ts-min` wide (default 16rem). Few items keep their column
+  width; they do not stretch across the row.
+- `data-layout` overrides an element's own display, so it works on `label`, `article`, `fieldset`, `dialog`.
+- A plain `[popover]` is centered in the viewport. For a dropdown under its button use `data-menu` (menu.css).
+- `article > header` / `footer` and `dialog > header` / `footer` also work through one wrapper element
+  (`dialog > form > footer`), so template-rendered bodies keep their layout.
+- `1rem` is 16px (the browser default). Pico enlarges the root font, so sizes copied from Pico look smaller.
+- Template engines that leave `<template>` elements in the DOM break `:first-child` in your own CSS; use
+  `:first-of-type` or `:nth-child(1 of :not(template))`.
 
 ## Attributes
 
@@ -109,6 +134,17 @@ On: [data-layout]. Main-axis distribution of children (justify-content).
 - `end`
 - `between`: Space between the children.
 
+### `data-wrap`
+
+On: [data-layout=row]. Whether a row wraps onto more lines. Rows wrap by default.
+
+- `wrap`: Default for rows.
+- `none`: Keep everything on one line (nav items, icon + label).
+
+### `data-grow` (boolean, no value)
+
+On: a child of data-layout=row or stack. This child takes the remaining space (e.g. the search field in a toolbar, the input in an input + button row).
+
 ### `data-density`
 
 On: html or any subtree. Control height and padding for everything inside.
@@ -147,6 +183,57 @@ On: any element. Hidden visually, still read by screen readers.
 
 On: dl. Shows dt/dd pairs as a two-column label/value grid.
 
+### `data-caption` (boolean, no value)
+
+On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.
+
+### `data-avatar` (boolean, no value)
+
+On: span, div. Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style="--ts-avatar-size: 4rem".
+
+### `data-stretch` (boolean, no value)
+
+On: the main link or button inside an article. Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant="link" button.
+
+### `data-shell` (boolean, no value)
+
+On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Needs `app.css`.
+
+### `data-rail` (boolean, no value)
+
+On: nav inside [data-shell]. Navigation rail. Children: optional <header> (brand, collapse button), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current="page". Put item text in a <span> so it can hide when collapsed. Needs `app.css`.
+
+### `data-collapsed` (boolean, no value)
+
+On: [data-rail]. Icon-only rail. Text spans and [data-rail-label] elements are hidden. Toggle it from script. Needs `app.css`.
+
+### `data-open` (boolean, no value)
+
+On: [data-rail]. On narrow screens, slides the rail in as a drawer and shows the [data-backdrop] that follows it. Toggle it from script. Needs `app.css`.
+
+### `data-rail-label` (boolean, no value)
+
+On: any element inside [data-rail]. Hidden while the rail is collapsed (e.g. the user name in the rail footer). Needs `app.css`.
+
+### `data-backdrop` (boolean, no value)
+
+On: an empty div right after the [data-rail]. Dims the page behind the open mobile drawer. Close the drawer when it is clicked. Needs `app.css`.
+
+### `data-fab` (boolean, no value)
+
+On: button. Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label. Needs `app.css`.
+
+### `data-show`
+
+On: any element. Shows the element only on narrow (< 48rem) or wide screens. Needs `app.css`.
+
+- `narrow`: Only below 48rem (e.g. the button that opens the drawer).
+- `wide`: Only from 48rem.
+
+### `data-menu` (boolean, no value)
+
+On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button. Needs `menu.css`.
+
 ## Tokens
 
 Set inputs on `:root` in your own CSS to change the theme. Use the rest in your own CSS.
@@ -170,6 +257,9 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 - `--ts-split`: Sidebar width for data-layout="split". Default 16rem.
 - `--ts-measure`: Max width for data-layout="center". Default 72rem.
 - `--ts-dialog-width`: Dialog width. Default 30rem.
+- `--ts-avatar-size`: Avatar diameter. Default 2.5rem (scaled by data-size).
+- `--ts-rail-width`: Width of [data-rail]. Default 15rem.
+- `--ts-rail-width-collapsed`: Width of a collapsed rail. Default: one icon button plus padding.
 
 ### Colors
 
@@ -309,14 +399,63 @@ buttons to the end.
 </div>
 ```
 
+### App shell with navigation rail (app.css)
+
+```html
+<body data-shell>
+  <nav data-rail aria-label="Main">
+    <header><span data-rail-label>Caley</span>
+      <button data-icon data-variant="ghost" aria-label="Collapse menu">«</button></header>
+    <a href="/mail/"><svg>…</svg><span>Mail</span></a>
+    <a href="/contacts/" aria-current="page"><svg>…</svg><span>Contacts</span></a>
+    <footer><a href="/settings/"><svg>…</svg><span>Settings</span></a></footer>
+  </nav>
+  <div data-backdrop></div>
+  <main data-layout="stack" data-gap="lg" data-pad="lg">
+    <button data-show="narrow" data-icon data-variant="ghost" aria-label="Open menu">☰</button>
+    …
+  </main>
+  <button data-fab data-icon aria-label="New contact">+</button>
+</body>
+```
+
+Toggle `data-collapsed` (icon-only rail) and `data-open` (mobile drawer) on the rail from script.
+
+### Dropdown menu (menu.css)
+
+```html
+<button popovertarget="book-menu" data-variant="outline">Address books ▾</button>
+<div popover id="book-menu" data-menu>
+  <label><input type="checkbox" checked> Personal</label>
+  <label><input type="checkbox"> Work</label>
+  <hr>
+  <button>Manage address books</button>
+</div>
+```
+
+### Card grid with avatars, whole card clickable
+
+```html
+<div data-layout="grid" data-gap="md" style="--ts-min: 13rem">
+  <article data-layout="stack" data-gap="xs" data-align="center">
+    <span data-avatar>MO</span>
+    <a href="#mira" data-stretch><strong>Mira Okafor</strong></a>
+    <a href="mailto:mira@okafor.io">mira@okafor.io</a>
+    <small data-muted>Climbing club</small>
+  </article>
+</div>
+```
+
 ### Label/value pairs
 
 ```html
 <dl data-pairs>
   <dt>From</dt><dd>Priya Raman</dd>
-  <dt>Date</dt><dd><time>Sat 7 Nov, 08:15</time></dd>
+  <div data-sn-show="c.phone"><dt>Phone</dt><dd>+49 30 9876 5432</dd></div>
 </dl>
 ```
+
+A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 
 ### Page layout
 

@@ -106,6 +106,21 @@
         "between": "Space between the children."
       }
     },
+    "data-wrap": {
+      "module": "core",
+      "on": "[data-layout=row]",
+      "description": "Whether a row wraps onto more lines. Rows wrap by default.",
+      "values": {
+        "wrap": "Default for rows.",
+        "none": "Keep everything on one line (nav items, icon + label)."
+      }
+    },
+    "data-grow": {
+      "module": "core",
+      "boolean": true,
+      "on": "a child of data-layout=row or stack",
+      "description": "This child takes the remaining space (e.g. the search field in a toolbar, the input in an input + button row)."
+    },
     "data-density": {
       "module": "core",
       "on": "html or any subtree",
@@ -159,6 +174,81 @@
       "boolean": true,
       "on": "dl",
       "description": "Shows dt/dd pairs as a two-column label/value grid."
+    },
+    "data-caption": {
+      "module": "core",
+      "boolean": true,
+      "on": "any text element",
+      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index."
+    },
+    "data-avatar": {
+      "module": "core",
+      "boolean": true,
+      "on": "span, div",
+      "description": "Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style=\"--ts-avatar-size: 4rem\"."
+    },
+    "data-stretch": {
+      "module": "core",
+      "boolean": true,
+      "on": "the main link or button inside an article",
+      "description": "Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button."
+    },
+    "data-shell": {
+      "module": "app",
+      "boolean": true,
+      "on": "body or the outermost app wrapper",
+      "description": "App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer."
+    },
+    "data-rail": {
+      "module": "app",
+      "boolean": true,
+      "on": "nav inside [data-shell]",
+      "description": "Navigation rail. Children: optional <header> (brand, collapse button), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\". Put item text in a <span> so it can hide when collapsed."
+    },
+    "data-collapsed": {
+      "module": "app",
+      "boolean": true,
+      "on": "[data-rail]",
+      "description": "Icon-only rail. Text spans and [data-rail-label] elements are hidden. Toggle it from script."
+    },
+    "data-open": {
+      "module": "app",
+      "boolean": true,
+      "on": "[data-rail]",
+      "description": "On narrow screens, slides the rail in as a drawer and shows the [data-backdrop] that follows it. Toggle it from script."
+    },
+    "data-rail-label": {
+      "module": "app",
+      "boolean": true,
+      "on": "any element inside [data-rail]",
+      "description": "Hidden while the rail is collapsed (e.g. the user name in the rail footer)."
+    },
+    "data-backdrop": {
+      "module": "app",
+      "boolean": true,
+      "on": "an empty div right after the [data-rail]",
+      "description": "Dims the page behind the open mobile drawer. Close the drawer when it is clicked."
+    },
+    "data-fab": {
+      "module": "app",
+      "boolean": true,
+      "on": "button",
+      "description": "Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label."
+    },
+    "data-show": {
+      "module": "app",
+      "on": "any element",
+      "description": "Shows the element only on narrow (< 48rem) or wide screens.",
+      "values": {
+        "narrow": "Only below 48rem (e.g. the button that opens the drawer).",
+        "wide": "Only from 48rem."
+      }
+    },
+    "data-menu": {
+      "module": "menu",
+      "boolean": true,
+      "on": "[popover] (dropdown) or any container (static menu)",
+      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button."
     }
   },
   "tokens": {
@@ -397,6 +487,21 @@
       "kind": "density",
       "derived": true,
       "description": "Font size of controls, set by data-density."
+    },
+    "--ts-avatar-size": {
+      "kind": "input",
+      "optional": true,
+      "description": "Avatar diameter. Default 2.5rem (scaled by data-size)."
+    },
+    "--ts-rail-width": {
+      "kind": "input",
+      "optional": true,
+      "description": "Width of [data-rail]. Default 15rem."
+    },
+    "--ts-rail-width-collapsed": {
+      "kind": "input",
+      "optional": true,
+      "description": "Width of a collapsed rail. Default: one icon button plus padding."
     }
   }
 }
