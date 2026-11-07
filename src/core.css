@@ -397,6 +397,8 @@
   }
 
   /* dialog */
+  /* The reset removes margins; modal dialogs and popovers need the browser's margin: auto to stay centered. */
+  :where(dialog, [popover]) { margin: auto; }
   :where(dialog) {
     inline-size: min(var(--ts-dialog-width, 30rem), 100% - 2rem);
     max-block-size: calc(100dvh - 2rem);
