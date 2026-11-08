@@ -7,6 +7,8 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+## 0.1.5 (2026-11-08)
+
 ### `@tiaforge-ui/temper-inspect`
 
 - No more runs that hang forever. When the inspected tab's renderer went away (seen with a Vite dev server whose HMR
@@ -21,6 +23,8 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   app's private /tmp, and the empty mount point of the profile there is removed too.
 - JavaScript dialogs (`alert`, `confirm`, `beforeunload`) are answered instead of blocking the tab.
 - Tests: `packages/inspect/test/recover.test.js`.
+
+## 0.1.4 (2026-11-07)
 
 ### CSS
 
