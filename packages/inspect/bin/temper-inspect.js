@@ -18,6 +18,9 @@ Options:
   --widths 1280,390     viewport widths (default 1280,390)
   --schemes light,dark  color schemes (default light,dark)
   --settle 800          ms to wait after load for data to arrive (default 800)
+  --timeout 30000       ms the browser gets to answer one command; a tab that stops answering (e.g. its
+                        renderer went away while the dev server restarted) is replaced and the step
+                        run again, twice at most (default 30000)
   --no-overlays         do not open dialogs and popovers
   --verbose             also show info (wrapped rows, small tap targets)
   --limit 8             max lines per check and state
@@ -36,6 +39,7 @@ Exit code 1 when there are errors.`);
 const widths = opt('widths', '1280,390').split(',').map(Number);
 const schemes = opt('schemes', 'light,dark').split(',');
 const settle = Number(opt('settle', '800'));
+const timeout = Number(opt('timeout', '30000'));
 const limit = Number(opt('limit', '8'));
 const browser = opt('browser');
 const sheet = opt('sheet');
@@ -52,7 +56,7 @@ try {
     if (i < 1) throw new Error(`--header needs "Name: value", got "${h ?? ''}"`);
     return [h.slice(0, i).trim(), h.slice(i + 1).trim()];
   }));
-  const { findings, sheets } = await inspect(args, { widths, schemes, settle, overlays, browser, sheet, cookies, headers });
+  const { findings, sheets } = await inspect(args, { widths, schemes, settle, timeout, overlays, browser, sheet, cookies, headers });
   const allWhere = widths.flatMap(w => schemes.map(s => `${w} ${s}`));
   console.log(json ? JSON.stringify({ findings, sheets }, null, 2) : format(findings, { verbose, limit, allWhere }));
   if (sheets.length && !json) console.log(`\nContact sheets:\n${sheets.map(f => '  ' + f).join('\n')}`);

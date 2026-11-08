@@ -10,51 +10,76 @@ import { install } from './audit.js';
  * (split into parts of `sheetRows` states) showing every state at every width and scheme.
  * `cookies` ([{ name, value }]) are set for the origin of every http(s) URL before it loads, and `headers`
  * ({ Name: value }) go with every request: for pages behind a login.
+ * `timeout`: ms the browser gets to answer one command. A tab that stops answering (its renderer gone, e.g. while
+ * a dev server restarts and the page reloads itself) is replaced by a new one and the step is run again, up to
+ * `retries` times; `onRetry(message)` hears about it (default: printed to stderr).
  * @returns {Promise<{findings: Array, sheets: string[]}>}
  */
 export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 'dark'], height = 900, settle = 800,
-  overlays = true, browser, sheet, sheetRows = 3, cookies = [], headers = {} } = {}) {
+  overlays = true, browser, sheet, sheetRows = 3, cookies = [], headers = {}, timeout = 30000, retries = 2,
+  onRetry = message => console.error(message) } = {}) {
   const share = [...new Set(urls.filter(u => u.startsWith('file:')).map(u => dirname(fileURLToPath(u))))];
-  const b = await launch(browser ? browser.split(' ') : findBrowser(), { share });
+  const b = await launch(browser ? browser.split(' ') : findBrowser(), { share, timeout });
   const merged = new Map(), sheets = [];
-  try {
+  const origins = [...new Set(urls.filter(u => /^https?:/.test(u)).map(u => new URL(u).origin))];
+  const openPage = async () => {
     const page = await b.newPage();
     if (cookies.length || Object.keys(headers).length) await page.send('Network.enable');
     if (Object.keys(headers).length) await page.send('Network.setExtraHTTPHeaders', { headers });
-    const origins = [...new Set(urls.filter(u => /^https?:/.test(u)).map(u => new URL(u).origin))];
     for (const origin of origins) for (const { name, value } of cookies) {
       const { success } = await page.send('Network.setCookie', { name, value, url: origin + '/' });
       if (!success) throw new Error(`Could not set cookie ${name} for ${origin}`);
     }
+    return page;
+  };
+  // One width and scheme of one URL: the page, then each overlay. Findings and screenshots only count once the
+  // whole step went through, so a step that is run again does not leave half a step behind.
+  async function step(page, url, width, scheme) {
+    const found = [], shots = [];
+    await page.goto(url, { width, height, scheme, settle });
+    await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})`);
+    const take = async state => {
+      if (!sheet) return;
+      const scale = Math.min(0.5, 480 / width);
+      const { data } = await page.send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width, height, scale } });
+      shots.push({ state, column: `${width} ${scheme}`, data, width: Math.round(width * scale), height: Math.round(height * scale) });
+    };
+    found.push(...await page.evaluate(`window.__tsi.check('page')`));
+    await take('page');
+    const count = await page.evaluate('window.__tsi.list()');
+    for (let i = 0; i < count; i++) {
+      const state = await page.evaluate(`window.__tsi.open(${i})`);
+      if (!state) continue;
+      found.push(...await page.evaluate(`window.__tsi.check(${JSON.stringify(state)})`));
+      await take(state);
+      await page.evaluate(`window.__tsi.close(${i})`);
+    }
+    return { found, shots };
+  }
+  const replaceable = e => e?.code === 'PAGE_LOST' || e?.code === 'COMMAND_TIMEOUT';
+  try {
+    let page = await openPage();
     for (const url of urls) {
       const shots = []; // { state, column, data, width, height }
       for (const width of widths) for (const scheme of schemes) {
-        await page.goto(url, { width, height, scheme, settle });
-        await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})`);
-        const take = async state => {
-          if (!sheet) return;
-          const scale = Math.min(0.5, 480 / width);
-          const { data } = await page.send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width, height, scale } });
-          shots.push({ state, column: `${width} ${scheme}`, data, width: Math.round(width * scale), height: Math.round(height * scale) });
-        };
-        const record = found => {
-          for (const f of found) {
-            const key = [url, f.state, f.severity, f.code, f.selector].join('\u0000');
-            const entry = merged.get(key) ?? { url, ...f, where: [] };
-            const at = `${width} ${scheme}`;
-            if (!entry.where.includes(at)) entry.where.push(at);
-            if (!merged.has(key)) merged.set(key, entry);
+        for (let attempt = 0; ; attempt++) {
+          try {
+            const result = await step(page, url, width, scheme);
+            for (const f of result.found) {
+              const key = [url, f.state, f.severity, f.code, f.selector].join('\u0000');
+              const entry = merged.get(key) ?? { url, ...f, where: [] };
+              const at = `${width} ${scheme}`;
+              if (!entry.where.includes(at)) entry.where.push(at);
+              if (!merged.has(key)) merged.set(key, entry);
+            }
+            shots.push(...result.shots);
+            break;
+          } catch (e) {
+            if (!replaceable(e) || attempt >= retries) throw new Error(`${url} at ${width} ${scheme}: ${e.message}`, { cause: e });
+            onRetry(`temper-inspect: ${url} at ${width} ${scheme}: ${e.message.split('\n')[0]} Trying again in a new tab.`);
+            await page.close();
+            page = await openPage();
           }
-        };
-        record(await page.evaluate(`window.__tsi.check('page')`));
-        await take('page');
-        const count = await page.evaluate('window.__tsi.list()');
-        for (let i = 0; i < count; i++) {
-          const state = await page.evaluate(`window.__tsi.open(${i})`);
-          if (!state) continue;
-          record(await page.evaluate(`window.__tsi.check(${JSON.stringify(state)})`));
-          await take(state);
-          await page.evaluate(`window.__tsi.close(${i})`);
         }
       }
       if (sheet && shots.length) sheets.push(...await writeSheets(page, url, shots, sheet, sheetRows));

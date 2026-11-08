@@ -7,6 +7,21 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### `@tiaforge-ui/temper-inspect`
+
+- No more runs that hang forever. When the inspected tab's renderer went away (seen with a Vite dev server whose HMR
+  socket drops: the page reloads itself and Chrome reports "Render process gone"), every later command to the tab
+  waited for an answer that never came. Now a lost tab fails its pending commands at once, every command has a
+  timeout (`--timeout`, default 30000 ms; `timeout` in the API), and the step (one URL at one width and scheme) is
+  run again in a new tab, twice at most (`retries`, `onRetry` in the API).
+- A Flatpak Chrome is really stopped: it runs in a process group of its own that is killed as a whole, also on
+  SIGINT, SIGTERM and SIGHUP. Before, killing `flatpak run` left the sandboxed Chrome (13 to 18 processes, about
+  240 MB) running as an orphan after every hung or interrupted run.
+- A Flatpak Chrome gets TMPDIR (`flatpak run` drops it), so it no longer leaves a `com.google.Chrome.*` folder in the
+  app's private /tmp, and the empty mount point of the profile there is removed too.
+- JavaScript dialogs (`alert`, `confirm`, `beforeunload`) are answered instead of blocking the tab.
+- Tests: `packages/inspect/test/recover.test.js`.
+
 ### CSS
 
 - An item row inside a `data-list` keeps its `data-bar`: the list's row reset (`border: 0`) came later in the cascade
