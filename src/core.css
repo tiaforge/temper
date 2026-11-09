@@ -329,6 +329,8 @@
   }
   :where(:not(button, a, summary)[data-icon]:not([data-icon=""])) { display: inline-block; vertical-align: -0.2em; }
   :where(button, a, summary)[data-icon]:not([data-icon=""])::before { content: ""; display: inline-block; }
+  /* a plain link with text keeps a space from its icon (buttons, summaries, rail and menu items and data-layout links have a gap) */
+  :where(a[data-icon]:not([data-icon=""], :empty, [role="button"], [data-variant], [data-layout], [data-rail] *, [data-menu] *))::before { margin-inline-end: 0.375em; vertical-align: -0.2em; }
   :where(button, a[role="button"]) :where(svg) { inline-size: 1.125em; block-size: 1.125em; flex-shrink: 0; }
   :where(button, input, select, textarea):disabled { opacity: 0.5; cursor: not-allowed; }
   :where([aria-disabled="true"]) { opacity: 0.5; pointer-events: none; }

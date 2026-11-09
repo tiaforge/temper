@@ -5,6 +5,14 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### CSS
+
+- A link with an icon and text (`<a href="/" data-icon="arrow-left">All tasks</a>`) keeps 0.375em between icon
+  and text; the icon sat against the first letter. Links that lay out with a gap already (rail and menu items,
+  `role="button"`, `data-variant`, `data-layout`) and icon-only links are unchanged.
+
 ## 0.1.7 (2026-11-09)
 
 ### CSS

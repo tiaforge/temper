@@ -48,6 +48,7 @@ const probe = `(() => {
     railOn: getComputedStyle(el('rail-on')).backgroundColor,
     opener: box('open').left,
     ratio: [box('ratio').width, box('ratio').height],
+    iconGap: Object.fromEntries(['icon-link', 'icon-only', 'icon-row', 'icon-menu', 'icon-rail'].map(id => [id, getComputedStyle(el(id), '::before').marginInlineEnd])),
     viewport: innerWidth,
   };
 })()`;
@@ -71,6 +72,8 @@ test('buttons, items and menus lay out as documented', { skip: !browser && 'no C
     assert.notEqual(r.railOn, r.railOff, 'a pressed rail toggle looks like an unpressed one');
     // an image narrowed by max-inline-size keeps its ratio: its height attribute does not squash it
     assert.deepEqual(r.ratio, [120, 60]);
+    // a plain link's icon keeps 0.375em (16px text: 6px) from its text; an icon-only link and links whose layout has a gap add none
+    assert.deepEqual(r.iconGap, { 'icon-link': '6px', 'icon-only': '0px', 'icon-row': '0px', 'icon-menu': '0px', 'icon-rail': '0px' });
   }
   // there is room: the menu starts under its button
   assert.ok(Math.abs(wide.menu.left - wide.opener) < 1, `menu at ${wide.menu.left}, button at ${wide.opener}`);
