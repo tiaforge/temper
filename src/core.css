@@ -117,6 +117,15 @@
   }
 }
 
+/* ───────────── page transitions ───────────── */
+/* Navigations within the site cross-fade (cross-document view transitions; browsers without them
+   just navigate). Not with reduced motion. Off: `@view-transition { navigation: none; }` in your CSS. */
+@layer tm.base {
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition { navigation: auto; }
+  }
+}
+
 /* ───────────── base ───────────── */
 @layer tm.base {
   :where(html) {

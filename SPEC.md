@@ -113,7 +113,10 @@ CI enforces the budgets (`size-limit`).
   Caley sets `compact` on `<html>`. tia.vision keeps the default.
 - Focus: `outline: 2px solid var(--tm-accent); outline-offset: 2px` on `:focus-visible` only.
 - Motion: 150 ms ease-out. Dialogs and popovers animate in and out with `@starting-style` and
-  `transition-behavior: allow-discrete`.
+  `transition-behavior: allow-discrete`. Navigations within the site cross-fade (cross-document view
+  transitions, decided 2026-11-09, on by default; off with `@view-transition { navigation: none; }` in the
+  app's CSS, and with reduced motion). Shared-element morphs (`view-transition-name`) are the app's, or
+  sinter's `data-sn-transition`.
 - Type: system font stack (zero bytes) through `--tm-font-sans` / `--tm-font-mono`. App UI uses a
   fixed rem scale. Only the `prose` module uses fluid `clamp()`. `text-wrap: balance` on headings,
   `pretty` on paragraphs, `tabular-nums` in tables and `<time>`.
