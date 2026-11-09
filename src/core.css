@@ -108,7 +108,7 @@
 @layer tm.reset {
   :where(*, ::before, ::after) { box-sizing: border-box; margin: 0; }
   :where(html) { -webkit-text-size-adjust: none; text-size-adjust: none; }
-  :where(img, svg, video, canvas, picture) { display: block; max-inline-size: 100%; }
+  :where(img, video, canvas, svg, picture) { display: block; max-inline-size: 100%; }
   /* the height follows the width when max-inline-size narrows it: a height attribute alone would squash the image */
   :where(img, video, canvas) { block-size: auto; }
   :where(input, button, select, textarea) { font: inherit; color: inherit; letter-spacing: inherit; }
