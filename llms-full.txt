@@ -56,13 +56,15 @@ not type attributes written on elements; `temper check` checks those expressions
    In your own CSS, use the tokens (`var(--tm-text-muted)`, `var(--tm-space-sm)`), never hard-coded colors.
 7. Use `class` only for your app's own components. `data-*` attributes from the list below belong to
    temper; do not use those names for anything else.
-8. Size and tune things with the documented custom properties in `style` (`style="--tm-min: 12rem"`,
+8. Navigations within the site cross-fade (view transitions). To turn that off, add
+   `@view-transition { navigation: none; }` to your CSS; do not add your own `@view-transition` otherwise.
+9. Size and tune things with the documented custom properties in `style` (`style="--tm-min: 12rem"`,
    `style="--tm-tone: #e8590c"`, `style="--tm-avatar-size: 4rem"`). That is the intended way; do not
    write `width`, `margin` or `padding` there.
-9. Run `npx temper check <dir>` (`--fix` applies the safe fixes) after editing (or use the Vite plugin, which runs it in every build).
+10. Run `npx temper check <dir>` (`--fix` applies the safe fixes) after editing (or use the Vite plugin, which runs it in every build).
    It reports bad values, misplaced attributes, missing module imports and
    unlabeled buttons. For "no attribute" use `null`, not `false`: `cond ? 'x' : null`.
-10. To see the result, prefer `npx temper-inspect <dev-server-url>` (package
+11. To see the result, prefer `npx temper-inspect <dev-server-url>` (package
     `@tiaforge-ui/temper-inspect`, if installed) over screenshots. It opens every dialog and popover
     at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
     contrast, unlabeled controls and covered click targets as text. To judge how it looks, add

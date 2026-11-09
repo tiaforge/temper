@@ -9,6 +9,11 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### CSS
 
+- Page transitions: navigations within the site cross-fade (`@view-transition { navigation: auto; }` in
+  `core.css`, the browser's default cross-fade), not with `prefers-reduced-motion: reduce`. Browsers
+  without cross-document view transitions just navigate. Turn it off with `@view-transition { navigation: none; }`
+  in your own CSS (checked in Chromium: it wins over temper's layered rule).
+
 - An item row inside a `data-list` keeps its `data-bar`: the list's row reset (`border: 0`) came later in the cascade
   and removed the colored bar.
 - A pressed toggle in a `data-rail` (`aria-pressed="true"`, e.g. notifications on/off) shows its pressed state with the
