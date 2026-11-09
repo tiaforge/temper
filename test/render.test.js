@@ -47,6 +47,7 @@ const probe = `(() => {
     railOff: getComputedStyle(el('rail-off')).backgroundColor,
     railOn: getComputedStyle(el('rail-on')).backgroundColor,
     opener: box('open').left,
+    ratio: [box('ratio').width, box('ratio').height],
     viewport: innerWidth,
   };
 })()`;
@@ -68,6 +69,8 @@ test('buttons, items and menus lay out as documented', { skip: !browser && 'no C
     // a pressed toggle in the rail gets a background; an unpressed one stays transparent
     assert.equal(r.railOff, 'rgba(0, 0, 0, 0)');
     assert.notEqual(r.railOn, r.railOff, 'a pressed rail toggle looks like an unpressed one');
+    // an image narrowed by max-inline-size keeps its ratio: its height attribute does not squash it
+    assert.deepEqual(r.ratio, [120, 60]);
   }
   // there is room: the menu starts under its button
   assert.ok(Math.abs(wide.menu.left - wide.opener) < 1, `menu at ${wide.menu.left}, button at ${wide.opener}`);
