@@ -26,6 +26,8 @@
   <div data-list><button id="list-bar" type="button" data-variant="item" data-bar style="--tm-tone: rgb(255, 152, 0)">Soccer</button></div>
   <!-- a pressed toggle in the rail looks pressed -->
   <nav data-rail aria-label="Main"><button id="rail-off" type="button" data-icon="bell" aria-pressed="false"><span>Off</span></button><button id="rail-on" type="button" data-icon="bell" aria-pressed="true"><span>On</span></button></nav>
+  <!-- an image with width and height in a narrower column keeps its ratio (400 × 200 in 120 px: 120 × 60) -->
+  <div style="inline-size: 120px"><img id="ratio" alt="" width="400" height="200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'/%3E"></div>
   <div popover id="menu" data-menu><div style="inline-size: 20rem; block-size: 4rem"></div></div>
 </main>
 </body>

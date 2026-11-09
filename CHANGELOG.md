@@ -13,7 +13,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   and removed the colored bar.
 - A pressed toggle in a `data-rail` (`aria-pressed="true"`, e.g. notifications on/off) shows its pressed state with the
   soft accent background. The rail item rule's `:not()` outweighed the general pressed styles, so it looked unpressed.
-- Tests: `test/render.test.js` covers both.
+- An `<img>`, `<video>` or `<canvas>` with `width` and `height` keeps its ratio when `max-inline-size: 100%` narrows
+  it in a smaller column: `block-size: auto` in the reset. Before, the `height` attribute kept its full height and the
+  image was squashed.
+- Tests: `test/render.test.js` covers all three.
 
 ## 0.1.3 (2026-11-07)
 
