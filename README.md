@@ -217,7 +217,7 @@ drawer) and compares them pixel by pixel with baselines in `test/visual/`. A cha
 image with the changed pixels in red. Baselines depend on fonts and the Chrome version, so they are
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
-**Size budgets are enforced.** `npm run build` fails above budget.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). They sit a little above the current sizes, so a fix fits and real growth means raising one on purpose.
 
 | File | brotli | What's in it |
 |---|---|---|
@@ -227,7 +227,7 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 | `feedback.css` | 0.8 KB | toasts, tooltips (anchor-positioned, never clipped by a scroll container) |
 | `table.css` | 0.7 KB | data tables: sortable headers (`aria-sort`), row selection, number columns, sticky header |
 | `icons.css` | 3.0 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
-| `all.css` | 10.0 KB | everything |
+| `all.css` | 10.2 KB | everything |
 | `enhance/customizable-select.css` | 0.9 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 
 ## Built for LLMs and coding agents

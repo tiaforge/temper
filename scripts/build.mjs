@@ -8,7 +8,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const v = (major, minor = 0) => (major << 16) | (minor << 8);
 // Baseline 2024: the first versions with light-dark(). Nothing newer gets lowered or prefixed.
 const targets = { chrome: v(123), firefox: v(120), safari: v(17, 5) };
-const budgets = { 'core.css': 5.5 * 1024, 'all.css': 16 * 1024, 'icons.css': 6 * 1024 }; // brotli bytes; modules default to 1.5 KB
+const budgets = { 'core.css': 6 * 1024, 'all.css': 11.5 * 1024, 'icons.css': 3.5 * 1024 }; // brotli bytes, about 5-10 % above the current size: small fixes fit, growth is a decision; modules default to 1.5 KB
 const moduleBudget = 1.5 * 1024;
 
 mkdirSync(root + 'dist/enhance', { recursive: true });
