@@ -38,7 +38,13 @@ const browsersUnder = dir => readdirSync('/proc').filter(p => /^\d+$/.test(p)).f
 });
 const settled = async (check, ms = 5000) => { for (const end = Date.now() + ms; Date.now() < end && !check();) await new Promise(r => setTimeout(r, 100)); return check(); };
 
-// Crashes the renderer of the inspected tab from a second DevTools connection, like a renderer that goes away.
+// The renderer goes away through chrome://kill: the browser terminates it, so the tab reports Inspector.targetCrashed
+// at once. Page.crash would make it segfault instead, and a system crash handler (systemd-coredump, apport) then holds
+// the dying process while it writes a core dump: no crash event for a long time (CI timed out), and a desktop crash
+// notification on every run.
+const KILL = { url: 'chrome://kill' };
+
+// Kills the renderer of the inspected tab from a second DevTools connection, like a renderer that goes away.
 async function crashTab(dir) {
   const profile = readdirSync(dir).find(d => d.startsWith('temper-inspect-'));
   const [port, path] = readFileSync(join(dir, profile, 'DevToolsActivePort'), 'utf8').trim().split('\n');
@@ -50,7 +56,7 @@ async function crashTab(dir) {
   const { targetInfos } = await send('Target.getTargets');
   const tab = targetInfos.find(t => t.type === 'page' && t.url.startsWith('http'));
   const { sessionId } = await send('Target.attachToTarget', { targetId: tab.targetId, flatten: true });
-  ws.send(JSON.stringify({ id: ++id, method: 'Page.crash', sessionId })); // never answered: the renderer is gone
+  ws.send(JSON.stringify({ id: ++id, method: 'Page.navigate', params: KILL, sessionId })); // never answered: the renderer is gone
   await new Promise(r => setTimeout(r, 300));
   ws.close();
 }
@@ -64,7 +70,7 @@ test('commands to a tab whose renderer is gone fail at once; a command without a
     assert.equal(await page.evaluate('document.title'), 't');
     // a promise that never settles: the command gets no answer
     await assert.rejects(page.evaluate('new Promise(() => {})'), { code: 'COMMAND_TIMEOUT', message: /Runtime\.evaluate within 2 s/ });
-    page.send('Page.crash').catch(() => {});
+    page.send('Page.navigate', KILL).catch(() => {});
     const t0 = Date.now();
     await assert.rejects(page.evaluate('1'), { code: 'PAGE_LOST' });
     assert.ok(Date.now() - t0 < 1500, 'rejected when the renderer went away, not at the timeout');
