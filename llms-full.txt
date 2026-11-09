@@ -475,7 +475,7 @@ buttons to the end.
   </header>
   <p>This sends a cancellation to all guests.</p>
   <footer>
-    <button commandfor="confirm" command="close" data-variant="secondary">Keep</button>
+    <button commandfor="confirm" command="close" data-variant="ghost">Keep</button>
     <button data-tone="danger">Delete event</button>
   </footer>
 </dialog>

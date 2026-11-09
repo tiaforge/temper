@@ -53,7 +53,7 @@ Vue and JSX it follows expressions: `failed ? 'danger' : 'sucess'` is an error.
 <dialog id="confirm">
   <h2>Delete “Team retro”?</h2>
   <footer>
-    <button commandfor="confirm" command="close" data-variant="secondary">Keep</button>
+    <button commandfor="confirm" command="close" data-variant="ghost">Keep</button>
     <button data-tone="danger">Delete event</button>
   </footer>
 </dialog>
