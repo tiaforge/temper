@@ -544,7 +544,7 @@
     },
     {
       "name": "data-stretch",
-      "description": "temper. On: the main link or button inside an article. Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button.",
+      "description": "temper. On: the main link or button inside an article. Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button. temper keeps the element position: static and unmoved when pressed (the overlay is placed against the card); do not give it position, transform or filter yourself. While aria-busy=\"true\" the card is not clickable and the spinner shows on the button.",
       "valueSet": "v"
     },
     {

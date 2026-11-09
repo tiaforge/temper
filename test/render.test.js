@@ -12,7 +12,7 @@ let browser = null;
 try { browser = findBrowser(); } catch {}
 const root = fileURLToPath(new URL('..', import.meta.url));
 
-async function withPage(width, fn) {
+async function withPage(width, fn, fixture = 'layout.html') {
   const srv = createServer(async (req, res) => {
     try {
       const body = await readFile(join(root, decodeURIComponent(req.url.split('?')[0])));
@@ -24,7 +24,7 @@ async function withPage(width, fn) {
   const b = await launch(browser);
   try {
     const page = await b.newPage();
-    await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/layout.html`, { width, height: 700, scheme: 'light', settle: 100 });
+    await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/${fixture}`, { width, height: 700, scheme: 'light', settle: 100 });
     return await fn(page);
   } finally {
     await b.close();
@@ -76,4 +76,42 @@ test('buttons, items and menus lay out as documented', { skip: !browser && 'no C
   assert.ok(Math.abs(wide.menu.left - wide.opener) < 1, `menu at ${wide.menu.left}, button at ${wide.opener}`);
   // no room on a phone: the menu stays inside the screen with a gap on both sides
   assert.ok(narrow.menu.left >= 4 && narrow.viewport - narrow.menu.right >= 4, `menu ${narrow.menu.left}..${narrow.menu.right} of ${narrow.viewport}`);
+});
+
+// A real press and release (CDP mouse events, not element.click()) at a point of the card: returns what was clicked.
+async function press(page, x, y) {
+  await page.evaluate('window.clicks = []; document.getElementById("detail").close()');
+  await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+  await page.send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', buttons: 1, clickCount: 1 });
+  await page.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', buttons: 0, clickCount: 1 });
+  return page.evaluate('({ clicks: window.clicks, open: document.getElementById("detail").open })');
+}
+
+test('a stretch card is clickable anywhere, its other links on their own', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(1280, async page => {
+    const rect = id => page.evaluate(`(() => { const r = document.getElementById('${id}').getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; })()`);
+    const commands = await page.evaluate("'command' in HTMLButtonElement.prototype");
+    for (const [card, target] of [['card-button', 'stretch-button'], ['card-link', 'stretch-link'], ['card-role', 'stretch-role']]) {
+      const c = await rect(card);
+      // corners (inside the border radius) and the middle of the free space below the avatar's side
+      for (const [x, y] of [[c.x + 12, c.y + 12], [c.x + c.w - 12, c.y + c.h - 12], [c.x + 12, c.y + c.h / 2]]) {
+        const r = await press(page, x, y);
+        assert.deepEqual(r.clicks, [target], `${card} pressed at ${x},${y}`);
+        if (target === 'stretch-button' && commands) assert.ok(r.open, 'the commandfor dialog did not open');
+      }
+    }
+    // the stretch element's own text (data-truncate: overflow hidden does not clip the overlay, which the corners show)
+    const b = await rect('stretch-button');
+    assert.deepEqual((await press(page, b.x + b.w / 2, b.y + b.h / 2)).clicks, ['stretch-button']);
+    // links and buttons inside the card are above the overlay
+    for (const id of ['nested-link', 'nested-button']) {
+      const n = await rect(id);
+      const r = await press(page, n.x + n.w / 2, n.y + n.h / 2);
+      assert.deepEqual(r.clicks, [id]);
+      assert.ok(!r.open);
+    }
+    // a busy stretch button keeps position: relative, so its spinner (::after) stays on the button
+    assert.equal(await page.evaluate("getComputedStyle(document.getElementById('stretch-busy')).position"), 'relative');
+    assert.equal(await page.evaluate("getComputedStyle(document.getElementById('stretch-button')).position"), 'static');
+  }, 'stretch.html');
 });

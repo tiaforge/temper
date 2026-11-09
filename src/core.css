@@ -620,6 +620,12 @@
   :where([data-stretch]):focus-visible { outline: none; }
   :where(a[data-stretch], [data-stretch][data-variant="link"]) { color: inherit; text-decoration: none; }
   :where([data-stretch])::after { content: ""; position: absolute; inset: 0; border-radius: var(--tm-radius-lg); }
+  /* the overlay is positioned against the card, so nothing may make the stretch element its containing block:
+     buttons are position: relative (for the busy spinner) and move when pressed (a transform). Pressing would
+     shrink the overlay to the button, and the release, outside it, would click the card instead of the button.
+     A busy stretch button keeps position: relative: its ::after is then the spinner, on the button. */
+  :where([data-stretch]:not([aria-busy="true"])) { position: static; }
+  :where([data-stretch]):active { transform: none; }
   :where(article:has([data-stretch])) :where(a, button, input, select, textarea, label):not([data-stretch]) { position: relative; z-index: 1; }
 }
 

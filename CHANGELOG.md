@@ -7,6 +7,17 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### CSS
+
+- A clickable card whose `data-stretch` element is a button (`<button data-stretch data-variant="link" commandfor=…>`,
+  as the docs suggest for opening a dialog) or an `a[role="button"]` is clickable anywhere again. Buttons are
+  `position: relative` (for the busy spinner), so the card-wide overlay was placed against the button and only its
+  text took clicks; and the press transform made the button the overlay's containing block again, so a press
+  elsewhere on the card shrank the overlay and the click went to the card, not the button. A stretch element is now
+  `position: static` and not moved when pressed. A busy one (`aria-busy="true"`) stays `position: relative`, so its
+  spinner shows on the button; the card is not clickable while it is busy. Test: `test/render.test.js` (real mouse
+  presses in Chromium, `test/fixtures/stretch.html`).
+
 ## 0.1.5 (2026-11-08)
 
 ### `@tiaforge-ui/temper-inspect`

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Clickable cards</title>
+<link rel="stylesheet" href="../../src/core.css">
+</head>
+<body>
+<main data-layout="grid" data-gap="md" data-pad="md" style="--tm-min: 16rem">
+  <!-- a card whose stretch button opens a dialog (a contact card): a press anywhere on the card clicks the button -->
+  <article id="card-button" data-layout="stack" data-gap="xs" data-align="center">
+    <span data-avatar>MO</span>
+    <button id="stretch-button" type="button" data-stretch data-variant="link" data-truncate commandfor="detail" command="show-modal">Mira Okafor</button>
+    <a id="nested-link" href="#nested">mira@okafor.io</a>
+    <small data-muted>Climbing club</small>
+  </article>
+  <!-- the same with a link -->
+  <article id="card-link" data-layout="stack" data-gap="xs" data-align="center">
+    <span data-avatar>PR</span>
+    <a id="stretch-link" href="#priya" data-stretch><strong>Priya Raman</strong></a>
+    <button id="nested-button" type="button" data-variant="outline" data-size="sm">Call</button>
+    <small data-muted>Work</small>
+  </article>
+  <!-- a link that looks like a button -->
+  <article id="card-role" data-layout="stack" data-gap="xs" data-align="center">
+    <span data-avatar>PS</span>
+    <a id="stretch-role" href="#paul" role="button" data-stretch>Paul Schulz</a>
+    <small data-muted>Neighbor</small>
+  </article>
+  <!-- a busy stretch button keeps its spinner on itself -->
+  <article id="card-busy" data-layout="stack" data-gap="xs" data-align="center">
+    <button id="stretch-busy" type="button" data-stretch aria-busy="true">Saving</button>
+  </article>
+</main>
+<dialog id="detail"><p>Mira Okafor</p></dialog>
+<script>
+  window.clicks = [];
+  addEventListener('click', e => { window.clicks.push(e.target.id || e.target.tagName); if (e.target.closest('a[href^="#"]')) e.preventDefault(); }, true);
+</script>
+</body>
+</html>
