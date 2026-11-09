@@ -28,7 +28,7 @@
     --tm-bg: light-dark(oklch(1 0 0), oklch(0.145 var(--_n)));
     --tm-surface: light-dark(oklch(1 0 0), oklch(0.17 var(--_n)));
     --tm-surface-raised: light-dark(oklch(1 0 0), oklch(0.2 var(--_n)));
-    --tm-fill: light-dark(oklch(0.965 var(--_n)), oklch(0.235 var(--_n)));
+    --tm-fill: light-dark(oklch(0.965 var(--_n)), oklch(0.27 var(--_n)));
     --tm-field: var(--tm-surface);
     --tm-field-border: var(--tm-border-strong);
     --tm-border: light-dark(oklch(0.9 var(--_n)), oklch(0.28 var(--_n)));
