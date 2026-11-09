@@ -35,14 +35,18 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
     probe.remove();
     return c;
   };
-  const ratio = (fg, bg, tone) => {
-    const b = blend(read(bg, tone), { r: 255, g: 255, b: 255, a: 1 }), f = blend(read(fg, tone), b);
+  // bg is composited over `under` (itself over white): a translucent bg such as --tm-fill shows what it sits on.
+  const ratio = (fg, bg, tone, under = '--tm-bg') => {
+    const u = blend(read(under, tone), { r: 255, g: 255, b: 255, a: 1 });
+    const b = blend(read(bg, tone), u), f = blend(read(fg, tone), b);
     const [x, y] = [lum(f), lum(b)].sort((p, q) => q - p);
     return { ratio: (x + 0.05) / (y + 0.05), fg: hex(f), bg: hex(b) };
   };
 
-  // [group, label, fg, bg, tone, minimum]. 4.5 = WCAG AA body text, 3 = non-text UI (1.4.11).
-  const text = [['--tm-bg', 'bg'], ['--tm-surface', 'surface'], ['--tm-surface-raised', 'raised'], ['--tm-fill', 'fill']];
+  // [group, label, fg, bg, tone, minimum, under]. 4.5 = WCAG AA body text, 3 = non-text UI (1.4.11).
+  // [bg, name, under]: the fill is translucent, so it is checked on each surface it can sit on.
+  const text = [['--tm-bg', 'bg'], ['--tm-surface', 'surface'], ['--tm-surface-raised', 'raised'],
+    ['--tm-fill', 'fill on bg', '--tm-bg'], ['--tm-fill', 'fill on surface', '--tm-surface'], ['--tm-fill', 'fill on raised', '--tm-surface-raised']];
   const tonePairs = tone => [
     ...text.slice(0, 3).map(([bg, n]) => [`${tone} text on ${n}`, '--tm-tone-ink', bg, tone, 4.5]),
     [`${tone} text on ${tone}-soft`, '--tm-tone-ink', '--tm-tone-soft', tone, 4.5],
@@ -50,9 +54,9 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
   ];
   const checks = {
     neutral: [
-      ...text.map(([bg, n]) => [`text on ${n}`, '--tm-text', bg, null, 4.5]),
-      ...text.map(([bg, n]) => [`muted text on ${n}`, '--tm-text-muted', bg, null, 4.5]),
-      ['muted text on field (placeholder)', '--tm-text-muted', '--tm-field', null, 4.5],
+      ...text.map(([bg, n, under]) => [`text on ${n}`, '--tm-text', bg, null, 4.5, under]),
+      ...text.map(([bg, n, under]) => [`muted text on ${n}`, '--tm-text-muted', bg, null, 4.5, under]),
+      ['muted text on field (placeholder)', '--tm-text-muted', '--tm-field', null, 4.5, '--tm-surface'],
       ['main button', '--tm-tone-on', '--tm-tone', 'primary', 4.5],
     ],
     accent: [
@@ -65,7 +69,7 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
   };
 
   const set = (name, v) => v == null ? html.style.removeProperty(name) : html.style.setProperty(name, String(v));
-  const run = (group, scheme, at) => checks[group].map(([label, fg, bg, tone, min]) => ({ group, label, scheme, ...at, min, ...ratio(fg, bg, tone) }));
+  const run = (group, scheme, at) => checks[group].map(([label, fg, bg, tone, min, under]) => ({ group, label, scheme, ...at, min, ...ratio(fg, bg, tone, under) }));
   const results = [], caps = [];
   for (const scheme of ['light', 'dark']) {
     html.dataset.theme = scheme;
