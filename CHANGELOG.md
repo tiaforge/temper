@@ -5,7 +5,7 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
-## Unreleased
+## 0.1.7 (2026-11-09)
 
 ### CSS
 
@@ -17,6 +17,22 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   `position: static` and not moved when pressed. A busy one (`aria-busy="true"`) stays `position: relative`, so its
   spinner shows on the button; the card is not clickable while it is busy. Test: `test/render.test.js` (real mouse
   presses in Chromium, `test/fixtures/stretch.html`).
+
+### Build
+
+- Size budgets sit about 5-10 % above the current sizes, so a fix fits and growth means raising one on purpose:
+  `core.css` 5.5 -> 6 KB (it was 3 bytes under its budget, so the fix above needed a raise), `all.css` 16 -> 11.5 KB,
+  `icons.css` 6 -> 3.5 KB (brotli). The README lists them.
+
+## 0.1.6 (2026-11-09)
+
+### CSS
+
+- Page transitions: navigations within the site cross-fade (`@view-transition { navigation: auto; }` in `core.css`,
+  `tm.base` layer), not with `prefers-reduced-motion: reduce`. An app turns it off with
+  `@view-transition { navigation: none; }` in its own CSS.
+- Reset: `block-size: auto` on `img`, `video` and `canvas`, so one with `width` and `height` attributes keeps its
+  ratio when `max-inline-size` narrows it (the height attribute used to squash it).
 
 ## 0.1.5 (2026-11-08)
 

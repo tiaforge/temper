@@ -1,6 +1,6 @@
 {
   "name": "@tiaforge-ui/temper",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "AI-first CSS for semantic HTML: data-* variants with a checked vocabulary, automatic light and dark mode.",
   "license": "MIT",
   "author": "Tia Heinrich",
