@@ -5,15 +5,25 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
-## Unreleased
+## 0.1.9 (2026-11-10)
 
 ### CSS
 
+- Dark theme: `--tm-fill` 0.235 → 0.27 lightness. A neutral secondary button nearly vanished on a dialog (0.035
+  above the raised surface) and looked smaller than the primary next to it; now 0.07 on dialogs, 0.1 on cards,
+  0.125 on the page, still below `--tm-border`. Also code, pre, meter/progress tracks, tab and item hovers.
 - A menu with more items than fit (`[data-menu]` is capped at `min(24rem, 80dvh)` and scrolls) no longer squashes
   its rows onto each other: its items do not shrink (`flex-shrink: 0`). Render test with a long checklist menu.
 - No browser tap highlight (`-webkit-tap-highlight-color: transparent` on `html`, inherited): Chromium on Android
   drew a fading rectangle over a tapped button, which showed through a nav drawer opening over it (Caley's ☰ on a
   phone). Buttons, links and items keep their own hover, press and focus states.
+
+### Docs and tooling
+
+- The dialog example's dismiss button is ghost, like Cancel in the kitchen sink and the variant vocabulary (it was
+  secondary).
+- Contrast check: a background is composited over the surface it sits on (was always white), and the fill is
+  checked on bg, surface and raised.
 
 ## 0.1.8 (2026-11-09)
 
