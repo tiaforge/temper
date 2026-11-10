@@ -11,6 +11,9 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 - A menu with more items than fit (`[data-menu]` is capped at `min(24rem, 80dvh)` and scrolls) no longer squashes
   its rows onto each other: its items do not shrink (`flex-shrink: 0`). Render test with a long checklist menu.
+- No browser tap highlight (`-webkit-tap-highlight-color: transparent` on `html`, inherited): Chromium on Android
+  drew a fading rectangle over a tapped button, which showed through a nav drawer opening over it (Caley's ☰ on a
+  phone). Buttons, links and items keep their own hover, press and focus states.
 
 ## 0.1.8 (2026-11-09)
 

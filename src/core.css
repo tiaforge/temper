@@ -107,7 +107,10 @@
 /* ───────────── reset ───────────── */
 @layer tm.reset {
   :where(*, ::before, ::after) { box-sizing: border-box; margin: 0; }
-  :where(html) { -webkit-text-size-adjust: none; text-size-adjust: none; }
+  /* no browser tap highlight (Chromium on Android draws a rectangle over the tapped element as it fades): buttons,
+     links and items have their own hover, press and focus states, and a drawer opening over the tapped button
+     would show the rectangle on its first frames */
+  :where(html) { -webkit-text-size-adjust: none; text-size-adjust: none; -webkit-tap-highlight-color: transparent; }
   :where(img, video, canvas, svg, picture) { display: block; max-inline-size: 100%; }
   /* the height follows the width when max-inline-size narrows it: a height attribute alone would squash the image */
   :where(img, video, canvas) { block-size: auto; }

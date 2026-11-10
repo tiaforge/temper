@@ -131,3 +131,10 @@ test('a menu with more items than fit scrolls, and no item shrinks', { skip: !br
     assert.deepEqual(r.long, r.free);
   }, 'menu-long.html');
 });
+
+test('no browser tap highlight: every element inherits a transparent one', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(390, async page => {
+    const colors = await page.evaluate(`[...new Set([...document.querySelectorAll('html, button, a, label, [data-menu] *')].map(e => getComputedStyle(e).webkitTapHighlightColor))]`);
+    assert.deepEqual(colors, ['rgba(0, 0, 0, 0)']);
+  });
+});
