@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Long menus</title>
+<link rel="stylesheet" href="../../src/core.css">
+<link rel="stylesheet" href="../../src/menu.css">
+</head>
+<body>
+<main data-pad="md">
+  <!-- more items than fit (a sender filter): the menu scrolls, every row keeps its height -->
+  <div id="long" data-menu>
+    <button type="button">Clear all</button>
+    <hr>
+    <label><input type="checkbox"> sender0@example.org</label>
+    <label><input type="checkbox"> sender1@example.org</label>
+    <label><input type="checkbox"> sender2@example.org</label>
+    <label><input type="checkbox"> sender3@example.org</label>
+    <label><input type="checkbox"> sender4@example.org</label>
+    <label><input type="checkbox"> sender5@example.org</label>
+    <label><input type="checkbox"> sender6@example.org</label>
+    <label><input type="checkbox"> sender7@example.org</label>
+    <label><input type="checkbox"> sender8@example.org</label>
+    <label><input type="checkbox"> sender9@example.org</label>
+    <label><input type="checkbox"> sender10@example.org</label>
+    <label><input type="checkbox"> sender11@example.org</label>
+    <label><input type="checkbox"> sender12@example.org</label>
+    <label><input type="checkbox"> sender13@example.org</label>
+    <label><input type="checkbox"> sender14@example.org</label>
+    <label><input type="checkbox"> sender15@example.org</label>
+    <label><input type="checkbox"> sender16@example.org</label>
+    <label><input type="checkbox"> sender17@example.org</label>
+    <label><input type="checkbox"> sender18@example.org</label>
+    <label><input type="checkbox"> sender19@example.org</label>
+    <label><input type="checkbox"> sender20@example.org</label>
+    <label><input type="checkbox"> sender21@example.org</label>
+    <label><input type="checkbox"> sender22@example.org</label>
+    <label><input type="checkbox"> sender23@example.org</label>
+    <label><input type="checkbox"> sender24@example.org</label>
+    <label><input type="checkbox"> sender25@example.org</label>
+    <label><input type="checkbox"> sender26@example.org</label>
+    <label><input type="checkbox"> sender27@example.org</label>
+    <label><input type="checkbox"> sender28@example.org</label>
+    <label><input type="checkbox"> sender29@example.org</label>
+    <ul>
+      <li><a href="#l0">Folder 0</a></li>
+      <li><a href="#l1">Folder 1</a></li>
+      <li><a href="#l2">Folder 2</a></li>
+      <li><a href="#l3">Folder 3</a></li>
+      <li><a href="#l4">Folder 4</a></li>
+      <li><a href="#l5">Folder 5</a></li>
+      <li><a href="#l6">Folder 6</a></li>
+      <li><a href="#l7">Folder 7</a></li>
+      <li><a href="#l8">Folder 8</a></li>
+      <li><a href="#l9">Folder 9</a></li>
+    </ul>
+  </div>
+  <!-- the same items without the cap: the heights they should have -->
+  <div id="free" data-menu style="max-block-size: none">
+    <button type="button">Clear all</button>
+    <hr>
+    <label><input type="checkbox"> sender0@example.org</label>
+    <label><input type="checkbox"> sender1@example.org</label>
+    <label><input type="checkbox"> sender2@example.org</label>
+    <label><input type="checkbox"> sender3@example.org</label>
+    <label><input type="checkbox"> sender4@example.org</label>
+    <label><input type="checkbox"> sender5@example.org</label>
+    <label><input type="checkbox"> sender6@example.org</label>
+    <label><input type="checkbox"> sender7@example.org</label>
+    <label><input type="checkbox"> sender8@example.org</label>
+    <label><input type="checkbox"> sender9@example.org</label>
+    <label><input type="checkbox"> sender10@example.org</label>
+    <label><input type="checkbox"> sender11@example.org</label>
+    <label><input type="checkbox"> sender12@example.org</label>
+    <label><input type="checkbox"> sender13@example.org</label>
+    <label><input type="checkbox"> sender14@example.org</label>
+    <label><input type="checkbox"> sender15@example.org</label>
+    <label><input type="checkbox"> sender16@example.org</label>
+    <label><input type="checkbox"> sender17@example.org</label>
+    <label><input type="checkbox"> sender18@example.org</label>
+    <label><input type="checkbox"> sender19@example.org</label>
+    <label><input type="checkbox"> sender20@example.org</label>
+    <label><input type="checkbox"> sender21@example.org</label>
+    <label><input type="checkbox"> sender22@example.org</label>
+    <label><input type="checkbox"> sender23@example.org</label>
+    <label><input type="checkbox"> sender24@example.org</label>
+    <label><input type="checkbox"> sender25@example.org</label>
+    <label><input type="checkbox"> sender26@example.org</label>
+    <label><input type="checkbox"> sender27@example.org</label>
+    <label><input type="checkbox"> sender28@example.org</label>
+    <label><input type="checkbox"> sender29@example.org</label>
+    <ul>
+      <li><a href="#l0">Folder 0</a></li>
+      <li><a href="#l1">Folder 1</a></li>
+      <li><a href="#l2">Folder 2</a></li>
+      <li><a href="#l3">Folder 3</a></li>
+      <li><a href="#l4">Folder 4</a></li>
+      <li><a href="#l5">Folder 5</a></li>
+      <li><a href="#l6">Folder 6</a></li>
+      <li><a href="#l7">Folder 7</a></li>
+      <li><a href="#l8">Folder 8</a></li>
+      <li><a href="#l9">Folder 9</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>

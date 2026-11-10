@@ -118,3 +118,16 @@ test('a stretch card is clickable anywhere, its other links on their own', { ski
     assert.equal(await page.evaluate("getComputedStyle(document.getElementById('stretch-button')).position"), 'static');
   }, 'stretch.html');
 });
+
+test('a menu with more items than fit scrolls, and no item shrinks', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(1280, async page => {
+    const r = await page.evaluate(`(() => {
+      const heights = id => [...document.getElementById(id).children].map(c => Math.round(c.getBoundingClientRect().height * 10) / 10);
+      const m = document.getElementById('long');
+      return { long: heights('long'), free: heights('free'), scrolls: m.scrollHeight > m.clientHeight + 1, client: m.clientHeight };
+    })()`);
+    assert.ok(r.scrolls, `the capped menu does not scroll (${r.client}px)`);
+    // every row as tall as in the uncapped menu (the divider and the list included)
+    assert.deepEqual(r.long, r.free);
+  }, 'menu-long.html');
+});

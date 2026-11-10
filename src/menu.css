@@ -13,6 +13,8 @@
     background: var(--tm-surface-raised); color: var(--tm-text); box-shadow: var(--tm-shadow-lg);
   }
   :where([popover][data-menu]:not(:popover-open)) { display: none; }
+  /* a capped menu scrolls: its rows keep their height instead of shrinking onto each other */
+  :where([data-menu]) > * { flex-shrink: 0; }
   :where([data-menu]) :where(ul, ol) { display: flex; flex-direction: column; gap: 1px; padding: 0; margin: 0; list-style: none; }
 
   /* items: buttons, links and checklist labels */

@@ -5,6 +5,13 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### CSS
+
+- A menu with more items than fit (`[data-menu]` is capped at `min(24rem, 80dvh)` and scrolls) no longer squashes
+  its rows onto each other: its items do not shrink (`flex-shrink: 0`). Render test with a long checklist menu.
+
 ## 0.1.8 (2026-11-09)
 
 ### CSS
