@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { mkdtempSync, readdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,7 +36,8 @@ test('fixtures: every check on broken.html, a clean page, dialogs opened through
   const prevTmp = process.env.TMPDIR;
   process.env.TMPDIR = tmp;
   try {
-    const { findings } = await inspect(['broken', 'rows', 'state'].map(f => `${base}${f}.html`), { settle: 200 });
+    const sheet = join(tmp, 'sheet');
+    const { findings, sheets, shots } = await inspect(['broken', 'rows', 'state'].map(f => `${base}${f}.html`), { settle: 200, sheet });
     const of = (file, state = 'page') => findings.filter(f => f.url.endsWith(file) && f.state === state);
     const codes = list => [...new Set(list.map(f => `${f.severity} ${f.code}`))].sort();
     const all = ['1280 light', '1280 dark', '390 light', '390 dark'];
@@ -69,6 +70,15 @@ test('fixtures: every check on broken.html, a clean page, dialogs opened through
     assert.doesNotMatch(text, /rows\.html/);
     assert.match(text, /5 error\(s\), 4 warning\(s\) \(\d+ info hidden/);
     assert.match(format(findings, { allWhere: all, verbose: true }), /rows\.html\n  dialog dialog#f\n    info opened/);
+    // --sheet: a scaled-down contact sheet per page (state.html has 4 states, 3 per sheet), and every state at full size
+    assert.deepEqual(sheets.filter(f => f.includes('state-html')).map(f => f.slice(sheet.length + 1)).sort(),
+      ['packages-inspect-test-fixtures-state-html-1.png', 'packages-inspect-test-fixtures-state-html-2.png']);
+    const detail = shots.filter(s => s.url.endsWith('state.html') && s.state === 'dialog dialog#detail');
+    assert.deepEqual(detail.map(s => `${s.width} ${s.scheme}`), all);
+    const png = readFileSync(detail.find(s => s.width === 390).file);
+    assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [390, 900]);
+    assert.match(detail[0].file, /packages-inspect-test-fixtures-state-html\/01-dialog-dialog-detail-1280-light\.png$/);
+    rmSync(sheet, { recursive: true });
     // the browser profile is removed (also when the browser is a Flatpak, whose /tmp is not ours)
     assert.deepEqual(readdirSync(tmp), []);
   } finally {

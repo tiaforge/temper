@@ -7,20 +7,22 @@ import { install } from './audit.js';
 /**
  * Loads each URL at each width and color scheme, opens every dialog and popover one at a time, and
  * returns merged findings. With `sheet` (a directory), it also writes contact sheets: one PNG per URL
- * (split into parts of `sheetRows` states) showing every state at every width and scheme.
+ * (split into parts of `sheetRows` states) showing every state at every width and scheme, scaled down for an
+ * overview, and next to them each state at full size (`<dir>/<page>/<state>-<width>-<scheme>.png`, 1 CSS px = 1 px),
+ * to look at details the sheet is too small for.
  * `cookies` ([{ name, value }]) are set for the origin of every http(s) URL before it loads, and `headers`
  * ({ Name: value }) go with every request: for pages behind a login.
  * `timeout`: ms the browser gets to answer one command. A tab that stops answering (its renderer gone, e.g. while
  * a dev server restarts and the page reloads itself) is replaced by a new one and the step is run again, up to
  * `retries` times; `onRetry(message)` hears about it (default: printed to stderr).
- * @returns {Promise<{findings: Array, sheets: string[]}>}
+ * @returns {Promise<{findings: Array, sheets: string[], shots: Array<{url, state, width, scheme, file}>}>}
  */
 export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 'dark'], height = 900, settle = 800,
   overlays = true, browser, sheet, sheetRows = 3, cookies = [], headers = {}, timeout = 30000, retries = 2,
   onRetry = message => console.error(message) } = {}) {
   const share = [...new Set(urls.filter(u => u.startsWith('file:')).map(u => dirname(fileURLToPath(u))))];
   const b = await launch(browser ? browser.split(' ') : findBrowser(), { share, timeout });
-  const merged = new Map(), sheets = [];
+  const merged = new Map(), sheets = [], shotFiles = [];
   const origins = [...new Set(urls.filter(u => /^https?:/.test(u)).map(u => new URL(u).origin))];
   const openPage = async () => {
     const page = await b.newPage();
@@ -40,9 +42,10 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
     await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})`);
     const take = async state => {
       if (!sheet) return;
+      // Full size; the contact sheet scales it down when it lays it out.
+      const { data } = await page.send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width, height, scale: 1 } });
       const scale = Math.min(0.5, 480 / width);
-      const { data } = await page.send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width, height, scale } });
-      shots.push({ state, column: `${width} ${scheme}`, data, width: Math.round(width * scale), height: Math.round(height * scale) });
+      shots.push({ state, column: `${width} ${scheme}`, width, scheme, data, w: Math.round(width * scale), h: Math.round(height * scale) });
     };
     found.push(...await page.evaluate(`window.__tsi.check('page')`));
     await take('page');
@@ -82,12 +85,31 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
           }
         }
       }
-      if (sheet && shots.length) sheets.push(...await writeSheets(page, url, shots, sheet, sheetRows));
+      if (sheet && shots.length) {
+        sheets.push(...await writeSheets(page, url, shots, sheet, sheetRows));
+        shotFiles.push(...writeShots(url, shots, sheet));
+      }
     }
   } finally {
     await b.close();
   }
-  return { findings: [...merged.values()], sheets };
+  return { findings: [...merged.values()], sheets, shots: shotFiles };
+}
+
+const slugOf = url => new URL(url).pathname.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'index';
+
+/** Writes each screenshot at full size into `<dir>/<page slug>/`, named after its state, width and scheme. */
+function writeShots(url, shots, dir) {
+  const sub = join(dir, slugOf(url));
+  mkdirSync(sub, { recursive: true });
+  const states = [...new Set(shots.map(s => s.state))];
+  // Numbered in the order the sheet shows them, so two states whose names slug alike do not overwrite each other.
+  const name = state => `${String(states.indexOf(state)).padStart(2, '0')}-${state.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').slice(0, 60) || 'state'}`;
+  return shots.map(s => {
+    const file = join(sub, `${name(s.state)}-${s.width}-${s.scheme}.png`);
+    writeFileSync(file, Buffer.from(s.data, 'base64'));
+    return { url, state: s.state, width: s.width, scheme: s.scheme, file };
+  });
 }
 
 /** Lays the screenshots out in a grid (rows: states, columns: width × scheme) and screenshots that page. */
@@ -95,7 +117,7 @@ async function writeSheets(page, url, shots, dir, rowsPerSheet) {
   mkdirSync(dir, { recursive: true });
   const columns = [...new Set(shots.map(s => s.column))];
   const states = [...new Set(shots.map(s => s.state))];
-  const slug = new URL(url).pathname.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'index';
+  const slug = slugOf(url);
   const esc = t => t.replace(/[&<>"]/g, c => `&#${c.charCodeAt(0)};`);
   const files = [];
   for (let part = 0; part * rowsPerSheet < states.length; part++) {
@@ -110,7 +132,7 @@ async function writeSheets(page, url, shots, dir, rowsPerSheet) {
       <tr><th></th>${columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr>
       ${rows.map(state => `<tr><th class="state">${esc(state)}</th>${columns.map(c => {
         const s = shots.find(x => x.state === state && x.column === c);
-        return s ? `<td><img src="data:image/png;base64,${s.data}" width="${s.width}" height="${s.height}"></td>` : '<td class="empty">not shown</td>';
+        return s ? `<td><img src="data:image/png;base64,${s.data}" width="${s.w}" height="${s.h}"></td>` : '<td class="empty">not shown</td>';
       }).join('')}</tr>`).join('')}
     </table></body></html>`;
     const { frameTree } = await page.send('Page.getFrameTree');

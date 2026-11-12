@@ -33,7 +33,10 @@ there are errors. `--json` prints machine-readable output.
 
 `--sheet <dir>` also writes a contact sheet per page: one PNG with a row per state (the page, each dialog,
 each popover) and a column per width and scheme, at most 3 states per image. Looking at one sheet
-replaces a dozen separate screenshots when you also need to judge how it looks.
+replaces a dozen separate screenshots when you also need to judge how it looks. The sheet is scaled down
+(a 1280px page shows at 480px), too small to read text or check an icon, so every state is also written
+at full size (1 CSS pixel = 1 pixel) to `<dir>/<page>/<state>-<width>-<scheme>.png`, for example
+`contacts/01-dialog-dialog-detail-390-dark.png`; `--json` lists them under `shots`.
 
 Pages behind a login: pass the session cookie with `--cookie name=value` (set for each page's origin
 before it loads) or a token with `--header "Authorization: Bearer …"` (sent with every request, also to

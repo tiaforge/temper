@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { dirname } from 'node:path';
 import { inspect, format } from '../lib/inspect.js';
 
 const args = process.argv.slice(2);
@@ -25,7 +26,8 @@ Options:
   --verbose             also show info (wrapped rows, small tap targets)
   --limit 8             max lines per check and state
   --sheet <dir>         also write contact sheets: one PNG per page showing every state (page, each
-                        dialog and popover) at every width and scheme, 3 states per image
+                        dialog and popover) at every width and scheme, 3 states per image, scaled
+                        down; plus each state at full size in <dir>/<page>/ for a closer look
   --json                print findings as JSON
   --browser <cmd>       browser command (default: CHROME_PATH or the first Chrome/Chromium found)
   --cookie name=value   set a cookie for each page's origin before it loads, e.g. a session cookie
@@ -56,10 +58,14 @@ try {
     if (i < 1) throw new Error(`--header needs "Name: value", got "${h ?? ''}"`);
     return [h.slice(0, i).trim(), h.slice(i + 1).trim()];
   }));
-  const { findings, sheets } = await inspect(args, { widths, schemes, settle, timeout, overlays, browser, sheet, cookies, headers });
+  const { findings, sheets, shots } = await inspect(args, { widths, schemes, settle, timeout, overlays, browser, sheet, cookies, headers });
   const allWhere = widths.flatMap(w => schemes.map(s => `${w} ${s}`));
-  console.log(json ? JSON.stringify({ findings, sheets }, null, 2) : format(findings, { verbose, limit, allWhere }));
-  if (sheets.length && !json) console.log(`\nContact sheets:\n${sheets.map(f => '  ' + f).join('\n')}`);
+  console.log(json ? JSON.stringify({ findings, sheets, shots }, null, 2) : format(findings, { verbose, limit, allWhere }));
+  if (sheets.length && !json) {
+    const dirs = [...new Set(shots.map(s => dirname(s.file)))];
+    console.log(`\nContact sheets (overview, scaled down):\n${sheets.map(f => '  ' + f).join('\n')}`);
+    console.log(`Full-size screenshots (<state>-<width>-<scheme>.png):\n${dirs.map(d => '  ' + d + '/').join('\n')}`);
+  }
   process.exit(findings.some(f => f.severity === 'error') ? 1 : 0);
 } catch (e) {
   console.error(e.message);

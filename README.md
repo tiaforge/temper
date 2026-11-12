@@ -245,7 +245,7 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
   page in headless Chrome at a wide and a narrow width, in light and dark mode, opens every dialog and
   popover through its real button, and reports horizontal overflow, misplaced overlays, low contrast,
   unlabeled controls and covered click targets as text, with a selector for each. `--sheet` writes
-  one contact-sheet image per page when you do want to look.
+  one contact-sheet image per page when you do want to look, and each state at full size for a closer look.
 - **`html-custom-data.json`** gives VS Code (and other editors) autocomplete and hover docs for every
   attribute value.
 

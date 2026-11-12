@@ -16,6 +16,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   `scrollbar-gutter-stable`: the space stays reserved when nothing overflows, so it belongs on the element that
   scrolls (that `<main>`, a pane, `<html>`), not on a `<main>` that only holds panes.
 
+### temper-inspect
+
+- `--sheet <dir>` also writes every state at full size (1 CSS pixel = 1 pixel), to
+  `<dir>/<page>/<state>-<width>-<scheme>.png`, and the report lists that directory. The contact sheet scales a
+  1280px page down to 480px, too small to read its text or judge an icon. `--json` lists the files under `shots`.
+
 ## 0.3.0 (2026-11-12)
 
 ### Core

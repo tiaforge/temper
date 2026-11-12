@@ -76,8 +76,8 @@ not type attributes written on elements; `temper check` checks those expressions
     `@tiaforge-ui/temper-inspect`, if installed) over screenshots. It opens every dialog and popover
     at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
     contrast, unlabeled controls and covered click targets as text. To judge how it looks, add
-    `--sheet <dir>`: it writes one image per page with every state at every width and scheme, so one
-    look replaces a dozen screenshots.
+    `--sheet <dir>`: one small image per page with every state at every width and scheme, plus each
+    state at full size in `<dir>/<page>/` for details.
 
 ## Attributes
 
