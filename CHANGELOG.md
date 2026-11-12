@@ -5,6 +5,15 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### CSS
+
+- `data-segmented`: a `role="radiogroup"` of `<label><input type="radio">text</label>` drawn as a segmented control
+  (the checked option a raised chip on a track; the radios stay in place and invisible, so keyboard and screen
+  readers work as for any radio group). `data-size` and the density set its height. Moved here from Caley's
+  week/month switch. In the kitchen sink next to the tabs.
+
 ## 0.1.9 (2026-11-10)
 
 ### CSS

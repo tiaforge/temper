@@ -245,6 +245,18 @@ with `data-pad`.
 No `data-variant` on tabs: the selected one (`aria-selected="true"`) is underlined. Your script switches
 `aria-selected` and `hidden`. `aria-orientation="vertical"` on the tablist stacks the tabs.
 
+### Segmented control
+
+```html
+<div role="radiogroup" data-segmented data-size="sm" aria-label="View">
+  <label><input type="radio" name="view" value="week" checked>Week</label>
+  <label><input type="radio" name="view" value="month">Month</label>
+</div>
+```
+
+A radio group for a view switch (a few short options, one always chosen). The checked label is a raised
+chip; keep the `input` inside its `label`. For panels that show and hide use tabs instead.
+
 ### Divider with text
 
 ```html

@@ -118,6 +118,8 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-sr-only'?: true | '' | null | Removes;
   /** Shows dt/dd pairs as a two-column label/value grid. */
   'data-pairs'?: true | '' | null | Removes;
+  /** Radio group drawn as a segmented control (labels with radios). */
+  'data-segmented'?: true | '' | null | Removes;
   /** Small, muted label text (captions, group headings). */
   'data-caption'?: true | '' | null | Removes;
   /** One bordered box; its children are rows separated by lines. */

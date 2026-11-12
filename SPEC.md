@@ -98,13 +98,13 @@ CI enforces the budgets (`size-limit`).
 
 ### 1.4 Consistent, modern look: "Graphite" (decided)
 
-- Pure grey neutrals (`--tm-neutral-tint: 0`), white surfaces in light mode, graphite (L 0.145)
+- Near-grey neutrals (`--tm-neutral-tint: 0.01`, a faint lean toward the accent hue), white surfaces in light mode, graphite (L 0.145)
   in dark mode. Structure comes from 1px borders; there are no resting shadows. Only overlays
   (dialog, popover) get a shadow.
 - **Main buttons are monochrome:** black in light mode, white in dark mode
   (`--tm-primary: var(--tm-neutral)`). The accent is reserved for selection, focus, links and checked
   controls. So black means "do this" and blue means "this is selected or interactive".
-- Default radius `--tm-radius` = 0.375rem. Everything else is derived from it (`sm` = 0.6×,
+- Default radius `--tm-radius` = 0.5rem. Everything else is derived from it (`sm` = 0.6×,
   `lg` = 1.5×, badges 0.67×, `full`).
 - Headings: weight 600, tracking −0.025em.
 - **One control height.** Button, input, select and icon-button are all `--tm-control-h`
@@ -163,7 +163,7 @@ The palette is driven by a few inputs (defaults shown):
 :root {
   --tm-hue: 255;            /* accent hue, OKLCH degrees ("Vivid" blue) */
   --tm-chroma: 0.19;        /* accent saturation */
-  --tm-neutral-tint: 0;     /* how much the greys lean toward --tm-neutral-hue; 0 = pure grey */
+  --tm-neutral-tint: 0.01;  /* how much the greys lean toward --tm-neutral-hue; 0 = pure grey */
   --tm-primary: var(--tm-neutral); /* main buttons; var(--tm-accent) for colored ones */
 }
 ```

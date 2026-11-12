@@ -364,6 +364,13 @@
         "dl"
       ]
     },
+    "data-segmented": {
+      "module": "core",
+      "boolean": true,
+      "on": "div[role=radiogroup] of <label><input type=\"radio\">text</label>",
+      "description": "Segmented control: a radio group drawn as a track with the checked option as a raised chip (week/month, list/grid). The radios stay in place, invisible, over their labels, so arrow keys, screen readers and taps work as on any radio group. data-size=\"sm\" makes it as tall as a small button. Give the group an aria-label.",
+      "short": "Radio group drawn as a segmented control (labels with radios)."
+    },
     "data-caption": {
       "module": "core",
       "boolean": true,
@@ -539,7 +546,7 @@
     },
     "--tm-neutral-tint": {
       "kind": "input",
-      "description": "How much the greys lean toward --tm-neutral-hue. Default 0 (pure grey)."
+      "description": "How much the greys lean toward --tm-neutral-hue. Default 0.01 (a faint lean; 0 is pure grey)."
     },
     "--tm-primary": {
       "kind": "input",
@@ -547,7 +554,7 @@
     },
     "--tm-radius": {
       "kind": "input",
-      "description": "Base corner radius. Default 0.375rem. The other radii derive from it."
+      "description": "Base corner radius. Default 0.5rem. The other radii derive from it."
     },
     "--tm-badge-radius": {
       "kind": "input",

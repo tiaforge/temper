@@ -290,6 +290,17 @@
             <button role="tab" aria-selected="false">Encryption</button>
             <button role="tab" aria-selected="false">Accounts</button>
           </div>
+          <div data-layout="row" data-gap="md" data-wrap="wrap">
+            <div role="radiogroup" data-segmented aria-label="View">
+              <label><input type="radio" name="ks-view" value="week" checked>Week</label>
+              <label><input type="radio" name="ks-view" value="month">Month</label>
+            </div>
+            <div role="radiogroup" data-segmented data-size="sm" aria-label="Layout">
+              <label><input type="radio" name="ks-layout" value="list">List</label>
+              <label><input type="radio" name="ks-layout" value="grid" checked>Grid</label>
+              <label><input type="radio" name="ks-layout" value="cards">Cards</label>
+            </div>
+          </div>
           <ul data-list>
             <li data-layout="row" data-justify="between" data-gap="sm">
               <span data-layout="row" data-gap="sm" data-grow>Firefox on Linux <span data-badge data-tone="accent">This browser</span></span>

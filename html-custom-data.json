@@ -523,6 +523,11 @@
       "valueSet": "v"
     },
     {
+      "name": "data-segmented",
+      "description": "temper. On: div[role=radiogroup] of <label><input type=\"radio\">text</label>. Segmented control: a radio group drawn as a track with the checked option as a raised chip (week/month, list/grid). The radios stay in place, invisible, over their labels, so arrow keys, screen readers and taps work as on any radio group. data-size=\"sm\" makes it as tall as a small button. Give the group an aria-label.",
+      "valueSet": "v"
+    },
+    {
       "name": "data-caption",
       "description": "temper. On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
       "valueSet": "v"

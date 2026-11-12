@@ -14,10 +14,10 @@
     --tm-hue: 255;
     --tm-chroma: 0.19;
     --tm-neutral-hue: var(--tm-hue);
-    --tm-neutral-tint: 0;
+    --tm-neutral-tint: 0.01;
 
     /* shape and type inputs */
-    --tm-radius: 0.375rem;
+    --tm-radius: 0.5rem;
     --tm-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, sans-serif;
     --tm-font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     --tm-heading-weight: 600;
@@ -63,7 +63,7 @@
     --tm-text-lg: 1.25rem;
     --tm-text-xl: 1.75rem;
 
-    --tm-shadow-sm: 0 0 #0000;
+    --tm-shadow-sm: 0 1px 2px light-dark(oklch(0 0 0 / 0.06), oklch(0 0 0 / 0.45));
     --tm-shadow-lg: 0 12px 32px -10px light-dark(oklch(0 0 0 / 0.16), oklch(0 0 0 / 0.7));
     --tm-ease: cubic-bezier(0.2, 0, 0, 1);
     --tm-duration: 150ms;
@@ -321,6 +321,28 @@
   :where([role="tab"]):hover { background: var(--tm-fill); color: var(--tm-text); }
   :where([role="tab"][aria-selected="true"]) { --_fg: var(--tm-text); box-shadow: inset 0 -2px 0 var(--tm-accent); }
   :where([role="tablist"][aria-orientation="vertical"]) > :where([role="tab"][aria-selected="true"]) { box-shadow: inset -2px 0 0 var(--tm-accent); }
+  /* segmented control: data-segmented on a role="radiogroup" of <label><input type="radio">text</label>; the radios stay
+     in place, invisible, over their labels (arrow keys, screen readers and taps work as on any radio group) and the
+     checked option is a raised chip on the track. Height follows data-size and the density, like a button. */
+  :where([data-segmented]) {
+    display: inline-flex; flex-shrink: 0; gap: 2px; padding: 2px;
+    min-block-size: calc(var(--tm-control-h) * var(--_size, 1));
+    border: 1px solid var(--tm-border); border-radius: var(--tm-radius); background: var(--tm-fill);
+  }
+  :where([data-segmented]) > :where(label) {
+    position: relative; display: grid; place-items: center;
+    padding-inline: calc(var(--tm-control-px) * var(--_size, 1)); border-radius: calc(var(--tm-radius) - 2px);
+    color: var(--tm-text-muted); font-size: var(--_font, var(--tm-control-font)); line-height: 1; white-space: nowrap; cursor: pointer;
+    transition: background-color var(--tm-duration) var(--tm-ease), color var(--tm-duration) var(--tm-ease);
+  }
+  :where([data-segmented]) > :where(label):hover { color: var(--tm-text); }
+  :where([data-segmented]) > :where(label):has(:checked) {
+    background: var(--tm-surface-raised); color: var(--tm-text); font-weight: 600;
+    box-shadow: 0 0 0 1px var(--tm-border-strong), var(--tm-shadow-sm);
+  }
+  :where([data-segmented]) > :where(label):has(:focus-visible) { outline: 2px solid var(--tm-accent); outline-offset: 1px; }
+  :where([data-segmented]) :where(input) { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: inherit; }
+  @media (pointer: coarse) { :where([data-segmented]) :where(input) { inset: -0.4rem 0; } }
   :where(:is(button, a[role="button"])[data-icon]:is([data-icon=""], :empty)) { inline-size: calc(var(--tm-control-h) * var(--_size, 1)); padding: 0; flex-shrink: 0; }
 
   /* icons: data-icon="name" draws the icon from --tm-icon-<name> (icons.css, the Vite plugin, or your own CSS).
@@ -579,7 +601,7 @@
 
   /* callout */
   :where([data-callout]) {
-    display: grid; gap: var(--tm-space-xs);
+    display: grid; align-content: start; gap: var(--tm-space-xs);
     padding: var(--tm-space-sm) var(--tm-space-md);
     border: 1px solid color-mix(in oklab, var(--tm-tone) 30%, var(--tm-border));
     border-radius: var(--tm-radius);

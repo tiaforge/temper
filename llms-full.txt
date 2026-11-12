@@ -237,6 +237,10 @@ On: any element. Hidden visually, still read by screen readers.
 
 On: dl. Shows dt/dd pairs as a two-column label/value grid.
 
+### `data-segmented` (boolean, no value)
+
+On: div[role=radiogroup] of <label><input type="radio">text</label>. Segmented control: a radio group drawn as a track with the checked option as a raised chip (week/month, list/grid). The radios stay in place, invisible, over their labels, so arrow keys, screen readers and taps work as on any radio group. data-size="sm" makes it as tall as a small button. Give the group an aria-label.
+
 ### `data-caption` (boolean, no value)
 
 On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.
@@ -327,9 +331,9 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 - `--tm-hue`: Accent hue in OKLCH degrees. Default 255.
 - `--tm-chroma`: Accent saturation. Default 0.19.
 - `--tm-neutral-hue`: Hue the greys lean toward. Default: --tm-hue.
-- `--tm-neutral-tint`: How much the greys lean toward --tm-neutral-hue. Default 0 (pure grey).
+- `--tm-neutral-tint`: How much the greys lean toward --tm-neutral-hue. Default 0.01 (a faint lean; 0 is pure grey).
 - `--tm-primary`: Tone of default buttons. Default var(--tm-neutral); var(--tm-accent) for colored main buttons.
-- `--tm-radius`: Base corner radius. Default 0.375rem. The other radii derive from it.
+- `--tm-radius`: Base corner radius. Default 0.5rem. The other radii derive from it.
 - `--tm-badge-radius`: Badge corner radius. Default 0.67 × --tm-radius; var(--tm-radius-full) for pills.
 - `--tm-font-sans`: UI font stack. Default: system fonts.
 - `--tm-font-mono`: Code font stack.
@@ -556,6 +560,18 @@ with `data-pad`.
 
 No `data-variant` on tabs: the selected one (`aria-selected="true"`) is underlined. Your script switches
 `aria-selected` and `hidden`. `aria-orientation="vertical"` on the tablist stacks the tabs.
+
+### Segmented control
+
+```html
+<div role="radiogroup" data-segmented data-size="sm" aria-label="View">
+  <label><input type="radio" name="view" value="week" checked>Week</label>
+  <label><input type="radio" name="view" value="month">Month</label>
+</div>
+```
+
+A radio group for a view switch (a few short options, one always chosen). The checked label is a raised
+chip; keep the `input` inside its `label`. For panels that show and hide use tabs instead.
 
 ### Divider with text
 

@@ -98,6 +98,7 @@ export default { plugins: [temper()] };
 | `data-bar` | (boolean) | A colored bar on the start edge in the element's tone. |
 | `data-sr-only` | (boolean) | Hidden visually, still read by screen readers. |
 | `data-pairs` | (boolean) | Shows dt/dd pairs as a two-column label/value grid. |
+| `data-segmented` | (boolean) | Radio group drawn as a segmented control (labels with radios). |
 | `data-caption` | (boolean) | Small, muted label text (captions, group headings). |
 | `data-list` | (boolean) | One bordered box; its children are rows separated by lines. |
 | `data-divider` | (boolean) | A horizontal line with the element's text in the middle, e.g. |
