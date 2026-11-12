@@ -150,6 +150,8 @@ test('data-lazy on a container makes its rows skip off-screen work', { skip: !br
 // while a resource loads. Nothing shows for a request shorter than --tm-busy-delay (200ms); input is blocked at once.
 test('busy states show after a delay, and a dimmed container fades back', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   await withPage(1280, async page => {
+    // goto emulates reduced motion (for steady screenshots); these fades are about normal motion
+    await page.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
     const at = ms => new Promise(r => setTimeout(r, ms));
     const state = () => page.evaluate(`(() => {
       const el = id => document.getElementById(id), cs = (id, p) => getComputedStyle(el(id), p);
@@ -200,5 +202,29 @@ test('busy states show after a delay, and a dimmed container fades back', { skip
     assert.ok(back.opacity < 1, `the form jumped back to ${back.opacity}`);
     await at(300);
     assert.equal((await state()).form, 1);
+  }, 'busy.html');
+});
+
+// With reduced motion every animation is forced to 1ms; an infinite spinner then turned 1000 times a second. It pulses.
+test('with reduced motion a busy spinner pulses slowly instead of turning', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(1280, async page => {
+    await page.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+    await page.evaluate("for (const id of ['save', 'item']) document.getElementById(id).setAttribute('aria-busy', 'true'); document.getElementById('loading').hidden = false");
+    await new Promise(r => setTimeout(r, 400));
+    const sample = () => page.evaluate(`['save', 'item', 'loading'].map(id => {
+      const s = getComputedStyle(document.getElementById(id), id == 'loading' ? '::before' : '::after');
+      return { duration: s.animationDuration.split(', ')[0], rotate: s.rotate, opacity: +s.opacity };
+    })`);
+    const seen = [];
+    for (let i = 0; i < 8; i++) { seen.push(await sample()); await new Promise(r => setTimeout(r, 90)); }
+    for (const [i, id] of ['save', 'item', 'loading'].entries()) {
+      const s = seen.map(x => x[i]);
+      assert.equal(s[0].duration, '1.4s', `${id}: spinner duration`);
+      assert.ok(s.every(x => x.rotate == 'none'), `${id}: the spinner turns`);
+      const o = s.map(x => x.opacity);
+      assert.ok(Math.max(...o) - Math.min(...o) > 0.1, `${id}: the spinner does not pulse (${o})`);
+    }
+    // the busy line and spinner still appear (their 1ms fade-in ran after the delay)
+    assert.equal(await page.evaluate("+getComputedStyle(document.getElementById('loading')).opacity"), 1);
   }, 'busy.html');
 });

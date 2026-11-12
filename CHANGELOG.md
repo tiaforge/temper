@@ -16,7 +16,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   delay was never dimmed and does not move.
 - A busy text line (`<p aria-busy="true">Loading…</p>`, the line sinter shows with `data-sn-show` while a resource
   loads; also `span`, `small`, `output`) has a spinner and appears after the delay. It had only a progress cursor.
-- Render test (`test/fixtures/busy.html`): the state within the delay, after it, and the fade back.
+- With reduced motion a busy spinner pulses slowly (1.4s) instead of turning. The reduced-motion rule forces every
+  animation to 1ms, so the infinite spinner turned 1000 times a second: a flickering ring.
+- Render tests (`test/fixtures/busy.html`): the state within the delay, after it, the fade back, and the
+  reduced-motion spinner. The busy test sets normal motion itself: the test browser emulates reduced motion.
 
 ## 0.2.0 (2026-11-12)
 
