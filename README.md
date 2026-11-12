@@ -298,9 +298,12 @@ and tones are mostly computed. `npm run visual:prune` checks that pruning change
 the kitchen sink.
 
 `inspect: true` (with `@tiaforge-ui/temper-inspect` installed) runs that package's audit inside the page your dev
-server serves: after load, after every hot update and when the page changes. What it finds (overflow, contrast,
-clipped text) is printed in the terminal next to the static check's diagnostics, once per change, with a selector
-instead of a file and line. It sees the page as it is now; it does not open dialogs or resize the window, which
+server serves: after load, after every hot update, when the page changes and when you open a dialog or popover
+(each open one is checked as its own state, like `temper-inspect` does). What it finds (overflow, contrast, clipped
+text, a dialog stuck in a corner) is printed in the dev terminal next to the static check's diagnostics, once per
+change, as `src/App.svelte:12 error contrast: …`: in dev, plain HTML elements in your pages and components get a
+`data-tm-src="file:line"` attribute so a finding can name its source line (`inspect: { source: false }` turns that
+off). It audits what is on the page now; it does not resize the window or open dialogs by itself, which
 `temper-inspect` does in headless Chrome (use that in CI). Dev server only, never in a build.
 
 Icons from the plugin need `lucide-static` installed (optional peer dependency).

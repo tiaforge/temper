@@ -10,7 +10,8 @@ import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inspect, format } from '../lib/inspect.js';
-import { findBrowser } from '../lib/cdp.js';
+import { findBrowser, launch } from '../lib/cdp.js';
+import { install } from '../lib/audit.js';
 
 let browser = null;
 try { browser = findBrowser(); } catch {}
@@ -97,6 +98,36 @@ test('--cookie and --header reach pages behind a login', { skip: !browser && 'no
     assert.deepEqual(authed.findings, []);
     assert.ok(seen.some(r => r.url === '/private' && r.token === 't1' && r.cookie.includes('session=abc 123')), JSON.stringify(seen));
   } finally {
+    srv.close();
+  }
+});
+
+test('an overlay the user opened is checked as its own state, and findings carry the data-tm-src of their element', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  const { srv, base } = await serve();
+  const tmp = mkdtempSync(join(tmpdir(), 'temper-inspect-test-'));
+  const prevTmp = process.env.TMPDIR;
+  process.env.TMPDIR = tmp;
+  const b = await launch(browser, { share: [], timeout: 30000 });
+  try {
+    const page = await b.newPage();
+    await page.goto(`${base}broken.html`, { width: 1280, height: 900, scheme: 'light', settle: 200 });
+    await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays: false, overlayWait: 0 })})`);
+    await page.evaluate(`document.querySelector('p.faint').setAttribute('data-tm-src', 'src/Page.svelte:7')`);
+    assert.deepEqual(await page.evaluate('window.__tsi.checkOpen()'), []); // nothing is open yet
+    const contrast = (await page.evaluate(`window.__tsi.check('page')`)).find(f => f.code === 'contrast');
+    assert.equal(contrast.src, 'src/Page.svelte:7');
+    // the user opens the dialog: it is checked as a state of its own, with the overlay checks
+    await page.evaluate(`document.getElementById('d1').showModal()`);
+    await new Promise(r => setTimeout(r, 500)); // the dialog animates in; the dev client waits too (delay)
+    const open = await page.evaluate('window.__tsi.checkOpen()');
+    assert.deepEqual(open.map(o => o.state), ['dialog dialog#d1']);
+    assert.deepEqual(open[0].findings.filter(f => f.severity !== 'info').map(f => `${f.severity} ${f.code}`), ['error position']);
+    // and checking leaves the page as it was: the next page check is the same as before
+    assert.ok((await page.evaluate(`window.__tsi.check('page')`)).some(f => f.code === 'contrast'));
+  } finally {
+    await b.close();
+    if (prevTmp === undefined) delete process.env.TMPDIR; else process.env.TMPDIR = prevTmp;
+    rmSync(tmp, { recursive: true, force: true });
     srv.close();
   }
 });

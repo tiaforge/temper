@@ -1,6 +1,7 @@
 // Runs inside the page (serialized with Function.prototype.toString). Installs window.__tsi, which Node
 // drives state by state: list() overlays, open(i), check(state) -> findings, close(i).
-// Findings: { state, severity: 'error'|'warning'|'info', code, selector, message }
+// Findings: { state, severity: 'error'|'warning'|'info', code, selector, message, src? }
+// src ("file:line") is there when the page was served with data-tm-src attributes (temper's Vite plugin adds them in dev).
 export function install(opts) {
   let findings = [];
   const vw = innerWidth, vh = innerHeight;
@@ -41,7 +42,7 @@ export function install(opts) {
     let s = el.localName;
     const tid = el.getAttribute('data-testid');
     if (tid) return `${s}[data-testid="${tid}"]`;
-    s += [...el.attributes].filter(a => a.name.startsWith('data-') && !/^data-(sn|v-|astro)/.test(a.name)).slice(0, 2)
+    s += [...el.attributes].filter(a => a.name.startsWith('data-') && !/^data-(sn|v-|astro|tm-src)/.test(a.name)).slice(0, 2)
       .map(a => a.value ? `[${a.name}="${a.value}"]` : `[${a.name}]`).join('');
     if (el.classList.length) s += '.' + [...el.classList].slice(0, 2).join('.');
     for (const a of ['aria-label', 'name', 'type', 'href']) {
@@ -53,6 +54,8 @@ export function install(opts) {
     const text = (el.innerText ?? '').trim().replace(/\s+/g, ' ');
     return text ? `${s} "${text.slice(0, 40)}${text.length > 40 ? '…' : ''}"` : s;
   }
+
+  const srcOf = el => el?.closest?.('[data-tm-src]')?.getAttribute('data-tm-src') ?? undefined;
 
   // ── visibility ──
   let scope = document.body; // a modal dialog limits checks to itself
@@ -68,7 +71,7 @@ export function install(opts) {
   const INTERACTIVE = 'a[href], button, input:not([type=hidden]), select, textarea, summary, [role=button], [role=link], [role=switch], [role=checkbox], [role=tab], [role=menuitem], [tabindex]:not([tabindex="-1"])';
 
   function check(state) {
-    const add = (severity, code, el, message) => findings.push({ state, severity, code, selector: el ? sel(el) : '', message });
+    const add = (severity, code, el, message) => findings.push({ state, severity, code, selector: el ? sel(el) : '', message, src: srcOf(el) });
     const els = all();
 
     // horizontal overflow: report the outermost element that sticks out
@@ -159,11 +162,11 @@ export function install(opts) {
   function checkOverlay(state, el) {
     const r = R(el);
     if (el.scrollWidth > el.clientWidth + 1)
-      findings.push({ state, severity: 'error', code: 'overflow', selector: sel(el), message: `content is ${el.scrollWidth - el.clientWidth}px wider than the ${el.localName === 'dialog' ? 'dialog' : 'overlay'} and gets cut off or scrolls sideways` });
+      findings.push({ state, severity: 'error', code: 'overflow', selector: sel(el), message: `content is ${el.scrollWidth - el.clientWidth}px wider than the ${el.localName === 'dialog' ? 'dialog' : 'overlay'} and gets cut off or scrolls sideways` , src: srcOf(el) });
     if (r.left <= 1 && r.top <= 1 && r.width < vw - 2 && r.height < vh - 2)
-      findings.push({ state, severity: 'error', code: 'position', selector: sel(el), message: 'sits in the top-left corner (missing margin: auto or anchor position?)' });
+      findings.push({ state, severity: 'error', code: 'position', selector: sel(el), message: 'sits in the top-left corner (missing margin: auto or anchor position?)' , src: srcOf(el) });
     if (r.right > vw + 1 || r.bottom > vh + 1 || r.left < -1 || r.top < -1)
-      findings.push({ state, severity: 'error', code: 'position', selector: sel(el), message: `extends outside the viewport (${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}×${Math.round(r.height)})` });
+      findings.push({ state, severity: 'error', code: 'position', selector: sel(el), message: `extends outside the viewport (${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}×${Math.round(r.height)})` , src: srcOf(el) });
   }
 
   // ── states: the page, then every dialog and every closed popover, opened one at a time ──
@@ -241,6 +244,17 @@ export function install(opts) {
       if (!how) { for (const el of stack.reverse()) el.matches('dialog') ? el.close() : el.hidePopover(); stack = []; return null; }
       current = { ...o, how };
       return `${o.kind} ${sel(o.el).split(' "')[0]}`;
+    },
+    // The overlays that are open right now (a user opened them), each checked as its own state, the way open(i) does.
+    checkOpen() {
+      const out = [];
+      for (const el of document.querySelectorAll('dialog[open], [popover]:popover-open')) {
+        const kind = el.matches('dialog') ? 'dialog' : 'popover', state = `${kind} ${sel(el).split(' "')[0]}`;
+        current = { el, kind, how: {} };
+        out.push({ state, findings: window.__tsi.check(state) });
+      }
+      current = null; scope = document.body;
+      return out;
     },
     async close() {
       for (const el of stack.reverse()) { try { el.matches('dialog') ? el.close() : el.hidePopover(); } catch {} }

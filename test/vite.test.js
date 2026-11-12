@@ -143,7 +143,7 @@ function devServer(options, command = 'serve') {
 
 test('inspect adds the client script to the dev page, and the client carries the audit', async () => {
   const { plugin } = devServer({ inspect: { audit: AUDIT } });
-  const [tag] = plugin.transformIndexHtml();
+  const [tag] = plugin.transformIndexHtml.handler('<p>x</p>');
   assert.equal(tag.tag, 'script');
   assert.equal(tag.attrs.src, '/@id/__x00__virtual:temper-inspect-client');
   assert.equal(plugin.resolveId('virtual:temper-inspect-client'), '\0virtual:temper-inspect-client');
@@ -154,8 +154,9 @@ test('inspect adds the client script to the dev page, and the client carries the
 });
 
 test('inspect does nothing without the option, and never in a build', () => {
-  assert.equal(devServer({}).plugin.transformIndexHtml(), undefined);
-  assert.equal(devServer({ inspect: { audit: AUDIT } }, 'build').plugin.transformIndexHtml(), undefined);
+  assert.equal(devServer({}).plugin.transformIndexHtml.handler('<p>x</p>'), undefined);
+  assert.equal(devServer({ inspect: { audit: AUDIT } }, 'build').plugin.transformIndexHtml.handler('<p>x</p>'), undefined);
+  assert.equal(devServer({ inspect: { audit: AUDIT } }, 'build').plugin.transform.handler('<p>x</p>', '/p/a.svelte'), undefined);
 });
 
 test('inspect without the temper-inspect package says so and stays off', () => {
@@ -163,7 +164,7 @@ test('inspect without the temper-inspect package says so and stays off', () => {
   const warnings = [];
   plugin.configResolved({ root: '/nonexistent', command: 'serve', logger: { warn: m => warnings.push(m) } });
   assert.match(warnings[0], /needs @tiaforge-ui\/temper-inspect/);
-  assert.equal(plugin.transformIndexHtml(), undefined);
+  assert.equal(plugin.transformIndexHtml.handler('<p>x</p>'), undefined);
 });
 
 test('inspect prints findings once per change, ignores info, and says when a page is clean again', () => {
@@ -186,4 +187,47 @@ test('inspect caps a flood of one kind of finding', () => {
   const { log, send } = devServer({ inspect: { audit: AUDIT } });
   send({ page: '/', findings: Array.from({ length: 12 }, (_, i) => ({ severity: 'warning', code: 'contrast', selector: `p${i}`, message: 'low' })) });
   assert.match(log.warn[0], /… 4 more contrast findings/);
+});
+
+test('inspect stamps elements with their source line: pages and components, never in a build, switchable off', () => {
+  const dev = devServer({ inspect: { audit: AUDIT } }).plugin;
+  const root = process.cwd();
+  const { html, tags } = dev.transformIndexHtml.handler('<h1>a</h1>\n<p>b</p>', { filename: root + '/index.html' });
+  assert.equal(html, '<h1 data-tm-src="index.html:1">a</h1>\n<p data-tm-src="index.html:2">b</p>');
+  assert.equal(tags.length, 1);
+  const stamped = dev.transform.handler('<script>let a: Array<string>;</script>\n<Card />\n<button>x</button>', root + '/src/A.svelte');
+  assert.equal(stamped.code, '<script>let a: Array<string>;</script>\n<Card />\n<button data-tm-src="src/A.svelte:3">x</button>');
+  assert.equal(dev.transform.handler('<button>x</button>', root + '/src/a.js'), undefined); // not markup
+  assert.equal(dev.transform.handler('<button>x</button>', root + '/src/A.svelte?svelte&type=style'), undefined); // a part of a file
+  const off = devServer({ inspect: { audit: AUDIT, source: false } }).plugin;
+  assert.equal(off.transform.handler('<button>x</button>', root + '/src/A.svelte'), undefined);
+  assert.equal(off.transformIndexHtml.handler('<p>x</p>', { filename: root + '/index.html' }).length, 1); // just the script tag
+});
+
+test('inspect names the source line of a finding', () => {
+  const { log, send } = devServer({ inspect: { audit: AUDIT } });
+  send({ page: '/', findings: [{ state: 'page', severity: 'error', code: 'contrast', selector: 'p', message: 'low', src: 'src/App.svelte:7' }] });
+  assert.match(log.warn[0], /\n {2}src\/App\.svelte:7 error contrast: p low$/);
+});
+
+test('inspect keeps what a dialog showed while it is closed again, and forgets it on a reload or hot update', () => {
+  const { log, send } = devServer({ inspect: { audit: AUDIT } });
+  const bad = { state: 'dialog dialog#d', severity: 'error', code: 'position', selector: 'dialog#d', message: 'in the corner' };
+  send({ page: '/', states: ['page'], findings: [], reset: true });
+  assert.deepEqual(log.warn, []);
+  send({ page: '/', states: ['page', 'dialog dialog#d'], findings: [bad] }); // the user opens the dialog
+  assert.equal(log.warn.length, 1);
+  assert.match(log.warn[0], /error position: dialog#d in the corner \[dialog dialog#d\]/);
+  send({ page: '/', states: ['page'], findings: [] }); // it is closed again: the finding stands, nothing new is printed
+  assert.equal(log.warn.length, 1);
+  assert.deepEqual(log.info, []);
+  send({ page: '/', states: ['page'], findings: [], reset: true }); // the source changed
+  assert.deepEqual(log.info, ['temper inspect /: no problems']);
+});
+
+test('inspect lists a finding once when the page check and an open dialog both see it', () => {
+  const { log, send } = devServer({ inspect: { audit: AUDIT } });
+  const f = state => ({ state, severity: 'warning', code: 'contrast', selector: 'p', message: 'low' });
+  send({ page: '/', states: ['page', 'dialog dialog#d'], findings: [f('page'), f('dialog dialog#d')] });
+  assert.match(log.warn[0], /1 error\(s\)|0 error\(s\), 1 warning\(s\)/);
 });

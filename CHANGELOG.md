@@ -15,9 +15,13 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Vite plugin
 
-- `inspect: true` runs the `@tiaforge-ui/temper-inspect` audit inside the dev page (after load, hot updates and page
-  changes) and prints its findings in the dev terminal, once per change. Dev server only. `temper-inspect` exports
-  `./audit` for it.
+- `inspect: true` runs the `@tiaforge-ui/temper-inspect` audit inside the dev page (after load, hot updates, page
+  changes, and when a dialog or popover is opened, which is then checked as its own state) and prints its findings in
+  the dev terminal, once per change. Dev server only.
+- In dev, plain HTML elements in pages and components (Svelte, Vue, Astro, JSX) get `data-tm-src="file:line"`, so a
+  finding is printed as `src/App.svelte:12 error contrast: …`. `inspect: { source: false }` turns it off.
+- `temper-inspect`: exports `./audit`; findings carry `src` when the page has `data-tm-src`; `__tsi.checkOpen()` checks
+  the overlays that are open.
 
 ### Check
 
