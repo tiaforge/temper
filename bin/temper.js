@@ -9,7 +9,8 @@ if (cmd !== 'check') {
 Checks temper attributes in HTML/Svelte/Astro/Vue/JSX files and --tm-* tokens in CSS.
 Exits with 1 when there are errors. --warnings-as-errors also fails on warnings.
 --fix applies the safe fixes (a value on the wrong axis, an unambiguous typo, a value on a
-boolean attribute, a deprecated name) and reports what is left.
+boolean attribute, a deprecated name, a bare boolean that renders "false") and reports what is left.
+A missing label gets aria-label="TODO", which stays an error (TM113) until you write the real one.
 --icons <dir> accepts the icon names of an SVG folder; --lucide accepts every Lucide icon name
 (both match the Vite plugin's icons option).`);
   process.exit(cmd ? 2 : 0);

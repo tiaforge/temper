@@ -200,13 +200,13 @@ test('imports are found in JS, CSS and HTML; all.css counts as every module', as
 
 test('an empty data-tooltip needs an aria-label to show', () => {
   assert.deepEqual(codes(checkMarkup('<button data-tooltip>Save</button>')), ['TM103']);
-  assert.deepEqual(codes(checkMarkup('<button data-tooltip aria-label="Save" data-icon="check"></button><span data-tooltip="Synced">x</span>')), []);
+  assert.deepEqual(codes(checkMarkup('<button data-tooltip aria-label="Save" data-icon="check"></button><span data-tooltip="Synced" tabindex="0">x</span>')), []);
 });
 
 test('data-layout on table parts and data-num off cells', () => {
-  assert.deepEqual(codes(checkMarkup('<table><tr><td data-layout="row">x</td></tr></table>')), ['TM108']);
+  assert.deepEqual(codes(checkMarkup('<table><tr><th>h</th><td data-layout="row">x</td></tr></table>')), ['TM108']);
   assert.deepEqual(codes(checkMarkup('<span data-num>3</span>')), ['TM108']);
-  assert.deepEqual(codes(checkMarkup('<table><tr><td data-num><div data-layout="row">3</div></td></tr></table>')), []);
+  assert.deepEqual(codes(checkMarkup('<table><tr><th>h</th><td data-num><div data-layout="row">3</div></td></tr></table>')), []);
 });
 
 // ───── fixes and deprecations ─────
@@ -329,4 +329,83 @@ test('tokens in style attributes are checked in plain HTML files too', () => {
   const r = check([writeTemp('a.html', '<div style="color: var(--tm-txt)"></div>\n')]);
   assert.deepEqual(codes(r), ['TM201']);
   assert.match(r[0].message, /Did you mean --tm-text\?/);
+});
+
+// ───────────── structure and accessibility rules (TM113–TM121), fixes ─────────────
+
+const doc = body => `<html><body>${body}</body></html>`;
+
+test('--fix stubs a missing label, and the stub stays an error until it is replaced', () => {
+  const src = '<button data-icon="x"></button>';
+  const before = checkMarkup(src);
+  assert.deepEqual(codes(before), ['TM103']);
+  const { text } = applyFixes(src, before);
+  assert.equal(text, '<button aria-label="TODO" data-icon="x"></button>');
+  const after = checkMarkup(text);
+  assert.deepEqual(codes(after), ['TM113']);
+  assert.equal(after[0].severity, 'error');
+  assert.deepEqual(checkMarkup(text.replace('TODO', 'Close')), []);
+});
+
+test('the label stub also covers close buttons, empty tooltips and requires', () => {
+  assert.equal(applyFixes('<button data-tooltip>x</button>', checkMarkup('<button data-tooltip>x</button>')).text, '<button aria-label="TODO" data-tooltip>x</button>');
+  const close = '<button command="close" commandfor="d"></button>';
+  assert.deepEqual(codes(checkMarkup(applyFixes(close, checkMarkup(close)).text)), ['TM113']);
+});
+
+test('TM111: a bare boolean gets || null', () => {
+  const src = '<script>let on;</script><div data-menu={on}></div>';
+  const d = checkMarkup(src, 'a.svelte');
+  const { text } = applyFixes(src, d);
+  assert.match(text, /data-menu=\{on \|\| null\}/);
+  assert.deepEqual(codes(checkMarkup(text, 'a.svelte')), []);
+});
+
+test('a dialog needs a name', () => {
+  assert.deepEqual(codes(checkMarkup('<dialog><p>x</p></dialog>')), ['TM114']);
+  assert.deepEqual(codes(checkMarkup('<dialog><h2>Title</h2></dialog>')), []);
+  assert.deepEqual(codes(checkMarkup('<dialog aria-label="Title"><p>x</p></dialog>')), []);
+  assert.deepEqual(codes(checkMarkup('<dialog><Header /></dialog>', 'a.svelte')), []); // a component may render the heading
+  assert.deepEqual(codes(checkMarkup('<dialog>{@render children()}</dialog>', 'a.svelte')), []);
+});
+
+test('a table needs header cells', () => {
+  assert.deepEqual(codes(checkMarkup('<table><tr><td>x</td></tr></table>')), ['TM115']);
+  assert.deepEqual(codes(checkMarkup('<table><thead><tr><th scope="col">x</th></tr></thead></table>')), []);
+  assert.deepEqual(codes(checkMarkup('<table role="presentation"><tr><td>x</td></tr></table>')), []);
+});
+
+test('a tooltip needs a focusable element', () => {
+  assert.deepEqual(codes(checkMarkup('<span data-tooltip="Synced">x</span>')), ['TM116']);
+  assert.deepEqual(codes(checkMarkup('<span data-tooltip="Synced" tabindex="0">x</span><a href="/" data-tooltip="x">y</a><button data-tooltip="z">z</button>')), []);
+});
+
+test('heading levels do not skip (documents only)', () => {
+  assert.deepEqual(codes(checkMarkup(doc('<h1>a</h1><h2>b</h2><h4>c</h4>'))), ['TM117']);
+  assert.deepEqual(codes(checkMarkup(doc('<h1>a</h1><h2>b</h2><h3>c</h3><h2>d</h2>'))), []);
+  assert.deepEqual(codes(checkMarkup('<h2>a</h2><h4>c</h4>')), []); // a fragment: the page around it is unknown
+});
+
+test('ids are unique and references point at one', () => {
+  assert.deepEqual(codes(checkMarkup(doc('<p id="a"></p><p id="a"></p>'))), ['TM118']);
+  const [d] = checkMarkup(doc('<button popovertarget="menu-1">x</button><div popover id="menu-l"></div>'));
+  assert.equal(d.code, 'TM119');
+  assert.equal(d.severity, 'error');
+  assert.match(d.message, /Did you mean "menu-l"\?/);
+  assert.deepEqual(codes(checkMarkup(doc('<label for="q">Q</label><input id="q"><p aria-labelledby="zz">x</p>'))), ['TM119']);
+  // computed ids or components: the page is not fully known, so nothing is reported
+  assert.deepEqual(codes(checkMarkup(doc('<button popovertarget="m">x</button><div id={id}></div>'), 'a.svelte')), []);
+  assert.deepEqual(codes(checkMarkup(doc('<button popovertarget="m">x</button><Menu />'), 'a.svelte')), []);
+});
+
+test('a popover or dialog nothing opens', () => {
+  assert.deepEqual(codes(checkMarkup(doc('<div popover id="m"></div>'))), ['TM120']);
+  assert.deepEqual(codes(checkMarkup(doc('<button popovertarget="m">x</button><div popover id="m"></div>'))), []);
+  assert.deepEqual(codes(checkMarkup(doc('<dialog id="d" aria-label="x"></dialog><script>d.showModal()</script>'))), []);
+});
+
+test('two solid buttons side by side', () => {
+  assert.deepEqual(codes(checkMarkup('<div><button>Save</button><button>Send</button></div>')), ['TM121']);
+  assert.deepEqual(codes(checkMarkup('<div><button>Save</button><button data-variant="ghost">Cancel</button></div>')), []);
+  assert.deepEqual(codes(checkMarkup('<div><button role="tab">A</button><button role="tab">B</button></div>')), []);
 });

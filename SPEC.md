@@ -326,7 +326,13 @@ Lessons:
   parent or missing ancestor, TM110 module not imported, TM111 `false` renders the attribute
   (all driven by `tags`, `with`, `parent` and `inside` in vocab.json), TM112 deprecated name;
   app CSS warnings TM204 `!important`, TM205 fixed color, TM206 outer margin (and margin/padding
-  in `style`), TM207 a space-scale value written out, TM208 restyled temper variant. Computed values are reduced
+  in `style`), TM207 a space-scale value written out, TM208 restyled temper variant. Structure and accessibility (`structureRules`; they judge only what is
+  certain, so an element holding a component, slot or rendered expression is skipped): TM113 `aria-label="TODO"`
+  (the stub `--fix` writes where a label is missing; an error, so the build fails until it is replaced), TM114
+  dialog without a name, TM115 table without `<th>`, TM116 `data-tooltip` on something that cannot take focus,
+  and, in whole documents, TM117 skipped heading level, TM118 duplicate id, TM119 `popovertarget`, `commandfor`,
+  `for`, `list` or `aria-*` pointing at a missing id (with "did you mean"), TM120 popover or dialog nothing opens;
+  TM121 two solid buttons side by side. Computed values are reduced
   to the literals they can produce; `types/*.d.ts` (generated) types them for React, Vue, Astro,
   Svelte component props and sinter's `data-sn-attr`. No findings on caley's current frontend.
 

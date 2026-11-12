@@ -7,6 +7,17 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### Check
+
+- New rules, all driven by the element's whole content or the whole page, and silent when that is not known (a
+  component, slot or rendered expression inside, computed ids): TM113 `aria-label="TODO"`, TM114 dialog without a
+  name, TM115 table without `<th>`, TM116 `data-tooltip` on an element that cannot take focus, TM117 skipped
+  heading level, TM118 duplicate id, TM119 `popovertarget`/`commandfor`/`for`/`list`/`aria-*` pointing to an id
+  that is not on the page, TM120 a popover or dialog nothing opens, TM121 two solid buttons in one parent.
+- `temper check --fix` stubs a missing label (TM103) with `aria-label="TODO"`, and rewrites a bare boolean
+  (`data-menu={on}`) to `{on || null}` (TM111). The stub is itself an error (TM113), so the build keeps failing until
+  someone writes the real label.
+
 ### CSS
 
 - `data-segmented`: a `role="radiogroup"` of `<label><input type="radio">text</label>` drawn as a segmented control
