@@ -16,6 +16,7 @@
   "type": "module",
   "exports": {
     ".": "./lib/inspect.js",
+    "./audit": "./lib/audit.js",
     "./package.json": "./package.json"
   },
   "bin": {

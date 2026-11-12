@@ -128,3 +128,62 @@ test('hot updates report the same diagnostics as the build: project icons count,
   plugin.handleHotUpdate({ file: join(dir, 'index.html') });
   assert.deepEqual(codes(warnings[0]), ['TM110']);
 });
+
+// ───────────── inspect: the rendered-page audit in dev ─────────────
+
+const AUDIT = new URL('../packages/inspect/lib/audit.js', import.meta.url).pathname;
+
+function devServer(options, command = 'serve') {
+  const plugin = temper(options);
+  const log = { warn: [], info: [] }, handlers = {};
+  plugin.configResolved({ root: process.cwd(), command, logger: { warn: m => log.warn.push(m), info: m => log.info.push(m) } });
+  plugin.configureServer({ ws: { on: (name, fn) => { handlers[name] = fn; } }, moduleGraph: {} });
+  return { plugin, log, send: data => handlers['temper:inspect']?.(data) };
+}
+
+test('inspect adds the client script to the dev page, and the client carries the audit', async () => {
+  const { plugin } = devServer({ inspect: { audit: AUDIT } });
+  const [tag] = plugin.transformIndexHtml();
+  assert.equal(tag.tag, 'script');
+  assert.equal(tag.attrs.src, '/@id/__x00__virtual:temper-inspect-client');
+  assert.equal(plugin.resolveId('virtual:temper-inspect-client'), '\0virtual:temper-inspect-client');
+  const code = await plugin.load('\0virtual:temper-inspect-client');
+  assert.match(code, /const install = function install\(opts\)/);
+  assert.match(code, /import\.meta\.hot\?\.send\('temper:inspect'/);
+  assert.match(code, /overlays: false/);
+});
+
+test('inspect does nothing without the option, and never in a build', () => {
+  assert.equal(devServer({}).plugin.transformIndexHtml(), undefined);
+  assert.equal(devServer({ inspect: { audit: AUDIT } }, 'build').plugin.transformIndexHtml(), undefined);
+});
+
+test('inspect without the temper-inspect package says so and stays off', () => {
+  const plugin = temper({ inspect: true });
+  const warnings = [];
+  plugin.configResolved({ root: '/nonexistent', command: 'serve', logger: { warn: m => warnings.push(m) } });
+  assert.match(warnings[0], /needs @tiaforge-ui\/temper-inspect/);
+  assert.equal(plugin.transformIndexHtml(), undefined);
+});
+
+test('inspect prints findings once per change, ignores info, and says when a page is clean again', () => {
+  const { log, send } = devServer({ inspect: { audit: AUDIT } });
+  const overflow = { severity: 'error', code: 'overflow', selector: 'div "wide"', message: 'sticks out' };
+  const info = { severity: 'info', code: 'opened', selector: 'button', message: 'opened by clicking this' };
+  send({ page: '/', findings: [info] });
+  assert.deepEqual(log.warn, []); // clean on first sight: silent
+  send({ page: '/', findings: [overflow, info] });
+  send({ page: '/', findings: [overflow] }); // the same again: not printed twice
+  assert.equal(log.warn.length, 1);
+  assert.match(log.warn[0], /temper inspect \/: 1 error\(s\), 0 warning\(s\)\n {2}error overflow: div "wide" sticks out/);
+  send({ page: '/', findings: [] });
+  assert.deepEqual(log.info, ['temper inspect /: no problems']);
+  send({ page: '/other', findings: [overflow] }); // another page reports on its own
+  assert.equal(log.warn.length, 2);
+});
+
+test('inspect caps a flood of one kind of finding', () => {
+  const { log, send } = devServer({ inspect: { audit: AUDIT } });
+  send({ page: '/', findings: Array.from({ length: 12 }, (_, i) => ({ severity: 'warning', code: 'contrast', selector: `p${i}`, message: 'low' })) });
+  assert.match(log.warn[0], /… 4 more contrast findings/);
+});

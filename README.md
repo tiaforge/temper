@@ -284,6 +284,8 @@ export default {
     // temper({ enhance: ['customizable-select'] })   or   enhance: 'all'
     // smaller builds: drop rules for data-* attributes and values the project never uses
     // temper({ prune: true })
+    // rendered-page findings in the dev terminal (overflow, contrast, clipped text); needs temper-inspect installed
+    // temper({ inspect: true })
   ],
 };
 ```
@@ -294,6 +296,12 @@ keep every value of that attribute, and `data-*` names in scripts (`el.dataset.t
 whole attribute. Gains depend on how much is computed: about 8% of `all.css` for caley, where icons
 and tones are mostly computed. `npm run visual:prune` checks that pruning changes nothing visible in
 the kitchen sink.
+
+`inspect: true` (with `@tiaforge-ui/temper-inspect` installed) runs that package's audit inside the page your dev
+server serves: after load, after every hot update and when the page changes. What it finds (overflow, contrast,
+clipped text) is printed in the terminal next to the static check's diagnostics, once per change, with a selector
+instead of a file and line. It sees the page as it is now; it does not open dialogs or resize the window, which
+`temper-inspect` does in headless Chrome (use that in CI). Dev server only, never in a build.
 
 Icons from the plugin need `lucide-static` installed (optional peer dependency).
 

@@ -7,6 +7,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### Vite plugin
+
+- `inspect: true` runs the `@tiaforge-ui/temper-inspect` audit inside the dev page (after load, hot updates and page
+  changes) and prints its findings in the dev terminal, once per change. Dev server only. `temper-inspect` exports
+  `./audit` for it.
+
 ### Check
 
 - New rules, all driven by the element's whole content or the whole page, and silent when that is not known (a
