@@ -297,7 +297,8 @@ whole attribute. Gains depend on how much is computed: about 8% of `all.css` for
 and tones are mostly computed. `npm run visual:prune` checks that pruning changes nothing visible in
 the kitchen sink.
 
-`inspect: true` (with `@tiaforge-ui/temper-inspect` installed) runs that package's audit inside the page your dev
+`inspect: true` (install `@tiaforge-ui/temper-inspect` alongside, an optional peer dependency of the same version
+or newer; with a missing or older one the plugin says so and skips it) runs that package's audit inside the page your dev
 server serves: after load, after every hot update, when the page changes and when you open a dialog or popover
 (each open one is checked as its own state, like `temper-inspect` does). What it finds (overflow, contrast, clipped
 text, a dialog stuck in a corner) is printed in the dev terminal next to the static check's diagnostics, once per

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import temper from '../lib/vite.js';
@@ -230,4 +230,41 @@ test('inspect lists a finding once when the page check and an open dialog both s
   const f = state => ({ state, severity: 'warning', code: 'contrast', selector: 'p', message: 'low' });
   send({ page: '/', states: ['page', 'dialog dialog#d'], findings: [f('page'), f('dialog dialog#d')] });
   assert.match(log.warn[0], /1 error\(s\)|0 error\(s\), 1 warning\(s\)/);
+});
+
+function withInspectPackage(version, exportsMap, audit) {
+  const root = mkdtempSync(join(tmpdir(), 'tm-inspect-pkg-'));
+  const dir = join(root, 'node_modules', '@tiaforge-ui', 'temper-inspect');
+  mkdirSync(join(dir, 'lib'), { recursive: true });
+  writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: '@tiaforge-ui/temper-inspect', version, exports: exportsMap }));
+  writeFileSync(join(dir, 'lib', 'audit.js'), audit);
+  return root;
+}
+
+function pluginIn(root, options = { inspect: true }) {
+  const plugin = temper(options);
+  const warnings = [];
+  plugin.configResolved({ root, command: 'serve', logger: { warn: m => warnings.push(m) } });
+  return { plugin, warnings };
+}
+
+test('inspect: an installed temper-inspect without the ./audit export is too old, and says which version', () => {
+  const root = withInspectPackage('0.1.9', { '.': './lib/audit.js', './package.json': './package.json' }, 'export function install() {}');
+  const { plugin, warnings } = pluginIn(root);
+  assert.match(warnings[0], /needs a newer @tiaforge-ui\/temper-inspect than the installed 0\.1\.9/);
+  assert.equal(plugin.transformIndexHtml.handler('<p>x</p>'), undefined);
+});
+
+test('inspect: an audit that cannot check open dialogs is too old', () => {
+  const root = withInspectPackage('0.1.10', { './audit': './lib/audit.js', './package.json': './package.json' }, 'export function install() {}');
+  const { plugin, warnings } = pluginIn(root);
+  assert.match(warnings[0], /needs a newer @tiaforge-ui\/temper-inspect than the installed 0\.1\.10 \(its audit cannot check open dialogs\)/);
+  assert.equal(plugin.transformIndexHtml.handler('<p>x</p>'), undefined);
+});
+
+test('inspect: a current temper-inspect is found through the package exports', () => {
+  const root = withInspectPackage('0.1.10', { './audit': './lib/audit.js', './package.json': './package.json' }, 'export function install() { /* checkOpen */ }');
+  const { plugin, warnings } = pluginIn(root);
+  assert.deepEqual(warnings, []);
+  assert.equal(plugin.transformIndexHtml.handler('<p>x</p>').length, 1);
 });

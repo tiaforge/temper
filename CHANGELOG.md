@@ -20,6 +20,8 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   the dev terminal, once per change. Dev server only.
 - In dev, plain HTML elements in pages and components (Svelte, Vue, Astro, JSX) get `data-tm-src="file:line"`, so a
   finding is printed as `src/App.svelte:12 error contrast: …`. `inspect: { source: false }` turns it off.
+- `@tiaforge-ui/temper-inspect` is an optional peer dependency (`>=0.1.10`). A missing, too old (no `./audit` export, or an
+  audit that cannot check open dialogs) or mismatched one is reported by name and version, and the option stays off.
 - `temper-inspect`: exports `./audit`; findings carry `src` when the page has `data-tm-src`; `__tsi.checkOpen()` checks
   the overlays that are open.
 

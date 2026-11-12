@@ -103,9 +103,13 @@
     "node": ">=22"
   },
   "peerDependencies": {
+    "@tiaforge-ui/temper-inspect": ">=0.1.10",
     "lucide-static": ">=0.400.0"
   },
   "peerDependenciesMeta": {
+    "@tiaforge-ui/temper-inspect": {
+      "optional": true
+    },
     "lucide-static": {
       "optional": true
     }
