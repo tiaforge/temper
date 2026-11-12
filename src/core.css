@@ -67,6 +67,7 @@
     --tm-shadow-lg: 0 12px 32px -10px light-dark(oklch(0 0 0 / 0.16), oklch(0 0 0 / 0.7));
     --tm-ease: cubic-bezier(0.2, 0, 0, 1);
     --tm-duration: 150ms;
+    --tm-busy-delay: 200ms;
   }
 
   /* density: comfortable is the default */
@@ -193,6 +194,9 @@
     clip-path: inset(50%); white-space: nowrap;
   }
   :where([aria-busy="true"]) { cursor: progress; }
+  /* a container that was dimmed while busy fades back when the request ends (in this first layer, so any transition of
+     its own wins); one that ended before --tm-busy-delay was never dimmed, so nothing moves */
+  :where(form, fieldset, section, article, ul, ol, table, [data-layout]) { transition: opacity var(--tm-duration) var(--tm-ease); }
 }
 
 /* ───────────── layout ───────────── */
@@ -362,21 +366,34 @@
   :where(button, a[role="button"]) :where(svg) { inline-size: 1.125em; block-size: 1.125em; flex-shrink: 0; }
   :where(button, input, select, textarea):disabled { opacity: 0.5; cursor: not-allowed; }
   :where([aria-disabled="true"]) { opacity: 0.5; pointer-events: none; }
-  :where(button, a[role="button"])[aria-busy="true"] { color: transparent; pointer-events: none; }
-  :where(form, fieldset, section, article, ul, ol, table, [data-layout])[aria-busy="true"] { opacity: 0.65; transition: opacity var(--tm-duration) var(--tm-ease); }
+  /* busy (sinter sets aria-busy while a request runs; a "Loading…" line has it while shown): input is blocked at once,
+     the indicator shows after --tm-busy-delay, so a fast request shows none */
+  :where(button, a[role="button"])[aria-busy="true"] { color: transparent; pointer-events: none; animation: tm-busy-label var(--tm-duration) var(--tm-ease) var(--tm-busy-delay) backwards; }
+  :where(form, fieldset, section, article, ul, ol, table, [data-layout])[aria-busy="true"] { opacity: 0.65; transition: opacity var(--tm-duration) var(--tm-ease) var(--tm-busy-delay); }
   :where(button, a[role="button"])[aria-busy="true"]::after {
     content: ""; position: absolute; inset: 0; margin: auto;
     inline-size: 1.1em; block-size: 1.1em; border-radius: 50%;
     border: 2px solid var(--_fg); border-inline-end-color: transparent;
-    animation: tm-spin 0.7s linear infinite;
+    animation: tm-spin 0.7s linear infinite, tm-busy-in var(--tm-duration) var(--tm-ease) var(--tm-busy-delay) both;
   }
-  :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"] { color: var(--_fg); pointer-events: auto; }
+  :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"] { color: var(--_fg); pointer-events: auto; animation: none; }
   :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"]::after {
     content: ""; position: absolute; inset-block: 0; inset-inline: auto var(--tm-space-sm); margin-block: auto;
     inline-size: 0.875em; block-size: 0.875em; border-radius: 50%;
     border: 2px solid currentColor; border-inline-end-color: transparent; opacity: 0.7;
+    animation: tm-spin 0.7s linear infinite, tm-busy-in var(--tm-duration) var(--tm-ease) var(--tm-busy-delay) both;
+  }
+  /* a text line (<p aria-busy="true">Loading…</p>, shown while loading) appears after the delay, with a spinner */
+  :where(p, span, small, output):where(:not([data-icon]))[aria-busy="true"] { animation: tm-busy-in var(--tm-duration) var(--tm-ease) var(--tm-busy-delay) both; }
+  :where(p, span, small, output):where(:not([data-icon]))[aria-busy="true"]::before {
+    content: ""; display: inline-block; vertical-align: -0.125em; margin-inline-end: 0.5em;
+    inline-size: 0.875em; block-size: 0.875em; border-radius: 50%;
+    border: 2px solid currentColor; border-inline-end-color: transparent; opacity: 0.7;
     animation: tm-spin 0.7s linear infinite;
   }
+  /* the animations only hold the idle look during the delay: without them (frozen for screenshots) the busy look shows */
+  @keyframes tm-busy-in { from { opacity: 0; } }
+  @keyframes tm-busy-label { from { color: var(--_fg); } }
   @keyframes tm-spin { to { rotate: 1turn; } }
 
   /* fields */

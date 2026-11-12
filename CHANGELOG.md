@@ -5,6 +5,19 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### Core
+
+- `aria-busy` shows after `--tm-busy-delay` (new token, default 200ms), so a request faster than that shows
+  nothing: a busy button keeps its label until its spinner fades in, an item's spinner fades in, a busy form, list,
+  section or `data-layout` dims after the delay. Pointer input is still blocked at once (no double submit).
+- A container that was dimmed while busy fades back when `aria-busy` is removed; one whose request ended within the
+  delay was never dimmed and does not move.
+- A busy text line (`<p aria-busy="true">Loading…</p>`, the line sinter shows with `data-sn-show` while a resource
+  loads; also `span`, `small`, `output`) has a spinner and appears after the delay. It had only a progress cursor.
+- Render test (`test/fixtures/busy.html`): the state within the delay, after it, and the fade back.
+
 ## 0.2.0 (2026-11-12)
 
 ### Core

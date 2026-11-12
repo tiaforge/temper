@@ -230,7 +230,7 @@ That is about 15 attributes. The goal is that the whole core vocabulary plus its
 Buttons, every input type, `role="switch"` checkboxes, `select`, `textarea`, `label > input`
 stacking, `fieldset/legend`, `dialog` (with header, body and footer from `header/footer` children),
 `[popover]`, `details/summary`, `table`, `article` (card), `nav ul`, `progress`, `meter`, `code/pre/kbd`,
-`hr`, `mark`. `[aria-busy=true]` shows an inline spinner and blocks pointer input. `[aria-invalid]`
+`hr`, `mark`. `[aria-busy=true]` blocks pointer input at once and shows an inline spinner after `--tm-busy-delay` (200ms), so a fast request shows nothing; a dimmed container fades back when it ends. `[aria-invalid]`
 and `:user-invalid` get the danger border and message styling.
 
 ## 3. Feature split

@@ -40,7 +40,7 @@ not type attributes written on elements; `temper check` checks those expressions
 1. Write semantic HTML first. `button`, `input`, `select`, `textarea`, `label`, `fieldset`, `dialog`,
    `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `meter`, `code`, `kbd` are styled
    without any attributes.
-2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner),
+2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner, shown after 200ms),
    `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`,
    `aria-selected="true"` (the selected `role="tab"`; see Tabs).
 3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute
@@ -344,6 +344,7 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 - `--tm-heading-weight`: Heading font weight. Default 600.
 - `--tm-heading-tracking`: Heading letter spacing. Default -0.025em.
 - `--tm-duration`: Transition duration. Default 150ms.
+- `--tm-busy-delay`: How long an element is aria-busy before its spinner shows and its content dims, so a fast request shows nothing. Default 200ms.
 - `--tm-ease`: Transition easing.
 - `--tm-min`: Minimum column width for data-layout="grid". Default 16rem.
 - `--tm-split`: Sidebar width for data-layout="split". Default 16rem.

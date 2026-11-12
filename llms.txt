@@ -39,7 +39,7 @@ export default { plugins: [temper()] };
 1. Write semantic HTML first. `button`, `input`, `select`, `textarea`, `label`, `fieldset`, `dialog`,
    `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `meter`, `code`, `kbd` are styled
    without any attributes.
-2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner),
+2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner, shown after 200ms),
    `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`,
    `aria-selected="true"` (the selected `role="tab"`; see Tabs).
 3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute
@@ -123,7 +123,7 @@ export default { plugins: [temper()] };
 
 Set inputs on `:root` in your own CSS to change the theme. Use the rest in your own CSS.
 
-- Inputs (set these): `--tm-hue`, `--tm-chroma`, `--tm-neutral-hue`, `--tm-neutral-tint`, `--tm-primary`, `--tm-radius`, `--tm-badge-radius`, `--tm-font-sans`, `--tm-font-mono`, `--tm-heading-weight`, `--tm-heading-tracking`, `--tm-duration`, `--tm-ease`, `--tm-min`, `--tm-split`, `--tm-measure`, `--tm-lazy-h`, `--tm-dialog-width`, `--tm-avatar-size`, `--tm-rail-width`, `--tm-rail-width-collapsed`, `--tm-grow-basis`, `--tm-icon-<name>`
+- Inputs (set these): `--tm-hue`, `--tm-chroma`, `--tm-neutral-hue`, `--tm-neutral-tint`, `--tm-primary`, `--tm-radius`, `--tm-badge-radius`, `--tm-font-sans`, `--tm-font-mono`, `--tm-heading-weight`, `--tm-heading-tracking`, `--tm-duration`, `--tm-busy-delay`, `--tm-ease`, `--tm-min`, `--tm-split`, `--tm-measure`, `--tm-lazy-h`, `--tm-dialog-width`, `--tm-avatar-size`, `--tm-rail-width`, `--tm-rail-width-collapsed`, `--tm-grow-basis`, `--tm-icon-<name>`
 - Colors: `--tm-bg`, `--tm-surface`, `--tm-surface-raised`, `--tm-fill`, `--tm-field`, `--tm-field-border`, `--tm-border`, `--tm-border-strong`, `--tm-text`, `--tm-text-muted`, `--tm-accent`, `--tm-neutral`, `--tm-danger`, `--tm-success`, `--tm-warning`, `--tm-info`, `--tm-tone`, `--tm-tone-ink`, `--tm-tone-soft`, `--tm-tone-on`
 - Space: `--tm-space-none`, `--tm-space-xs`, `--tm-space-sm`, `--tm-space-md`, `--tm-space-lg`, `--tm-space-xl`
 - Radius: `--tm-radius-full`

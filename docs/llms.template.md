@@ -48,7 +48,7 @@ not type attributes written on elements; `temper check` checks those expressions
 1. Write semantic HTML first. `button`, `input`, `select`, `textarea`, `label`, `fieldset`, `dialog`,
    `[popover]`, `details`, `table`, `article` (card), `dl`, `progress`, `meter`, `code`, `kbd` are styled
    without any attributes.
-2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner),
+2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner, shown after 200ms),
    `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`,
    `aria-selected="true"` (the selected `role="tab"`; see Tabs).
 3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute

@@ -586,6 +586,10 @@
       "kind": "input",
       "description": "Transition duration. Default 150ms."
     },
+    "--tm-busy-delay": {
+      "kind": "input",
+      "description": "How long an element is aria-busy before its spinner shows and its content dims, so a fast request shows nothing. Default 200ms."
+    },
     "--tm-ease": {
       "kind": "input",
       "description": "Transition easing."

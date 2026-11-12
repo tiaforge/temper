@@ -145,3 +145,60 @@ test('data-lazy on a container makes its rows skip off-screen work', { skip: !br
     assert.deepEqual(r, ['visible', 'auto']);
   });
 });
+
+// sinter sets aria-busy on an action's element while its request runs, and shows a "Loading…" line (aria-busy="true")
+// while a resource loads. Nothing shows for a request shorter than --tm-busy-delay (200ms); input is blocked at once.
+test('busy states show after a delay, and a dimmed container fades back', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(1280, async page => {
+    const at = ms => new Promise(r => setTimeout(r, ms));
+    const state = () => page.evaluate(`(() => {
+      const el = id => document.getElementById(id), cs = (id, p) => getComputedStyle(el(id), p);
+      return {
+        label: cs('save').color, saveEvents: cs('save').pointerEvents, spinner: +cs('save', '::after').opacity,
+        itemLabel: cs('item').color, itemSpinner: +cs('item', '::after').opacity,
+        form: +cs('form').opacity, loading: +cs('loading').opacity, loadingSpinner: cs('loading', '::before').borderRadius,
+      };
+    })()`);
+    const set = on => page.evaluate(`(() => {
+      for (const id of ['save', 'item', 'form']) ${on} ? document.getElementById(id).setAttribute('aria-busy', 'true') : document.getElementById(id).removeAttribute('aria-busy');
+      document.getElementById('loading').hidden = !${on};
+    })()`);
+    // an opaque color, in whatever notation (a held animation value serializes as oklab)
+    const opaque = c => c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent' && !/\/ 0(\.0+)?\)$/.test(c);
+    const idle = await state();
+
+    await set(true);
+    await at(60);
+    const early = await state();
+    // within the delay: the label stays, no spinner, nothing dimmed, the line not visible yet; clicks blocked already
+    assert.ok(opaque(early.label), `the label was hidden at once (${early.label})`);
+    assert.equal(early.saveEvents, 'none');
+    assert.equal(early.spinner, 0);
+    assert.equal(early.itemSpinner, 0);
+    assert.equal(early.form, 1);
+    assert.equal(early.loading, 0);
+
+    // a request that ended within the delay: nothing was shown and nothing animates back
+    await set(false);
+    assert.equal(await page.evaluate("document.getElementById('form').getAnimations().length"), 0);
+
+    await set(true);
+    await at(500);
+    const late = await state();
+    assert.ok(!opaque(late.label), `the label shows under the spinner (${late.label})`);
+    assert.equal(late.spinner, 1);
+    assert.equal(late.itemLabel, idle.itemLabel, 'a busy item keeps its label');
+    assert.equal(late.itemSpinner, 0.7);
+    assert.equal(late.form, 0.65);
+    assert.equal(late.loading, 1);
+    assert.equal(late.loadingSpinner, '50%', 'the loading line has a spinner');
+
+    // the request ends: the dimmed form fades back instead of jumping
+    await set(false);
+    const back = await page.evaluate("(() => { const f = document.getElementById('form'); return { running: f.getAnimations().length, opacity: +getComputedStyle(f).opacity }; })()");
+    assert.equal(back.running, 1);
+    assert.ok(back.opacity < 1, `the form jumped back to ${back.opacity}`);
+    await at(300);
+    assert.equal((await state()).form, 1);
+  }, 'busy.html');
+});
