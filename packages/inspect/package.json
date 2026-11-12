@@ -1,6 +1,6 @@
 {
   "name": "@tiaforge-ui/temper-inspect",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Text-only layout and accessibility report for a running page: opens every dialog and popover at several widths and color schemes. Built for coding agents, replaces screenshot loops.",
   "license": "MIT",
   "author": "Tia Heinrich",
