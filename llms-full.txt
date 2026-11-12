@@ -219,6 +219,10 @@ On: any text element. Secondary text color.
 
 On: any element. Single line, cut off with an ellipsis.
 
+### `data-lazy` (boolean, no value)
+
+On: any element. For the rows of a long list: the browser skips layout and paint of rows far off screen. Set --tm-lazy-h to the row height.
+
 ### `data-clamp`
 
 On: any text element. Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version).
@@ -344,6 +348,7 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 - `--tm-min`: Minimum column width for data-layout="grid". Default 16rem.
 - `--tm-split`: Sidebar width for data-layout="split". Default 16rem.
 - `--tm-measure`: Max width for data-layout="center". Default 72rem.
+- `--tm-lazy-h`: Row height guess for data-lazy, until a row has been shown. Default 3rem.
 - `--tm-dialog-width`: Dialog width. Default 30rem.
 - `--tm-avatar-size`: Avatar diameter. Default 2.5rem (scaled by data-size).
 - `--tm-rail-width`: Width of [data-rail]. Default 15rem.

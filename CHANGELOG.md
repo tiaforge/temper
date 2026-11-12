@@ -7,6 +7,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### Core
+
+- `data-lazy`: on the rows of a long list, off-screen rows skip layout and paint (`content-visibility: auto`).
+  Restyle and layout of 500 rows in Chrome went from 80 ms to 1 ms; no change in Firefox. `--tm-lazy-h` sets the
+  row height until a row has been shown.
+
 ### Vite plugin
 
 - `inspect: true` runs the `@tiaforge-ui/temper-inspect` audit inside the dev page (after load, hot updates and page

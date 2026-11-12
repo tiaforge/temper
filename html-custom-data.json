@@ -496,6 +496,11 @@
       "valueSet": "v"
     },
     {
+      "name": "data-lazy",
+      "description": "temper. On: any element. For the rows of a long list: the browser skips layout and paint of rows far off screen. Set --tm-lazy-h to the row height.",
+      "valueSet": "v"
+    },
+    {
       "name": "data-clamp",
       "description": "temper. On: any text element. Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version).",
       "values": [

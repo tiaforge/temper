@@ -94,6 +94,7 @@ export default { plugins: [temper()] };
 | `data-callout` | (boolean) | Tinted message box. |
 | `data-muted` | (boolean) | Secondary text color. |
 | `data-truncate` | (boolean) | Single line, cut off with an ellipsis. |
+| `data-lazy` | (boolean) | For the rows of a long list: the browser skips layout and paint of rows far off screen. |
 | `data-clamp` | 2, 3 | Ellipsis after this many lines. |
 | `data-bar` | (boolean) | A colored bar on the start edge in the element's tone. |
 | `data-sr-only` | (boolean) | Hidden visually, still read by screen readers. |
@@ -122,7 +123,7 @@ export default { plugins: [temper()] };
 
 Set inputs on `:root` in your own CSS to change the theme. Use the rest in your own CSS.
 
-- Inputs (set these): `--tm-hue`, `--tm-chroma`, `--tm-neutral-hue`, `--tm-neutral-tint`, `--tm-primary`, `--tm-radius`, `--tm-badge-radius`, `--tm-font-sans`, `--tm-font-mono`, `--tm-heading-weight`, `--tm-heading-tracking`, `--tm-duration`, `--tm-ease`, `--tm-min`, `--tm-split`, `--tm-measure`, `--tm-dialog-width`, `--tm-avatar-size`, `--tm-rail-width`, `--tm-rail-width-collapsed`, `--tm-grow-basis`, `--tm-icon-<name>`
+- Inputs (set these): `--tm-hue`, `--tm-chroma`, `--tm-neutral-hue`, `--tm-neutral-tint`, `--tm-primary`, `--tm-radius`, `--tm-badge-radius`, `--tm-font-sans`, `--tm-font-mono`, `--tm-heading-weight`, `--tm-heading-tracking`, `--tm-duration`, `--tm-ease`, `--tm-min`, `--tm-split`, `--tm-measure`, `--tm-lazy-h`, `--tm-dialog-width`, `--tm-avatar-size`, `--tm-rail-width`, `--tm-rail-width-collapsed`, `--tm-grow-basis`, `--tm-icon-<name>`
 - Colors: `--tm-bg`, `--tm-surface`, `--tm-surface-raised`, `--tm-fill`, `--tm-field`, `--tm-field-border`, `--tm-border`, `--tm-border-strong`, `--tm-text`, `--tm-text-muted`, `--tm-accent`, `--tm-neutral`, `--tm-danger`, `--tm-success`, `--tm-warning`, `--tm-info`, `--tm-tone`, `--tm-tone-ink`, `--tm-tone-soft`, `--tm-tone-on`
 - Space: `--tm-space-none`, `--tm-space-xs`, `--tm-space-sm`, `--tm-space-md`, `--tm-space-lg`, `--tm-space-xl`
 - Radius: `--tm-radius-full`

@@ -333,6 +333,12 @@
       "on": "any element",
       "description": "Single line, cut off with an ellipsis."
     },
+    "data-lazy": {
+      "module": "core",
+      "boolean": true,
+      "on": "any element",
+      "description": "For the rows of a long list: the browser skips layout and paint of rows far off screen. Set --tm-lazy-h to the row height."
+    },
     "data-clamp": {
       "module": "core",
       "on": "any text element",
@@ -598,6 +604,11 @@
       "kind": "input",
       "optional": true,
       "description": "Max width for data-layout=\"center\". Default 72rem."
+    },
+    "--tm-lazy-h": {
+      "kind": "input",
+      "optional": true,
+      "description": "Row height guess for data-lazy, until a row has been shown. Default 3rem."
     },
     "--tm-dialog-width": {
       "kind": "input",
