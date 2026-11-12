@@ -5,7 +5,7 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
-## Unreleased
+## 0.3.0 (2026-11-12)
 
 ### Core
 
