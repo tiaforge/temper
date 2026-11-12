@@ -9,7 +9,7 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Core
 
-- `data-lazy`: on the rows of a long list, off-screen rows skip layout and paint (`content-visibility: auto`).
+- `data-lazy`: on the container of a long list, its rows far off screen skip layout and paint (`content-visibility: auto`).
   Restyle and layout of 500 rows in Chrome went from 80 ms to 1 ms; no change in Firefox. `--tm-lazy-h` sets the
   row height until a row has been shown.
 

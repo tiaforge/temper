@@ -221,7 +221,7 @@ On: any element. Single line, cut off with an ellipsis.
 
 ### `data-lazy` (boolean, no value)
 
-On: any element. For the rows of a long list: the browser skips layout and paint of rows far off screen. Set --tm-lazy-h to the row height.
+On: container of a long list. On the container of a long list: its rows far off screen skip layout and paint. Set --tm-lazy-h to the row height.
 
 ### `data-clamp`
 

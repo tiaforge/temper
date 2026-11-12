@@ -138,3 +138,10 @@ test('no browser tap highlight: every element inherits a transparent one', { ski
     assert.deepEqual(colors, ['rgba(0, 0, 0, 0)']);
   });
 });
+
+test('data-lazy on a container makes its rows skip off-screen work', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(1280, async page => {
+    const r = await page.evaluate(`(() => { const l = document.getElementById('lazy'); return [getComputedStyle(l).contentVisibility, getComputedStyle(l.firstElementChild).contentVisibility]; })()`);
+    assert.deepEqual(r, ['visible', 'auto']);
+  });
+});

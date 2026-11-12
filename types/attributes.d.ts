@@ -110,7 +110,7 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-muted'?: true | '' | null | Removes;
   /** Single line, cut off with an ellipsis. */
   'data-truncate'?: true | '' | null | Removes;
-  /** For the rows of a long list: the browser skips layout and paint of rows far off screen. */
+  /** On the container of a long list: its rows far off screen skip layout and paint. */
   'data-lazy'?: true | '' | null | Removes;
   /** Ellipsis after this many lines. */
   'data-clamp'?: '2' | '3' | 2 | 3 | null | Removes;

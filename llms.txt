@@ -94,7 +94,7 @@ export default { plugins: [temper()] };
 | `data-callout` | (boolean) | Tinted message box. |
 | `data-muted` | (boolean) | Secondary text color. |
 | `data-truncate` | (boolean) | Single line, cut off with an ellipsis. |
-| `data-lazy` | (boolean) | For the rows of a long list: the browser skips layout and paint of rows far off screen. |
+| `data-lazy` | (boolean) | On the container of a long list: its rows far off screen skip layout and paint. |
 | `data-clamp` | 2, 3 | Ellipsis after this many lines. |
 | `data-bar` | (boolean) | A colored bar on the start edge in the element's tone. |
 | `data-sr-only` | (boolean) | Hidden visually, still read by screen readers. |

@@ -497,7 +497,7 @@
     },
     {
       "name": "data-lazy",
-      "description": "temper. On: any element. For the rows of a long list: the browser skips layout and paint of rows far off screen. Set --tm-lazy-h to the row height.",
+      "description": "temper. On: container of a long list. On the container of a long list: its rows far off screen skip layout and paint. Set --tm-lazy-h to the row height.",
       "valueSet": "v"
     },
     {

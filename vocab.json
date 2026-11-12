@@ -336,8 +336,8 @@
     "data-lazy": {
       "module": "core",
       "boolean": true,
-      "on": "any element",
-      "description": "For the rows of a long list: the browser skips layout and paint of rows far off screen. Set --tm-lazy-h to the row height."
+      "on": "container of a long list",
+      "description": "On the container of a long list: its rows far off screen skip layout and paint. Set --tm-lazy-h to the row height."
     },
     "data-clamp": {
       "module": "core",

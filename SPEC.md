@@ -218,7 +218,7 @@ Any role can also be set directly with a literal color (brand colors). Caley's o
 | `data-callout` | boolean | div, `[role=alert]`, `[role=status]` | Uses tone. Replaces form-error, pgp-error and similar. |
 | `data-muted` | boolean | any text | |
 | `data-truncate` | boolean | any | Single-line ellipsis. |
-| `data-lazy` | boolean | any | Rows of a long list: off-screen rows skip layout and paint (`content-visibility: auto`); `--tm-lazy-h` is the row height guess. |
+| `data-lazy` | boolean | list container | Its rows far off screen skip layout and paint (`content-visibility: auto`); `--tm-lazy-h` is the row height guess. |
 | `data-sr-only` | boolean | any | Visible to screen readers only. |
 | `data-pairs` | boolean | `dl` | dt/dd shown as a label/value grid using subgrid. Replaces detail-row and compose-row. |
 
