@@ -88,6 +88,7 @@ export default { plugins: [temper()] };
 | `data-wrap` | wrap, none | Whether a row wraps onto more lines. |
 | `data-grow` | (boolean) | This child takes the remaining space in its row or stack. |
 | `data-scroll` | (none), y, both | Scroll container: sideways by default, "y" vertical (panes), "both". |
+| `data-gutter` | (boolean) | Reserves the scrollbar space: no sideways shift. |
 | `data-density` | comfortable, compact | Control height and padding for everything inside. |
 | `data-theme` | light, dark | Forces light or dark mode. |
 | `data-badge` | (boolean) | Small status label (counts, tags, states). |

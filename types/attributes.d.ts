@@ -98,6 +98,8 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-grow'?: true | '' | null | Removes;
   /** Scroll container: sideways by default, "y" vertical (panes), "both". */
   'data-scroll'?: 'y' | 'both' | '' | Empty | null | Removes;
+  /** Reserves the scrollbar space: no sideways shift. */
+  'data-gutter'?: true | '' | null | Removes;
   /** Control height and padding for everything inside. */
   'data-density'?: 'comfortable' | 'compact' | null | Removes;
   /** Forces light or dark mode. */

@@ -5,6 +5,17 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### Core
+
+- `data-gutter` (boolean): reserves the scrollbar's space on a scroll container (`scrollbar-gutter: stable`), so its
+  content does not shift sideways when it starts or stops overflowing. With classic scrollbars (Chrome and Edge on
+  Linux and Windows) a centered column moved by half the scrollbar width whenever a tab, a filter or loading data
+  made `<main>` of a `data-shell="fixed"` page shorter or taller than the screen. Opt-in, like Tailwind's
+  `scrollbar-gutter-stable`: the space stays reserved when nothing overflows, so it belongs on the element that
+  scrolls (that `<main>`, a pane, `<html>`), not on a `<main>` that only holds panes.
+
 ## 0.3.0 (2026-11-12)
 
 ### Core

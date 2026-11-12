@@ -234,6 +234,10 @@
   :where([data-scroll]) { max-inline-size: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
   :where([data-scroll="y"]) { overflow: hidden auto; min-block-size: 0; overscroll-behavior: contain; }
   :where([data-scroll="both"]) { overflow: auto; min-block-size: 0; overscroll-behavior: contain; }
+  /* Classic scrollbars (Chrome/Edge on Linux and Windows) take space: without a reserved gutter, content shifts
+     sideways when it starts or stops overflowing. Opt-in, on the element that scrolls: a reserved gutter stays even
+     when nothing overflows (an empty strip on a main that only holds panes). No effect with overlay scrollbars. */
+  :where([data-gutter]) { scrollbar-gutter: stable; }
   :where([data-grow]) { flex: 1 1 var(--tm-grow-basis, 8rem); min-inline-size: 0; min-block-size: 0; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }

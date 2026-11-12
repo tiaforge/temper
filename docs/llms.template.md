@@ -298,6 +298,12 @@ the ☰ button first in each page's top row, where it takes its own space; it is
 children of `data-shell` (scripts, templates, framework elements) take no space. `aria-current` must
 be set in the markup; CSS cannot detect the current page.
 
+With `data-shell="fixed"` the shell fills the viewport and `<main>` scrolls inside it (multi-pane apps: give the
+panes `data-scroll="y"`). A page of such an app whose `<main>` itself scrolls (settings, a long form) gets
+`<main data-gutter>`: with classic scrollbars (Chrome and Edge on Linux and Windows) its content then keeps its
+place when a tab or loaded data makes it shorter or taller than the screen. Not on a `<main>` that only holds
+panes: the reserved space would stay there as an empty strip.
+
 `[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
 moves to temper page by page, keep the old nav partial for the old pages and add a second one with
 this markup for the migrated pages; delete the old one when the last page has moved.

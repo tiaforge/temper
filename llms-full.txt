@@ -189,6 +189,10 @@ Also valid without a value.
 - `y`: Vertical scrolling (panes, long lists).
 - `both`: Both directions.
 
+### `data-gutter` (boolean, no value)
+
+On: the element that scrolls: <main> of a data-shell="fixed" page whose main scrolls, a data-scroll="y" pane, or <html> when the document scrolls. Reserves the scrollbar's space on this scroll container (scrollbar-gutter: stable), so the content does not shift sideways when it starts or stops overflowing: a tab, a filter or loaded data that makes it taller or shorter than the screen. Only classic scrollbars take space (Chrome and Edge on Linux and Windows); with overlay scrollbars nothing changes. Put it only on an element that scrolls: the space stays reserved when nothing overflows, so on a <main> that only holds panes (which scroll themselves) it leaves an empty strip at the edge.
+
 ### `data-density`
 
 On: html or any subtree. Control height and padding for everything inside.
@@ -267,7 +271,7 @@ On: the main link or button inside an article. Makes the whole card clickable th
 
 ### `data-shell`
 
-On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell="fixed" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll="y"). Needs `app.css`.
+On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell="fixed" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll="y"). On a fixed-shell page whose <main> itself scrolls (a settings page), add data-gutter to <main>, so its content does not shift when the scrollbar comes and goes. Needs `app.css`.
 
 Also valid without a value.
 
@@ -619,6 +623,12 @@ Below 48rem the rail is a drawer: the ☰ button opens it, and Esc or a click ou
 the ☰ button first in each page's top row, where it takes its own space; it is hidden on wide screens. Other
 children of `data-shell` (scripts, templates, framework elements) take no space. `aria-current` must
 be set in the markup; CSS cannot detect the current page.
+
+With `data-shell="fixed"` the shell fills the viewport and `<main>` scrolls inside it (multi-pane apps: give the
+panes `data-scroll="y"`). A page of such an app whose `<main>` itself scrolls (settings, a long form) gets
+`<main data-gutter>`: with classic scrollbars (Chrome and Edge on Linux and Windows) its content then keeps its
+place when a tab or loaded data makes it shorter or taller than the screen. Not on a `<main>` that only holds
+panes: the reserved space would stay there as an empty strip.
 
 `[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
 moves to temper page by page, keep the old nav partial for the old pages and add a second one with

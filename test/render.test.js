@@ -146,6 +146,13 @@ test('data-lazy on a container makes its rows skip off-screen work', { skip: !br
   });
 });
 
+test('data-gutter reserves the scrollbar gutter, only where it is set', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(1280, async page => {
+    const r = await page.evaluate(`['gutter', 'no-gutter'].map(id => getComputedStyle(document.getElementById(id)).scrollbarGutter)`);
+    assert.deepEqual(r, ['stable', 'auto']);
+  });
+});
+
 // sinter sets aria-busy on an action's element while its request runs, and shows a "Loading…" line (aria-busy="true")
 // while a resource loads. Nothing shows for a request shorter than --tm-busy-delay (200ms); input is blocked at once.
 test('busy states show after a delay, and a dimmed container fades back', { skip: !browser && 'no Chrome/Chromium found' }, async () => {

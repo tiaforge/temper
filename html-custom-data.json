@@ -448,6 +448,11 @@
       ]
     },
     {
+      "name": "data-gutter",
+      "description": "temper. On: the element that scrolls: <main> of a data-shell=\"fixed\" page whose main scrolls, a data-scroll=\"y\" pane, or <html> when the document scrolls. Reserves the scrollbar's space on this scroll container (scrollbar-gutter: stable), so the content does not shift sideways when it starts or stops overflowing: a tab, a filter or loaded data that makes it taller or shorter than the screen. Only classic scrollbars take space (Chrome and Edge on Linux and Windows); with overlay scrollbars nothing changes. Put it only on an element that scrolls: the space stays reserved when nothing overflows, so on a <main> that only holds panes (which scroll themselves) it leaves an empty strip at the edge.",
+      "valueSet": "v"
+    },
+    {
       "name": "data-density",
       "description": "temper. On: html or any subtree. Control height and padding for everything inside.",
       "values": [
@@ -559,7 +564,7 @@
     },
     {
       "name": "data-shell",
-      "description": "temper (app.css). On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll=\"y\").",
+      "description": "temper (app.css). On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll=\"y\"). On a fixed-shell page whose <main> itself scrolls (a settings page), add data-gutter to <main>, so its content does not shift when the scrollbar comes and goes.",
       "values": [
         {
           "name": "fixed",
