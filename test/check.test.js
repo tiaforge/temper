@@ -535,3 +535,12 @@ test('Svelte and Astro: strings and comments in expressions are not markup; scri
   // attribute expressions keep their strings: their values are checked
   assert.deepEqual(codes(checkMarkup(`<span data-tone={a ? 'danger' : 'nope'}>{'x'}</span>`, 'a.astro')), ['TM101']);
 });
+
+test('Vue: strings in {{ }} are not markup, a single { in text is text, bindings are still checked', () => {
+  const src = `<script setup lang="ts">const html = '<b data-tone="x">';</script>
+<template>
+  <p>{{ "<b data-tone='x'>" }} { it's text } <span data-tone="nope">x</span></p>
+  <span :data-tone="bad ? 'danger' : 'oops'">y</span>
+</template>`;
+  assert.deepEqual(checkMarkup(src, 'A.vue').map(d => `${d.code}:${d.line}`), ['TM101:3', 'TM101:4']);
+});
