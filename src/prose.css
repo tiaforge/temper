@@ -1,0 +1,39 @@
+/* temper prose: long-form text (rendered Markdown, CMS HTML, a mail body, an article). Requires core.css.
+   <article data-prose> <h1>…</h1> <p>…</p> <figure><img …><figcaption>…</figcaption></figure> … </article>
+   The one place with outer margins: every block gets a top margin from the text flow (none before the first,
+   none after the last). Only top margins, so they collapse through plain wrappers (div, section: CMS and mail
+   nest content at any depth) and never leak out. temper components inside keep their own spacing. */
+
+@layer tm.reset, tm.base, tm.components, tm.layout; /* the order core.css declares, in case this file loads first */
+
+@layer tm.layout {
+  /* prose owns its flow: data-layout="center" on it only adds the centered column (its display would add gaps) */
+  :where([data-prose]:not(dialog, [popover])) { display: flow-root; }
+}
+
+@layer tm.components {
+  /* the reading measure: --tm-measure (also what data-layout="center" on the same element uses) */
+  :where([data-prose]) { --tm-measure: 65ch; max-inline-size: var(--tm-measure); line-height: 1.65; overflow-wrap: break-word; }
+  /* everything below: not inside a component that lays out its own children */
+  :where([data-prose] :not(dialog, [popover], [data-prose] :is([data-layout], [data-callout], [data-list], [data-pairs], [data-menu], [data-avatar], article, form, dialog, [popover]) *)) {
+    &:where(p, h1, h2, h3, h4, h5, h6, ul, ol, dl, blockquote, figure, pre, table, img, video, details, [data-layout], [data-callout], [data-list], article, form) { margin-block-start: 1em; }
+    &:where(h1, h2, h3, h4, h5, h6) { margin-block-start: 1.5em; }
+    &:where(:is(h1, h2, h3, h4, h5, h6) + *, figcaption, dd + dt) { margin-block-start: 0.5em; }
+    &:where(li + li, li > :is(ul, ol)) { margin-block-start: 0.25em; }
+    &:where(hr, hr + *) { margin-block-start: 2em; }
+    /* nothing above the first block (at any depth), a table cell's first block, or a details' content */
+    &:where(:first-child:not([data-prose] :not(:first-child) *), :is(td, th) > :first-child, summary + *) { margin-block-start: 0; }
+    &:where(h1) { font-size: clamp(1.75em, 1.25em + 2vi, 2.5em); }
+    &:where(h2) { font-size: clamp(1.375em, 1.125em + 1vi, 1.75em); }
+    &:where(h3) { font-size: 1.25em; }
+    &:where(h4) { font-size: 1.0625em; }
+    &:where(blockquote) { padding-inline-start: 1em; border-inline-start: 3px solid var(--tm-border-strong); color: var(--tm-text-muted); }
+    &:where(figcaption) { font-size: var(--tm-text-sm); color: var(--tm-text-muted); }
+    &:where(dt) { font-weight: 600; }
+    &:where(dd) { padding-inline-start: 1.25em; }
+  }
+  @media print {
+    :where([data-prose]) :where(h1, h2, h3, h4, h5, h6) { break-after: avoid; }
+    :where([data-prose]) :where(figure, img, pre, blockquote, tr) { break-inside: avoid; }
+  }
+}

@@ -160,4 +160,6 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-tooltip'?: string | Empty | null | Removes;
   /** Number cell: right-aligned, tabular figures (on th and every td of the column). Needs table.css. */
   'data-num'?: true | '' | null | Removes;
+  /** Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. Needs prose.css. */
+  'data-prose'?: true | '' | null | Removes;
 }

@@ -341,9 +341,10 @@ Missing, roughly in order:
 1. ~~Vite plugin for the checker, and enhancement partials with the build option for them.~~ Done.
 2. ~~Trim `llms.txt` (322 lines now; goal about 200).~~ Done: about 150 lines; the rest is in `llms-full.txt`.
 3. ~~Contrast validator (hue sweep, WCAG AA).~~ Done: `npm run contrast`, see §1.6.
-4. Modules: `app`, `menu`, `icons`, `feedback` (toasts, tooltips) and `table` (data tables) exist;
-   `nav` and `prose` ended up in core or were not needed for caley. Next: `site` (prose, figure,
-   blockquote, site header and footer) for tia.vision.
+4. Modules: `app`, `menu`, `icons`, `feedback` (toasts, tooltips), `table` (data tables) and `prose`
+   (`data-prose`: rhythm for long-form text at any depth, reading measure through `--tm-measure`, fluid
+   h1/h2, blockquote, figure; 2026-11-23) exist; `nav` ended up in core. Next: `site` (site header and
+   footer, hero) for tia.vision.
 5. ~~Visual regression tests~~ Done: `npm run visual`, 17 states of the kitchen sink and app shell
    compared pixel by pixel with `test/visual/` (machine-specific baselines; `--update` accepts a change).
    Agent evals: done through the eval harness and the six caley migration runs. README: done, with

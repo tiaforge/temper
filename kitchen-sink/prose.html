@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>temper prose</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/prose.css">
+  <link rel="stylesheet" href="../src/icons.css">
+  <script>
+    // ?t=light|dark, ?density=compact, ?dir=rtl
+    { const q = new URLSearchParams(location.search), h = document.documentElement;
+      if (q.get('t')) h.dataset.theme = q.get('t');
+      if (q.get('density')) h.dataset.density = q.get('density');
+      if (q.get('dir')) h.dir = q.get('dir'); }
+  </script>
+</head>
+<body>
+<main data-layout="center" data-gap="xl" data-pad="xl">
+
+  <!-- ───────── An article: rendered Markdown, flat ───────── -->
+  <div data-prose id="article">
+    <h1>Working with light and shadow on a small balcony</h1>
+    <p data-muted>Tia Heinrich · <time datetime="2026-11-20">November 20, 2026</time> · 6 min read</p>
+    <p>A balcony garden gets two kinds of light: a few hours of direct sun and a long stretch of bright shade.
+      Most plants sold as “full sun” cope with less than the label says, as long as the soil stays cool and
+      the pots do not dry out by noon.</p>
+    <p>This is what three seasons on a north-west facing balcony in Berlin taught me, with the plants that
+      survived and the ones that did not.</p>
+
+    <h2>Measure before you buy</h2>
+    <p>Spend one sunny Saturday with a notebook. Every hour, note which part of the floor and the railing is
+      in direct sun. You end up with a rough map, and it is almost always smaller than you expected.</p>
+    <ul>
+      <li>Railing: <strong>4–5 hours</strong> of afternoon sun in summer.</li>
+      <li>Floor along the wall: bright shade all day.
+        <ul>
+          <li>Ferns, hostas and mint are happy here.</li>
+          <li>Tomatoes are not.</li>
+        </ul>
+      </li>
+      <li>The corner behind the door: nothing grows there. Keep the watering can there.</li>
+    </ul>
+
+    <figure>
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 280'%3E%3Crect width='640' height='280' fill='%23c9d8c5'/%3E%3Ccircle cx='520' cy='70' r='38' fill='%23f2c14e'/%3E%3Cpath d='M0 280V190q80-50 160-20t160-10 160 0 160-30v150z' fill='%236b9a6b'/%3E%3C/svg%3E" width="640" height="280" alt="A drawing of green hills under a yellow sun">
+      <figcaption>The sun map, drawn on the back of a seed packet. Two hours of light make all the difference.</figcaption>
+    </figure>
+
+    <h2>Water, then mulch</h2>
+    <p>Small pots heat up fast. A layer of bark or gravel on top keeps the roots about five degrees cooler,
+      and you water half as often. Use <code>terracotta</code> only where you can water every day.</p>
+    <blockquote>
+      <p>The best fertiliser is the gardener’s shadow.</p>
+      <p>— an old saying, which on a balcony is literally true</p>
+    </blockquote>
+
+    <h3>A watering schedule that works</h3>
+    <ol>
+      <li>Check the soil with a finger every morning.</li>
+      <li>Water the railing pots until it runs out of the bottom.</li>
+      <li>Skip the shade pots unless the top two centimetres are dry.</li>
+    </ol>
+
+    <div data-callout data-tone="warning" role="note">
+      <strong>Before you drill into the wall</strong>
+      Most rental contracts in Germany need the landlord’s consent for railing planters that are screwed on.
+    </div>
+
+    <table>
+      <caption>What survived three summers</caption>
+      <thead><tr><th>Plant</th><th>Spot</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Cherry tomato</td><td>Railing</td><td><span data-badge data-tone="success">Thrived</span></td></tr>
+        <tr><td>Basil</td><td>Railing</td><td><span data-badge data-tone="warning">Bolted early</span></td></tr>
+        <tr><td>Hosta</td><td>Floor</td><td><span data-badge data-tone="success">Thrived</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Terms, in one place</h2>
+    <dl>
+      <dt>Bright shade</dt><dd>No direct sun, but open sky above. Most leafy plants are happy.</dd>
+      <dt>Bolting</dt><dd>A plant that flowers too early, usually from heat stress; the leaves turn bitter.</dd>
+    </dl>
+
+    <details>
+      <summary>Which soil did you use?</summary>
+      <p>A peat-free potting mix with a handful of perlite per pot. Nothing special.</p>
+      <p>For tomatoes I added slow-release fertiliser in May.</p>
+    </details>
+
+    <pre><code>sun hours = last sunny hour − first sunny hour</code></pre>
+
+    <hr>
+    <p>Questions? I answer every mail, slowly.</p>
+    <div data-layout="row" data-gap="sm">
+      <a href="#" role="button" data-icon="mail">Write to me</a>
+      <button data-variant="outline" data-icon="share-2">Share</button>
+    </div>
+
+    <h2>Keep reading</h2>
+    <article data-layout="stack" data-gap="xs" id="card">
+      <h3>Composting in a flat</h3>
+      <p data-muted>A worm bin under the sink, and why it does not smell.</p>
+      <a href="#">Read the post</a>
+    </article>
+    <ul data-list id="list">
+      <li>Seed swap, <time datetime="2027-03-14">March 14</time></li>
+      <li>Balcony tour, <time datetime="2027-05-02">May 2</time></li>
+    </ul>
+    <form data-layout="row" data-gap="sm" id="form">
+      <input type="email" data-grow aria-label="Email" placeholder="you@example.com">
+      <button>Subscribe</button>
+    </form>
+  </div>
+
+  <!-- ───────── A mail body: arbitrary HTML, nested in divs and tables ───────── -->
+  <section data-layout="stack" data-gap="md" aria-labelledby="mail-subject">
+    <h2 id="mail-subject">Re: Saturday at the community garden</h2>
+    <dl data-pairs>
+      <dt>From</dt><dd>Mira Okafor &lt;mira@okafor.io&gt;</dd>
+      <dt>To</dt><dd>Tia Heinrich</dd>
+    </dl>
+    <div data-prose id="mail" style="--tm-measure: none">
+      <div dir="ltr">
+        <div>Hi Tia,</div>
+        <div><br></div>
+        <div>thanks for organising! Here is what we still need for Saturday:</div>
+        <ul>
+          <li>two more rakes (I can bring one)</li>
+          <li>gloves in size S</li>
+        </ul>
+        <div class="gmail_quote">
+          <p>The forecast says <strong>sun until three</strong>, so let us start at nine. A long link for the
+            sign-up sheet: https://community-garden.example.org/events/2026/saturday-autumn-cleanup/sign-up-sheet-and-tools</p>
+          <table role="presentation"><tr><td>
+            <p>Meeting point: the blue shed by the north gate.</p>
+            <p>Parking is on Gartenstraße.</p>
+          </td></tr></table>
+        </div>
+        <div data-callout data-tone="info" role="note">
+          <strong>RSVP</strong>
+          <p>Reply by Thursday so we can order enough coffee.</p>
+          <p>Kids are welcome.</p>
+        </div>
+        <div data-layout="row" data-gap="sm" id="mail-actions">
+          <button id="mail-yes">I’m in</button>
+          <button data-variant="outline">Can’t make it</button>
+        </div>
+        <p>Mira</p>
+        <blockquote type="cite">
+          <p>On Tue, Tia Heinrich wrote:</p>
+          <blockquote type="cite">
+            <p>Does anyone have spare rakes?</p>
+          </blockquote>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

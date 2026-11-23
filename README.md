@@ -144,7 +144,9 @@ possible: nothing knows that `.secondary.outline.contrast` is a contradiction.
 
 **2. Nothing has an outer margin.** The parent owns all space: `data-gap` between children,
 `data-pad` inside, one scale `xs sm md lg xl` everywhere. This removes the most common failure we saw
-with other libraries: agents stacking margin overrides against built-in margins.
+with other libraries: agents stacking margin overrides against built-in margins. The one exception is
+long-form text you don't write yourself (rendered Markdown, CMS HTML, a mail body): `data-prose`
+(`prose.css`) spaces its paragraphs, headings, lists and figures from the text flow.
 
 **3. State is HTML and ARIA.** `disabled`, `aria-invalid`, `aria-busy` (spinner, blocks input),
 `aria-pressed`, `aria-current`, `:user-invalid`, `[open]`, `:popover-open`. Correct accessibility
@@ -236,7 +238,7 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
   anti-pattern table ("don't / do"). Enough for small edits.
 - **[`llms-full.txt`](llms-full.txt)**: every attribute in detail plus copy-paste recipes: form,
   card, dialog, toolbar, status, settings rows, app shell, dropdown, card grid, label/value pairs,
-  page layout. Agents copy recipes instead of inventing markup.
+  long-form text, page layout. Agents copy recipes instead of inventing markup.
 - **Names that don't collide with habits.** No numeric spacing (agents read `4` as Tailwind's 1rem),
   no `.btn-primary`. Values like `secondary outline ghost link` follow shadcn, which models have seen
   a lot.
@@ -261,6 +263,7 @@ import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating
 import '@tiaforge-ui/temper/menu.css';   // dropdown menus
 import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/temper/table.css';  // data tables
+import '@tiaforge-ui/temper/prose.css';  // long-form text: articles, rendered Markdown, mail bodies
 import '@tiaforge-ui/temper/icons.css';  // the default icon set
 // or everything: import '@tiaforge-ui/temper/all.css';
 ```
