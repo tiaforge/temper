@@ -307,7 +307,13 @@ change, as `src/App.svelte:12 error contrast: …`: in dev, plain HTML elements 
 off). It audits what is on the page now; it does not resize the window or open dialogs by itself, which
 `temper-inspect` does in headless Chrome (use that in CI). Dev server only, never in a build.
 
-Icons from the plugin need `lucide-static` installed (optional peer dependency).
+Icons from the plugin need `lucide-static` installed (optional peer dependency). The plugin emits the
+icons your markup names: static ones and every literal an expression can produce
+(`data-icon={dark ? 'sunrise' : 'moon-star'}` emits both). A name it can't see, like
+`data-icon={item.icon}` from a data array, would render blank, so the plugin prints a notice with the file
+and line instead (it doesn't fail the build). List such names in `icons: { include: ['rocket', 'star'] }`,
+then mark the line with a `temper-ignore` comment to silence the notice. `temper check --lucide` prints the
+same notice.
 
 ### Without a bundler
 

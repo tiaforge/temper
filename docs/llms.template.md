@@ -29,6 +29,10 @@ export default { plugins: [temper()] };
 // with icons: every Lucide icon by name (only the used ones are emitted) plus your own SVG folder
 // export default { plugins: [temper({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:temper-icons.css';
 // (then do not also import icons.css; the CLI equivalent is: npx temper check --lucide --icons src/icons <paths>)
+<!-- full -->
+// computed names: data-icon={dark ? 'sun' : 'moon'} emits both; names the source does not show (data-icon={item.icon})
+// get a notice with file and line: list them in temper({ icons: { include: ['rocket', 'star'] } })
+<!-- /full -->
 // while migrating step by step, check only the migrated parts: temper({ paths: ['src/contacts', 'contacts'] })
 // opt-in enhancements (newer CSS, fine to leave off): temper({ enhance: ['customizable-select'] }) or enhance: 'all'
 // smaller builds: temper({ prune: true }) drops rules for attributes and values the project never uses
@@ -102,6 +106,16 @@ Names are Lucide's (https://lucide.dev/icons). icons.css contains: {{iconNames}}
 use end up in the CSS. Do not paste inline `<svg>` for an icon that has a name.
 
 <!-- full -->
+The plugin finds the names in your markup: static ones and every literal an expression can produce
+(`data-icon={dark ? 'sunrise' : 'moon-star'}` emits both). A name it cannot see, such as
+`data-icon={item.icon}` from a data array or a component prop, is not emitted and would render blank, so the
+plugin prints a notice with the file and line (it does not fail the build). List those names in
+`include`, then add a `temper-ignore` comment on that line to silence the notice:
+
+```js
+temper({ icons: { include: ['rocket', 'star', 'zap'] } })
+```
+
 Your own icons: put SVG files in the plugin's `icons.dir` (file name = icon name; it replaces a default
 of the same name), or without the plugin:
 
