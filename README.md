@@ -217,18 +217,21 @@ drawer) and compares them pixel by pixel with baselines in `test/visual/`. A cha
 image with the changed pixels in red. Baselines depend on fonts and the Chrome version, so they are
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). They sit a little above the current sizes, so a fix fits and real growth means raising one on purpose.
+<!-- sizes -->
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 98 % of its budget, `icons.css` 83 % and `all.css` 92 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
-| `core.css` | 5.5 KB | tokens, reset, type, layout, buttons, forms (incl. meter, color, multi-row select), dialog, popover, details, table, card, badge, callout, avatar |
+| `core.css` | 5.9 KB | tokens, reset, type, layout, buttons, forms (incl. meter, color, multi-row select), dialog, popover, details, table, card, badge, callout, avatar |
 | `app.css` | 1.4 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button |
 | `menu.css` | 0.9 KB | dropdown menus |
 | `feedback.css` | 0.8 KB | toasts, tooltips (anchor-positioned, never clipped by a scroll container) |
 | `table.css` | 0.7 KB | data tables: sortable headers (`aria-sort`), row selection, number columns, sticky header |
-| `icons.css` | 3.0 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
-| `all.css` | 10.2 KB | everything |
-| `enhance/customizable-select.css` | 0.9 KB | opt-in: the open `<select>` list styled like a menu (see below) |
+| `icons.css` | 2.9 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
+| `pico-compat.css` | 0.4 KB | opt-in, while migrating from Pico: maps its `--pico-*` variables to temper tokens |
+| `all.css` | 10.6 KB | everything |
+| `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
+<!-- /sizes -->
 
 ## Built for LLMs and coding agents
 
