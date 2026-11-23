@@ -409,3 +409,78 @@ test('two solid buttons side by side', () => {
   assert.deepEqual(codes(checkMarkup('<div><button>Save</button><button data-variant="ghost">Cancel</button></div>')), []);
   assert.deepEqual(codes(checkMarkup('<div><button role="tab">A</button><button role="tab">B</button></div>')), []);
 });
+
+test('two solid buttons: alternatives are not side by side (Svelte blocks)', () => {
+  const tm = (src, file = 'A.svelte') => codes(checkMarkup(src, file)).filter(c => c === 'TM121');
+  assert.deepEqual(tm('<div>{#if a}<button>Save</button>{:else}<button>Create</button>{/if}</div>'), []);
+  assert.deepEqual(tm('<div>{#if a}<button>A</button>{:else if b}<button>B</button>{:else}<button>C</button>{/if}</div>'), []);
+  assert.deepEqual(tm('<div>{#await p}<button>A</button>{:then v}<button>B</button>{:catch e}<button>C</button>{/await}</div>'), []);
+  assert.deepEqual(tm('<div>{#snippet s()}<button>A</button>{/snippet}<button>B</button></div>'), []);
+  assert.deepEqual(tm('<div>{#each xs as x}<button>{x}</button>{/each}</div>'), []); // repeated: maybe once
+  assert.deepEqual(tm('<div><button>A</button>{#if a}<button>B</button>{/if}</div>'), []); // together only sometimes
+  // in the same branch they do render together
+  assert.deepEqual(tm('<div>{#if a}<button>Save</button><button>Create</button>{/if}</div>'), ['TM121']);
+  assert.deepEqual(tm('<div>{#if a}<p>x</p>{/if}<button>Save</button><button>Create</button></div>'), ['TM121']);
+  assert.deepEqual(tm('{#if a}<div><button>Save</button><button>Create</button></div>{:else}<button>X</button>{/if}'), ['TM121']);
+});
+
+test('two solid buttons: alternatives in JSX, Astro, Vue and sinter', () => {
+  const tm = (src, file) => codes(checkMarkup(src, file)).filter(c => c === 'TM121');
+  assert.deepEqual(tm('<div>{open ? <button>Close</button> : <button>Open</button>}</div>', 'A.tsx'), []);
+  assert.deepEqual(tm('<div>{open && <button>Close</button>}<button>Open</button></div>', 'A.jsx'), []);
+  assert.deepEqual(tm('<div>{items.map(i => <button>{i}</button>)}</div>', 'A.jsx'), []);
+  assert.deepEqual(tm('<div>{a ? <button>A</button> : <button>B</button>}</div>', 'a.astro'), []);
+  assert.deepEqual(tm('<div><button v-if="a">A</button><button v-else-if="b">B</button><button v-else>C</button></div>', 'A.vue'), []);
+  assert.deepEqual(tm('<div><template v-if="a"><button>A</button></template><template v-else><button>B</button></template></div>', 'A.vue'), []);
+  assert.deepEqual(tm('<div><button v-show="a">A</button><button>B</button></div>', 'A.vue'), []);
+  assert.deepEqual(tm('<div><template data-sn-if="a"><button>A</button></template><button>B</button></div>', 'a.html'), []);
+  assert.deepEqual(tm('<div><button x-show="a">A</button><button>B</button><button hidden>C</button></div>', 'a.html'), []);
+  // certainly together: one branch of an expression, a fragment, a template's content, plain markup
+  assert.deepEqual(tm('<div>{open && <><button>Close</button><button>Open</button></>}</div>', 'A.tsx'), ['TM121']);
+  assert.deepEqual(tm('const x = <div><button>Close</button><button>Open</button></div>;', 'A.tsx'), ['TM121']);
+  assert.deepEqual(tm('<div>{a && <p><button>A</button><button>B</button></p>}</div>', 'a.astro'), ['TM121']);
+  assert.deepEqual(tm('<div><template v-if="a"><button>A</button><button>B</button></template></div>', 'A.vue'), ['TM121']);
+});
+
+// ───── what is markup in JSX, Svelte and Astro files ─────
+
+test('JSX: markup in comments, strings, template literals and regular expressions is not checked', () => {
+  const src = [
+    `import { useState } from 'react';`,
+    `// a comment with <button data-variant="danger">x</button>`,
+    `const help = '<button data-variant="primary">';`,
+    `const twice = "<span data-tone='nope'>";`,
+    'const tpl = `<b data-tone="x">${user ? `<i data-tone="${\'y\'}">` : \'\'}</b>`;',
+    `const re = /<b data-tone="y">/g, half = total / 2 / count;`,
+    `/* <div data-layout="stak"></div> */`,
+    `export function List<T extends object>({ items }: { items: Array<T> }) {`,
+    `  const [open, setOpen] = useState<boolean>(false);`,
+    `  const id = <T,>(x: T) => x;`,
+    `  if (a < b && c > d) return null;`,
+    `  return <div data-layout="row">{/* <b data-tone="q"> */}{"<i data-tone='z'>"}don't // not a comment</div>;`,
+    `}`,
+  ].join('\n');
+  assert.deepEqual(checkMarkup(src, 'A.tsx'), []);
+});
+
+test('JSX: attribute values, text and nested elements are still checked', () => {
+  const count = (src, file = 'A.tsx') => codes(checkMarkup(src, file)).filter(c => c === 'TM101').length;
+  const src1 = 'const f = <T,>(x: T) => <b data-tone="nope">{x}</b>;';
+  assert.equal(checkMarkup(src1, 'A.tsx')[0].col, src1.indexOf('data-tone') + 1);
+  assert.equal(count('const [o] = useState<boolean>(false); const e = <b data-tone={o ? "danger" : "nope"}>x</b>;'), 1);
+  assert.equal(count('const s = a ? <b data-tone="nope" /> : null; const q = x / 2;', 'a.jsx'), 1);
+  assert.equal(count('x = a.filter(i => i < 3).map(i => <li data-tone="nope">{i}</li>)', 'a.jsx'), 1);
+  assert.deepEqual(codes(checkMarkup('const el = <Select<string> data-tone="nope" />;', 'A.tsx')), ['TM101']); // a component, not a <select> field
+  assert.equal(count('<div onClick={() => /\'/.test(s)} data-tone="nope">x</div>', 'a.jsx'), 1);
+  assert.equal(count('const s = `a ${`b ${"c"}`} d`; const e = <b data-tone="nope" />;', 'a.jsx'), 1);
+  assert.equal(count('return <ul>{items.map(i => <li key={i}><span data-tone="nope">{i}</span></li>)}</ul>'), 1);
+});
+
+test('Svelte and Astro: strings and comments in expressions are not markup; script and frontmatter are not either', () => {
+  assert.deepEqual(checkMarkup(`<script lang="ts">const a = '<b data-tone="x">'; let b: Array<string> = [];</script>
+<p>{"<b data-tone='x'>"}{/* <i data-tone="q"> */}</p>{#if a < b}<span data-tone="danger">x</span>{/if}`, 'A.svelte'), []);
+  const astro = `---\nconst a = "<b data-tone='x'>";\nconst b = 1 < 2;\n---\n<p>{"<i data-tone='z'>"}{/* <b data-tone="w"> */}</p>\n<span data-tone="bad">x</span>`;
+  assert.deepEqual(checkMarkup(astro, 'a.astro').map(d => `${d.code}:${d.line}`), ['TM101:6']);
+  // attribute expressions keep their strings: their values are checked
+  assert.deepEqual(codes(checkMarkup(`<span data-tone={a ? 'danger' : 'nope'}>{'x'}</span>`, 'a.astro')), ['TM101']);
+});
