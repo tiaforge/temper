@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, viewport-fit=cover">
+<title>States, RTL, forced colors, print</title>
+<link rel="stylesheet" href="../../src/all.css">
+</head>
+<body>
+<a id="skip" href="#main" data-sr-only>Skip to content</a>
+<main id="main" data-layout="stack" data-gap="md" data-pad="md">
+  <!-- tooltips on positioned elements and on elements whose ::after is taken -->
+  <div data-layout="row" data-gap="sm">
+    <span id="badge-tip" data-badge tabindex="0" data-tooltip="Synced 3 hours ago">Stale</span>
+    <button id="icon-tip" data-icon="pencil" aria-label="Edit" data-tooltip></button>
+    <button id="busy" data-icon="plus" aria-label="Add" aria-busy="true"></button>
+    <button id="busy-tip" data-icon="plus" aria-label="Add" data-tooltip aria-busy="true"></button>
+    <button id="caret" type="button" popovertarget="m" data-variant="outline">Books</button>
+    <button id="caret-tip" type="button" popovertarget="m" data-variant="outline" data-tooltip="Choose the books to show">Books</button>
+    <button id="menu-tip" type="button" popovertarget="m" data-icon="ellipsis" data-variant="ghost" aria-label="More" data-tooltip></button>
+    <div popover id="m" data-menu><button id="m1">Rename</button><hr><button>Delete</button></div>
+  </div>
+  <article id="card">
+    <a id="stretch" href="#card" data-stretch>Card link</a>
+    <a id="stretch-tip" href="#card" data-stretch data-tooltip="Open the card">Card link</a>
+  </article>
+  <table>
+    <thead><tr>
+      <th aria-sort="ascending"><button id="sort">Name</button></th>
+      <th aria-sort="none"><button id="sort-tip" data-tooltip="Sort by date">Date</button></th>
+      <th id="th-tip" data-tooltip="Total in EUR" data-num>Sum</th>
+    </tr></thead>
+    <tbody><tr aria-selected="true" id="row"><td>A</td><td>B</td><td data-num>1</td></tr></tbody>
+  </table>
+
+  <!-- fields and buttons in their states -->
+  <form data-layout="stack" data-gap="sm">
+    <input id="field">
+    <input id="inv" aria-invalid="true">
+    <input id="dis-field" disabled>
+    <button id="dis" type="button" disabled>Save</button>
+    <button id="dis-outline" type="button" data-variant="outline" disabled>Cancel</button>
+    <button id="pressed" type="button" aria-pressed="true">Bold</button>
+    <select id="sel"><option>One</option><option>Two</option></select>
+    <label><input id="sw" type="checkbox" role="switch" checked> Notifications</label>
+    <label><input id="sw-off" type="checkbox" role="switch"> Sounds</label>
+    <progress id="prog" value="40" max="100"></progress>
+    <meter id="meter" value="0.4"></meter>
+    <span id="icon" data-icon="mail"></span>
+  </form>
+
+  <!-- checkbox and radio marks in every tone context -->
+  <div id="marks" data-layout="row" data-gap="sm"></div>
+  <template id="mark">
+    <label><input type="checkbox" checked> a</label>
+    <label><input type="checkbox" checked aria-invalid="true"> b</label>
+    <label><input type="radio" checked> c</label>
+    <label><input type="checkbox" data-mixed> d</label>
+  </template>
+
+  <div role="tablist" aria-orientation="vertical">
+    <button id="vtab" role="tab" aria-selected="true">General</button>
+    <button role="tab" aria-selected="false">Advanced</button>
+  </div>
+  <div data-layout="row"><div id="scroller" data-scroll="y" style="block-size: 4rem"><p style="block-size: 10rem">Tall</p></div></div>
+  <dialog id="dlg"><header><h2>Title</h2><button id="close" commandfor="dlg" command="close" aria-label="Close"></button></header></dialog>
+</main>
+<script>
+  // one set of marks per tone container, in light and dark
+  const marks = document.getElementById('marks'), tpl = document.getElementById('mark');
+  for (const scheme of ['light', 'dark']) for (const tone of ['', 'accent', 'neutral', 'danger', 'success', 'warning', 'info']) {
+    const box = marks.appendChild(document.createElement('div'));
+    box.dataset.callout = '';
+    box.dataset.theme = scheme;
+    if (tone) box.dataset.tone = tone;
+    box.append(tpl.content.cloneNode(true));
+  }
+  for (const m of document.querySelectorAll('[data-mixed]')) m.indeterminate = true;
+</script>
+</body>
+</html>

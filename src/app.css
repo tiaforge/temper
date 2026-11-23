@@ -18,8 +18,10 @@
     --_w: var(--tm-rail-width, 15rem);
     position: sticky; inset-block-start: 0;
     display: flex; flex-direction: column; gap: 2px;
-    flex: none; inline-size: var(--_w); block-size: 100dvh; overflow-y: auto; overflow-x: hidden;
-    padding: var(--tm-space-sm);
+    flex: none; inline-size: calc(var(--_w) + env(safe-area-inset-left)); block-size: 100dvh; overflow-y: auto; overflow-x: hidden;
+    /* clear of a notch and the home indicator (pages with viewport-fit=cover) */
+    padding: calc(var(--tm-space-sm) + env(safe-area-inset-top)) var(--tm-space-sm) calc(var(--tm-space-sm) + env(safe-area-inset-bottom));
+    padding-inline-start: calc(var(--tm-space-sm) + env(safe-area-inset-left));
     inset: auto; margin: 0; min-inline-size: 0;
     border: 0; border-inline-end: 1px solid var(--tm-border); border-radius: 0; box-shadow: none;
     background: var(--tm-bg); color: var(--tm-text);
@@ -69,8 +71,8 @@
   [data-rail-collapse]:hover { background: var(--tm-fill); color: var(--tm-text); }
   [data-rail-collapse]:checked { background: transparent; }
   [data-rail-collapse]::before, [data-rail-collapse]:checked::before {
-    content: ""; inline-size: 1.125rem; block-size: 1.125rem; border: 0; rotate: 0deg; scale: 1; translate: 0;
-    background: currentColor;
+    content: ""; inline-size: 1.125rem; block-size: 1.125rem; border: 0; rotate: 0deg; scale: var(--_x) 1; translate: 0; /* mirrored in RTL */
+    background: currentColor; forced-color-adjust: preserve-parent-color;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m11 17-5-5 5-5M18 17l-5-5 5-5'/%3E%3C/svg%3E") center / contain no-repeat;
     transition: rotate var(--tm-duration) var(--tm-ease);
   }
@@ -94,7 +96,8 @@
 
   /* floating action button */
   :where([data-fab]) {
-    position: fixed; inset-block-end: var(--tm-space-lg); inset-inline-end: var(--tm-space-lg); z-index: 10;
+    position: fixed; z-index: 10;
+    inset-block-end: calc(var(--tm-space-lg) + env(safe-area-inset-bottom)); inset-inline-end: calc(var(--tm-space-lg) + env(safe-area-inset-right));
     inline-size: calc(var(--tm-control-h) * 1.4); block-size: calc(var(--tm-control-h) * 1.4); padding: 0;
     border-radius: 50%; box-shadow: var(--tm-shadow-lg), 0 2px 8px oklch(0 0 0 / 0.15);
     font-size: 1.5rem; font-weight: 400;
@@ -106,14 +109,21 @@
     :where([data-rail][popover]) {
       --_w: min(var(--tm-rail-width, 15rem), 85vw);
       position: fixed; inset-block: 0; inset-inline-start: 0; inset-inline-end: auto;
-      box-shadow: var(--tm-shadow-lg); translate: -100% 0;
+      box-shadow: var(--tm-shadow-lg); translate: calc(var(--_x) * -100%) 0; /* off the start edge, either direction */
     }
     :where([data-rail][popover]:not(:popover-open)) { display: none; }
     :where([data-rail][popover]:popover-open) { translate: 0 0; }
     :where([data-rail][popover])::backdrop { background: oklch(0.2 0.02 var(--tm-neutral-hue) / 0.45); }
     [data-rail][popover] [data-rail-collapse] { display: none; }
   }
-  @starting-style { :where([data-rail][popover]:popover-open) { translate: -100% 0; } }
+  @starting-style { :where([data-rail][popover]:popover-open) { translate: calc(var(--_x) * -100%) 0; } }
+
+  /* print the page, not the app around it: no rail or FAB, and a fixed shell grows with its content (it would print
+     one screen) */
+  @media print {
+    :where([data-rail], [data-fab]) { display: none; }
+    :where([data-shell="fixed"], [data-shell="fixed"] > main) { block-size: auto; overflow: visible; }
+  }
 }
 
 @layer tm.layout {

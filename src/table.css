@@ -25,7 +25,7 @@
   }
   :where(th[aria-sort]) > :where(button):hover { background: var(--tm-fill); color: var(--tm-text); }
   :where(th[aria-sort]) > :where(button)::after {
-    content: ""; inline-size: 0.875em; block-size: 0.875em; flex-shrink: 0; background: currentColor; opacity: 0.35;
+    content: ""; inline-size: 0.875em; block-size: 0.875em; flex-shrink: 0; background: currentColor; opacity: 0.35; forced-color-adjust: preserve-parent-color;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 9 5-5 5 5M7 15l5 5 5-5'/%3E%3C/svg%3E") center / contain no-repeat;
   }
   :where(th[aria-sort="ascending"], th[aria-sort="descending"]) { color: var(--tm-text); }
@@ -36,6 +36,7 @@
   :where(th[aria-sort="descending"]) > :where(button)::after { rotate: 180deg; }
   /* in a number column the arrow goes first, so the labels line up with the figures */
   :where(th[data-num][aria-sort]) > :where(button) { flex-direction: row-reverse; }
+  @media print { :where(thead) :where(th) { position: static; } } /* the browser repeats the header on every page */
 
   /* selection: a checkbox column, and the selected rows */
   :where(th, td):has(> input[type="checkbox"]:only-child) { inline-size: 1%; padding-inline-end: 0; }
