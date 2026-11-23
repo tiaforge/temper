@@ -680,8 +680,8 @@
   /* a line above every row but the first. :first-child, not a ~ or + combinator: with those, prepending or removing
      one row restyled every row of the list (Chrome). So a <template> as the first child leaves a line above the first
      row: put templates after the rows */
-  :where([data-list]) > :where(*) { padding: var(--tm-space-sm) var(--tm-space-md); border: 0; border-block-start: 1px solid var(--tm-border); border-radius: 0; background: none; box-shadow: none; }
-  :where([data-list]) > :where(:first-child) { border-block-start: 0; }
+  :where([data-list]) > :where(*) { padding: var(--tm-space-sm) var(--tm-space-md); border: 0; border-radius: 0; background: none; box-shadow: none; }
+  :where([data-list]) > :where(:not(:first-child)) { border-block-start: 1px solid var(--tm-border); }
   /* after the list's row reset, so an item row in a data-list keeps its bar */
   :where([data-bar]) { border-inline-start: 3px solid var(--tm-tone); }
 
