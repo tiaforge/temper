@@ -126,7 +126,7 @@
   :where(ul, ol) { padding-inline-start: 1.25em; }
   :where([hidden]:not([hidden="until-found"])) { display: none !important; }
   @media (prefers-reduced-motion: reduce) {
-    *, ::before, ::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } /* not :where(): no pseudo-elements in it */
+    *, ::before, ::after, ::backdrop { animation-duration: 1ms !important; transition-duration: 1ms !important; } /* not :where(): no pseudo-elements in it; ::backdrop: dialog and drawer backdrops */
     /* except the busy spinner: forced to 1ms it turned 1000 times a second (a flickering ring). It keeps a real
        duration and pulses instead of turning (tm-spin below); its second animation (the fade-in) stays 1ms */
     :where([aria-busy="true"])::before, :where([aria-busy="true"])::after { animation-duration: 1.4s, 1ms !important; }
@@ -525,10 +525,10 @@
     content: ""; inline-size: 0; block-size: 0; border-radius: 50%; /* a border, which forced colors keep: 1rem across */
     border: 0.5rem solid light-dark(oklch(1 0 0), oklch(0.96 0 0));
     box-shadow: 0 1px 2px oklch(0 0 0 / 0.25);
-    transition: margin var(--tm-duration) var(--tm-ease);
+    transition: translate var(--tm-duration) var(--tm-ease);
   }
   :where(input[type="checkbox"][role="switch"]):checked { background: var(--tm-accent); }
-  :where(input[type="checkbox"][role="switch"]):checked::before { margin-inline-start: 1rem; }
+  :where(input[type="checkbox"][role="switch"]):checked::before { translate: calc(var(--_x) * 1rem) 0; } /* toward the inline end, in RTL too */
   /* after the checkbox and color rules, which set a border: hover and invalid apply to them too. No specificity, so an
      invalid field keeps its danger border on hover */
   :where(:is(input, select, textarea):enabled:hover) { border-color: color-mix(in oklab, var(--tm-border-strong), var(--tm-text) 18%); }
@@ -677,8 +677,11 @@
     display: flex; flex-direction: column; padding: 0; list-style: none;
     border: 1px solid var(--tm-border); border-radius: var(--tm-radius); background: var(--tm-surface);
   }
-  :where([data-list]) > :where(*) { padding: var(--tm-space-sm) var(--tm-space-md); border: 0; border-radius: 0; background: none; box-shadow: none; }
-  :where([data-list]) > :where(:not(template) ~ :not(template)) { border-block-start: 1px solid var(--tm-border); }
+  /* a line above every row but the first. :first-child, not a ~ or + combinator: with those, prepending or removing
+     one row restyled every row of the list (Chrome). So a <template> as the first child leaves a line above the first
+     row: put templates after the rows */
+  :where([data-list]) > :where(*) { padding: var(--tm-space-sm) var(--tm-space-md); border: 0; border-block-start: 1px solid var(--tm-border); border-radius: 0; background: none; box-shadow: none; }
+  :where([data-list]) > :where(:first-child) { border-block-start: 0; }
   /* after the list's row reset, so an item row in a data-list keeps its bar */
   :where([data-bar]) { border-inline-start: 3px solid var(--tm-tone); }
 

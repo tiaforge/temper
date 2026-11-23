@@ -39,41 +39,48 @@
 
   /* tooltip: data-tooltip="text", or empty to show the element's aria-label (icon buttons). It is the ::after, so it
      gives way where the ::after is already taken: the busy spinner, the data-stretch overlay, a sort arrow and the
-     dropdown caret of a text button (an icon button that opens a menu keeps its tooltip). */
-  :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)))::after {
-    content: attr(data-tooltip);
-    position: absolute; inset: auto auto calc(100% + 0.375rem) 50%; translate: -50% 0; z-index: 60;
-    inline-size: max-content; max-inline-size: 16rem; padding: 0.25rem 0.5rem;
-    border: 0; border-radius: var(--tm-radius-sm); background: var(--tm-text); color: var(--tm-bg);
-    mask: none; box-shadow: var(--tm-shadow-sm);
-    font-size: var(--tm-text-xs); font-weight: 500; line-height: 1.4; text-align: center; white-space: normal;
-    pointer-events: none; opacity: 0; visibility: hidden;
-    transition: opacity var(--tm-duration) var(--tm-ease), visibility var(--tm-duration) allow-discrete;
-  }
-  :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty))[data-tooltip=""])::after { content: attr(aria-label); }
-  @media (hover: hover) {
-    :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)):hover)::after { opacity: 1; visibility: visible; transition-delay: 400ms; }
-  }
-  :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)):focus-visible)::after { opacity: 1; visibility: visible; }
-  :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty))[aria-expanded="true"])::after { display: none; }
+     dropdown caret of a text button (the condition of the caret rule in menu.css; an icon button that opens a menu
+     keeps its tooltip). Stated once; the rules below are nested in it, with their pseudo-classes in :where(). */
+  :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *,
+      button:is([popovertarget]:not([popovertargetaction="hide"]), [commandfor]:is([command="toggle-popover"], [command="show-popover"])):not([data-icon=""], [data-icon]:empty))) {
+    &::after {
+      content: attr(data-tooltip);
+      position: absolute; inset: auto auto calc(100% + 0.375rem) 50%; translate: -50% 0; z-index: 60;
+      inline-size: max-content; max-inline-size: 16rem; padding: 0.25rem 0.5rem;
+      border: 0; border-radius: var(--tm-radius-sm); background: var(--tm-text); color: var(--tm-bg);
+      mask: none; box-shadow: var(--tm-shadow-sm);
+      font-size: var(--tm-text-xs); font-weight: 500; line-height: 1.4; text-align: center; white-space: normal;
+      pointer-events: none; opacity: 0; visibility: hidden;
+      transition: opacity var(--tm-duration) var(--tm-ease), visibility var(--tm-duration) allow-discrete;
+    }
+    &:where([data-tooltip=""])::after { content: attr(aria-label); }
+    @media (hover: hover) {
+      &:where(:hover)::after { opacity: 1; visibility: visible; transition-delay: 400ms; }
+    }
+    &:where(:focus-visible)::after { opacity: 1; visibility: visible; }
+    &:where([aria-expanded="true"])::after { display: none; }
 
-  /* With anchor positioning the tooltip is fixed to the viewport, so a scroll container (the rail) cannot
-     clip it, and it flips when there is no room. In the rail it opens to the side. */
+    /* With anchor positioning the tooltip is fixed to the viewport, so a scroll container (the rail) cannot
+       clip it, and it flips when there is no room. In the rail it opens to the side. */
+    @supports (anchor-scope: all) {
+      &::after {
+        position: fixed; position-anchor: --tm-tooltip; inset: auto; translate: none; margin: 0.375rem;
+        position-area: block-start; position-try-fallbacks: flip-block, flip-inline;
+      }
+      :where([data-rail]) &::after { position-area: inline-end; }
+    }
+    /* rail items show their label unless the rail is collapsed: no tooltip then */
+    @media (width >= 48rem) {
+      :where([data-rail]:not([data-collapsed], :has([data-rail-collapse]:checked))) &::after { display: none; }
+    }
+    @media (width < 48rem) { :where([data-rail]) &::after { display: none; } }
+    @media print { &::after { display: none; } }
+    @media (forced-colors: active) { &::after { border: 1px solid; } } /* its fill is the canvas color now */
+  }
   @supports (anchor-scope: all) {
     :where([data-tooltip]) { anchor-name: --tm-tooltip; anchor-scope: --tm-tooltip; }
-    :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)))::after {
-      position: fixed; position-anchor: --tm-tooltip; inset: auto; translate: none; margin: 0.375rem;
-      position-area: block-start; position-try-fallbacks: flip-block, flip-inline;
-    }
-    :where([data-rail] [data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)))::after { position-area: inline-end; }
   }
-  /* rail items show their label unless the rail is collapsed: no tooltip then */
-  @media (width >= 48rem) {
-    :where([data-rail]:not([data-collapsed], :has([data-rail-collapse]:checked)) [data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)))::after { display: none; }
-  }
-  @media (width < 48rem) { :where([data-rail] [data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)))::after { display: none; } }
-  @media print { :where([data-toasts]), :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)))::after { display: none; } }
-  @media (forced-colors: active) { :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *, :is([popovertarget], [commandfor]):not([data-icon=""], [data-icon]:empty)))::after { border: 1px solid; } } /* its fill is the canvas color now */
+  @media print { :where([data-toasts]) { display: none; } }
 }
 
 /* Below every component, so a tooltip never moves a positioned element (the fixed FAB, a sticky header, data-stretch,

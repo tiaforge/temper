@@ -86,6 +86,8 @@ test('the tooltip gives way where the ::after is taken', { skip }, async () => {
     // a text button that opens a menu keeps its caret
     assert.deepEqual(await after('caret-tip'), await after('caret'));
     assert.ok((await after('caret-tip')).mask);
+    // a text button that opens a dialog has no caret: it keeps its tooltip
+    assert.equal((await after('modal-tip')).content, '"Opens the editor"');
     // a sort button keeps its arrow
     const sort = await after('sort-tip');
     assert.ok(sort.mask && sort.content === '""' && sort.opacity === '0.35', JSON.stringify(sort));
@@ -162,12 +164,13 @@ test('RTL: controls, the drawer, toasts and menus mirror', { skip }, async () =>
     await withPage('a11y.html', { dir }, async page => {
       await new Promise(r => setTimeout(r, 300)); // the thumb's move to the other side, after dir changed
       const r = await page.evaluate(`({
-        thumb: [cs('sw', '::before').marginLeft, cs('sw', '::before').marginRight],
+        thumb: cs('sw', '::before').translate,
         arrow: cs('sel').backgroundPositionX,
         tab: [cs('vtab').borderTopLeftRadius, cs('vtab').borderTopRightRadius, cs('vtab').boxShadow],
       })`);
       // the thumb moves toward the inline end, inside its track
-      assert.deepEqual(r.thumb, rtl ? ['0px', '16px'] : ['16px', '0px']);
+      // (it starts at the inline start: the track is a grid with place-content: center start, which follows dir)
+      assert.equal(r.thumb, rtl ? '-16px' : '16px');
       assert.equal(r.arrow, rtl ? 'calc(0% + 14px)' : 'calc(100% - 14px)');
       // a vertical tab is rounded on the start side; the selected one's line is on the end side
       assert.deepEqual(r.tab.slice(0, 2), rtl ? ['0px', '8px'] : ['8px', '0px']);
@@ -269,5 +272,14 @@ test('the FAB, the toast region and the rail keep clear of safe-area insets', { 
     try { await page.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 40, bottom: 30, left: 20, right: 10 } }); } catch { return; }
     await new Promise(r => setTimeout(r, 50));
     assert.deepEqual(await read(), ['54px', '34px', '46px', '26px', '48px', '38px', '28px', '260px']);
+  });
+});
+
+test('reduced motion: dialog and drawer backdrops do not fade', { skip }, async () => {
+  const read = `(() => { $('dlg').showModal(); const d = cs('dlg', '::backdrop').transitionDuration; $('dlg').close(); return d; })()`;
+  await withPage('a11y.html', {}, async page => assert.equal(await page.evaluate(read), '0.001s'));
+  await withPage('a11y.html', { media: { 'prefers-reduced-motion': 'no-preference' } }, async page => assert.match(await page.evaluate(read), /^0\.15s/));
+  await withPage('a11y-shell.html', { width: 390 }, async page => {
+    assert.equal(await page.evaluate(`(() => { $('rail').showPopover(); return cs('rail', '::backdrop').transitionDuration; })()`), '0.001s');
   });
 });
