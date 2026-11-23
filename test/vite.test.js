@@ -78,8 +78,8 @@ test('icons: every name an expression can produce is emitted', () => {
     'a.vue': `<template><span :data-icon="ok ? 'thumbs-up' : 'thumbs-down'"></span></template>`,
   });
   const out = css();
-  for (const n of ['sunrise', 'moon-star', 'badge-check', 'folder-open', 'folder-closed', 'thumbs-up', 'thumbs-down']) assert.match(out, new RegExp(`--tm-icon-${n}:`), n);
-  assert.doesNotMatch(out, /--tm-icon-anchor:/); // in a comment: not used
+  for (const n of ['sunrise', 'moon-star', 'badge-check', 'folder-open', 'folder-closed', 'thumbs-up', 'thumbs-down']) assert.match(out, new RegExp(`--tm-icon-${n},`), n);
+  assert.doesNotMatch(out, /--tm-icon-anchor,/); // in a comment: not used
   assert.equal(build(), undefined);
   assert.deepEqual(warnings, []); // everything resolved: no notice
 });
@@ -92,13 +92,13 @@ test('icons: names the source does not show get a notice with file and line, and
   assert.match(plain.warnings[0], /App\.svelte:3:\d+ {2}item\.icon/);
   assert.match(plain.warnings[0], /App\.svelte:5:\d+ {2}x \?\? 'star'/);
   assert.match(plain.warnings[0], /icons\.include, e\.g\. temper\(\{ icons: \{ include: \[/);
-  assert.match(plain.css(), /--tm-icon-star:/); // the literal half of x ?? 'star' is emitted
-  assert.doesNotMatch(plain.css(), /--tm-icon-rocket:/);
+  assert.match(plain.css(), /--tm-icon-star,/); // the literal half of x ?? 'star' is emitted
+  assert.doesNotMatch(plain.css(), /--tm-icon-rocket,/);
   plain.build();
   assert.equal(plain.warnings.length, 1); // once per place
 
   const listed = iconsPlugin({ 'App.svelte': src }, { include: ['rocket'] });
-  assert.match(listed.css(), /--tm-icon-rocket:/);
+  assert.match(listed.css(), /--tm-icon-rocket,/);
   listed.build();
   assert.match(listed.warnings[0], /Make sure the plugin's icons\.include \(1 name\) lists every name/);
   // temper-ignore on the line (or the line before) silences the notice
