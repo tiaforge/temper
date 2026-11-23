@@ -448,6 +448,14 @@ test('fixed colors: light-dark() handles both schemes', () => {
   assert.deepEqual(codes(checkMarkup('<p style="color: light-dark(#333, #eee)">x</p>')), []);
 });
 
+test('a number outside a numeric range names the range instead of guessing', () => {
+  const [d] = checkMarkup('<div data-layout="grid" data-cols="8"></div>');
+  assert.match(d.message, /data-cols="8" is not valid\. It takes a whole number from 2 to 7\./);
+  assert.doesNotMatch(d.message, /Did you mean/);
+  assert.equal(d.fix, undefined);
+  assert.match(checkMarkup('<div data-layout="grid" data-cols={9}></div>', 'A.tsx')[0].message, /from 2 to 7/);
+});
+
 // ───── what is markup in JSX, Svelte and Astro files ─────
 
 test('JSX: markup in comments, strings, template literals and regular expressions is not checked', () => {
