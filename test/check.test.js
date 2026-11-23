@@ -442,6 +442,12 @@ test('two solid buttons: alternatives in JSX, Astro, Vue and sinter', () => {
   assert.deepEqual(tm('<div><template v-if="a"><button>A</button><button>B</button></template></div>', 'A.vue'), ['TM121']);
 });
 
+test('fixed colors: light-dark() handles both schemes', () => {
+  assert.deepEqual(codes(checkStyles('.x { color: light-dark(#333, #eee); background: light-dark(white, black); border: 1px solid light-dark(rgb(0 0 0 / 10%), #fff3); }', 'a.css')), []);
+  assert.deepEqual(codes(checkStyles('.x { background: light-dark(white, black), #333; }', 'a.css')), ['TM205']);
+  assert.deepEqual(codes(checkMarkup('<p style="color: light-dark(#333, #eee)">x</p>')), []);
+});
+
 // ───── what is markup in JSX, Svelte and Astro files ─────
 
 test('JSX: markup in comments, strings, template literals and regular expressions is not checked', () => {
