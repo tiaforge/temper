@@ -814,7 +814,7 @@
       "kind": "input",
       "optional": true,
       "pattern": true,
-      "description": "The icon image for data-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon=\"rocket\"] { --_icon: var(--tm-icon-rocket); }."
+      "description": "The icon image for data-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon=\"rocket\"] { --_icon: var(--tm-icon-rocket); }. An input only: temper does not declare it (the default image is the fallback in the [data-icon] rule), so var(--tm-icon-mail) in your CSS is empty unless you set it; draw a default icon with data-icon instead."
     }
   },
   "deprecated": {

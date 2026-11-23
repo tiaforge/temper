@@ -215,6 +215,12 @@ export async function launch(browserCmd = findBrowser(), { share = [], timeout =
         if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
         return result.value;
       },
+      /** Calls fn(params) for every `method` event of this tab (e.g. Tracing.dataCollected); returns the unsubscribe. */
+      on(method, fn) {
+        const l = msg => { if (msg.sessionId === sessionId && msg.method === method) fn(msg.params); };
+        listeners.add(l);
+        return () => listeners.delete(l);
+      },
       /** Closes the tab, without waiting long for a tab that no longer answers. */
       async close() { try { await send('Target.closeTarget', { targetId }, undefined, 2000); } catch {} },
     };

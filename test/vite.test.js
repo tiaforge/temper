@@ -49,14 +49,73 @@ test('icons: folder icons and used Lucide icons only, all Lucide names pass the 
   plugin.configResolved({ root: dir, command: 'build', logger: { warn: m => warnings.push(m) } });
   assert.equal(plugin.resolveId('virtual:temper-icons.css'), '/__temper-icons.css');
   const css = plugin.load('/__temper-icons.css');
-  assert.match(css, /--tm-icon-rocket:/);           // own icon
-  assert.match(css, /--tm-icon-mail: url\("data:image\/svg\+xml,[^"]*circle/); // own icon replaces the default
-  assert.match(css, /--tm-icon-alarm-clock:/);      // used Lucide icon, not in the default set
-  assert.doesNotMatch(css, /--tm-icon-calendar:/);  // unused: not emitted
+  assert.match(css, /\[data-icon="rocket"\]\) \{ --_icon: var\(--tm-icon-rocket, url\(/); // own icon
+  assert.match(css, /var\(--tm-icon-mail, url\("data:image\/svg\+xml,[^"]*circle/); // own icon replaces the default (unlayered)
+  assert.match(css, /\[data-icon="alarm-clock"\]/);  // used Lucide icon, not in the default set
+  assert.doesNotMatch(css, /calendar/);            // unused: not emitted
+  assert.doesNotMatch(css, /:root/);               // the image is in the rule, as the fallback of --tm-icon-<name>
   assert.match(css, /Lucide/);                      // license notice for the Lucide icons
   let error;
   try { plugin.buildStart.call({ error: m => { throw new Error(m); } }); } catch (e) { error = e.message; }
   assert.equal(error, undefined, error);
+  assert.deepEqual(warnings, []);
+});
+
+function iconsPlugin(files, options = {}) {
+  const dir = mkdtempSync(join(tmpdir(), 'tm-vite-icons-'));
+  for (const [name, text] of Object.entries(files)) writeFileSync(join(dir, name), text);
+  const plugin = temper({ icons: options });
+  const warnings = [];
+  plugin.configResolved({ root: dir, command: 'build', logger: { warn: m => warnings.push(m), info() {} } });
+  const build = () => { try { plugin.buildStart.call({ error: m => { throw new Error(m); } }); } catch (e) { return e.message; } };
+  return { plugin, warnings, build, css: () => plugin.load('/__temper-icons.css') };
+}
+
+test('icons: every name an expression can produce is emitted', () => {
+  const { css, build, warnings } = iconsPlugin({
+    'App.svelte': `<button data-icon={dark ? 'sunrise' : 'moon-star'} aria-label="Theme"></button>\n<span data-icon={done ? 'badge-check' : null}></span>`,
+    'List.tsx': `export const L = ({ open }) => <span data-icon={open ? "folder-open" : "folder-closed"} />;\n// <span data-icon="anchor"></span>`,
+    'a.vue': `<template><span :data-icon="ok ? 'thumbs-up' : 'thumbs-down'"></span></template>`,
+  });
+  const out = css();
+  for (const n of ['sunrise', 'moon-star', 'badge-check', 'folder-open', 'folder-closed', 'thumbs-up', 'thumbs-down']) assert.match(out, new RegExp(`--tm-icon-${n}:`), n);
+  assert.doesNotMatch(out, /--tm-icon-anchor:/); // in a comment: not used
+  assert.equal(build(), undefined);
+  assert.deepEqual(warnings, []); // everything resolved: no notice
+});
+
+test('icons: names the source does not show get a notice with file and line, and icons.include emits them', () => {
+  const src = `<script>const items = [{ icon: 'rocket' }];</script>\n{#each items as item}\n  <span data-icon={item.icon}></span>\n{/each}\n<span data-icon={x ?? 'star'}></span>`;
+  const plain = iconsPlugin({ 'App.svelte': src });
+  assert.equal(plain.build(), undefined); // a notice, not a failure
+  assert.equal(plain.warnings.length, 1);
+  assert.match(plain.warnings[0], /App\.svelte:3:\d+ {2}item\.icon/);
+  assert.match(plain.warnings[0], /App\.svelte:5:\d+ {2}x \?\? 'star'/);
+  assert.match(plain.warnings[0], /icons\.include, e\.g\. temper\(\{ icons: \{ include: \[/);
+  assert.match(plain.css(), /--tm-icon-star:/); // the literal half of x ?? 'star' is emitted
+  assert.doesNotMatch(plain.css(), /--tm-icon-rocket:/);
+  plain.build();
+  assert.equal(plain.warnings.length, 1); // once per place
+
+  const listed = iconsPlugin({ 'App.svelte': src }, { include: ['rocket'] });
+  assert.match(listed.css(), /--tm-icon-rocket:/);
+  listed.build();
+  assert.match(listed.warnings[0], /Make sure the plugin's icons\.include \(1 name\) lists every name/);
+  // temper-ignore on the line (or the line before) silences the notice
+  const ignored = iconsPlugin({ 'App.svelte': src.replace('<span data-icon={item.icon}>', '<!-- temper-ignore -->\n  <span data-icon={item.icon}>').replace("{x ?? 'star'}", "{x ?? 'star'} data-x /* temper-ignore */") }, { include: ['rocket'] });
+  ignored.build();
+  assert.deepEqual(ignored.warnings, []);
+});
+
+test('icons: an include name that is not an icon is reported with a suggestion; a bad include fails early', () => {
+  const { warnings } = iconsPlugin({ 'a.html': '<p>x</p>' }, { include: ['rockett'] });
+  assert.match(warnings[0], /icons\.include has "rockett", which is neither a Lucide icon nor an SVG in your icon folder.*Did you mean "rocket"\?/);
+  assert.throws(() => temper({ icons: { include: 'rocket' } }), /icons\.include must be an array/);
+});
+
+test('icons: without Lucide on demand there is no notice (folder icons are all emitted)', () => {
+  const { warnings, build } = iconsPlugin({ 'a.svelte': '<span data-icon={item.icon}></span>' }, { lucide: false });
+  build();
   assert.deepEqual(warnings, []);
 });
 
@@ -95,6 +154,14 @@ test('enhance: the list matches src/enhance/', async () => {
   const { ENHANCEMENTS } = await import('../lib/enhance.js');
   const files = readdirSync(new URL('../src/enhance/', import.meta.url)).filter(f => f.endsWith('.css')).map(f => f.slice(0, -4));
   assert.deepEqual([...ENHANCEMENTS].sort(), files.sort());
+});
+
+test('the type declarations list every enhancement', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { ENHANCEMENTS } = await import('../lib/enhance.js');
+  const dts = readFileSync(new URL('../lib/vite.d.ts', import.meta.url), 'utf8');
+  const declared = [.../export type TemperEnhancement = ([^;]+);/.exec(dts)[1].matchAll(/'([^']+)'/g)].map(m => m[1]);
+  assert.deepEqual(declared.sort(), [...ENHANCEMENTS].sort());
 });
 
 test('prune: build only, keeps what the project uses', async () => {
