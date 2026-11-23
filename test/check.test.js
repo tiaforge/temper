@@ -536,6 +536,11 @@ test('Svelte and Astro: strings and comments in expressions are not markup; scri
   assert.deepEqual(codes(checkMarkup(`<span data-tone={a ? 'danger' : 'nope'}>{'x'}</span>`, 'a.astro')), ['TM101']);
 });
 
+test('a <script> whose attributes contain > (Svelte generics) is still blanked, and the markup after it checked', () => {
+  const src = `<script lang="ts" generics="T extends Record<string, unknown>">\n  const t = '<b data-tone="x">';\n</script>\n<p>"quoted"</p>\n{@html '<i data-tone="y">'}\n<span data-tone="nope">x</span>`;
+  assert.deepEqual(checkMarkup(src, 'A.svelte').map(d => `${d.code}:${d.line}`), ['TM101:6']);
+});
+
 test('Vue: strings in {{ }} are not markup, a single { in text is text, bindings are still checked', () => {
   const src = `<script setup lang="ts">const html = '<b data-tone="x">';</script>
 <template>
