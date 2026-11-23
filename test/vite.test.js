@@ -49,10 +49,11 @@ test('icons: folder icons and used Lucide icons only, all Lucide names pass the 
   plugin.configResolved({ root: dir, command: 'build', logger: { warn: m => warnings.push(m) } });
   assert.equal(plugin.resolveId('virtual:temper-icons.css'), '/__temper-icons.css');
   const css = plugin.load('/__temper-icons.css');
-  assert.match(css, /--tm-icon-rocket:/);           // own icon
-  assert.match(css, /--tm-icon-mail: url\("data:image\/svg\+xml,[^"]*circle/); // own icon replaces the default
-  assert.match(css, /--tm-icon-alarm-clock:/);      // used Lucide icon, not in the default set
-  assert.doesNotMatch(css, /--tm-icon-calendar:/);  // unused: not emitted
+  assert.match(css, /\[data-icon="rocket"\]\) \{ --_icon: var\(--tm-icon-rocket, url\(/); // own icon
+  assert.match(css, /var\(--tm-icon-mail, url\("data:image\/svg\+xml,[^"]*circle/); // own icon replaces the default (unlayered)
+  assert.match(css, /\[data-icon="alarm-clock"\]/);  // used Lucide icon, not in the default set
+  assert.doesNotMatch(css, /calendar/);            // unused: not emitted
+  assert.doesNotMatch(css, /:root/);               // the image is in the rule, as the fallback of --tm-icon-<name>
   assert.match(css, /Lucide/);                      // license notice for the Lucide icons
   let error;
   try { plugin.buildStart.call({ error: m => { throw new Error(m); } }); } catch (e) { error = e.message; }

@@ -361,7 +361,7 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 - `--tm-rail-width`: Width of [data-rail]. Default 15rem.
 - `--tm-rail-width-collapsed`: Width of a collapsed rail. Default: one icon button plus padding.
 - `--tm-grow-basis`: Width a data-grow child needs before its row wraps. Default 8rem.
-- `--tm-icon-<name>`: The icon image for data-icon="<name>", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }.
+- `--tm-icon-<name>`: The icon image for data-icon="<name>", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }. An input only: temper does not declare it (the default image is the fallback in the [data-icon] rule), so var(--tm-icon-mail) in your CSS is empty unless you set it; draw a default icon with data-icon instead.
 
 ### Colors
 
@@ -450,6 +450,9 @@ of the same name), or without the plugin:
 :root { --tm-icon-rocket: url(/icons/rocket.svg); }         /* add one */
 [data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }
 ```
+
+`--tm-icon-<name>` is an input only: temper's own icons are not declared as properties, so reading
+`var(--tm-icon-mail)` in your CSS gives nothing unless you set it. Use `data-icon` to draw a default icon.
 
 Icons are one color (the text color); keep multicolor logos as `<img>`.
 

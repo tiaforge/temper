@@ -125,6 +125,9 @@ of the same name), or without the plugin:
 [data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }
 ```
 
+`--tm-icon-<name>` is an input only: temper's own icons are not declared as properties, so reading
+`var(--tm-icon-mail)` in your CSS gives nothing unless you set it. Use `data-icon` to draw a default icon.
+
 <!-- /full -->
 Icons are one color (the text color); keep multicolor logos as `<img>`.
 
