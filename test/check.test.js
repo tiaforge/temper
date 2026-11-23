@@ -269,6 +269,43 @@ test('the CLI fixes files and reports what is left', async () => {
   assert.equal(read(dir + '/a.html', 'utf8'), '<button data-tone="danger">x</button>\n<div data-gap="ss"></div>\n');
 });
 
+test('the CLI: --help and --version exit 0, unknown options and commands exit 2 with a suggestion', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const cli = (...args) => spawnSync(process.execPath, [new URL('../bin/temper.js', import.meta.url).pathname, ...args], { encoding: 'utf8', cwd: new URL('..', import.meta.url).pathname });
+  for (const args of [['--help'], ['-h'], ['check', '--help'], []]) {
+    const r = cli(...args);
+    assert.equal(r.status, 0, args.join(' '));
+    assert.match(r.stdout, /^Usage: temper check \[options\] \[paths\.\.\.\]/);
+  }
+  const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  for (const flag of ['--version', '-v']) assert.equal(cli(flag).stdout.trim(), version);
+  const fixx = cli('check', '--fixx', 'kitchen-sink');
+  assert.equal(fixx.status, 2);
+  assert.match(fixx.stderr, /unknown option --fixx\. Did you mean --fix\?/);
+  const format = cli('check', 'kitchen-sink', '--format', 'json');
+  assert.equal(format.status, 2);
+  assert.match(format.stderr, /unknown option --format\./);
+  assert.doesNotMatch(format.stderr, /json does not exist/);
+  assert.match(cli('chek').stderr, /unknown command chek\. Did you mean check\?/);
+  assert.equal(cli('chek').status, 2);
+  assert.equal(cli('check', '--icons').status, 2);
+  assert.equal(cli('check', '--fix=yes').status, 2);
+  assert.equal(cli('check', 'nope-not-here').status, 2);
+  // every existing option still works, and -- ends the options
+  assert.equal(cli('check', '--warnings-as-errors', '--lucide', '--icons', 'kitchen-sink', '--', 'kitchen-sink').status, 0);
+});
+
+test('the CLI with --lucide says where data-icon names cannot be seen, without failing', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const dir = writeTemp('a.svelte', '<span data-icon={item.icon}></span>\n<span data-icon={on ? "sunrise" : "moon-star"}></span>\n');
+  const run = spawnSync(process.execPath, [new URL('../bin/temper.js', import.meta.url).pathname, 'check', '--lucide', dir], { encoding: 'utf8', cwd: new URL('..', import.meta.url).pathname });
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.match(run.stdout, /a\.svelte:1:\d+ {2}item\.icon/);
+  assert.match(run.stdout, /icons\.include/);
+  const without = spawnSync(process.execPath, [new URL('../bin/temper.js', import.meta.url).pathname, 'check', dir], { encoding: 'utf8' });
+  assert.doesNotMatch(without.stdout, /item\.icon/); // the prebuilt icons.css has every default icon: nothing to say
+});
+
 // ───── app CSS against the library's rules (warnings) ─────
 
 test('app CSS: !important, fixed colors, margins, scale values, restyled variants', () => {
