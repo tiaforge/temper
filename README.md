@@ -290,6 +290,9 @@ export default {
 };
 ```
 
+The plugin and `@tiaforge-ui/temper/check` come with type declarations, so a strict `vite.config.ts`
+type-checks its options (they don't need `vite` itself to be installed for that).
+
 `prune` scans every source file under the Vite root (or `prune: { paths }`) and only drops a rule
 when an attribute or value it requires appears nowhere. Values it can't resolve (`data-icon={icon}`)
 keep every value of that attribute, and `data-*` names in scripts (`el.dataset.tone = …`) keep the

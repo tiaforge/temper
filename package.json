@@ -44,8 +44,14 @@
     "./sinter": {
       "types": "./types/sinter.d.ts"
     },
-    "./check": "./lib/check.js",
-    "./vite": "./lib/vite.js",
+    "./check": {
+      "types": "./lib/check.d.ts",
+      "default": "./lib/check.js"
+    },
+    "./vite": {
+      "types": "./lib/vite.d.ts",
+      "default": "./lib/vite.js"
+    },
     "./icons.css": "./dist/icons.css",
     "./pico-compat.css": "./dist/pico-compat.css",
     "./enhance/*": "./dist/enhance/*"
@@ -133,6 +139,12 @@
       ],
       "sinter": [
         "types/sinter.d.ts"
+      ],
+      "check": [
+        "lib/check.d.ts"
+      ],
+      "vite": [
+        "lib/vite.d.ts"
       ]
     }
   },

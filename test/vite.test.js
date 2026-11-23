@@ -155,6 +155,14 @@ test('enhance: the list matches src/enhance/', async () => {
   assert.deepEqual([...ENHANCEMENTS].sort(), files.sort());
 });
 
+test('the type declarations list every enhancement', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { ENHANCEMENTS } = await import('../lib/enhance.js');
+  const dts = readFileSync(new URL('../lib/vite.d.ts', import.meta.url), 'utf8');
+  const declared = [.../export type TemperEnhancement = ([^;]+);/.exec(dts)[1].matchAll(/'([^']+)'/g)].map(m => m[1]);
+  assert.deepEqual(declared.sort(), [...ENHANCEMENTS].sort());
+});
+
 test('prune: build only, keeps what the project uses', async () => {
   const { fileURLToPath } = await import('node:url');
   const dir = project('<span data-badge data-tone="danger">x</span><div data-layout="stack" data-gap="sm"></div>');
