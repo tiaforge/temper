@@ -366,7 +366,7 @@
       "module": "core",
       "boolean": true,
       "on": "any element",
-      "description": "Hidden visually, still read by screen readers."
+      "description": "Hidden visually, still read by screen readers. Shown again while it or an element inside it has focus, so it also makes a skip link (<a href=\"#main\" data-sr-only>Skip to content</a>)."
     },
     "data-pairs": {
       "module": "core",
@@ -477,7 +477,7 @@
       "module": "app",
       "boolean": true,
       "on": "button",
-      "description": "Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label.",
+      "description": "Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label. In RTL it sits bottom-left; on pages with viewport-fit=cover it keeps clear of the notch and home indicator.",
       "tags": [
         "button",
         "a[role=button]"
@@ -529,7 +529,7 @@
       "freeText": true,
       "values": {},
       "on": "buttons, links and any focusable element",
-      "description": "Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space).",
+      "description": "Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. It draws in the element's ::after, so it gives way where that is taken: a busy button (the spinner), data-stretch (the overlay), a sort button in a table header (the arrow) and a text button that opens a menu (the caret). An icon button that opens a menu keeps its tooltip, hidden while the menu is open (aria-expanded=\"true\").",
       "short": "Tooltip: the given text, or the aria-label when empty."
     },
     "data-num": {
@@ -540,7 +540,7 @@
         "th",
         "td"
       ],
-      "description": "A number cell: right-aligned with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
+      "description": "A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
       "short": "Number cell: right-aligned, tabular figures (on th and every td of the column)."
     }
   },

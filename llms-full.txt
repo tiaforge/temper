@@ -239,7 +239,7 @@ On: any element, usually a data-variant="item" row or a card. A colored bar on t
 
 ### `data-sr-only` (boolean, no value)
 
-On: any element. Hidden visually, still read by screen readers.
+On: any element. Hidden visually, still read by screen readers. Shown again while it or an element inside it has focus, so it also makes a skip link (<a href="#main" data-sr-only>Skip to content</a>).
 
 ### `data-pairs` (boolean, no value)
 
@@ -295,7 +295,7 @@ On: any element inside [data-rail]. Hidden while the rail is collapsed (e.g. the
 
 ### `data-fab` (boolean, no value)
 
-On: button. Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label. Needs `app.css`.
+On: button. Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label. In RTL it sits bottom-left; on pages with viewport-fit=cover it keeps clear of the notch and home indicator. Needs `app.css`.
 
 ### `data-show`
 
@@ -322,13 +322,13 @@ On: a div inside [data-toasts]. A toast: a short message with optional actions (
 
 ### `data-tooltip`
 
-On: buttons, links and any focusable element. Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip="text" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label="Delete" data-tooltip). The text in data-tooltip="…" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space). Needs `feedback.css`.
+On: buttons, links and any focusable element. Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip="text" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label="Delete" data-tooltip). The text in data-tooltip="…" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. It draws in the element's ::after, so it gives way where that is taken: a busy button (the spinner), data-stretch (the overlay), a sort button in a table header (the arrow) and a text button that opens a menu (the caret). An icon button that opens a menu keeps its tooltip, hidden while the menu is open (aria-expanded="true"). Needs `feedback.css`.
 
 Value: any text, or none.
 
 ### `data-num` (boolean, no value)
 
-On: th and td of a number column. A number cell: right-aligned with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left. Needs `table.css`.
+On: th and td of a number column. A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left. Needs `table.css`.
 
 ## Tokens
 
@@ -630,6 +630,11 @@ panes `data-scroll="y"`). A page of such an app whose `<main>` itself scrolls (s
 place when a tab or loaded data makes it shorter or taller than the screen. Not on a `<main>` that only holds
 panes: the reserved space would stay there as an empty strip.
 
+For phones with a notch, put `viewport-fit=cover` in the viewport meta
+(`<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`): the page then uses the
+whole screen, and the rail, the drawer, the FAB and the toasts keep clear of the notch and the home indicator. Your
+own fixed or edge-to-edge elements need `env(safe-area-inset-*)` themselves.
+
 `[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
 moves to temper page by page, keep the old nav partial for the old pages and add a second one with
 this markup for the migrated pages; delete the old one when the last page has moved.
@@ -780,6 +785,27 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
   <section data-layout="grid" data-gap="lg" style="--tm-min: 20rem">…</section>
 </main>
 ```
+
+### Skip link
+
+```html
+<body>
+  <a href="#main" data-sr-only>Skip to content</a>   <!-- the first focusable element of the page -->
+  …navigation…
+  <main id="main">…</main>
+```
+
+Hidden until a keyboard user tabs to it; while focused it shows where it stands (in a `data-shell`, at the start of
+the row). Following it moves the focus to `<main>`.
+
+### Right to left, high contrast, print
+
+Nothing to add for these. `dir="rtl"` (on `<html>`, or any element) mirrors the layout and the components: the rail
+and the drawer on the right, the FAB and the toasts at the bottom left, switches, the select arrow, menus, vertical
+tabs, number columns. Icons are not mirrored: pick `arrow-left` or `arrow-right` by meaning. In forced colors
+(Windows high contrast) icons keep the text color and selected, pressed and current items get a ring in the
+system's highlight color. Printed, a page leaves out the rail, the FAB, toasts and tooltips, prints a fixed shell
+and `data-scroll` areas in full, light and without shadows.
 
 ## Anti-patterns
 

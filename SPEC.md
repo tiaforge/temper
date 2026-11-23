@@ -94,7 +94,13 @@ CI enforces the budgets (`size-limit`).
 - Dark mode is designed, not inverted: higher surfaces get *lighter* instead of using shadows, and
   accent chroma is lower.
 - Also covered: `prefers-reduced-motion`, `prefers-contrast: more` (stronger borders), and
-  `forced-colors` (system colors, visible focus).
+  `forced-colors`: icons, marks, switch thumbs and lines are drawn so they keep the text color; selected,
+  pressed and current items get a `Highlight` ring (their fills become the canvas color); focus stays an outline.
+- Right to left: logical properties throughout; the few values without a logical form (a translate, a scale, an
+  inset shadow, a background position) take their sign from `--_x`, which is -1 under `:dir(rtl)`.
+- Print: the rail, FAB, toasts and tooltips are not printed; a fixed shell and `data-scroll` areas print in full;
+  light scheme, no shadows. Each module owns its print rules.
+- Safe areas: with `viewport-fit=cover` the rail, drawer, FAB and toast region add `env(safe-area-inset-*)`.
 
 ### 1.4 Consistent, modern look: "Graphite" (decided)
 
@@ -219,7 +225,7 @@ Any role can also be set directly with a literal color (brand colors). Caley's o
 | `data-muted` | boolean | any text | |
 | `data-truncate` | boolean | any | Single-line ellipsis. |
 | `data-lazy` | boolean | list container | Its rows far off screen skip layout and paint (`content-visibility: auto`); `--tm-lazy-h` is the row height guess. |
-| `data-sr-only` | boolean | any | Visible to screen readers only. |
+| `data-sr-only` | boolean | any | Visible to screen readers only; shown while it has focus (skip links). |
 | `data-pairs` | boolean | `dl` | dt/dd shown as a label/value grid using subgrid. Replaces detail-row and compose-row. |
 
 That is about 15 attributes. The goal is that the whole core vocabulary plus its rules fit in an

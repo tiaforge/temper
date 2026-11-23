@@ -158,6 +158,11 @@ No JS components to wire up.
 OKLCH lightness; raised surfaces get lighter and accents less saturated in the dark. Add
 `--tm-primary: var(--tm-accent)` to give main buttons the brand color.
 
+**6. Right to left, high contrast and print work.** `dir="rtl"` mirrors the layout and every
+component (logical properties throughout). In Windows high contrast (forced colors) icons, switches and
+selected items stay visible. A printed page leaves out the app chrome and prints scroll areas in full.
+A `data-sr-only` skip link shows while it has focus.
+
 ## Does it work as expected?
 
 These are the things we measured instead of assuming.

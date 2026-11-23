@@ -304,6 +304,11 @@ panes `data-scroll="y"`). A page of such an app whose `<main>` itself scrolls (s
 place when a tab or loaded data makes it shorter or taller than the screen. Not on a `<main>` that only holds
 panes: the reserved space would stay there as an empty strip.
 
+For phones with a notch, put `viewport-fit=cover` in the viewport meta
+(`<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`): the page then uses the
+whole screen, and the rail, the drawer, the FAB and the toasts keep clear of the notch and the home indicator. Your
+own fixed or edge-to-edge elements need `env(safe-area-inset-*)` themselves.
+
 `[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
 moves to temper page by page, keep the old nav partial for the old pages and add a second one with
 this markup for the migrated pages; delete the old one when the last page has moved.
@@ -454,6 +459,27 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
   <section data-layout="grid" data-gap="lg" style="--tm-min: 20rem">…</section>
 </main>
 ```
+
+### Skip link
+
+```html
+<body>
+  <a href="#main" data-sr-only>Skip to content</a>   <!-- the first focusable element of the page -->
+  …navigation…
+  <main id="main">…</main>
+```
+
+Hidden until a keyboard user tabs to it; while focused it shows where it stands (in a `data-shell`, at the start of
+the row). Following it moves the focus to `<main>`.
+
+### Right to left, high contrast, print
+
+Nothing to add for these. `dir="rtl"` (on `<html>`, or any element) mirrors the layout and the components: the rail
+and the drawer on the right, the FAB and the toasts at the bottom left, switches, the select arrow, menus, vertical
+tabs, number columns. Icons are not mirrored: pick `arrow-left` or `arrow-right` by meaning. In forced colors
+(Windows high contrast) icons keep the text color and selected, pressed and current items get a ring in the
+system's highlight color. Printed, a page leaves out the rail, the FAB, toasts and tooltips, prints a fixed shell
+and `data-scroll` areas in full, light and without shadows.
 
 <!-- /full -->
 ## Anti-patterns

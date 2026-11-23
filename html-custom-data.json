@@ -524,7 +524,7 @@
     },
     {
       "name": "data-sr-only",
-      "description": "temper. On: any element. Hidden visually, still read by screen readers.",
+      "description": "temper. On: any element. Hidden visually, still read by screen readers. Shown again while it or an element inside it has focus, so it also makes a skip link (<a href=\"#main\" data-sr-only>Skip to content</a>).",
       "valueSet": "v"
     },
     {
@@ -594,7 +594,7 @@
     },
     {
       "name": "data-fab",
-      "description": "temper (app.css). On: button. Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label.",
+      "description": "temper (app.css). On: button. Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label. In RTL it sits bottom-left; on pages with viewport-fit=cover it keeps clear of the notch and home indicator.",
       "valueSet": "v"
     },
     {
@@ -633,12 +633,12 @@
     },
     {
       "name": "data-tooltip",
-      "description": "temper (feedback.css). On: buttons, links and any focusable element. Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space).",
+      "description": "temper (feedback.css). On: buttons, links and any focusable element. Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. It draws in the element's ::after, so it gives way where that is taken: a busy button (the spinner), data-stretch (the overlay), a sort button in a table header (the arrow) and a text button that opens a menu (the caret). An icon button that opens a menu keeps its tooltip, hidden while the menu is open (aria-expanded=\"true\").",
       "values": []
     },
     {
       "name": "data-num",
-      "description": "temper (table.css). On: th and td of a number column. A number cell: right-aligned with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
+      "description": "temper (table.css). On: th and td of a number column. A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
       "valueSet": "v"
     }
   ]
