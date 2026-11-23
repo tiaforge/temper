@@ -58,8 +58,9 @@ test('adding or removing one child restyles only a few elements, in any containe
       prepend: id => `(() => { const c = document.getElementById('${id}'); c.prepend(c.lastElementChild.cloneNode(true)); return document.body.offsetHeight; })()`,
       remove: id => `(() => { document.getElementById('${id}').firstElementChild.remove(); return document.body.offsetHeight; })()`,
     };
-    // data-list draws a line above every row but the first: with a ~ combinator, a prepend restyled every row of the list
-    const cases = ['ul', 'div', 'tbody', 'checks', 'toasts', 'list'].flatMap(id => Object.keys(ops).map(op => [id, op]));
+    // data-list draws a line above every row after the first with a ~ combinator (so a leading <template> gets none):
+    // prepending to one or removing its first row restyles that list's rows, by design (data-lists are short); appending does not
+    const cases = [...['ul', 'div', 'tbody', 'checks', 'toasts'].flatMap(id => Object.keys(ops).map(op => [id, op])), ['list', 'append']];
     const counts = {};
     for (const [id, op] of cases) counts[`${op} ${id}`] = await restyled(page, ops[op](id));
     // the trace has to work at all: a change restyles at least the new element

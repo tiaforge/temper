@@ -283,3 +283,11 @@ test('reduced motion: dialog and drawer backdrops do not fade', { skip }, async 
     assert.equal(await page.evaluate(`(() => { $('rail').showPopover(); return cs('rail', '::backdrop').transitionDuration; })()`), '0.001s');
   });
 });
+
+// Lists are often rendered from a leading <template> (sinter, frameworks): :first-child would draw a line above the
+// first row there. The ~ rule costs a restyle of the list's rows on prepend, which short data-lists can afford.
+test('a data-list whose first child is a <template> has no line above its first row', { skip }, async () => {
+  await withPage('a11y.html', {}, async page => {
+    assert.deepEqual(await page.evaluate(`[cs('row1').borderTopWidth, cs('row2').borderTopWidth]`), ['0px', '1px']);
+  });
+});

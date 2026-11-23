@@ -246,8 +246,7 @@ width instead, leave `data-grow` out and add `data-justify="between"` to the row
 
 `data-list` draws one box with a line between rows and pads each row. `data-grow` on the label keeps
 the button at the end of the row on narrow screens. Do not build the same from bordered `article`s
-with `data-pad`. A `<template>` in the list (a framework's list anchor) belongs after the rows: as the first
-child it leaves a line above the first row.
+with `data-pad`.
 
 ### Tabs
 
