@@ -499,8 +499,15 @@
   :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding: var(--tm-space-xs); }
   :where(select:is([multiple], [size]:not([size="1"]))) :where(option) { padding: 0.25em calc(var(--tm-control-px) - var(--tm-space-xs)); border-radius: var(--tm-radius-sm); }
   :where(select:is([multiple], [size]:not([size="1"]))) :where(option:hover) { background-color: var(--tm-fill); }
-  /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode) */
-  :where(select:is([multiple], [size]:not([size="1"]))) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--tm-text); --_sel: color-mix(in oklab, var(--tm-accent) 22%, var(--tm-field)); }
+  /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode). Not while the
+     list has focus: Chrome and Firefox then force the selection's text color (white) over the tint */
+  :where(select:is([multiple], [size]:not([size="1"])):not(:focus)) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--tm-text); --_sel: color-mix(in oklab, var(--tm-accent) 22%, var(--tm-field)); }
+  /* forced colors drop gradients: the arrow above and that tint (the text was unreadable). The native arrow and the
+     system's selection colors instead; the customizable-select enhancement, loaded later, keeps its own picker */
+  @media (forced-colors: active) {
+    :where(select) { appearance: auto; }
+    :where(option:checked) { background: SelectedItem; color: SelectedItemText; }
+  }
   :where(input[type="color"]) {
     inline-size: calc(var(--tm-control-h) * 1.5); block-size: var(--tm-control-h); padding: 3px;
     border: 1px solid var(--tm-field-border); border-radius: var(--tm-radius); background: var(--tm-field); cursor: pointer;

@@ -62,6 +62,13 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - Fixed: an invalid field keeps its danger border on hover (an invalid checkbox shows it too); disabled buttons no longer
   change on hover or move when pressed, and disabled fields have no hover border; checkbox and radio marks contrast with
   their fill inside a toned container (a warning callout) and when invalid.
+- Fixed: in a focused list-box `<select multiple>` (or `size` > 1) the checked options' text was unreadable in Chrome
+  and Firefox (contrast 1.4): the browsers force the selection's text color over temper's accent tint while the list has
+  focus. A focused list now shows the browser's own selection colors; the tint stays for an unfocused one. Core +1 B.
+- Fixed: in forced colors (Windows high contrast) a `<select>` had no arrow and the checked options of a list-box select
+  were unreadable or looked unchecked: browsers drop gradient backgrounds in that mode, and both were gradients (seen in
+  Chrome and Firefox). Selects now get the native arrow (`appearance: auto`) and checked options the system's selection
+  colors there; the customizable-select enhancement keeps its own picker. Core +27 B.
 - Fixed: `::selection` and `::placeholder` styles never applied (pseudo-elements are not allowed inside `:where()`); for
   the same reason reduced motion did not reach `::before`, `::after` and `::backdrop` (details chevron, check marks,
   switch knob, dialog backdrop). iOS Safari did not get `-webkit-text-size-adjust`. `data-size="md"` inside a `sm` or
