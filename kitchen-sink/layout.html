@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>temper layout</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/app.css">
+  <link rel="stylesheet" href="../src/menu.css">
+  <link rel="stylesheet" href="../src/table.css">
+  <link rel="stylesheet" href="../src/forms.css">
+  <link rel="stylesheet" href="../src/icons.css">
+  <script>
+    // ?t=light|dark, ?dir=rtl, ?density=compact
+    { const q = new URLSearchParams(location.search);
+      if (q.get('t')) document.documentElement.dataset.theme = q.get('t');
+      if (q.get('dir')) document.documentElement.dir = q.get('dir');
+      if (q.get('density')) document.documentElement.dataset.density = q.get('density'); }
+  </script>
+</head>
+<body>
+<header data-sticky="top" data-layout="row" data-gap="sm" data-pad="sm">
+  <strong data-grow>temper <span data-muted>layout</span></strong>
+  <div data-join role="group" aria-label="Pages">
+    <a href="index.html" role="button" data-variant="outline" data-size="sm">Kitchen sink</a>
+    <a href="layout.html" role="button" data-variant="outline" data-size="sm" aria-current="page">Layout</a>
+    <a href="forms.html" role="button" data-variant="outline" data-size="sm">Forms</a>
+  </div>
+</header>
+<main data-layout="center" data-gap="xl" data-pad="xl">
+  <h1>Layout <small data-muted>panes, sticky bars, button groups, card media</small></h1>
+
+  <!-- ───────── Panes that follow their own width ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <h2>Panes that adapt to their width <small data-muted>data-container, app.css</small></h2>
+    <p data-muted>The same toolbar in two panes. <code>data-show</code> inside a <code>data-container</code> follows the pane (narrow below 48rem), not the screen.</p>
+    <div data-layout="split" data-gap="md" id="panes">
+      <section data-container data-layout="stack" data-gap="sm" style="--tm-split: 20rem" id="pane-narrow">
+        <span data-caption>Narrow pane</span>
+        <div data-layout="row" data-gap="xs" data-wrap="none">
+          <button data-show="wide" data-icon="archive" data-variant="outline">Archive</button>
+          <button data-show="narrow" data-icon="archive" data-variant="outline" aria-label="Archive"></button>
+          <button data-show="wide" data-icon="trash-2" data-variant="outline" data-tone="danger">Delete</button>
+          <button data-show="narrow" data-icon="trash-2" data-variant="outline" data-tone="danger" aria-label="Delete"></button>
+        </div>
+      </section>
+      <section data-container data-layout="stack" data-gap="sm" id="pane-wide">
+        <span data-caption>Wide pane</span>
+        <div data-layout="row" data-gap="xs" data-wrap="none">
+          <button data-show="wide" data-icon="archive" data-variant="outline">Archive</button>
+          <button data-show="narrow" data-icon="archive" data-variant="outline" aria-label="Archive"></button>
+          <button data-show="wide" data-icon="trash-2" data-variant="outline" data-tone="danger">Delete</button>
+          <button data-show="narrow" data-icon="trash-2" data-variant="outline" data-tone="danger" aria-label="Delete"></button>
+        </div>
+      </section>
+    </div>
+
+    <h3>Three panes</h3>
+    <div data-layout="split" data-wrap="none" data-gap="none" style="block-size: 26rem; --tm-split: 11rem" id="mail">
+      <nav data-scroll="y" data-pad="sm" data-show="wide" aria-label="Folders">
+        <div data-layout="stack" data-gap="xs">
+          <button data-variant="item" data-icon="inbox" aria-current="true">Inbox</button>
+          <button data-variant="item" data-icon="send">Sent</button>
+          <button data-variant="item" data-icon="archive">Archive</button>
+        </div>
+      </nav>
+      <div data-layout="split" data-wrap="none" data-gap="none" style="--tm-split: 17rem">
+        <section data-scroll="y" data-container aria-label="Messages">
+          <div data-sticky="top" data-pad="sm">
+            <div data-join data-size="sm">
+              <input type="search" data-grow placeholder="Search" aria-label="Search mail">
+              <button data-variant="outline" data-icon="search" aria-label="Search"></button>
+            </div>
+          </div>
+          <ul data-list>
+            <li><button data-variant="item" aria-current="true"><strong>Priya Raman</strong><span data-truncate>Quarterly report, final numbers</span></button></li>
+            <li><button data-variant="item"><strong>Mira Okafor</strong><span data-truncate>Climbing on Saturday?</span></button></li>
+            <li><button data-variant="item"><strong>Jonas Berg</strong><span data-truncate>Invoice 2026-114</span></button></li>
+            <li><button data-variant="item"><strong>Lena Vogt</strong><span data-truncate>Re: the cabin in March</span></button></li>
+            <li><button data-variant="item"><strong>Sam Ortiz</strong><span data-truncate>Slides for Thursday</span></button></li>
+            <li><button data-variant="item"><strong>Ada Lund</strong><span data-truncate>Your order has shipped</span></button></li>
+            <li><button data-variant="item"><strong>Kenji Mori</strong><span data-truncate>Lunch next week</span></button></li>
+            <li><button data-variant="item"><strong>Rosa Diaz</strong><span data-truncate>Contract draft v3</span></button></li>
+          </ul>
+        </section>
+        <section data-scroll="y" data-container data-show="wide" aria-label="Message" id="reader">
+          <header data-sticky="top" data-layout="row" data-gap="xs" data-pad="sm" data-wrap="none">
+            <h4 data-grow data-truncate>Quarterly report, final numbers</h4>
+            <div data-join role="group" aria-label="Message actions">
+              <button data-show="wide" data-variant="outline" data-icon="archive">Archive</button>
+              <button data-show="narrow" data-variant="outline" data-icon="archive" aria-label="Archive" id="reader-narrow"></button>
+              <button data-show="wide" data-variant="outline" data-icon="trash-2">Delete</button>
+              <button data-show="narrow" data-variant="outline" data-icon="trash-2" aria-label="Delete"></button>
+            </div>
+          </header>
+          <div data-layout="stack" data-gap="md" data-pad="md">
+            <p>Hi all, attached are the final numbers for the quarter. Revenue is up 12% on last quarter, mostly from the new subscription plans.</p>
+            <p>The reader pane is a <code>data-container</code>: on this wide screen it is narrower than 48rem, so its toolbar shows icons only. Make the window narrow and the panes stack; the reader gets wider and its labels come back.</p>
+            <p>Costs stayed flat. Travel was below budget, hiring above, as planned in January.</p>
+            <p>Let me know before Friday if anything looks off; the board gets the report on Monday.</p>
+            <p>Priya</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── Sticky bars ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <h2>Sticky bars <small data-muted>data-sticky</small></h2>
+    <p data-muted>A toolbar above a long table and a save bar below it, in a <code>data-scroll="y"</code> pane. The table header sticks too and slides under the toolbar. The page header above is <code>data-sticky="top"</code> as well.</p>
+    <form data-scroll="y" data-layout="stack" data-gap="none" style="block-size: 22rem" id="sticky-pane" aria-label="Invoices">
+      <div data-sticky="top" data-layout="row" data-gap="sm" data-pad="sm" id="sticky-top">
+        <strong data-grow>Invoices</strong>
+        <div data-join>
+          <button type="button" data-variant="secondary" data-icon="download">Export</button>
+          <button type="button" data-variant="secondary" popovertarget="export-menu" data-icon="chevron-down" aria-label="More export options"></button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th scope="col">Customer</th><th scope="col">Status</th><th scope="col" data-num id="sticky-th">Amount</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Acme Corp</th><td><span data-badge data-tone="success">Paid</span></td><td data-num>1,204.50</td></tr>
+          <tr><th scope="row">Globex</th><td><span data-badge data-tone="warning">Due</span></td><td data-num>860.00</td></tr>
+          <tr><th scope="row">Initech</th><td><span data-badge>Draft</span></td><td data-num>320.00</td></tr>
+          <tr><th scope="row">Umbrella</th><td><span data-badge data-tone="success">Paid</span></td><td data-num>2,410.00</td></tr>
+          <tr><th scope="row">Hooli</th><td><span data-badge data-tone="danger">Overdue</span></td><td data-num>95.20</td></tr>
+          <tr><th scope="row">Stark</th><td><span data-badge data-tone="success">Paid</span></td><td data-num>7,000.00</td></tr>
+          <tr><th scope="row">Wayne</th><td><span data-badge data-tone="warning">Due</span></td><td data-num>1,150.00</td></tr>
+          <tr><th scope="row">Wonka</th><td><span data-badge>Draft</span></td><td data-num>48.00</td></tr>
+          <tr><th scope="row">Tyrell</th><td><span data-badge data-tone="success">Paid</span></td><td data-num>3,300.00</td></tr>
+          <tr><th scope="row">Cyberdyne</th><td><span data-badge data-tone="success">Paid</span></td><td data-num>610.75</td></tr>
+          <tr><th scope="row">Soylent</th><td><span data-badge data-tone="warning">Due</span></td><td data-num>99.99</td></tr>
+          <tr><th scope="row">Aperture</th><td><span data-badge data-tone="success">Paid</span></td><td data-num>1,024.00</td></tr>
+        </tbody>
+      </table>
+      <footer data-sticky="bottom" data-layout="row" data-gap="sm" data-justify="end" data-pad="sm" id="sticky-bottom">
+        <button type="button" data-variant="ghost">Discard</button>
+        <button type="button">Save</button>
+      </footer>
+    </form>
+    <div popover id="export-menu" data-menu>
+      <button type="button">Export as CSV</button>
+      <button type="button">Export as PDF</button>
+    </div>
+  </section>
+
+  <!-- ───────── Button groups ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <h2>Button groups <small data-muted>data-join</small></h2>
+    <div data-layout="row" data-gap="lg" id="groups">
+      <div data-join role="group" aria-label="Message" id="join-outline">
+        <button data-variant="outline" data-icon="archive" aria-label="Archive" id="join-first"></button>
+        <button data-variant="outline" data-icon="folder" aria-label="Move" id="join-middle"></button>
+        <button data-variant="outline" data-icon="trash-2" aria-label="Delete" id="join-last"></button>
+      </div>
+      <div data-join role="group" aria-label="View">
+        <button data-variant="secondary" aria-pressed="true">Day</button>
+        <button data-variant="secondary" aria-pressed="false">Week</button>
+        <button data-variant="secondary" aria-pressed="false">Month</button>
+      </div>
+      <div data-join id="join-split">
+        <button id="split-main">Send</button>
+        <button popovertarget="send-menu" data-icon="chevron-down" aria-label="More send options" id="split-more"></button>
+      </div>
+      <div popover id="send-menu" data-menu>
+        <button type="button">Send later</button>
+        <button type="button">Send and archive</button>
+      </div>
+      <nav aria-label="Pages">
+        <div data-join>
+          <a href="#groups" role="button" data-variant="outline" data-icon="chevron-left" aria-label="Previous page"></a>
+          <a href="#groups" role="button" data-variant="outline">1</a>
+          <a href="#groups" role="button" data-variant="outline" aria-current="page">2</a>
+          <a href="#groups" role="button" data-variant="outline">3</a>
+          <a href="#groups" role="button" data-variant="outline" data-icon="chevron-right" aria-label="Next page"></a>
+        </div>
+      </nav>
+      <div data-join role="group" aria-label="Edit" data-size="sm">
+        <button data-variant="ghost" data-icon="copy">Copy</button>
+        <button data-variant="ghost" data-icon="pencil">Edit</button>
+      </div>
+      <div data-join data-tone="danger">
+        <button data-variant="outline">Delete</button>
+        <button data-variant="outline" popovertarget="delete-menu" data-icon="chevron-down" aria-label="More delete options"></button>
+      </div>
+      <div popover id="delete-menu" data-menu><button>Delete forever</button></div>
+    </div>
+    <div data-layout="row" data-gap="lg">
+      <form role="search" data-join data-grow id="join-search">
+        <input type="search" data-grow placeholder="Search invoices" aria-label="Search invoices" id="join-input">
+        <button id="join-button">Search</button>
+      </form>
+      <div data-join>
+        <select aria-label="Period"><option>This month</option><option>Last month</option></select>
+        <button data-variant="outline" data-icon="refresh-cw" aria-label="Refresh"></button>
+      </div>
+      <div data-join data-grow>
+        <div data-field data-grow><span data-icon="link"></span><input value="https://tiaforge.example/i/2026-114" aria-label="Share link" readonly></div>
+        <button data-variant="secondary" data-icon="copy">Copy</button>
+      </div>
+    </div>
+    <div data-layout="row" data-gap="lg" data-density="compact">
+      <span data-caption>Compact</span>
+      <div data-join role="group" aria-label="Zoom">
+        <button data-variant="outline" data-icon="minus" aria-label="Zoom out"></button>
+        <button data-variant="outline">100%</button>
+        <button data-variant="outline" data-icon="plus" aria-label="Zoom in"></button>
+      </div>
+      <div data-join data-size="lg">
+        <button>Book</button>
+        <button popovertarget="book-menu" data-icon="chevron-down" aria-label="More booking options"></button>
+      </div>
+      <div popover id="book-menu" data-menu><button>Book as tentative</button></div>
+    </div>
+  </section>
+
+  <!-- ───────── Card media ───────── -->
+  <section data-layout="stack" data-gap="md">
+    <h2>Card media</h2>
+    <p data-muted>An <code>img</code>, <code>picture</code> or <code>video</code> as the first child of a card runs edge to edge under its rounded corners.</p>
+    <div data-layout="grid" data-gap="md" style="--tm-min: 15rem" id="cards">
+      <article data-layout="stack" data-gap="sm" id="card-img">
+        <img id="card-img-media" width="640" height="360" alt="Hills under a violet sky" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='1' y2='1'%3E%3Cstop stop-color='%236b8fd6'/%3E%3Cstop offset='1' stop-color='%23c9a3e0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='16' height='9' fill='url(%23g)'/%3E%3Cpath d='M0 9 5 4l3 3 3-2 5 4z' fill='%23fff' opacity='.45'/%3E%3C/svg%3E">
+        <h3>Lake cabin</h3>
+        <p data-muted>Sleeps four. Wood stove, a jetty, no road noise.</p>
+      </article>
+      <article data-layout="stack" data-gap="sm">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%209'%3E%3Crect%20width='16'%20height='9'%20fill='%23243a5e'/%3E%3Ccircle%20cx='12'%20cy='3'%20r='1.2'%20fill='%23e8e3c8'/%3E%3Cpath%20d='M0%209%206%205l4%202%206-3v5z'%20fill='%23111827'%20opacity='.7'/%3E%3C/svg%3E">
+          <img width="640" height="360" alt="Hills at dawn" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%23f3c98b'/%3E%3Ccircle cx='12' cy='3' r='1.2' fill='%23fff7e0'/%3E%3Cpath d='M0 9 6 5l4 2 6-3v5z' fill='%23b0683f' opacity='.6'/%3E%3C/svg%3E">
+        </picture>
+        <header><h3>Dawn walk</h3><span data-badge data-tone="accent">New</span></header>
+        <p data-muted>A <code>picture</code> with a dark-mode source, and a card header after it.</p>
+      </article>
+      <article data-layout="stack" data-gap="xs" id="card-stretch">
+        <img width="640" height="360" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%2387c5a4'/%3E%3Cpath d='M0 9 4 5l3 2 4-4 5 6z' fill='%23205c40' opacity='.55'/%3E%3C/svg%3E">
+        <a href="#cards" data-stretch><strong>Forest trail</strong></a>
+        <small data-muted>The whole card is clickable (<code>data-stretch</code>).</small>
+      </article>
+      <article data-layout="stack" data-gap="sm" data-pad="md" id="card-pad">
+        <video id="card-video" width="640" height="360" controls preload="none" aria-label="Harbour at night" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%231f2a44'/%3E%3Cpath d='M0 7h16v2H0z' fill='%23344b7a'/%3E%3Ccircle cx='4' cy='3' r='.8' fill='%23f6d365'/%3E%3C/svg%3E"></video>
+        <h3>Harbour at night</h3>
+        <p data-muted>A <code>video</code>, in a card with <code>data-pad="md"</code>.</p>
+      </article>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -227,6 +227,8 @@ Any role can also be set directly with a literal color (brand colors). Caley's o
 | `data-lazy` | boolean | list container | Its rows far off screen skip layout and paint (`content-visibility: auto`); `--tm-lazy-h` is the row height guess. |
 | `data-sr-only` | boolean | any | Visible to screen readers only; shown while it has focus (skip links). |
 | `data-pairs` | boolean | `dl` | dt/dd shown as a label/value grid using subgrid. Replaces detail-row and compose-row. |
+| `data-sticky` | `top bottom` | page header, toolbar, save bar | Sticks to an edge of the nearest scroll container; opaque, a line toward the content, above the sticky table header. |
+| `data-join` | boolean | wrapper of buttons, fields, selects | One unit: shared borders, rounded only at the ends (toolbar groups, split button, pager, search + button). |
 
 That is about 15 attributes. The goal is that the whole core vocabulary plus its rules fit in an
 `llms.txt` of about 200 lines.

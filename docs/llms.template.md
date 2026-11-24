@@ -171,6 +171,19 @@ Icons are one color (the text color); keep multicolor logos as `<img>`.
 `article > header` puts its children in a row with space between. `article > footer` aligns its
 buttons to the end.
 
+An `img`, `picture` or `video` as the card's first child runs edge to edge under its rounded top corners (also with
+`data-pad` on the card, and in a clickable card); everything after it keeps the padding. Nothing to add:
+
+```html
+<article data-layout="stack" data-gap="sm">
+  <img src="cabin.jpg" alt="A cabin by the lake" width="640" height="360">
+  <h3>Lake cabin</h3>
+  <p data-muted>Sleeps four.</p>
+</article>
+```
+
+Only the first child bleeds; an image elsewhere in the card (or inside a link) stays inside the padding.
+
 ### Dialog
 
 ```html
@@ -215,6 +228,34 @@ row: give such elements the `hidden` attribute.
 `data-grow` makes the search field fill the space between the heading and the button. A button whose
 label does not fit (a long translation on a phone) wraps the label onto two lines; nothing to add. For a fixed
 width instead, leave `data-grow` out and add `data-justify="between"` to the row.
+
+### Button groups
+
+```html
+<div data-join role="group" aria-label="Message">               <!-- toolbar group -->
+  <button data-variant="outline" data-icon="archive" aria-label="Archive"></button>
+  <button data-variant="outline" data-icon="folder" aria-label="Move"></button>
+  <button data-variant="outline" data-icon="trash-2" aria-label="Delete"></button>
+</div>
+<div data-join>                                                 <!-- split button -->
+  <button>Send</button>
+  <button popovertarget="send-menu" data-icon="chevron-down" aria-label="More send options"></button>
+</div>
+<div popover id="send-menu" data-menu><button>Send later</button></div>
+<nav aria-label="Pages"><div data-join>                         <!-- pager -->
+  <a href="?p=1" role="button" data-variant="outline" data-icon="chevron-left" aria-label="Previous page"></a>
+  <a href="?p=3" role="button" data-variant="outline" data-icon="chevron-right" aria-label="Next page"></a>
+</div></nav>
+<form role="search" data-join data-grow>                         <!-- field + button -->
+  <input type="search" data-grow aria-label="Search">
+  <button>Search</button>
+</form>
+```
+
+`data-join` draws its children as one unit: shared borders, rounded only at the ends, mirrored in RTL. It works for
+every variant (all children usually share one), with `data-size` on the group and in both densities; a focused child
+keeps its whole ring. A `select` or a `data-field` (forms.css) can be part of it. For toggle groups where exactly one
+option is chosen, use `data-segmented` instead. Do not put `data-layout` or `data-gap` on the group.
 
 ### Status
 
@@ -339,6 +380,33 @@ const c = document.querySelector('[data-rail-collapse]');
 c.checked = localStorage.getItem('rail-collapsed') === '1';
 c.addEventListener('change', () => localStorage.setItem('rail-collapsed', c.checked ? '1' : '0'));
 ```
+
+### Panes that adapt to their own width (app.css)
+
+```html
+<main data-layout="split" data-wrap="none" data-gap="none">   <!-- in <body data-shell="fixed">, next to the rail -->
+  <section data-scroll="y" data-container style="--tm-split: 22rem">…message list…</section>
+  <section data-scroll="y" data-container>
+    <header data-sticky="top" data-layout="row" data-gap="xs" data-pad="sm">
+      <h2 data-grow data-truncate>Quarterly report</h2>
+      <button data-show="wide" data-icon="archive" data-variant="ghost">Archive</button>
+      <button data-show="narrow" data-icon="archive" data-variant="ghost" aria-label="Archive"></button>
+    </header>
+    <div data-prose data-pad="md">…</div>
+  </section>
+</main>
+```
+
+`data-wrap="none"` keeps the panes side by side at the full height, so each one scrolls by itself. `data-show` follows the
+screen width, except inside a `data-container`: there it follows the width of the nearest
+one (narrow below 48rem), so the reader's toolbar loses its labels when the reader pane is narrow, even on a wide
+screen. Nested containers: the nearest wins. A container's width has to come from outside (a block, `main`, a
+`data-grow` or `data-layout="split"` child, a pane with a set width); on something that shrinks to fit its content
+(a row child without `data-grow`) it collapses to nothing. Keep the ☰ button that opens the rail drawer outside any
+container, since the drawer follows the screen. `<main>` of a `data-shell` is not a container unless you mark it.
+Responsive grids (`data-layout="grid"`, `data-layout="split"`) already follow their own width without a container;
+`data-cols` grids keep their column count everywhere (a weekday stays in its column), so swap a week grid for a list
+with `data-show`.
 
 ### Dropdown menu (menu.css)
 
@@ -520,6 +588,31 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
   <section data-layout="grid" data-gap="lg" style="--tm-min: 20rem">…</section>
 </main>
 ```
+
+### Sticky bars
+
+```html
+<main data-layout="stack" data-gap="md">
+  <header data-sticky="top" data-layout="row" data-gap="sm" data-pad="sm">
+    <h1 data-grow>Invoices</h1><button>New invoice</button>
+  </header>
+  …a long list or table…
+</main>
+<form data-layout="stack" data-gap="md">
+  …many fields…
+  <footer data-sticky="bottom" data-layout="row" data-gap="sm" data-justify="end" data-pad="sm">
+    <button type="button" data-variant="ghost">Discard</button><button>Save</button>
+  </footer>
+</form>
+```
+
+The bar stays at the top or bottom of the nearest scroll container (the page, `main` of a fixed shell, a
+`data-scroll="y"` pane) while its parent is in view: put it in the long element itself, not in a wrapper of its
+own, and not inside a sideways `data-scroll`. It has the page background (`--tm-bg`; on a card or dialog set your
+own background) and a line toward the content. It covers a sticky table header that scrolls up to it; to keep both
+in view, give the table its own `data-scroll="y"` area under the bar, or move the header down by the bar's height in
+your CSS (`thead th { inset-block-start: 3.5rem }`). The bottom bar keeps its content above the home
+indicator (with `viewport-fit=cover`). Printed, the bars stay in place in the flow.
 
 ### Skip link
 

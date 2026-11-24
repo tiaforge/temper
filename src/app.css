@@ -127,7 +127,13 @@
 }
 
 @layer tm.layout {
-  /* show an element only on narrow (< 48rem) or wide screens */
-  @media (width < 48rem) { [data-show="wide"] { display: none; } }
-  @media (width >= 48rem) { [data-show="narrow"] { display: none; } }
+  /* data-container: a pane (mail list, reader, detail panel) whose width data-show inside follows instead of the screen's;
+     the nearest one wins. Named, so containers of the app's own CSS do not count. Inline-size containment: the pane's
+     width must come from its parent (a block, a data-grow or split child, main), not from its content. */
+  :where([data-container]) { container: tm / inline-size; }
+  /* show an element only on narrow (< 48rem) or wide screens, or in a narrow or wide data-container */
+  @media (width < 48rem) { [data-show="wide"]:not([data-container] *) { display: none; } }
+  @media (width >= 48rem) { [data-show="narrow"]:not([data-container] *) { display: none; } }
+  @container tm (width < 48rem) { [data-show="wide"] { display: none; } }
+  @container tm (width >= 48rem) { [data-show="narrow"] { display: none; } }
 }

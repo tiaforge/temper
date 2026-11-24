@@ -284,6 +284,26 @@
   :where([data-justify="center"]) { justify-content: center; text-align: center; }
   :where([data-justify="end"]) { justify-content: end; text-align: end; }
   :where([data-justify="between"]) { justify-content: space-between; }
+  /* sticky bar: stays at the top or bottom edge of the nearest scroll container (the page, the main of a fixed shell, a
+     data-scroll pane), opaque, with a line toward the content. z-index 2: above the sticky table header and the links
+     of a clickable card (1), below the FAB, toasts, menus and dialogs. The bottom bar's transparent border is the home
+     indicator's height (viewport-fit=cover), painted with its background, so its content stays clear of it. */
+  :where([data-sticky]) { position: sticky; z-index: 2; background: var(--tm-bg); }
+  :where([data-sticky="top"]) { inset-block-start: 0; border-block-end: 1px solid var(--tm-border); }
+  :where([data-sticky="bottom"]) { inset-block-end: 0; border-block-start: 1px solid var(--tm-border); border-block-end: env(safe-area-inset-bottom) solid #0000; }
+  @media print { :where([data-sticky]) { position: static; } }
+  /* joined group: its children (buttons, fields, selects) are one unit, rounded only at the ends. Neighbors overlap by
+     their 1px border (a negative margin between the group's own children, deliberately); on a button that is not an
+     outline one that border is a line in its text color. A child with focus comes to the front, so its ring is not
+     covered. In this last layer, so it beats each component's own radius (data-field's too). :first-child and
+     :last-child cost O(1) per added or removed child (unlike :nth-child or ~, which restyle the following siblings). */
+  :where([data-join]) { display: inline-flex; }
+  :where([data-join]) > :where(:not(:first-child)) { margin-inline-start: -1px; border-start-start-radius: 0; border-end-start-radius: 0; }
+  :where([data-join]) > :where(:not(:last-child)) { border-start-end-radius: 0; border-end-end-radius: 0; }
+  :where([data-join]) > :where(button:not(:first-child, [data-variant="outline"])) { border-inline-start-color: color-mix(in oklab, var(--_fg) 25%, #0000); }
+  :where([data-join]) > :where(:focus-within) { z-index: 1; }
+  /* fields take their natural width, as in a row: at 100% they would squeeze the buttons' labels onto two lines */
+  :where([data-join]) > :where(input, select) { inline-size: auto; min-inline-size: 0; }
 }
 
 /* ───────────── components ───────────── */
@@ -558,12 +578,21 @@
 
   /* card */
   :where(article:not([data-prose])) {
-    padding: var(--tm-space-lg);
+    --_pad: var(--tm-space-lg); /* data-pad on the card sets it too (tm.layout comes later) */
+    padding: var(--_pad);
     border: 1px solid var(--tm-border);
     border-radius: var(--tm-radius-lg);
     background: var(--tm-surface);
     box-shadow: var(--tm-shadow-sm);
   }
+  /* card media: an image, picture or video as the card's first child runs edge to edge under its rounded top corners
+     (negative margins inside the card, deliberately: the padding it bleeds into is the card's own) */
+  :where(article:not([data-prose])) > :where(img:first-child, picture:first-child, video:first-child) {
+    inline-size: calc(100% + 2 * var(--_pad)); max-inline-size: none;
+    margin: calc(-1 * var(--_pad)) calc(-1 * var(--_pad)) 0;
+    border-radius: calc(var(--tm-radius-lg) - 1px) calc(var(--tm-radius-lg) - 1px) 0 0; object-fit: cover;
+  }
+  :where(article:not([data-prose])) > :where(picture:first-child) > :where(img) { inline-size: 100%; border-radius: inherit; }
 
   /* dialog */
   /* The reset removes margins; modal dialogs and popovers need the browser's margin: auto to stay centered. */
