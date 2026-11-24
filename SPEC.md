@@ -104,9 +104,11 @@ CI enforces the budgets (`size-limit`).
 
 ### 1.4 Consistent, modern look: "Graphite" (decided)
 
-- Near-grey neutrals (`--tm-neutral-tint: 0.01`, a faint lean toward the accent hue), white surfaces in light mode, graphite (L 0.145)
-  in dark mode. Structure comes from 1px borders; there are no resting shadows. Only overlays
-  (dialog, popover) get a shadow.
+- Near-grey neutrals (`--tm-neutral-tint: 0.01`, a faint lean toward the accent hue), graphite (L 0.145) in dark mode.
+  In light mode the page is off-white (`--tm-bg` L 0.985, tinted like the other neutrals) and surfaces, fields and
+  overlays are white, so cards, fields and menus lift off the page (decided 2026-11-24; until then page and surfaces
+  were all white and only borders separated them). Print is on white paper. Structure comes from 1px borders; there are
+  no resting shadows. Only overlays (dialog, popover) get a shadow.
 - **Main buttons are monochrome:** black in light mode, white in dark mode
   (`--tm-primary: var(--tm-neutral)`). The accent is reserved for selection, focus, links and checked
   controls. So black means "do this" and blue means "this is selected or interactive".

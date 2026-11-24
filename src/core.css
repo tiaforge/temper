@@ -25,10 +25,10 @@
 
     /* neutral roles */
     --_n: var(--tm-neutral-tint) var(--tm-neutral-hue);
-    --tm-bg: light-dark(oklch(1 0 0), oklch(0.145 var(--_n)));
+    --tm-bg: light-dark(oklch(0.985 var(--_n)), oklch(0.145 var(--_n)));
     --tm-surface: light-dark(oklch(1 0 0), oklch(0.17 var(--_n)));
     --tm-surface-raised: light-dark(oklch(1 0 0), oklch(0.2 var(--_n)));
-    --tm-fill: light-dark(oklch(0.965 var(--_n)), oklch(0.27 var(--_n)));
+    --tm-fill: light-dark(oklch(0.955 var(--_n)), oklch(0.27 var(--_n)));
     --tm-field: var(--tm-surface);
     --tm-field-border: var(--tm-border-strong);
     --tm-border: light-dark(oklch(0.9 var(--_n)), oklch(0.28 var(--_n)));
@@ -85,7 +85,7 @@
   [data-theme="light"] { color-scheme: light; }
   [data-theme="dark"] { color-scheme: dark; }
   /* paper is light and browsers drop backgrounds when printing: light text would vanish; no shadows */
-  @media print { :root, [data-theme] { color-scheme: light; --tm-shadow-sm: 0 0; --tm-shadow-lg: 0 0; } }
+  @media print { :root, [data-theme] { color-scheme: light; --tm-bg: #fff; --tm-shadow-sm: 0 0; --tm-shadow-lg: 0 0; } }
 
   /* Tone: every tone-aware element derives ink (text-safe), soft (tinted fill) and on (text on solid fill)
      from one --tm-tone, so a custom color (style="--tm-tone: #e11") works everywhere. */
@@ -561,7 +561,7 @@
     padding: var(--tm-space-lg);
     border: 1px solid var(--tm-border);
     border-radius: var(--tm-radius-lg);
-    background: var(--tm-surface);
+    --_sf: var(--tm-surface); background: var(--_sf); /* --_sf: what a sticky table header (table.css) paints */
     box-shadow: var(--tm-shadow-sm);
   }
 
@@ -617,8 +617,10 @@
     box-shadow: var(--tm-shadow-lg);
   }
 
+  :where(dialog, [popover]) { --_sf: var(--tm-surface-raised); }
+
   /* details */
-  :where(details) { border: 1px solid var(--tm-border); border-radius: var(--tm-radius); background: var(--tm-surface); padding-inline: var(--tm-space-md); }
+  :where(details) { border: 1px solid var(--tm-border); border-radius: var(--tm-radius); --_sf: var(--tm-surface); background: var(--_sf); padding-inline: var(--tm-space-md); }
   :where(details[open]) { padding-block-end: var(--tm-space-md); }
   :where(summary) {
     display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-sm);
