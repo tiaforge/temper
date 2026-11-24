@@ -226,12 +226,12 @@ image with the changed pixels in red. Baselines depend on fonts and the Chrome v
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
 <!-- sizes -->
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 103 % of its budget, `icons.css` 77 % and `all.css` 105 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 108 % of its budget, `icons.css` 77 % and `all.css` 108 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
-| `core.css` | 6.2 KB | tokens, reset, type, layout, buttons, forms (incl. meter, color, multi-row select), dialog (scroll lock, header and footer stay in view), popover, details, table, card, badge, callout, avatar |
-| `app.css` | 1.5 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button |
+| `core.css` | 6.5 KB | tokens, reset, type, layout (incl. sticky bars), buttons (incl. joined groups), forms (incl. meter, color, multi-row select), dialog (scroll lock, header and footer stay in view), popover, details, table, card (incl. edge-to-edge media), badge, callout, avatar |
+| `app.css` | 1.5 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button, panes that adapt to their own width (`data-container`) |
 | `menu.css` | 1.0 KB | dropdown menus (group labels, shortcut hints) |
 | `feedback.css` | 1.0 KB | toasts, tooltips (anchor-positioned, never clipped by a scroll container) |
 | `table.css` | 0.8 KB | data tables: sortable headers (`aria-sort`), row selection, number columns, sticky header |
@@ -240,7 +240,7 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 | `forms.css` | 1.1 KB | fields with an icon, unit or button (`data-field`), read-only and required marks, autofill tint, range slider, indeterminate progress |
 | `prose.css` | 0.6 KB | long-form text (`data-prose`): rhythm between blocks, reading measure, fluid headings, inline images in text, plain layout tables, blockquote, figure |
 | `sheet.css` | 0.6 KB | dialogs as sheets (`data-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
-| `all.css` | 12.1 KB | everything |
+| `all.css` | 12.4 KB | everything |
 | `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 <!-- /sizes -->
 

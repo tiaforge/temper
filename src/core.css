@@ -25,10 +25,10 @@
 
     /* neutral roles */
     --_n: var(--tm-neutral-tint) var(--tm-neutral-hue);
-    --tm-bg: light-dark(oklch(1 0 0), oklch(0.145 var(--_n)));
+    --tm-bg: light-dark(oklch(0.985 var(--_n)), oklch(0.145 var(--_n)));
     --tm-surface: light-dark(oklch(1 0 0), oklch(0.17 var(--_n)));
     --tm-surface-raised: light-dark(oklch(1 0 0), oklch(0.2 var(--_n)));
-    --tm-fill: light-dark(oklch(0.965 var(--_n)), oklch(0.27 var(--_n)));
+    --tm-fill: light-dark(oklch(0.955 var(--_n)), oklch(0.27 var(--_n)));
     --tm-field: var(--tm-surface);
     --tm-field-border: var(--tm-border-strong);
     --tm-border: light-dark(oklch(0.9 var(--_n)), oklch(0.28 var(--_n)));
@@ -64,7 +64,7 @@
     --tm-text-xl: 1.75rem;
 
     --tm-shadow-sm: 0 1px 2px light-dark(oklch(0 0 0 / 0.06), oklch(0 0 0 / 0.45));
-    --tm-shadow-lg: 0 12px 32px -10px light-dark(oklch(0 0 0 / 0.16), oklch(0 0 0 / 0.7));
+    --tm-shadow-lg: 0 1px 3px light-dark(oklch(0 0 0 / 0.08), oklch(0 0 0 / 0.5)), 0 12px 32px -10px light-dark(oklch(0 0 0 / 0.16), oklch(0 0 0 / 0.7)); /* contact + ambient */
     --tm-ease: cubic-bezier(0.2, 0, 0, 1);
     --tm-duration: 150ms;
     --tm-busy-delay: 200ms;
@@ -85,7 +85,7 @@
   [data-theme="light"] { color-scheme: light; }
   [data-theme="dark"] { color-scheme: dark; }
   /* paper is light and browsers drop backgrounds when printing: light text would vanish; no shadows */
-  @media print { :root, [data-theme] { color-scheme: light; --tm-shadow-sm: 0 0; --tm-shadow-lg: 0 0; } }
+  @media print { :root, [data-theme] { color-scheme: light; --tm-bg: #fff; --tm-shadow-sm: 0 0; --tm-shadow-lg: 0 0; } }
 
   /* Tone: every tone-aware element derives ink (text-safe), soft (tinted fill) and on (text on solid fill)
      from one --tm-tone, so a custom color (style="--tm-tone: #e11") works everywhere. */
@@ -189,7 +189,7 @@
   }
   :where(mark) { background: color-mix(in oklab, var(--tm-warning) 35%, #0000); color: inherit; border-radius: 2px; }
   :where(table, time, data) { font-variant-numeric: tabular-nums; }
-  :where(::selection) { background: color-mix(in oklab, var(--tm-accent) 28%, #0000); }
+  ::selection { background: color-mix(in oklab, var(--tm-accent) 28%, #0000); } /* (0,0,1): a pseudo-element cannot go in :where() (it matched nothing) */
   :where(:focus-visible) { outline: 2px solid var(--tm-accent); outline-offset: 2px; }
   :where([data-tone]) { color: var(--tm-tone-ink); }
   :where([data-muted]) { color: var(--tm-text-muted); }
@@ -284,6 +284,27 @@
   :where([data-justify="center"]) { justify-content: center; text-align: center; }
   :where([data-justify="end"]) { justify-content: end; text-align: end; }
   :where([data-justify="between"]) { justify-content: space-between; }
+  /* sticky bar: stays at the top or bottom edge of the nearest scroll container (the page, the main of a fixed shell, a
+     data-scroll pane), opaque in the surface it sits on (--_sf: a card, details or dialog; else the page), with a line
+     toward the content. z-index 2: above the sticky table header and the links
+     of a clickable card (1), below the FAB, toasts, menus and dialogs. The bottom bar's transparent border is the home
+     indicator's height (viewport-fit=cover), painted with its background, so its content stays clear of it. */
+  :where([data-sticky]) { position: sticky; z-index: 2; background: var(--_sf, var(--tm-bg)); }
+  :where([data-sticky="top"]) { inset-block-start: 0; border-block-end: 1px solid var(--tm-border); }
+  :where([data-sticky="bottom"]) { inset-block-end: 0; border-block-start: 1px solid var(--tm-border); border-block-end: env(safe-area-inset-bottom) solid #0000; }
+  @media print { :where([data-sticky]) { position: static; } }
+  /* joined group: its children (buttons, fields, selects) are one unit, rounded only at the ends. Neighbors overlap by
+     their 1px border (a negative margin between the group's own children, deliberately); on a button that is not an
+     outline one that border is a line in its text color. A child with focus comes to the front, so its ring is not
+     covered. In this last layer, so it beats each component's own radius (data-field's too). :first-child and
+     :last-child cost O(1) per added or removed child (unlike :nth-child or ~, which restyle the following siblings). */
+  :where([data-join]) { display: inline-flex; }
+  :where([data-join]) > :where(:not(:first-child)) { margin-inline-start: -1px; border-start-start-radius: 0; border-end-start-radius: 0; }
+  :where([data-join]) > :where(:not(:last-child)) { border-start-end-radius: 0; border-end-end-radius: 0; }
+  :where([data-join]) > :where(button:not(:first-child, [data-variant="outline"])) { border-inline-start-color: color-mix(in oklab, var(--_fg) 25%, #0000); }
+  :where([data-join]) > :where(:focus-within) { z-index: 1; }
+  /* fields take their natural width, as in a row: at 100% they would squeeze the buttons' labels onto two lines */
+  :where([data-join]) > :where(input, select) { inline-size: auto; min-inline-size: 0; }
 }
 
 /* ───────────── components ───────────── */
@@ -302,7 +323,7 @@
     background: var(--_bg);
     color: var(--_fg);
     font-size: var(--_font, var(--tm-control-font));
-    font-weight: 550;
+    font-weight: 600;
     line-height: 1.2;
     text-align: center; text-wrap: balance; overflow-wrap: anywhere; hyphens: auto; /* a label wraps only when the button cannot fit (phones, long translations) */
     text-decoration: none;
@@ -348,7 +369,7 @@
   :where([data-variant="link"]):hover { background: #0000; text-decoration-color: currentColor; }
   :where([aria-pressed="true"], :is(button, a[role="button"])[aria-current]:not([aria-current="false"])) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent); }
   :where([data-size="sm"]) { --_size: 0.8; --_font: 0.8125rem; }
-  :where([data-size="md"]) { --_size: 1; }
+  :where([data-size="md"]) { --_size: 1; --_font: var(--tm-control-font); } /* the control font again, inside a sm or lg container */
   :where([data-size="lg"]) { --_size: 1.2; --_font: 1rem; }
 
   /* tabs: role="tablist" holding role="tab" buttons; the selected tab (aria-selected="true") is underlined */
@@ -452,14 +473,19 @@
   /* In a row, fields take their natural width instead of 100%, so they don't push siblings onto a new line. */
   :where([data-layout="row"]) > :where(input, select) { inline-size: auto; min-inline-size: 0; }
   :where(textarea) { block-size: auto; min-block-size: 5.5em; padding-block: 0.5em; resize: vertical; line-height: 1.5; }
-  :where(::placeholder) { color: var(--tm-text-muted); opacity: 1; }
+  ::placeholder { color: var(--tm-text-muted); opacity: 1; } /* (0,0,1), see ::selection */
   :where(select:not([multiple], [size])) {
     appearance: none;
     padding-inline-end: calc(var(--tm-control-px) + 1.25em);
     /* ▾, --tm-control-px from the end; the color repeats the field's */
     background: conic-gradient(from -45deg at bottom, var(--tm-text-muted) 90deg, #0000 0) calc(50% + var(--_x) * (50% - var(--tm-control-px))) center / 0.6em 0.3em no-repeat var(--tm-field);
   }
-  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding-block: var(--tm-space-xs); scrollbar-color: var(--tm-border-strong) #0000; }
+  /* thin scrollbars in the theme's colors where panes scroll (classic scrollbars are wide and grey); not the page's */
+  :where([data-scroll], [data-rail], [data-menu], dialog, textarea, select) { scrollbar-width: thin; scrollbar-color: var(--tm-border-strong) #0000; }
+  /* a list box: rows like menu items (rounded, a fill on hover), the text in line with the other fields' */
+  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding: var(--tm-space-xs); }
+  :where(select:is([multiple], [size]:not([size="1"]))) :where(option) { padding: 0.25em calc(var(--tm-control-px) - var(--tm-space-xs)); border-radius: var(--tm-radius-sm); }
+  :where(select:is([multiple], [size]:not([size="1"]))) :where(option:hover) { background-color: var(--tm-fill); }
   /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode) */
   :where(select:is([multiple], [size]:not([size="1"]))) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--tm-text); --_sel: color-mix(in oklab, var(--tm-accent) 22%, var(--tm-field)); }
   :where(input[type="color"]) {
@@ -469,15 +495,15 @@
   :where(input[type="color"])::-webkit-color-swatch-wrapper { padding: 0; }
   :where(input[type="color"])::-webkit-color-swatch { border: 0; border-radius: var(--tm-radius-sm); }
   :where(input[type="color"])::-moz-color-swatch { border: 0; border-radius: var(--tm-radius-sm); }
-  :where(input[type="file"]) { max-inline-size: 100%; font-size: var(--tm-control-font); }
+  :where(input[type="file"]) { max-inline-size: 100%; font-size: var(--tm-control-font); font-weight: 400; } /* not the label's */
   :where(input[type="file"])::file-selector-button {
     block-size: var(--tm-control-h); padding-inline: var(--tm-control-px); margin-inline-end: var(--tm-space-sm);
     border: 1px solid var(--tm-border-strong); border-radius: var(--tm-radius);
-    background: var(--tm-field); color: var(--tm-text); font: inherit; font-weight: 550; cursor: pointer;
+    background: var(--tm-field); color: var(--tm-text); font: inherit; font-weight: 600; cursor: pointer;
   }
 
   /* labels: a label wrapping a field stacks label text above it */
-  :where(label) { font-size: var(--tm-text-sm); font-weight: 550; }
+  :where(label) { font-size: var(--tm-text-sm); font-weight: 600; }
   :where(label:has(> input:not([type="checkbox"], [type="radio"]), > select, > textarea)) {
     display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.375rem; align-content: start;
   }
@@ -558,12 +584,21 @@
 
   /* card */
   :where(article:not([data-prose])) {
-    padding: var(--tm-space-lg);
+    --_pad: var(--tm-space-lg); /* data-pad on the card sets it too (tm.layout comes later) */
+    padding: var(--_pad);
     border: 1px solid var(--tm-border);
     border-radius: var(--tm-radius-lg);
-    background: var(--tm-surface);
+    --_sf: var(--tm-surface); background: var(--_sf); /* --_sf: what a sticky table header (table.css) paints */
     box-shadow: var(--tm-shadow-sm);
   }
+  /* card media: an image, picture or video as the card's first child runs edge to edge under its rounded top corners
+     (negative margins inside the card, deliberately: the padding it bleeds into is the card's own) */
+  :where(article:not([data-prose])) > :where(img:first-child, picture:first-child, video:first-child) {
+    inline-size: calc(100% + 2 * var(--_pad)); max-inline-size: none;
+    margin: calc(-1 * var(--_pad)) calc(-1 * var(--_pad)) 0;
+    border-radius: calc(var(--tm-radius-lg) - 1px) calc(var(--tm-radius-lg) - 1px) 0 0; object-fit: cover;
+  }
+  :where(article:not([data-prose])) > :where(picture:first-child) > :where(img) { inline-size: 100%; border-radius: inherit; }
 
   /* dialog */
   /* The reset removes margins; modal dialogs and popovers need the browser's margin: auto to stay centered. */
@@ -600,15 +635,17 @@
   }
   :where(dialog[open])::backdrop { opacity: 1; }
   @starting-style { :where(dialog[open])::backdrop { opacity: 0; } }
-  :where(dialog) > :where(article) { display: contents; }
+  :where(dialog) > :where(article) { display: contents; --_pad: inherit; --_sf: inherit; } /* not a card: the dialog's padding and surface */
   :where(dialog, article) > :where(header),
   :where(dialog, article) > :where(div, form, section, article) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-sm); }
   :where(dialog, article) > :where(footer),
   :where(dialog, article) > :where(div, form, section, article) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--tm-space-sm); }
   /* A tall dialog scrolls between its header and footer: they stick to its edges, over the padding there, so they do
-     not move when the content starts scrolling (the negative margin and the padding cancel out at rest). */
+     not move when the content starts scrolling (the negative margin and the padding cancel out at rest). z-index 3:
+     above a data-sticky bar (2) or a sticky table header (1) in the content, which slide under them; for a table or bar
+     that sticks below the header, put it in a data-grow data-scroll="y" part of a data-layout="stack" dialog. */
   :where(dialog) > :where(header, footer),
-  :where(dialog) > :where(div, form, article) > :where(header, footer) { position: sticky; inset-block: calc(-1 * var(--_pad)); z-index: 1; background: var(--tm-surface-raised); }
+  :where(dialog) > :where(div, form, article) > :where(header, footer) { position: sticky; inset-block: calc(-1 * var(--_pad)); z-index: 3; background: var(--_sf); }
   :where(dialog) > :where(header),
   :where(dialog) > :where(div, form, article) > :where(header) { margin-block-start: calc(-1 * var(--_pad)); padding-block-start: var(--_pad); }
   :where(dialog) > :where(footer),
@@ -635,12 +672,14 @@
     box-shadow: var(--tm-shadow-lg);
   }
 
+  :where(dialog, [popover]) { --_sf: var(--tm-surface-raised); }
+
   /* details */
-  :where(details) { border: 1px solid var(--tm-border); border-radius: var(--tm-radius); background: var(--tm-surface); padding-inline: var(--tm-space-md); }
+  :where(details) { border: 1px solid var(--tm-border); border-radius: var(--tm-radius); --_sf: var(--tm-surface); background: var(--_sf); padding-inline: var(--tm-space-md); }
   :where(details[open]) { padding-block-end: var(--tm-space-md); }
   :where(summary) {
     display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-sm);
-    min-block-size: var(--tm-control-h); font-weight: 550; cursor: pointer; list-style: none;
+    min-block-size: var(--tm-control-h); font-weight: 600; cursor: pointer; list-style: none;
   }
   :where(summary)::-webkit-details-marker { display: none; }
   :where(summary)::after {
@@ -652,7 +691,7 @@
 
   /* table */
   :where(table) { inline-size: 100%; border-collapse: collapse; font-size: var(--tm-text-sm); }
-  :where(th) { text-align: start; font-weight: 550; color: var(--tm-text-muted); font-size: var(--tm-text-xs); }
+  :where(th) { text-align: start; font-weight: 600; color: var(--tm-text-muted); font-size: var(--tm-text-xs); }
   :where(th, td) { padding: var(--tm-space-sm) var(--tm-space-md); border-block-end: 1px solid var(--tm-border); }
   :where(tbody tr):hover { background: color-mix(in oklab, var(--tm-fill) 60%, #0000); }
 
@@ -698,12 +737,13 @@
      Prepending or removing the first row restyles the rows of that list (data-lists are short); appending does not */
   :where([data-list]) > :where(:not(template) ~ :not(template)) { border-block-start: 1px solid var(--tm-border); }
   /* after the list's row reset, so an item row in a data-list keeps its bar */
-  :where([data-bar]) { border-inline-start: 3px solid var(--tm-tone); }
+  /* straight, not bent around the corners: (0,1,0) beats the item's radius */
+  [data-bar] { border-inline-start: 3px solid var(--tm-tone); border-start-start-radius: 0; border-end-start-radius: 0; }
 
   /* divider: a line with text in the middle ("or") */
   :where([data-divider]) { display: flex; align-items: center; gap: var(--tm-space-sm); color: var(--tm-text-muted); font-size: var(--tm-text-sm); }
   :where([data-divider])::before, :where([data-divider])::after { content: ""; flex: 1; border-block-start: 1px solid var(--tm-border); }
-  :where([aria-current="date"]:not(a, button)) { color: var(--tm-accent); font-weight: 650; }
+  :where([aria-current="date"]:not(a, button)) { color: var(--tm-accent); font-weight: 600; }
 
   /* avatar: initials or a photo in a circle, colored by tone */
   :where([data-avatar]) {

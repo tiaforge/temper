@@ -134,6 +134,10 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-avatar'?: true | '' | null | Removes;
   /** Makes the whole card clickable through this element. */
   'data-stretch'?: true | '' | null | Removes;
+  /** Sticks to the top or bottom of the nearest scroll container (header, toolbar, save bar). */
+  'data-sticky'?: 'top' | 'bottom' | null | Removes;
+  /** Joins its children (buttons, fields) into one unit with shared borders. */
+  'data-join'?: true | '' | null | Removes;
   /** App shell (rail + main); data-shell="fixed" fills the viewport and main scrolls inside. Needs app.css. */
   'data-shell'?: 'fixed' | '' | Empty | null | Removes;
   /** Navigation rail next to <main>; with popover it is a drawer on narrow screens. Needs app.css. */
@@ -146,8 +150,10 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-rail-label'?: true | '' | null | Removes;
   /** Floating action button fixed in the bottom-right corner. Needs app.css. */
   'data-fab'?: true | '' | null | Removes;
-  /** Shows the element only on narrow (< 48rem) or wide screens. Needs app.css. */
+  /** Shows the element only on narrow (< 48rem) or wide screens, or panes (data-container). Needs app.css. */
   'data-show'?: 'narrow' | 'wide' | null | Removes;
+  /** A pane whose width data-show inside follows, not the screen's. Needs app.css. */
+  'data-container'?: true | '' | null | Removes;
   /** Menu of buttons, links and checkbox labels; as a [popover] it opens under its button. Needs menu.css. */
   'data-menu'?: true | '' | null | Removes;
   /** Wraps a field and its suggestion list (data-menu, role="listbox"), which opens under it. Needs menu.css. */

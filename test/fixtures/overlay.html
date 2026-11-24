@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="../../src/app.css">
 <link rel="stylesheet" href="../../src/menu.css">
 <link rel="stylesheet" href="../../src/feedback.css">
+<link rel="stylesheet" href="../../src/table.css">
 <link rel="stylesheet" href="../../src/sheet.css">
 <link rel="stylesheet" href="../../src/icons.css">
 </head>
@@ -44,6 +45,14 @@
   <header id="tall-stack-header"><h2>Mail</h2></header>
   <div id="tall-stack-scroll" data-grow data-scroll="y"><p id="tall-stack-first" style="block-size: 1500px">Long</p></div>
   <footer id="tall-stack-footer"><button>Send</button></footer>
+</dialog>
+<dialog id="padded" data-pad="md" aria-label="Padded">
+  <article>
+    <header id="padded-header"><h2>Article</h2></header>
+    <div data-sticky="top" id="padded-bar">Bar</div>
+    <table><thead><tr><th id="padded-th">Name</th></tr></thead><tbody><tr><td style="block-size: 1500px">Row</td></tr></tbody></table>
+    <footer><button>OK</button></footer>
+  </article>
 </dialog>
 <dialog id="short" closedby="any">
   <header id="short-header"><h2>Delete?</h2></header>

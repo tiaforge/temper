@@ -104,15 +104,21 @@ CI enforces the budgets (`size-limit`).
 
 ### 1.4 Consistent, modern look: "Graphite" (decided)
 
-- Near-grey neutrals (`--tm-neutral-tint: 0.01`, a faint lean toward the accent hue), white surfaces in light mode, graphite (L 0.145)
-  in dark mode. Structure comes from 1px borders; there are no resting shadows. Only overlays
-  (dialog, popover) get a shadow.
+- Near-grey neutrals (`--tm-neutral-tint: 0.01`, a faint lean toward the accent hue), graphite (L 0.145) in dark mode.
+  In light mode the page is off-white (`--tm-bg` L 0.985, tinted like the other neutrals) and surfaces, fields and
+  overlays are white, so cards, fields and menus lift off the page (decided 2026-11-24; until then page and surfaces
+  were all white and only borders separated them). Print is on white paper. Structure comes from 1px borders; there are
+  no resting shadows. Only overlays (dialog, popover) get a shadow.
 - **Main buttons are monochrome:** black in light mode, white in dark mode
   (`--tm-primary: var(--tm-neutral)`). The accent is reserved for selection, focus, links and checked
   controls. So black means "do this" and blue means "this is selected or interactive".
 - Default radius `--tm-radius` = 0.5rem. Everything else is derived from it (`sm` = 0.6×,
   `lg` = 1.5×, badges 0.67×, `full`).
 - Headings: weight 600, tracking −0.025em.
+- Two font weights, both present in static system fonts: 400 for text, menu and rail items; 600 for buttons, labels,
+  summaries, table headers, badges and other emphasis (decided 2026-11-24). No in-between weights: Segoe UI has
+  400/600/700, Roboto and Ubuntu 400/500/700, DejaVu 400/700, so 550 or 450 rendered medium on one system and bold or
+  regular on another. 600 is Semibold with Segoe UI, SF Pro and Noto Sans, and Bold (700) where no 600 exists.
 - **One control height.** Button, input, select and icon-button are all `--tm-control-h`
   (comfortable 2.5rem, compact 2rem), so toolbars line up without extra work.
 - `data-density="compact|comfortable"` can go on any subtree and scales control padding and height.
@@ -227,6 +233,8 @@ Any role can also be set directly with a literal color (brand colors). Caley's o
 | `data-lazy` | boolean | list container | Its rows far off screen skip layout and paint (`content-visibility: auto`); `--tm-lazy-h` is the row height guess. |
 | `data-sr-only` | boolean | any | Visible to screen readers only; shown while it has focus (skip links). |
 | `data-pairs` | boolean | `dl` | dt/dd shown as a label/value grid using subgrid. Replaces detail-row and compose-row. |
+| `data-sticky` | `top bottom` | page header, toolbar, save bar | Sticks to an edge of the nearest scroll container; opaque, a line toward the content, above the sticky table header. |
+| `data-join` | boolean | wrapper of buttons, fields, selects | One unit: shared borders, rounded only at the ends (toolbar groups, split button, pager, search + button). |
 
 That is about 15 attributes. The goal is that the whole core vocabulary plus its rules fit in an
 `llms.txt` of about 200 lines.

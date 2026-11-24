@@ -10,7 +10,7 @@
     --tm-radius: 0.5rem;
     --tm-badge-radius: var(--tm-radius-full);
     --tm-primary: var(--tm-accent);
-    --tm-heading-weight: 650;
+    --tm-heading-weight: 700;
     --tm-heading-tracking: -0.015em;
     --tm-bg: light-dark(oklch(0.985 var(--_n)), oklch(0.175 var(--_n)));
     --tm-surface: light-dark(oklch(1 0 0), oklch(0.205 var(--_n)));

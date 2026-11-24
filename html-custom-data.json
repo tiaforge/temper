@@ -59,7 +59,7 @@
     },
     {
       "name": "data-size",
-      "description": "temper. On: button (also icon buttons), input, select, [data-avatar]. Control size relative to the current density.",
+      "description": "temper. On: button (also icon buttons), input, select, [data-avatar], a [data-join] group. Control size relative to the current density.",
       "values": [
         {
           "name": "sm",
@@ -563,6 +563,25 @@
       "valueSet": "v"
     },
     {
+      "name": "data-sticky",
+      "description": "temper. On: a page header, a toolbar above a list, a save bar after a long form. Keeps the element at the top or bottom edge of the nearest scroll container while it scrolls: the page, the <main> of a data-shell=\"fixed\" app, a data-scroll=\"y\" pane. It gets the background of the surface it sits on (the page, a card, a dialog) and a line toward the content, and stays above a sticky table header. It sticks only while its parent is in view, so put it in the long element itself (main, the pane, the form), not in a wrapper of its own or inside a sideways data-scroll. Not sticky in print.",
+      "values": [
+        {
+          "name": "top",
+          "description": "Sticks to the top edge, with a line below it."
+        },
+        {
+          "name": "bottom",
+          "description": "Sticks to the bottom edge, with a line above it; clear of the home indicator on phones."
+        }
+      ]
+    },
+    {
+      "name": "data-join",
+      "description": "temper. On: a div around buttons, inputs, selects or a data-field. Joins its children into one unit: shared borders, rounded only at the outer ends. Toolbar groups, a split button (the action plus a data-icon=\"chevron-down\" button that opens its menu), a pager, a search field with its button. Works with every data-variant, data-size (on the group or on each child) and density; a focused child shows its whole ring. Give a group of related actions role=\"group\" and an aria-label, and put a pager in a <nav aria-label=\"Pages\">. Do not add data-layout (its gap would split the group); data-grow works on the group and on a field inside it.",
+      "valueSet": "v"
+    },
+    {
       "name": "data-shell",
       "description": "temper (app.css). On: body or the outermost app wrapper. App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll=\"y\"). On a fixed-shell page whose <main> itself scrolls (a settings page), add data-gutter to <main>, so its content does not shift when the scrollbar comes and goes.",
       "values": [
@@ -599,17 +618,22 @@
     },
     {
       "name": "data-show",
-      "description": "temper (app.css). On: any element. Shows the element only on narrow (< 48rem) or wide screens.",
+      "description": "temper (app.css). On: any element. Shows the element only on narrow (< 48rem) or wide screens. Inside a data-container it follows the width of the nearest one instead (a pane of a multi-pane app).",
       "values": [
         {
           "name": "narrow",
-          "description": "Only below 48rem (e.g. the button that opens the drawer)."
+          "description": "Only below 48rem (e.g. the button that opens the drawer; keep that one outside any data-container)."
         },
         {
           "name": "wide",
           "description": "Only from 48rem."
         }
       ]
+    },
+    {
+      "name": "data-container",
+      "description": "temper (app.css). On: a pane: main, a data-scroll pane, a data-grow or data-layout=\"split\" child. Makes the element a container: data-show inside it follows its width instead of the screen's (the nearest one wins), so a pane adapts while the window is wide: the reader of a mail app, a detail panel next to a table. Its width must come from its parent (a block, main, a data-grow or split child), not from its content; on an element that shrinks to its content (a row child without data-grow, an inline element) it collapses. Keep the button that opens the rail drawer outside it: the drawer follows the screen.",
+      "valueSet": "v"
     },
     {
       "name": "data-menu",

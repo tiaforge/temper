@@ -109,13 +109,16 @@ export default { plugins: [temper()] };
 | `data-divider` | (boolean) | A horizontal line with the element's text in the middle, e.g. |
 | `data-avatar` | (boolean) | Round avatar with initials, or an <img> child that fills it. |
 | `data-stretch` | (boolean) | Makes the whole card clickable through this element. |
+| `data-sticky` | top, bottom | Sticks to the top or bottom of the nearest scroll container (header, toolbar, save bar). |
+| `data-join` | (boolean) | Joins its children (buttons, fields) into one unit with shared borders. |
 | `data-shell` (app.css) | (none), fixed | App shell (rail + main); data-shell="fixed" fills the viewport and main scrolls inside. |
 | `data-rail` (app.css) | (boolean) | Navigation rail next to <main>; with popover it is a drawer on narrow screens. |
 | `data-collapsed` (app.css) | (boolean) | Icon-only rail, set in the markup (e.g. |
 | `data-rail-collapse` (app.css) | (boolean) | Collapse toggle drawn as a chevron icon button. |
 | `data-rail-label` (app.css) | (boolean) | Hidden while the rail is collapsed (e.g. |
 | `data-fab` (app.css) | (boolean) | Floating action button fixed in the bottom-right corner. |
-| `data-show` (app.css) | narrow, wide | Shows the element only on narrow (< 48rem) or wide screens. |
+| `data-show` (app.css) | narrow, wide | Shows the element only on narrow (< 48rem) or wide screens, or panes (data-container). |
+| `data-container` (app.css) | (boolean) | A pane whose width data-show inside follows, not the screen's. |
 | `data-menu` (menu.css) | (boolean) | Menu of buttons, links and checkbox labels; as a [popover] it opens under its button. |
 | `data-combo` (menu.css) | (boolean) | Wraps a field and its suggestion list (data-menu, role="listbox"), which opens under it. |
 | `data-toasts` (feedback.css) | (boolean) | Toast region (one per page, role="status"); holds data-toast children. |

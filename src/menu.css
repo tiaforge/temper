@@ -23,7 +23,7 @@
     display: flex; align-items: center; justify-content: start; gap: var(--tm-space-sm);
     inline-size: 100%; min-block-size: 0; block-size: calc(var(--tm-control-h) * 0.85); padding-inline: var(--tm-space-sm);
     border-radius: var(--tm-radius-sm); background: var(--_bg); color: var(--_fg);
-    font-weight: 450; text-decoration: none; white-space: nowrap;
+    font-weight: 400; text-decoration: none; white-space: nowrap;
   }
   :where([data-menu]) :where(button, a):not([data-variant], [data-tone]) { --tm-tone: var(--tm-neutral); --tm-tone-ink: var(--tm-text); }
   :where([data-menu]) :where(button, a):not([data-variant]):hover,

@@ -132,6 +132,27 @@ test('a tall dialog keeps its header and footer in place and scrolls what is bet
   });
 });
 
+test('inside a dialog: dialog > article takes the dialog padding (not the card one), sticky bars and table headers paint the raised surface and slide under the header', { skip }, async () => {
+  await withPage({}, async page => {
+    const r = await page.evaluate(`(() => {
+      const d = $('padded'); d.showModal(); d.getAnimations().forEach(a => a.finish());
+      const rest = box('padded-header').y;
+      d.scrollTop = 400;
+      const raised = cs('padded').backgroundColor;
+      return {
+        header: [cs('padded-header').paddingTop, cs('padded-header').marginTop, rest === box('padded-header').y],
+        surfaces: ['padded-header', 'padded-bar', 'padded-th'].map(id => cs(id).backgroundColor === raised),
+        z: ['padded-header', 'padded-bar', 'padded-th'].map(id => +cs(id).zIndex),
+        scrollbar: cs('padded').scrollbarWidth,
+      };
+    })()`);
+    assert.deepEqual(r.header, ['16px', '-16px', true]);
+    assert.deepEqual(r.surfaces, [true, true, true]);
+    assert.ok(r.z[0] > r.z[1] && r.z[1] > r.z[2], `header above bar above table header: ${r.z}`);
+    assert.equal(r.scrollbar, 'thin');
+  });
+});
+
 test('a short dialog looks as before: padding, the gap between its parts, closedby="any"', { skip }, async () => {
   await withPage({}, async page => {
     const r = await page.evaluate(`(() => {
