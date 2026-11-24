@@ -39,6 +39,7 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
   async function step(page, url, width, scheme) {
     const found = [], shots = [];
     await page.goto(url, { width, height, scheme, settle });
+    await page.evaluate(NO_GUTTERS);
     await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})`);
     const take = async state => {
       if (!sheet) return;
@@ -95,6 +96,20 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
   }
   return { findings: [...merged.values()], sheets, shots: shotFiles };
 }
+
+/**
+ * The browser runs with hidden scrollbars, which take no space, like the overlay scrollbars of phones and macOS. A
+ * reserved scrollbar gutter (`scrollbar-gutter: stable`) still took its 15px there: while a modal dialog was open
+ * on a page that scrolls, temper's scroll lock reserves the page's gutter, so the page and every dialog in it were
+ * laid out 15px narrower than at that width anywhere (a bottom sheet stopped short of the right edge, content just
+ * fitting a phone dialog was reported as overflow, rows wrapped). Without a scrollbar there is no gutter, as with
+ * overlay scrollbars. A constructed sheet: no element is added to the page.
+ */
+export const NO_GUTTERS = `(() => {
+  const s = new CSSStyleSheet();
+  s.replaceSync('* { scrollbar-width: none !important; }');
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, s];
+})()`;
 
 const slugOf = url => new URL(url).pathname.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'index';
 

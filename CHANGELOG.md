@@ -148,6 +148,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   the removal started, and a write from one of them left the profile behind (seen once in 720 signal runs under load,
   and as a rare failure of the recover test).
 - The DevTools page object has `on(method, fn)` for protocol events (used by the restyle-count tests).
+- A reserved scrollbar gutter takes no width any more. The browser hides its scrollbars, but `scrollbar-gutter:
+  stable` still reserved 15px: while a modal dialog was open on a page that scrolls (temper's scroll lock), the page
+  and every dialog were laid out 15px narrower than on any screen, so a dialog whose content just fits a phone was
+  reported as overflowing, rows in it as wrapped (one in the kitchen sink's details sheet), and the shots showed a
+  bottom sheet stopping short of the right edge and an end sheet with a strip of unshaded page beside it. The dev-page
+  audit of the Vite plugin runs in your own browser, where the gutter is the real scrollbar's, and is unchanged.
 
 ## 0.3.0 (2026-11-12)
 
