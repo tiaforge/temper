@@ -361,6 +361,7 @@ still looks finished. Turn them on with the Vite plugin's `enhance` option, or i
 - [`kitchen-sink/`](kitchen-sink/): every component, app-like screens, and two alternative themes
   in [`theme-examples.css`](kitchen-sink/theme-examples.css).
 - [`SPEC.md`](SPEC.md): design principles and the reasoning behind them.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md): how a release is made.
 
 ## License
 

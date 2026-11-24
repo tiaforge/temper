@@ -4,6 +4,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  # the Release workflow runs it on the release commit before tagging and publishing
+  workflow_call:
+    inputs:
+      ref:
+        description: the branch or tag to check out (the pushed or pulled commit when empty)
+        type: string
+        default: ''
 
 jobs:
   test:
@@ -15,6 +22,8 @@ jobs:
         node: [22, 24, 26]
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
