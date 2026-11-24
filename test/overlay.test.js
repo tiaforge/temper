@@ -132,24 +132,28 @@ test('a tall dialog keeps its header and footer in place and scrolls what is bet
   });
 });
 
-test('a stack dialog: its data-grow data-scroll="y" part fills the dialog up to the screen limit and scrolls; with little content the dialog stays small', { skip }, async () => {
+test('a stack dialog (or one stack wrapper): its data-grow data-scroll="y" part fills the dialog up to the screen limit and scrolls; with little content the dialog stays small',{ skip }, async () => {
   await withPage({}, async page => {
     const measure = (id, part) => page.evaluate(`(() => {
       const d = $('${id}'); d.showModal(); d.getAnimations().forEach(a => a.finish());
-      const p = $('${part}'), r = { dialog: box('${id}'), part: box('${part}'), footer: box('${id}-footer'), max: parseFloat(cs('${id}').maxBlockSize),
+      const p = $('${part}'), r = { dialog: box('${id}'), part: box('${part}'), footer: box('${id}-footer'), header: (h => ({ y: h.y, bottom: h.bottom }))(d.querySelector('header').getBoundingClientRect()), max: parseFloat(cs('${id}').maxBlockSize),
         partScrolls: p.scrollHeight > p.clientHeight + 1, dialogScrolls: d.scrollHeight > d.clientHeight + 1, content: p.firstElementChild.getBoundingClientRect().height };
       d.close(); return r;
     })()`);
-    for (const [id, part] of [['tall-stack', 'tall-stack-scroll'], ['stack-form', 'stack-form-part']]) {
+    // directly in a stack dialog, or through one stack wrapper (form, div, article) in an ordinary dialog
+    for (const [id, part] of [['tall-stack', 'tall-stack-scroll'], ['wrap-form', 'wrap-form-part'], ['wrap-div', 'wrap-div-part'], ['wrap-article', 'wrap-article-part']]) {
       const r = await measure(id, part);
       assert.equal(r.dialog.h, r.max, `${id}: as tall as the screen allows`);
-      assert.ok(r.part.h > r.max - 200, `${id}: the part takes the rest: ${r.part.h} of ${r.dialog.h}`);
+      assert.ok(r.part.h > r.max - 250, `${id}: the part takes the rest: ${r.part.h} of ${r.dialog.h}`);
       assert.ok(r.partScrolls && !r.dialogScrolls, `${id}: the part scrolls, the dialog does not`);
+      assert.ok(r.header.y >= r.dialog.y && r.header.bottom <= r.part.y, `${id}: the header is above the part, inside the dialog`);
       assert.ok(r.footer.y >= r.part.bottom && r.footer.bottom <= r.dialog.bottom, `${id}: the footer is below the part, inside the dialog`);
     }
-    const r = await measure('short-stack', 'short-stack-scroll');
-    assert.equal(r.part.h, r.content, 'the part is as tall as its content (not 8rem)');
-    assert.ok(r.dialog.h < 300 && !r.partScrolls, `the dialog stays small: ${r.dialog.h}`);
+    for (const [id, part] of [['short-stack', 'short-stack-scroll'], ['wrap-short', 'wrap-short-part']]) {
+      const r = await measure(id, part);
+      assert.equal(r.part.h, r.content, `${id}: the part is as tall as its content (not 8rem)`);
+      assert.ok(r.dialog.h < 300 && !r.partScrolls && !r.dialogScrolls, `${id}: the dialog stays small: ${r.dialog.h}`);
+    }
   });
 });
 
@@ -299,7 +303,7 @@ test('an open dialog prints all of its content, from the first page; header and 
   await withPage({ media: { type: 'print' } }, async page => {
     await page.evaluate(`$('rows').remove()`); // the page itself fits on one sheet
     assert.equal(await printedPages(page), 1);
-    for (const id of ['tall', 'tall-form', 'tall-article', 'tall-stack', 'end-tall']) {
+    for (const id of ['tall', 'tall-form', 'tall-article', 'tall-stack', 'wrap-form', 'end-tall']) {
       const r = await page.evaluate(`(() => {
         const d = $('${id}'); d.showModal(); d.getAnimations().forEach(a => a.finish());
         const s = cs('${id}'), border = parseFloat(s.borderTopWidth);

@@ -51,10 +51,34 @@
   <div id="short-stack-scroll" data-grow data-scroll="y"><p id="short-stack-first" style="block-size: 60px">Short</p></div>
   <footer id="short-stack-footer"><button>Send</button></footer>
 </dialog>
-<dialog id="stack-form" data-layout="stack">
-  <header><h2>Settings</h2></header>
-  <form id="stack-form-part" method="dialog" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></form>
-  <footer id="stack-form-footer"><button form="stack-form-part">Save</button></footer>
+<!-- the same through one stack wrapper: a form, a div, an article; tall and short -->
+<dialog id="wrap-form">
+  <form method="dialog" data-layout="stack">
+    <header id="wrap-form-header"><h2>Settings</h2></header>
+    <div id="wrap-form-part" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></div>
+    <footer id="wrap-form-footer"><button>Save</button></footer>
+  </form>
+</dialog>
+<dialog id="wrap-div">
+  <div data-layout="stack">
+    <header id="wrap-div-header"><h2>Settings</h2></header>
+    <div id="wrap-div-part" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></div>
+    <footer id="wrap-div-footer"><button>Save</button></footer>
+  </div>
+</dialog>
+<dialog id="wrap-article">
+  <article data-layout="stack">
+    <header id="wrap-article-header"><h2>Settings</h2></header>
+    <div id="wrap-article-part" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></div>
+    <footer id="wrap-article-footer"><button>Save</button></footer>
+  </article>
+</dialog>
+<dialog id="wrap-short">
+  <form method="dialog" data-layout="stack">
+    <header><h2>Settings</h2></header>
+    <div id="wrap-short-part" data-grow data-scroll="y"><p style="block-size: 60px">Fields</p></div>
+    <footer id="wrap-short-footer"><button>Save</button></footer>
+  </form>
 </dialog>
 <!-- row dialogs: data-grow keeps its 8rem start (the stack rule must not reach them) -->
 <dialog id="row-search" data-layout="row" aria-label="Find"><input id="row-search-grow" data-grow aria-label="Search"><button id="row-search-button">Search</button></dialog>
