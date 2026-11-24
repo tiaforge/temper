@@ -557,7 +557,7 @@
   :where(meter):-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--tm-danger); }
 
   /* card */
-  :where(article) {
+  :where(article:not([data-prose])) {
     padding: var(--tm-space-lg);
     border: 1px solid var(--tm-border);
     border-radius: var(--tm-radius-lg);

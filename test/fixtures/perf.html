@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="../../src/menu.css">
 <link rel="stylesheet" href="../../src/feedback.css">
 <link rel="stylesheet" href="../../src/table.css">
+<link rel="stylesheet" href="../../src/prose.css">
 <link rel="stylesheet" href="../../src/icons.css">
 </head>
 <body>
@@ -29,6 +30,7 @@
   <table><tbody id="tbody"></tbody></table>
   <div id="checks" data-layout="stack"></div>
   <div id="toasts"></div>
+  <div data-prose id="prose"></div>
   <!-- icons and reduced motion -->
   <span id="mail" data-icon="mail"></span>
   <span id="rocket" data-icon="rocket"></span>
@@ -41,6 +43,7 @@
   fill('list', i => `<li>Row ${i}</li>`);
   fill('tbody', i => `<tr><td><input type="checkbox" aria-label="Select"></td><td>Row ${i}</td></tr>`);
   fill('checks', i => `<label><input type="checkbox"> Option ${i}</label>`);
+  fill('prose', i => i % 50 ? `<div><p>Paragraph ${i}</p><ul><li>one</li><li>two</li></ul></div>` : `<h2>Part ${i}</h2>`);
   fill('toasts', i => `<div data-toast><span>Saved ${i}</span><button type="button">Undo</button></div>`);
 </script>
 </body>

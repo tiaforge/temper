@@ -17,6 +17,7 @@ import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating
 import '@tiaforge-ui/temper/menu.css';   // dropdown menus
 import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selection, number columns
+import '@tiaforge-ui/temper/prose.css';  // data-prose: articles, Markdown, mail bodies
 import '@tiaforge-ui/temper/forms.css';  // data-field (icon, unit, button in a field), range, read-only, required *, loading bar
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
@@ -59,7 +60,7 @@ not type attributes written on elements; `temper check` checks those expressions
 3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute
    is one independent axis: `data-variant` is the style, `data-tone` is the color, `data-size` is the
    size. Do not invent classes or values for these.
-4. **Spacing:** nothing has an outer margin. The parent owns all space: `data-gap` between its
+4. **Spacing:** nothing has an outer margin (only `data-prose` text has). The parent owns all space: `data-gap` between its
    children (needs `data-layout`), `data-pad` around them. Do not write `margin` or `padding` in
    `style` attributes. To add space between two things, wrap them in a `data-layout` element.
    `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
@@ -439,6 +440,24 @@ The button goes last. Your script toggles the input's `type` and the button's `a
 also gives `readonly` fields a filled look, marks the label of a `required` field with `*` (not read out, since the
 field says "required"; off with `label::after { content: none }`), tints autofilled fields in the theme, styles
 `<input type="range">` and animates a `<progress>` without a value.
+
+### Long-form text (prose.css)
+
+```html
+<article data-layout="center" data-pad="xl" data-prose>   <!-- a post: a centered reading column (65ch), not a card -->
+  <header><h1>Title</h1><p data-muted>Byline</p></header>
+  <p>Rendered Markdown, CMS HTML or a mail body, as it comes: no data-layout, no data-gap.</p>
+  <figure><img src="…" alt="…"><figcaption>Caption</figcaption></figure>
+  <div data-callout data-tone="info"><strong>Note</strong>Components inside keep their own spacing.</div>
+  <div data-layout="row" data-gap="sm"><button>Reply</button><button data-variant="outline">Forward</button></div>
+</article>
+<div data-prose style="--tm-measure: none">{@html mailBody}</div>   <!-- full width, e.g. a mail reader pane -->
+```
+
+Space comes from the text flow at any depth (content nested in `div` and `section` wrappers too), never
+before the first block or after the last. Images in running text stay in the line; layout tables
+(`role="presentation"` or no `th`) lose the data-table look. Do not add `data-gap` or margins to the content. Sanitize
+untrusted HTML first; prose.css only styles it.
 
 ### Combobox (menu.css)
 

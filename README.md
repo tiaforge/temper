@@ -144,7 +144,9 @@ possible: nothing knows that `.secondary.outline.contrast` is a contradiction.
 
 **2. Nothing has an outer margin.** The parent owns all space: `data-gap` between children,
 `data-pad` inside, one scale `xs sm md lg xl` everywhere. This removes the most common failure we saw
-with other libraries: agents stacking margin overrides against built-in margins.
+with other libraries: agents stacking margin overrides against built-in margins. The one exception is
+long-form text you don't write yourself (rendered Markdown, CMS HTML, a mail body): `data-prose`
+(`prose.css`) spaces its paragraphs, headings, lists and figures from the text flow.
 
 **3. State is HTML and ARIA.** `disabled`, `aria-invalid`, `aria-busy` (spinner, blocks input),
 `aria-pressed`, `aria-current`, `:user-invalid`, `[open]`, `:popover-open`. Correct accessibility
@@ -223,7 +225,7 @@ image with the changed pixels in red. Baselines depend on fonts and the Chrome v
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
 <!-- sizes -->
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 101 % of its budget, `icons.css` 77 % and `all.css` 98 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 101 % of its budget, `icons.css` 77 % and `all.css` 101 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
@@ -235,7 +237,8 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 | `icons.css` | 2.7 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
 | `pico-compat.css` | 0.4 KB | opt-in, while migrating from Pico: maps its `--pico-*` variables to temper tokens |
 | `forms.css` | 1.1 KB | fields with an icon, unit or button (`data-field`), read-only and required marks, autofill tint, range slider, indeterminate progress |
-| `all.css` | 11.2 KB | everything |
+| `prose.css` | 0.6 KB | long-form text (`data-prose`): rhythm between blocks, reading measure, fluid headings, inline images in text, plain layout tables, blockquote, figure |
+| `all.css` | 11.6 KB | everything |
 | `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 <!-- /sizes -->
 
@@ -245,7 +248,7 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
   anti-pattern table ("don't / do"). Enough for small edits.
 - **[`llms-full.txt`](llms-full.txt)**: every attribute in detail plus copy-paste recipes: form,
   card, dialog, toolbar, status, settings rows, app shell, dropdown, card grid, label/value pairs,
-  page layout. Agents copy recipes instead of inventing markup.
+  long-form text, page layout. Agents copy recipes instead of inventing markup.
 - **Names that don't collide with habits.** No numeric spacing (agents read `4` as Tailwind's 1rem),
   no `.btn-primary`. Values like `secondary outline ghost link` follow shadcn, which models have seen
   a lot.
@@ -270,6 +273,7 @@ import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating
 import '@tiaforge-ui/temper/menu.css';   // dropdown menus
 import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/temper/table.css';  // data tables
+import '@tiaforge-ui/temper/prose.css';  // long-form text: articles, rendered Markdown, mail bodies
 import '@tiaforge-ui/temper/forms.css';  // fields with icons, units and buttons; range, read-only, required
 import '@tiaforge-ui/temper/icons.css';  // the default icon set
 // or everything: import '@tiaforge-ui/temper/all.css';

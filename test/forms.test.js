@@ -232,7 +232,8 @@ test('indeterminate progress: a sweeping segment; it stands still in the middle 
   for (const dir of ['ltr', 'rtl']) {
     await withPage({ dir, motion: 'no-preference' }, async page => {
       // early in the sweep the segment is before the middle: left of it, or right of it in RTL
-      const r = await page.evaluate(`(() => { const p = $('indeterminate'); p.style.animationPlayState = 'paused'; p.style.animationDelay = '-0.15s';
+      // the animation is set to 0.15s, not paused where it happens to be: on a busy machine it has already run for a while
+      const r = await page.evaluate(`(() => { const p = $('indeterminate'), a = p.getAnimations()[0]; a.pause(); a.currentTime = 150;
         return [cs(p).animationName, parseFloat(cs(p).backgroundPositionX)]; })()`);
       assert.equal(r[0], 'tm-sweep');
       assert.ok(dir === 'ltr' ? r[1] < 50 : r[1] > 50, `${dir}: background-position-x ${r[1]}`);
