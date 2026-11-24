@@ -12,6 +12,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from '../packages/inspect/lib/cdp.js';
 import { checkMarkup } from '../lib/check.js';
+import { restyled } from './restyled.js';
 
 let browser = null;
 try { browser = findBrowser(); } catch {}
@@ -66,16 +67,6 @@ async function withPage({ width = 1280, height = 700, dir, motion = 'reduce', me
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const wheel = (page, x, y, deltaY) => page.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaX: 0, deltaY });
 
-/** Runs `expression` (which must force a style update) under a trace; returns the number of elements restyled. */
-async function restyled(page, expression) {
-  const events = [];
-  const offData = page.on('Tracing.dataCollected', p => events.push(...p.value));
-  let offDone;
-  const complete = new Promise(r => { offDone = page.on('Tracing.tracingComplete', r); });
-  await page.send('Tracing.start', { traceConfig: { includedCategories: ['devtools.timeline'] }, transferMode: 'ReportEvents' });
-  try { await page.evaluate(expression); } finally { await page.send('Tracing.end'); await complete; offData(); offDone(); }
-  return events.filter(e => e.name === 'UpdateLayoutTree' && e.args?.elementCount != null).reduce((n, e) => n + e.args.elementCount, 0);
-}
 
 // The harness hides scrollbars (and Chrome cannot show them again from here), so the no-shift part is checked through
 // the reserved gutter: stable while a page that overflows is locked, none on a page that does not.

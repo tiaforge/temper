@@ -9,6 +9,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from '../packages/inspect/lib/cdp.js';
 import { checkMarkup, check } from '../lib/check.js';
+import { restyled as restyledBy } from './restyled.js';
 
 let browser = null;
 try { browser = findBrowser(); } catch {}
@@ -281,15 +282,7 @@ test('selects in forced colors: the native arrow, and checked options in the sys
 // The :has() rules of data-field must not make ordinary pages slower (see perf.test.js for how this is measured).
 test('a page with forms.css: adding a row, focusing or disabling a plain field restyles a few elements', { skip }, async () => {
   await withPage({}, async page => {
-    const restyled = async expression => {
-      const events = [];
-      const offData = page.on('Tracing.dataCollected', p => events.push(...p.value));
-      let offDone;
-      const complete = new Promise(r => { offDone = page.on('Tracing.tracingComplete', r); });
-      await page.send('Tracing.start', { traceConfig: { includedCategories: ['devtools.timeline'] }, transferMode: 'ReportEvents' });
-      try { await page.evaluate(expression); } finally { await page.send('Tracing.end'); await complete; offData(); offDone(); }
-      return events.filter(e => e.name === 'UpdateLayoutTree' && e.args?.elementCount != null).reduce((n, e) => n + e.args.elementCount, 0);
-    };
+    const restyled = expression => restyledBy(page, expression);
     const counts = {
       append: await restyled(`(() => { const c = $('ul'); c.append(c.lastElementChild.cloneNode(true)); return document.body.offsetHeight; })()`),
       prepend: await restyled(`(() => { const c = $('inputs'); c.prepend(c.lastElementChild.cloneNode(true)); return document.body.offsetHeight; })()`),
