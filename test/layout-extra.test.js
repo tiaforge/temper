@@ -15,8 +15,8 @@ try { browser = findBrowser(); } catch {}
 const skip = !browser && 'no Chrome/Chromium found';
 const root = fileURLToPath(new URL('..', import.meta.url));
 
-/** Opens fixtures/layout-extra.html at `width`; `dir`: the page direction, `media`: emulated media features. */
-async function withPage({ width = 1280, dir, scheme = 'light', media = {} } = {}, fn) {
+/** Opens fixtures/layout-extra.html (or `file`) at `width`; `dir`: the page direction, `media`: emulated media features. */
+async function withPage({ width = 1280, dir, scheme = 'light', media = {}, file = 'layout-extra.html' } = {}, fn) {
   const srv = createServer(async (req, res) => {
     try {
       const body = await readFile(join(root, decodeURIComponent(req.url.split('?')[0])));
@@ -28,7 +28,7 @@ async function withPage({ width = 1280, dir, scheme = 'light', media = {} } = {}
   const b = await launch(browser);
   try {
     const page = await b.newPage();
-    await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/layout-extra.html`, { width, height: 800, scheme, settle: 100 });
+    await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/${file}`, { width, height: 800, scheme, settle: 100 });
     await page.send('Emulation.setEmulatedMedia', { features: [
       { name: 'prefers-color-scheme', value: scheme }, { name: 'prefers-reduced-motion', value: 'reduce' },
       ...Object.entries(media).map(([name, value]) => ({ name, value })),
@@ -99,6 +99,30 @@ for (const scheme of ['light', 'dark']) {
     });
   });
 }
+
+// The recipe's markup (llms-full.txt, "Panes that adapt to their own width"): in a data-shell="fixed" app, panes in a
+// data-wrap="none" split are as tall as the screen and each scrolls by itself; with the default wrapping they grow to
+// their content and the whole main scrolls (which the docs warn about).
+test('split panes in a fixed shell: with data-wrap="none" each pane scrolls by itself; on phones one pane shows', { skip }, async () => {
+  const state = `(() => {
+    const s = id => ({ h: Math.round(box(id).h), scrolls: $(id).scrollHeight > $(id).clientHeight + 1 });
+    return { viewport: innerHeight, main: s('main'), list: s('list'), reader: shown('reader') ? s('reader') : null, listW: box('list').w, menu: shown('menu') };
+  })()`;
+  await withPage({ file: 'shell-split.html' }, async page => {
+    const r = await page.evaluate(state);
+    assert.deepEqual(r, { viewport: 800, main: { h: 800, scrolls: false }, list: { h: 800, scrolls: true }, reader: { h: 800, scrolls: true }, listW: r.listW, menu: false });
+    // scrolling one pane leaves the other where it is
+    assert.deepEqual(await page.evaluate(`($('list').scrollTop = 500, [$('list').scrollTop, $('reader').scrollTop, $('main').scrollTop])`), [500, 0, 0]);
+    // without data-wrap="none": the panes are as tall as their content and main scrolls as a whole
+    const wrapped = await page.evaluate(`($('main').removeAttribute('data-wrap'), ${state})`);
+    assert.ok(wrapped.main.scrolls && !wrapped.list.scrolls && wrapped.reader.h > 5000, JSON.stringify(wrapped));
+  });
+  // phones: the reader is hidden, the list takes the width and still scrolls by itself, the menu button shows
+  await withPage({ file: 'shell-split.html', width: 390 }, async page => {
+    assert.deepEqual(await page.evaluate(state),
+      { viewport: 800, main: { h: 800, scrolls: false }, list: { h: 800, scrolls: true }, reader: null, listW: 390, menu: true });
+  });
+});
 
 test('data-sticky: bars stay at the pane edges, opaque, above the sticky table header; static in print', { skip }, async () => {
   await withPage({}, async page => {

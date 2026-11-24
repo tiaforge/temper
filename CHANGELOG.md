@@ -114,6 +114,13 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - Type declarations for `@tiaforge-ui/temper/vite` and `@tiaforge-ui/temper/check`; they need no `vite` types.
 - The README size table is generated from a real build (`npm run gen`) and checked by `npm test`.
 
+### Docs and tooling
+
+- `data-shell` and the App shell recipe: panes that each scroll by themselves in a `data-shell="fixed"` app need
+  `<main data-layout="split" data-wrap="none">`; with the default wrapping the panes grow to their content and the
+  whole `<main>` scrolls. The panes recipe shows the phone case (`data-show="wide"` on the reader, the ☰ button in a
+  pane that is not a container). A render test pins that markup (`test/fixtures/shell-split.html`).
+
 ### Vite plugin
 
 - On-demand icons include every name a `data-icon` expression can produce (`dark ? 'sun' : 'moon'`). New option

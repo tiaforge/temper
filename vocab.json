@@ -445,7 +445,7 @@
       "module": "app",
       "allowEmpty": true,
       "on": "body or the outermost app wrapper",
-      "description": "App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll=\"y\"). On a fixed-shell page whose <main> itself scrolls (a settings page), add data-gutter to <main>, so its content does not shift when the scrollbar comes and goes.",
+      "description": "App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps: <main data-layout=\"split\" data-wrap=\"none\"> with data-scroll=\"y\" panes, so each pane is as tall as the screen and scrolls by itself (without data-wrap=\"none\" the panes grow to their content and the whole <main> scrolls); on phones show one pane with data-show. On a fixed-shell page whose <main> itself scrolls (a settings page), add data-gutter to <main>, so its content does not shift when the scrollbar comes and goes.",
       "short": "App shell (rail + main); data-shell=\"fixed\" fills the viewport and main scrolls inside.",
       "values": {
         "fixed": "Fills the viewport; main scrolls inside it."

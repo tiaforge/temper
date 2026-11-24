@@ -363,8 +363,9 @@ the ☰ button first in each page's top row, where it takes its own space; it is
 children of `data-shell` (scripts, templates, framework elements) take no space. `aria-current` must
 be set in the markup; CSS cannot detect the current page.
 
-With `data-shell="fixed"` the shell fills the viewport and `<main>` scrolls inside it (multi-pane apps: give the
-panes `data-scroll="y"`). A page of such an app whose `<main>` itself scrolls (settings, a long form) gets
+With `data-shell="fixed"` the shell fills the viewport and `<main>` scrolls inside it. For panes that each scroll by
+themselves (a mail list and a reader), use `<main data-layout="split" data-wrap="none">` with `data-scroll="y"` panes,
+as in the next recipe: without `data-wrap="none"` the panes grow to their content and the whole `<main>` scrolls. A page of such an app whose `<main>` itself scrolls (settings, a long form) gets
 `<main data-gutter>`: with classic scrollbars (Chrome and Edge on Linux and Windows) its content then keeps its
 place when a tab or loaded data makes it shorter or taller than the screen. Not on a `<main>` that only holds
 panes: the reserved space would stay there as an empty strip.
@@ -390,8 +391,14 @@ c.addEventListener('change', () => localStorage.setItem('rail-collapsed', c.chec
 
 ```html
 <main data-layout="split" data-wrap="none" data-gap="none">   <!-- in <body data-shell="fixed">, next to the rail -->
-  <section data-scroll="y" data-container style="--tm-split: 22rem">…message list…</section>
-  <section data-scroll="y" data-container>
+  <section data-scroll="y" style="--tm-split: 22rem">           <!-- not a container: the ☰ button follows the screen -->
+    <header data-sticky="top" data-layout="row" data-gap="xs" data-pad="sm">
+      <button popovertarget="rail" data-show="narrow" data-icon="menu" data-variant="ghost" aria-label="Open menu"></button>
+      <h1>Inbox</h1>
+    </header>
+    …message list…
+  </section>
+  <section data-scroll="y" data-container data-show="wide">   <!-- phones: the list only; open a message as its own page -->
     <header data-sticky="top" data-layout="row" data-gap="xs" data-pad="sm">
       <h2 data-grow data-truncate>Quarterly report</h2>
       <button data-show="wide" data-icon="archive" data-variant="ghost">Archive</button>
@@ -402,7 +409,9 @@ c.addEventListener('change', () => localStorage.setItem('rail-collapsed', c.chec
 </main>
 ```
 
-`data-wrap="none"` keeps the panes side by side at the full height, so each one scrolls by itself. `data-show` follows the
+`data-wrap="none"` keeps the panes side by side at the full height, so each one scrolls by itself (with the default
+wrapping they grow to their content and `<main>` scrolls as a whole). They stay side by side on phones too, so show one
+pane there: `data-show="wide"` on a container follows the screen, not its own width. `data-show` follows the
 screen width, except inside a `data-container`: there it follows the width of the nearest
 one (narrow below 48rem), so the reader's toolbar loses its labels when the reader pane is narrow, even on a wide
 screen. Nested containers: the nearest wins. A container's width has to come from outside (a block, `main`, a
