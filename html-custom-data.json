@@ -564,7 +564,7 @@
     },
     {
       "name": "data-sticky",
-      "description": "temper. On: a page header, a toolbar above a list, a save bar after a long form. Keeps the element at the top or bottom edge of the nearest scroll container while it scrolls: the page, the <main> of a data-shell=\"fixed\" app, a data-scroll=\"y\" pane. It gets the page background and a line toward the content, and stays above a sticky table header. It sticks only while its parent is in view, so put it in the long element itself (main, the pane, the form), not in a wrapper of its own or inside a sideways data-scroll. Not sticky in print.",
+      "description": "temper. On: a page header, a toolbar above a list, a save bar after a long form. Keeps the element at the top or bottom edge of the nearest scroll container while it scrolls: the page, the <main> of a data-shell=\"fixed\" app, a data-scroll=\"y\" pane. It gets the background of the surface it sits on (the page, a card, a dialog) and a line toward the content, and stays above a sticky table header. It sticks only while its parent is in view, so put it in the long element itself (main, the pane, the form), not in a wrapper of its own or inside a sideways data-scroll. Not sticky in print.",
       "values": [
         {
           "name": "top",

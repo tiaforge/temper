@@ -275,7 +275,7 @@ On: the main link or button inside an article. Makes the whole card clickable th
 
 ### `data-sticky`
 
-On: a page header, a toolbar above a list, a save bar after a long form. Keeps the element at the top or bottom edge of the nearest scroll container while it scrolls: the page, the <main> of a data-shell="fixed" app, a data-scroll="y" pane. It gets the page background and a line toward the content, and stays above a sticky table header. It sticks only while its parent is in view, so put it in the long element itself (main, the pane, the form), not in a wrapper of its own or inside a sideways data-scroll. Not sticky in print.
+On: a page header, a toolbar above a list, a save bar after a long form. Keeps the element at the top or bottom edge of the nearest scroll container while it scrolls: the page, the <main> of a data-shell="fixed" app, a data-scroll="y" pane. It gets the background of the surface it sits on (the page, a card, a dialog) and a line toward the content, and stays above a sticky table header. It sticks only while its parent is in view, so put it in the long element itself (main, the pane, the form), not in a wrapper of its own or inside a sideways data-scroll. Not sticky in print.
 
 - `top`: Sticks to the top edge, with a line below it.
 - `bottom`: Sticks to the bottom edge, with a line above it; clear of the home indicator on phones.
@@ -955,8 +955,8 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 
 The bar stays at the top or bottom of the nearest scroll container (the page, `main` of a fixed shell, a
 `data-scroll="y"` pane) while its parent is in view: put it in the long element itself, not in a wrapper of its
-own, and not inside a sideways `data-scroll`. It has the page background (`--tm-bg`; on a card or dialog set your
-own background) and a line toward the content. It covers a sticky table header that scrolls up to it; to keep both
+own, and not inside a sideways `data-scroll`. It has the background of what it sits on (the page, a card, a
+`details` or a dialog) and a line toward the content. It covers a sticky table header that scrolls up to it; to keep both
 in view, give the table its own `data-scroll="y"` area under the bar, or move the header down by the bar's height in
 your CSS (`thead th { inset-block-start: 3.5rem }`). The bottom bar keeps its content above the home
 indicator (with `viewport-fit=cover`). Printed, the bars stay in place in the flow.

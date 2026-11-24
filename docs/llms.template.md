@@ -608,8 +608,8 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
 
 The bar stays at the top or bottom of the nearest scroll container (the page, `main` of a fixed shell, a
 `data-scroll="y"` pane) while its parent is in view: put it in the long element itself, not in a wrapper of its
-own, and not inside a sideways `data-scroll`. It has the page background (`--tm-bg`; on a card or dialog set your
-own background) and a line toward the content. It covers a sticky table header that scrolls up to it; to keep both
+own, and not inside a sideways `data-scroll`. It has the background of what it sits on (the page, a card, a
+`details` or a dialog) and a line toward the content. It covers a sticky table header that scrolls up to it; to keep both
 in view, give the table its own `data-scroll="y"` area under the bar, or move the header down by the bar's height in
 your CSS (`thead th { inset-block-start: 3.5rem }`). The bottom bar keeps its content above the home
 indicator (with `viewport-fit=cover`). Printed, the bars stay in place in the flow.

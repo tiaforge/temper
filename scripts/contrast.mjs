@@ -119,7 +119,8 @@ export async function validate({ step = 5, hues, chroma, tints = [0, 0.02], css 
   capFrom = 0.02, capTo = 0.37, capStep = 0.01 } = {}) {
   const sheets = [readFileSync(`${root}src/core.css`, 'utf8'), ...css.map(f => readFileSync(f, 'utf8'))];
   hues ??= Array.from({ length: Math.ceil(360 / step) }, (_, i) => i * step); // null entries keep the stylesheet's value
-  const b = await launch(browser ? browser.split(' ') : findBrowser());
+  // the full sweep (72 hues, 2 tints, 2 schemes, the chroma-cap scan) is one evaluate call: about 30 s on a fast machine
+  const b = await launch(browser ? browser.split(' ') : findBrowser(), { timeout: 180000 });
   try {
     const page = await b.newPage();
     await page.goto('about:blank', { width: 400, height: 300, scheme: 'light', settle: 0 });

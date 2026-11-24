@@ -30,7 +30,7 @@
   }
   :where([data-rail]) > :where(header) {
     display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-xs);
-    min-block-size: var(--tm-control-h); padding-block-end: var(--tm-space-sm); font-weight: 650;
+    min-block-size: var(--tm-control-h); padding-block-end: var(--tm-space-sm); font-weight: 600;
   }
   :where([data-rail]) > :where(footer) {
     display: flex; flex-direction: column; gap: 2px;
@@ -45,7 +45,7 @@
     --_bg: transparent; --_fg: var(--tm-text);
     justify-content: start; gap: var(--tm-space-sm);
     inline-size: 100%; block-size: var(--tm-control-h); padding-inline: calc((var(--tm-control-h) - 1.125rem) / 2);
-    position: relative; border-radius: var(--tm-radius); font-size: var(--tm-control-font); font-weight: 500; text-decoration: none; white-space: nowrap;
+    position: relative; border-radius: var(--tm-radius); font-size: var(--tm-control-font); font-weight: 400; text-decoration: none; white-space: nowrap;
   }
   :where([data-rail]) :where(a):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
     display: flex; align-items: center; color: var(--_fg); background: var(--_bg);

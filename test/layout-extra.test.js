@@ -87,6 +87,19 @@ test('data-container keeps fixed and absolute children placed against the viewpo
   });
 });
 
+for (const scheme of ['light', 'dark']) {
+  test(`data-sticky (${scheme}): the bar paints the surface it sits on: the page, a card, a details`, { skip }, async () => {
+    await withPage({ scheme }, async page => {
+      const r = await page.evaluate(`[cs('bar-top').backgroundColor, getComputedStyle(document.documentElement).backgroundColor,
+        cs('bar-card').backgroundColor, cs('bar-card-host').backgroundColor, cs('bar-details').backgroundColor, cs('bar-details-host').backgroundColor]`);
+      assert.equal(r[0], r[1], 'on the page: the page background');
+      assert.equal(r[2], r[3], 'in a card: the card surface');
+      assert.equal(r[4], r[5], 'in a details: its surface');
+      assert.notEqual(r[0], r[2], 'page and card differ, so the test can tell them apart');
+    });
+  });
+}
+
 test('data-sticky: bars stay at the pane edges, opaque, above the sticky table header; static in print', { skip }, async () => {
   await withPage({}, async page => {
     const r = await page.evaluate(`(() => {
