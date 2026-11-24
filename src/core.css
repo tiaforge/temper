@@ -348,7 +348,7 @@
   :where([data-variant="link"]):hover { background: #0000; text-decoration-color: currentColor; }
   :where([aria-pressed="true"], :is(button, a[role="button"])[aria-current]:not([aria-current="false"])) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent); }
   :where([data-size="sm"]) { --_size: 0.8; --_font: 0.8125rem; }
-  :where([data-size="md"]) { --_size: 1; }
+  :where([data-size="md"]) { --_size: 1; --_font: var(--tm-control-font); } /* the control font again, inside a sm or lg container */
   :where([data-size="lg"]) { --_size: 1.2; --_font: 1rem; }
 
   /* tabs: role="tablist" holding role="tab" buttons; the selected tab (aria-selected="true") is underlined */
