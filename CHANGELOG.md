@@ -86,7 +86,9 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   fluid `h1`/`h2`, images in running text stay inline, layout tables (`role="presentation"` or no `th`) lose the
   data-table look, temper components inside keep their own spacing, and `<article data-prose>` is a post, not a card.
 - **`sheet.css`**: `<dialog data-sheet="end|start|bottom|narrow">` is a side panel or a bottom sheet that slides in from
-  its edge; `narrow` is a bottom sheet below 48rem and a centered dialog above.
+  its edge; `narrow` is a bottom sheet below 48rem and a centered dialog above. The edges a sheet touches add the
+  safe-area inset (notch, home indicator) to its padding, also with `data-pad` (which replaced it at first, so a padded
+  bottom sheet's content sat under the home indicator).
 - `app.css`: `data-container`: inside one, `data-show` follows the width of the nearest container instead of the screen
   (panes of multi-pane apps).
 - `menu.css`: `<span data-caption>` labels a group of items, and a `<kbd>` at the end of an item shows its shortcut.

@@ -16,7 +16,6 @@
   /* side panels: full height; the footer sits at the bottom when the content is short */
   :where(dialog:is([data-sheet="end"], [data-sheet="start"])) {
     block-size: 100%; max-block-size: none; border-block: 0; border-radius: 0;
-    padding-block: calc(var(--_pad) + env(safe-area-inset-top)) calc(var(--_pad) + env(safe-area-inset-bottom));
   }
   /* a column instead of core's grid, so the footer can be pushed down; its parts keep their height (a scroll area in it
      would shrink to nothing), except a data-grow part */
@@ -26,14 +25,13 @@
   :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(form, div:has(> footer)) { display: flex; flex-direction: column; flex-grow: 1; }
   :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(footer),
   :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(div, form, article) > :where(footer) { margin-block-start: auto; } /* pushed down, not an outer margin */
-  :where(dialog[data-sheet="end"]) { margin-inline-start: auto; border-inline-end: 0; padding-inline-end: calc(var(--_pad) + var(--_edge)); }
-  :where(dialog[data-sheet="start"]) { --_off: calc(var(--_x) * -100%) 0; margin-inline-end: auto; border-inline-start: 0; padding-inline-start: calc(var(--_pad) + var(--_edge)); }
+  :where(dialog[data-sheet="end"]) { margin-inline-start: auto; border-inline-end: 0; }
+  :where(dialog[data-sheet="start"]) { --_off: calc(var(--_x) * -100%) 0; margin-inline-end: auto; border-inline-start: 0; }
 
   /* bottom sheet: as wide as a dialog, the whole width on phones */
   :where(dialog[data-sheet="bottom"]) {
     --_off: 0 100%; inline-size: min(var(--tm-dialog-width, 30rem), 100%); margin: auto auto 0;
     border-block-end: 0; border-end-start-radius: 0; border-end-end-radius: 0;
-    padding-inline: calc(var(--_pad) + var(--_edge)); padding-block-end: calc(var(--_pad) + env(safe-area-inset-bottom));
   }
   /* narrow: the same bottom sheet, below 48rem only; from 48rem it is an ordinary centered dialog */
   @media (width < 48rem) {
@@ -42,7 +40,6 @@
       inline-size: 100%; max-inline-size: none; margin: auto auto 0; opacity: 1; scale: 1; translate: var(--_off);
       transition: translate var(--tm-duration) var(--tm-ease), overlay var(--tm-duration) allow-discrete, display var(--tm-duration) allow-discrete;
       border-block-end: 0; border-end-start-radius: 0; border-end-end-radius: 0;
-      padding-inline: calc(var(--_pad) + var(--_edge)); padding-block-end: calc(var(--_pad) + env(safe-area-inset-bottom));
     }
   }
 
@@ -52,4 +49,18 @@
 
   /* print what the sheet holds, not one screen of it (core prints every dialog in full; side panels are 100% tall) */
   @media print { :where(dialog[data-sheet]) { block-size: auto; translate: none; } }
+}
+
+/* The padding at the edges a sheet touches: its padding plus the notch or home indicator there. In tm.layout, after
+   core's data-pad rule, so a sheet with data-pad keeps the inset on top of that padding. */
+@layer tm.layout {
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])) {
+    padding-block: calc(var(--_pad) + env(safe-area-inset-top)) calc(var(--_pad) + env(safe-area-inset-bottom));
+  }
+  :where(dialog[data-sheet="end"]) { padding-inline-end: calc(var(--_pad) + var(--_edge)); }
+  :where(dialog[data-sheet="start"]) { padding-inline-start: calc(var(--_pad) + var(--_edge)); }
+  :where(dialog[data-sheet="bottom"]) { padding-inline: calc(var(--_pad) + var(--_edge)); padding-block-end: calc(var(--_pad) + env(safe-area-inset-bottom)); }
+  @media (width < 48rem) {
+    :where(dialog[data-sheet="narrow"]) { padding-inline: calc(var(--_pad) + var(--_edge)); padding-block-end: calc(var(--_pad) + env(safe-area-inset-bottom)); }
+  }
 }

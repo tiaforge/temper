@@ -827,7 +827,7 @@ Dialog recipe. `end` and `start` are full-height side panels (details, filters) 
 `bottom` runs along the bottom edge (actions; the whole width on phones), and `narrow` is a bottom sheet below
 48rem and an ordinary centered dialog from there (pick it when a dialog should feel native on phones). Side
 panels are `--tm-dialog-width` wide, and on phones leave a strip of the page to tap. They mirror in RTL and
-keep clear of the notch with `viewport-fit=cover`.
+keep clear of the notch and the home indicator with `viewport-fit=cover`, also with `data-pad`.
 
 ### Toasts and tooltips (feedback.css)
 

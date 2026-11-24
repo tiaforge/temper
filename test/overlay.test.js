@@ -348,10 +348,20 @@ test('sheets: print in full, forced colors keep their edge, safe-area insets pad
     assert.deepEqual(r, [['1px', '0px', '0px'], ['0px', '1px', '0px'], ['1px', '1px', '1px']], 'the edge toward the page keeps its line');
   });
   // a phone with a notch, in landscape: the sheet pads the screen edges it touches by the insets
+  // (with data-pad="md" too: data-pad sets the padding, the edges add the inset to it)
+  const pads = `(ids => ids.map(id => { $(id).showModal(); const s = cs(id); const p = [s.paddingTop, s.paddingLeft, s.paddingRight, s.paddingBottom]; $(id).close(); return p; }))`;
   await withPage({ width: 844, height: 390 }, async page => {
     await page.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 0, bottom: 21, left: 47, right: 47 } });
-    const r = await page.evaluate(`['end', 'start', 'bottom'].map(id => { $(id).showModal(); const s = cs(id); const p = [s.paddingLeft, s.paddingRight, s.paddingBottom]; $(id).close(); return p; })`);
-    assert.deepEqual(r, [['24px', '71px', '45px'], ['71px', '24px', '45px'], ['71px', '71px', '45px']]);
+    assert.deepEqual(await page.evaluate(`${pads}(['end', 'start', 'bottom'])`), [['24px', '24px', '71px', '45px'], ['24px', '71px', '24px', '45px'], ['24px', '71px', '71px', '45px']]);
+    assert.deepEqual(await page.evaluate(`${pads}(['end-pad', 'start-pad', 'bottom-pad'])`), [['16px', '16px', '63px', '37px'], ['16px', '63px', '16px', '37px'], ['16px', '63px', '63px', '37px']], 'data-pad');
+  });
+  // portrait, with a notch and a home indicator: side sheets pad top and bottom, a narrow sheet is a bottom sheet here
+  await withPage({ width: 390, height: 844 }, async page => {
+    try { await page.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 47, bottom: 34, left: 0, right: 0 } }); } catch { return; }
+    assert.deepEqual(await page.evaluate(`${pads}(['end', 'narrow', 'end-pad', 'start-pad', 'bottom-pad', 'narrow-pad'])`), [
+      ['71px', '24px', '24px', '58px'], ['24px', '24px', '24px', '58px'],
+      ['63px', '16px', '16px', '50px'], ['63px', '16px', '16px', '50px'], ['16px', '16px', '16px', '50px'], ['16px', '16px', '16px', '50px'],
+    ], 'portrait');
   });
 });
 
