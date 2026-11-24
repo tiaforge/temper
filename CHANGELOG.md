@@ -132,6 +132,11 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - `--sheet <dir>` also writes every state at full size (1 CSS pixel = 1 pixel), to
   `<dir>/<page>/<state>-<width>-<scheme>.png`, and the report lists that directory. The contact sheet scales a
   1280px page down to 480px, too small to read its text or judge an icon. `--json` lists the files under `shots`.
+- On a signal or exit, the browser's profile directory is removed only once its processes have stopped (Linux: none
+  of its process group runs any more; at most 2 s), and the removal is repeated while the directory is still there.
+  SIGKILL is not instantaneous: under CPU and disk load a quarter of the runs still had browser processes running when
+  the removal started, and a write from one of them left the profile behind (seen once in 720 signal runs under load,
+  and as a rare failure of the recover test).
 - The DevTools page object has `on(method, fn)` for protocol events (used by the restyle-count tests).
 
 ## 0.3.0 (2026-11-12)
