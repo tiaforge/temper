@@ -261,6 +261,31 @@ test('side sheets: the footer sits at the bottom, header and footer stay while i
   });
 });
 
+// While a dialog fades or slides out it is no longer [open]: rules on dialog[open] stopped applying mid-transition,
+// so the dialog's gap and column (or a stack wrapper's column) dropped while it was still shown, and it visibly fell
+// apart as it closed (a contact dialog 306px tall shrank to 258px for the whole fade).
+test('a closing dialog keeps its layout until it is gone, in every shape (plain, wrappers, data-layout, sheets)', { skip }, async () => {
+  await withPage({ motion: 'no-preference' }, async page => {
+    const ids = ['short', 'wrap-form', 'wrap-div', 'wrap-article', 'tall-stack', 'short-stack', 'content-stack', 'row-search', 'padded', 'end', 'start', 'bottom', 'narrow'];
+    const r = await page.evaluate(`(${JSON.stringify(ids)}).map(id => {
+      const d = $(id);
+      // the dialog's size and where every element in it sits, in layout pixels (not scaled by the fade)
+      const shape = () => [d, ...d.querySelectorAll('*')].filter(e => e instanceof HTMLElement)
+        .map(e => [e.offsetLeft, e.offsetTop, e.offsetWidth, e.offsetHeight].join(' ')).join('|');
+      d.showModal(); d.getAnimations().forEach(a => a.finish());
+      const open = shape();
+      d.close();
+      const anims = d.getAnimations();
+      anims.forEach(a => { a.pause(); a.currentTime = 75; });
+      const closing = { shape: shape(), display: cs(id).display, running: anims.length };
+      anims.forEach(a => a.finish());
+      return { id, open, ...closing };
+    })`);
+    assert.deepEqual(r.filter(d => !d.running || d.display === 'none').map(d => d.id), [], 'still shown while they close');
+    assert.deepEqual(r.filter(d => d.shape !== d.open).map(d => d.id), [], 'they keep their layout while they close');
+  });
+});
+
 test('sheets slide in from their edge and back out (mirrored in RTL); reduced motion makes it instant', { skip }, async () => {
   for (const dir of [undefined, 'rtl']) await withPage({ motion: 'no-preference', dir }, async page => {
     const r = await page.evaluate(`(() => {

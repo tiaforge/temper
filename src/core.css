@@ -215,7 +215,9 @@
 @layer tm.layout {
   :where([data-layout]) { --_gap: var(--tm-space-md); gap: var(--_gap); }
   /* a dialog around a stack wrapper (dialog > form[data-layout="stack"] > header, footer) is a column too: see data-grow below */
-  :where([data-layout="stack"], dialog[open]:has(> [data-layout="stack"] > :is(header, footer))) { display: flex; flex-direction: column; }
+  :where([data-layout="stack"], dialog[open]:has(> [data-layout="stack"] > :is(header, footer))) { display: flex; }
+  /* the column also while the dialog closes: it is not [open] any more, but shown until its fade ends */
+  :where([data-layout="stack"], dialog:has(> [data-layout="stack"] > :is(header, footer))) { flex-direction: column; }
   :where([data-layout="row"]) { display: flex; flex-wrap: wrap; align-items: center; }
   :where(:is(button, a, label)[data-layout="row"]:not([data-wrap])) { flex-wrap: nowrap; }
   :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(var(--tm-min, 16rem), 100%), 1fr)); }
@@ -644,7 +646,10 @@
   }
   :where(dialog[open], [popover]:popover-open) { opacity: 1; scale: 1; }
   @starting-style { :where(dialog[open], [popover]:popover-open) { opacity: 0; scale: 0.97; } }
-  :where(dialog[open]) { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--tm-space-md); }
+  /* Only display depends on [open]: a closing dialog is not [open] but stays shown until its fade ends, and its
+     layout must hold until then (on dialog[open], the gap and the column dropped and it fell apart as it faded) */
+  :where(dialog[open]) { display: grid; }
+  :where(dialog) { grid-template-columns: minmax(0, 1fr); gap: var(--tm-space-md); }
   /* The page behind a modal dialog does not scroll. Its scrollbar keeps its space while it is hidden (only on a page
      that overflows: the scroll timeline, and so the animation, is inactive on one that does not), so nothing shifts. */
   :where(html:has(dialog:modal)) { overflow: hidden; animation: tm-gutter both; animation-timeline: scroll(); }
