@@ -255,6 +255,37 @@ test('sheets slide in from their edge and back out (mirrored in RTL); reduced mo
   });
 });
 
+/** The number of pages `page` prints to (A4). */
+async function printedPages(page) {
+  const { data } = await page.send('Page.printToPDF', { paperWidth: 8.27, paperHeight: 11.69 });
+  return (Buffer.from(data, 'base64').toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length;
+}
+
+test('an open dialog prints all of its content, from the first page; header and footer print once, in place', { skip }, async () => {
+  await withPage({ media: { type: 'print' } }, async page => {
+    await page.evaluate(`$('rows').remove()`); // the page itself fits on one sheet
+    assert.equal(await printedPages(page), 1);
+    for (const id of ['tall', 'tall-form', 'tall-article', 'end-tall']) {
+      const r = await page.evaluate(`(() => {
+        const d = $('${id}'); d.showModal(); d.getAnimations().forEach(a => a.finish());
+        const s = cs('${id}'), border = parseFloat(s.borderTopWidth);
+        return { top: box('${id}').y + scrollY, dialog: box('${id}'), scroll: d.scrollHeight, client: d.clientHeight, overflow: s.overflowY, position: s.position,
+          header: box('${id}-header'), footer: box('${id}-footer'), sticky: [cs('${id}-header').position, cs('${id}-footer').position], border };
+      })()`);
+      assert.equal(r.position, 'absolute', id);
+      assert.equal(r.overflow, 'visible', id);
+      assert.equal(r.top, 0, `${id}: starts at the top of the first page`); // (showModal may scroll to a focused button)
+      assert.ok(r.dialog.h > 1500 && r.client >= r.scroll, `${id}: as tall as its content: ${r.dialog.h}, ${r.client} < ${r.scroll}`);
+      // not sticky: printed once, the header at the top of the dialog, the footer after the content
+      assert.deepEqual(r.sticky, ['static', 'static'], id);
+      assert.equal(r.header.y, r.dialog.y + r.border, id);
+      assert.ok(Math.abs(r.footer.bottom - (r.dialog.bottom - r.border)) < 1, `${id}: footer at the end`);
+      assert.ok(await printedPages(page) >= 2, `${id}: prints on more than one page`);
+      await page.evaluate(`$('${id}').close()`);
+    }
+  });
+});
+
 test('sheets: print in full, forced colors keep their edge, safe-area insets pad the screen edges', { skip }, async () => {
   await withPage({ media: { type: 'print' } }, async page => {
     const r = await page.evaluate(`($('end-tall').showModal(), $('end-tall').getAnimations().forEach(a => a.finish()), { h: box('end-tall').h, overflow: cs('end-tall').overflowY, translate: cs('end-tall').translate })`);

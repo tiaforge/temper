@@ -50,8 +50,6 @@
   :where(dialog[data-sheet][open]) { translate: none; }
   @starting-style { :where(dialog[data-sheet][open]) { translate: var(--_off); } }
 
-  /* print what the sheet holds, not one screen of it */
-  @media print {
-    :where(dialog[data-sheet]) { position: absolute; inset-block-end: auto; block-size: auto; max-block-size: none; overflow: visible; translate: none; }
-  }
+  /* print what the sheet holds, not one screen of it (core prints every dialog in full; side panels are 100% tall) */
+  @media print { :where(dialog[data-sheet]) { block-size: auto; translate: none; } }
 }

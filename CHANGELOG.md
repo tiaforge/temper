@@ -43,6 +43,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - Fixed: a tooltip no longer moves a positioned element (the floating action button fell into the page flow), and no
   longer hides a busy button's spinner, a `data-stretch` card overlay, a sort arrow or the caret of a text button that
   opens a menu; it gives way there.
+- Fixed: an open dialog printed only the part that fits the screen (one page, clipped: it kept `position: fixed`, its
+  screen-height limit and its scrolling in print). It now prints all of its content from the top of the first page,
+  with its header and footer once, in place; sheets share the rule, so `sheet.css` is 15 B smaller (brotli) and core
+  28 B larger.
 - Fixed: an invalid field keeps its danger border on hover (an invalid checkbox shows it too); disabled buttons no longer
   change on hover or move when pressed, and disabled fields have no hover border; checkbox and radio marks contrast with
   their fill inside a toned container (a warning callout) and when invalid.

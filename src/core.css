@@ -292,7 +292,7 @@
   :where([data-sticky]) { position: sticky; z-index: 2; background: var(--_sf, var(--tm-bg)); }
   :where([data-sticky="top"]) { inset-block-start: 0; border-block-end: 1px solid var(--tm-border); }
   :where([data-sticky="bottom"]) { inset-block-end: 0; border-block-start: 1px solid var(--tm-border); border-block-end: env(safe-area-inset-bottom) solid #0000; }
-  @media print { :where([data-sticky]) { position: static; } }
+  @media print { :where([data-sticky]), :where(dialog) :where(header, footer) { position: static; } } /* dialog: see its print rule */
   /* joined group: its children (buttons, fields, selects) are one unit, rounded only at the ends. Neighbors overlap by
      their 1px border (a negative margin between the group's own children, deliberately); on a button that is not an
      outline one that border is a line in its text color. A child with focus comes to the front, so its ring is not
@@ -660,6 +660,9 @@
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' stroke='black' stroke-linecap='round'%3E%3Cpath d='M9 3 3 9M3 3l6 6'/%3E%3C/svg%3E") center / contain no-repeat;
   }
   :where(dialog) > :where(header) :where(h1, h2, h3) { font-size: var(--tm-text-lg); }
+  /* print all of an open dialog from the top of the first page, not the screenful that fits (sheet.css builds on it);
+     its header and footer stop sticking (with [data-sticky], in tm.layout), so they print once, in place */
+  @media print { :where(dialog) { position: absolute; inset-block-end: auto; max-block-size: none; overflow: visible; } }
 
   /* popover */
   :where([popover]) {
