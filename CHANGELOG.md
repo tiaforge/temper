@@ -47,6 +47,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   screen-height limit and its scrolling in print). It now prints all of its content from the top of the first page,
   with its header and footer once, in place; sheets share the rule, so `sheet.css` is 15 B smaller (brotli) and core
   28 B larger.
+- Fixed: in a `data-layout="stack"` dialog, the `data-grow data-scroll="y"` part stayed 8rem tall (`--tm-grow-basis`)
+  however much it held, so a dialog with a long list was 274px tall with the list scrolling in 128px. The part now
+  starts from its content: the dialog grows with it up to the screen's height and the part scrolls from there, and a
+  short one stays small. Core +8 B (brotli).
 - Fixed: an invalid field keeps its danger border on hover (an invalid checkbox shows it too); disabled buttons no longer
   change on hover or move when pressed, and disabled fields have no hover border; checkbox and radio marks contrast with
   their fill inside a toned container (a warning callout) and when invalid.

@@ -263,6 +263,10 @@
     :where(input[role="switch"]) { border: 1px solid; padding-inline: 1px; } /* the track; its fill is gone */
   }
   :where([data-grow]) { flex: 1 1 var(--tm-grow-basis, 8rem); min-inline-size: 0; min-block-size: 0; }
+  /* in a data-layout="stack" dialog (no set height) the growing part starts from its content, so the dialog grows with
+     it up to its max-block-size and the part scrolls from there; from 8rem it stayed 8rem tall. Side sheets (a column
+     of full height) fill the same way; in an ordinary dialog (a grid) flex-basis does nothing */
+  :where(dialog) > :where([data-grow]) { flex-basis: auto; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
   :where([data-pad="xs"]) { --_pad: var(--tm-space-xs); }

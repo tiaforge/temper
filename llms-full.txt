@@ -562,8 +562,10 @@ The open dialog is a grid with a gap between its direct children, so content ins
 loses that gap. A dialog taller than the screen scrolls between its header and footer, which stay in view
 (also through one `form`, `div` or `article` wrapper); the page behind a modal dialog does not scroll. To let
 one part fill the remaining height instead (a message body, a long list), give the dialog
-`data-layout="stack"` and that part `data-grow data-scroll="y"`. Pico-style `dialog > article` markup
-works too: the article adds no box of its own.
+`data-layout="stack"` and that part `data-grow data-scroll="y"`: the dialog grows with that part's content up to the
+screen's height, and the part scrolls from there. Make it a direct child of the dialog; with a form, the form can be
+that part (`<form id="edit" method="dialog" data-grow data-scroll="y">`, footer buttons with `form="edit"`).
+Pico-style `dialog > article` markup works too: the article adds no box of its own.
 
 Add `closedby="any"` to close the dialog on a click outside it or on Esc, with no script (no backdrop
 click handlers).

@@ -46,6 +46,16 @@
   <div id="tall-stack-scroll" data-grow data-scroll="y"><p id="tall-stack-first" style="block-size: 1500px">Long</p></div>
   <footer id="tall-stack-footer"><button>Send</button></footer>
 </dialog>
+<dialog id="short-stack" data-layout="stack">
+  <header><h2>Mail</h2></header>
+  <div id="short-stack-scroll" data-grow data-scroll="y"><p id="short-stack-first" style="block-size: 60px">Short</p></div>
+  <footer id="short-stack-footer"><button>Send</button></footer>
+</dialog>
+<dialog id="stack-form" data-layout="stack">
+  <header><h2>Settings</h2></header>
+  <form id="stack-form-part" method="dialog" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></form>
+  <footer id="stack-form-footer"><button form="stack-form-part">Save</button></footer>
+</dialog>
 <dialog id="padded" data-pad="md" aria-label="Padded">
   <article>
     <header id="padded-header"><h2>Article</h2></header>
