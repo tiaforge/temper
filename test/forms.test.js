@@ -263,6 +263,21 @@ test('list-box select: a checked option stays readable, focused or not, light an
   }
 });
 
+test('selects in forced colors: the native arrow, and checked options in the system selection colors', { skip }, async () => {
+  for (const scheme of ['light', 'dark']) {
+    await withPage({ scheme, media: { 'forced-colors': 'active' } }, async page => {
+      await page.evaluate(listBox + `; document.body.insertAdjacentHTML('beforeend', '<select id="dd"><option>One</option></select>')`);
+      // the gradient arrow and tint are dropped in this mode: the arrow vanished, the checked text was unreadable
+      assert.deepEqual(await page.evaluate(`[cs('dd').appearance, cs('lb').appearance]`), ['auto', 'auto']);
+      const px = await sample(page, 'lb-on', [...Array.from({ length: 60 }, (_, i) => [0.03 + i * 0.01, 0.5]), [0.97, 0.5]]);
+      const bg = px.pop(), best = Math.max(...px.map(p => contrastOf(p, bg)));
+      const [other] = await sample(page, 'lb-off', [[0.97, 0.5]]);
+      assert.ok(best >= 3, `${scheme}: checked option text contrast ${best.toFixed(2)}`);
+      assert.ok(!near(bg, other), `${scheme}: the checked option ${bg} looks like an unchecked one ${other}`);
+    });
+  }
+});
+
 // The :has() rules of data-field must not make ordinary pages slower (see perf.test.js for how this is measured).
 test('a page with forms.css: adding a row, focusing or disabling a plain field restyles a few elements', { skip }, async () => {
   await withPage({}, async page => {
