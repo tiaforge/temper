@@ -42,6 +42,13 @@ async function measure(width, scheme = 'light') {
         sections: gap('deep-p', 'deep-second'), cellFirst: mt('cell-first'), cellSecond: mt('cell-second'),
         proseGap: gap('flat', 'nested-prose'),
         measure: box('flat').width, display: getComputedStyle(el('flat')).display,
+        emoji: getComputedStyle(el('emoji')).display, emojiLine: Math.abs(box('emoji').top - box('inline-p').top) < 8,
+        solo: [getComputedStyle(el('solo')).display, mt('solo')],
+        layoutTd: (s => [s.paddingTop, s.borderBottomWidth])(getComputedStyle(el('layout-td'))),
+        layoutFont: getComputedStyle(el('layout-table')).fontSize,
+        dataTd: getComputedStyle(el('data-td')).paddingTop, dataFont: getComputedStyle(el('data-table')).fontSize,
+        post: (s => [s.borderTopWidth, s.paddingTop, s.boxShadow])(getComputedStyle(el('post'))),
+        postHeader: getComputedStyle(el('post-header')).display,
       };
     })()`);
   } finally {
@@ -59,7 +66,7 @@ test('data-prose: rhythm between blocks, none at the edges, components untouched
     assert.equal(r.proseGap, 16, 'margins leak out of the prose into the stack gap');
     // 1em between paragraphs; more above a heading than below it; tight list items; 2em around a rule
     assert.equal(r.pp, 16);
-    assert.ok(r.pToH > r.hToP && r.hToP === 8, `heading: ${r.pToH}px above, ${r.hToP}px below`);
+    assert.ok(r.pToH > r.hToP && r.hToP === 16, `heading: ${r.pToH}px above, ${r.hToP}px below`);
     assert.equal(r.liLi, 4);
     assert.equal(r.hrAfter, 32);
     // temper components keep their own spacing: no margins inside, their gaps unchanged; they still get space above
@@ -75,6 +82,18 @@ test('data-prose: rhythm between blocks, none at the edges, components untouched
     // reading measure, and its own flow even inside a flex stack
     assert.ok(r.measure < 700 && r.measure > 300 || width < 700, `measure ${r.measure}px`);
     assert.equal(r.display, 'flow-root');
+    // an image in running text stays in the line; a standalone one is a block with the rhythm margin
+    assert.equal(r.emoji, 'inline');
+    assert.ok(r.emojiLine, 'the inline image left its line');
+    assert.deepEqual(r.solo, ['block', '16px']);
+    // a layout table (no th) loses the data-table look; a data table keeps it
+    assert.deepEqual(r.layoutTd, ['1px', '0px']);
+    assert.equal(r.layoutFont, '16px');
+    assert.equal(r.dataTd, '8px');
+    assert.equal(r.dataFont, '14px');
+    // article[data-prose] is a post, not a card, and its header is not a toolbar
+    assert.deepEqual(r.post, ['0px', '0px', 'none']);
+    assert.equal(r.postHeader, 'block');
   }
 });
 

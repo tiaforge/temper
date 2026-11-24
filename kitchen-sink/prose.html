@@ -20,9 +20,11 @@
 <main data-layout="center" data-gap="xl" data-pad="xl">
 
   <!-- ───────── An article: rendered Markdown, flat ───────── -->
-  <div data-prose id="article">
-    <h1>Working with light and shadow on a small balcony</h1>
-    <p data-muted>Tia Heinrich · <time datetime="2026-11-20">November 20, 2026</time> · 6 min read</p>
+  <article data-prose id="article">
+    <header>
+      <h1>Working with light and shadow on a small balcony</h1>
+      <p data-muted>Tia Heinrich · <time datetime="2026-11-20">November 20, 2026</time> · 6 min read</p>
+    </header>
     <p>A balcony garden gets two kinds of light: a few hours of direct sun and a long stretch of bright shade.
       Most plants sold as “full sun” cope with less than the label says, as long as the soil stays cool and
       the pots do not dry out by noon.</p>
@@ -113,7 +115,7 @@
       <input type="email" data-grow aria-label="Email" placeholder="you@example.com">
       <button>Subscribe</button>
     </form>
-  </div>
+  </article>
 
   <!-- ───────── A mail body: arbitrary HTML, nested in divs and tables ───────── -->
   <section data-layout="stack" data-gap="md" aria-labelledby="mail-subject">
@@ -126,7 +128,7 @@
       <div dir="ltr">
         <div>Hi Tia,</div>
         <div><br></div>
-        <div>thanks for organising! Here is what we still need for Saturday:</div>
+        <div>thanks for organising! <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%23f2c14e'/%3E%3Ccircle cx='5.5' cy='6.5' r='1.2' fill='%23333'/%3E%3Ccircle cx='10.5' cy='6.5' r='1.2' fill='%23333'/%3E%3Cpath d='M4.5 10q3.5 3 7 0' stroke='%23333' fill='none'/%3E%3C/svg%3E" width="16" height="16" alt="smiling face"> Here is what we still need for Saturday:</div>
         <ul>
           <li>two more rakes (I can bring one)</li>
           <li>gloves in size S</li>
@@ -148,7 +150,7 @@
           <button id="mail-yes">I’m in</button>
           <button data-variant="outline">Can’t make it</button>
         </div>
-        <p>Mira</p>
+        <p>Mira<br><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%23f2c14e'/%3E%3Ccircle cx='5.5' cy='6.5' r='1.2' fill='%23333'/%3E%3Ccircle cx='10.5' cy='6.5' r='1.2' fill='%23333'/%3E%3Cpath d='M4.5 10q3.5 3 7 0' stroke='%23333' fill='none'/%3E%3C/svg%3E" width="16" height="16" alt=""> <small>Community Garden Moabit</small></p>
         <blockquote type="cite">
           <p>On Tue, Tia Heinrich wrote:</p>
           <blockquote type="cite">

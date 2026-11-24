@@ -333,7 +333,7 @@ On: th and td of a number column. A number cell: right-aligned with tabular figu
 
 ### `data-prose` (boolean, no value)
 
-On: the container of long-form text: an article body, rendered Markdown or CMS HTML, a mail body (a div, article, section or main; not a dialog, popover or table cell). Long-form text with a vertical rhythm: paragraphs, headings (more space above than below), lists, blockquote, figure and figcaption, hr, pre, tables, images, dl and details get space between them, at any depth (content nested in div and section wrappers too), with none before the first block or after the last. The one place with outer margins: write the HTML as it comes, without data-gap. Text is capped at a reading measure (--tm-measure, 65ch here; style="--tm-measure: none" for the full width, e.g. a mail body with wide tables) and h1 and h2 scale with the viewport. temper components inside (data-layout, data-callout, data-list, a card, a form, a menu) keep their own spacing. With data-layout="center" on the same element it is a centered reading column; other layouts do not combine with it. Needs `prose.css`.
+On: the container of long-form text: an article body, rendered Markdown or CMS HTML, a mail body (a div, article, section or main; not a dialog, popover or table cell). Long-form text with a vertical rhythm: paragraphs, headings (more space above than below), lists, blockquote, figure and figcaption, hr, pre, tables, images, dl and details get space between them, at any depth (content nested in div and section wrappers too), with none before the first block or after the last. The one place with outer margins: write the HTML as it comes, without data-gap. Text is capped at a reading measure (--tm-measure, 65ch here; style="--tm-measure: none" for the full width, e.g. a mail body with wide tables) and h1 and h2 scale with the viewport. temper components inside (data-layout, data-callout, data-list, a card, a form, a menu) keep their own spacing. Images in running text stay in the line (emoji, signature logos); layout tables (role="presentation" or no th, as in mail) lose the data-table look. On an article it is a post, not a card. With data-layout="center" on the same element it is a centered reading column; other layouts do not combine with it. Needs `prose.css`.
 
 ## Tokens
 
@@ -727,18 +727,19 @@ The header sticks while the page scrolls. Put `data-num` on every cell of a numb
 ### Long-form text (prose.css)
 
 ```html
-<main data-layout="center" data-pad="xl" data-prose>   <!-- a centered reading column (65ch) -->
-  <h1>Title</h1>
+<article data-layout="center" data-pad="xl" data-prose>   <!-- a post: a centered reading column (65ch), not a card -->
+  <header><h1>Title</h1><p data-muted>Byline</p></header>
   <p>Rendered Markdown, CMS HTML or a mail body, as it comes: no data-layout, no data-gap.</p>
   <figure><img src="…" alt="…"><figcaption>Caption</figcaption></figure>
   <div data-callout data-tone="info"><strong>Note</strong>Components inside keep their own spacing.</div>
   <div data-layout="row" data-gap="sm"><button>Reply</button><button data-variant="outline">Forward</button></div>
-</main>
+</article>
 <div data-prose style="--tm-measure: none">{@html mailBody}</div>   <!-- full width, e.g. a mail reader pane -->
 ```
 
 Space comes from the text flow at any depth (content nested in `div` and `section` wrappers too), never
-before the first block or after the last. Do not add `data-gap` or margins to the content. Sanitize
+before the first block or after the last. Images in running text stay in the line; layout tables
+(`role="presentation"` or no `th`) lose the data-table look. Do not add `data-gap` or margins to the content. Sanitize
 untrusted HTML first; prose.css only styles it.
 
 ### Combobox (menu.css)

@@ -397,18 +397,19 @@ The header sticks while the page scrolls. Put `data-num` on every cell of a numb
 ### Long-form text (prose.css)
 
 ```html
-<main data-layout="center" data-pad="xl" data-prose>   <!-- a centered reading column (65ch) -->
-  <h1>Title</h1>
+<article data-layout="center" data-pad="xl" data-prose>   <!-- a post: a centered reading column (65ch), not a card -->
+  <header><h1>Title</h1><p data-muted>Byline</p></header>
   <p>Rendered Markdown, CMS HTML or a mail body, as it comes: no data-layout, no data-gap.</p>
   <figure><img src="…" alt="…"><figcaption>Caption</figcaption></figure>
   <div data-callout data-tone="info"><strong>Note</strong>Components inside keep their own spacing.</div>
   <div data-layout="row" data-gap="sm"><button>Reply</button><button data-variant="outline">Forward</button></div>
-</main>
+</article>
 <div data-prose style="--tm-measure: none">{@html mailBody}</div>   <!-- full width, e.g. a mail reader pane -->
 ```
 
 Space comes from the text flow at any depth (content nested in `div` and `section` wrappers too), never
-before the first block or after the last. Do not add `data-gap` or margins to the content. Sanitize
+before the first block or after the last. Images in running text stay in the line; layout tables
+(`role="presentation"` or no `th`) lose the data-table look. Do not add `data-gap` or margins to the content. Sanitize
 untrusted HTML first; prose.css only styles it.
 
 ### Combobox (menu.css)

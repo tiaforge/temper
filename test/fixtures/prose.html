@@ -28,8 +28,12 @@
   </div>
   <div data-prose id="nested-prose">
     <div><section><h2 id="deep-first">Deep first</h2><p id="deep-p">Text.</p></section><section><h2 id="deep-second">Second section</h2></section></div>
-    <table><tr><td><p id="cell-first">Cell.</p><p id="cell-second">Cell two.</p></td></tr></table>
+    <table id="layout-table"><tr><td id="layout-td"><p id="cell-first">Cell.</p><p id="cell-second">Cell two.</p></td></tr></table>
+    <table id="data-table"><tr><th id="data-th">Plant</th></tr><tr><td id="data-td">Basil</td></tr></table>
+    <p id="inline-p">Hi <img id="emoji" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23e33'/%3E%3C/svg%3E" width="16" height="16" alt=""> there</p>
+    <img id="solo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23e33'/%3E%3C/svg%3E" width="32" height="32" alt="">
   </div>
+  <article data-prose id="post"><header id="post-header"><h1>Post</h1><p>By someone</p></header><p>Text.</p></article>
   <div id="after">after</div>
 </main>
 </body>
