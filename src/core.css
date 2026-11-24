@@ -302,7 +302,7 @@
     background: var(--_bg);
     color: var(--_fg);
     font-size: var(--_font, var(--tm-control-font));
-    font-weight: 550;
+    font-weight: 600;
     line-height: 1.2;
     text-align: center; text-wrap: balance; overflow-wrap: anywhere; hyphens: auto; /* a label wraps only when the button cannot fit (phones, long translations) */
     text-decoration: none;
@@ -473,11 +473,11 @@
   :where(input[type="file"])::file-selector-button {
     block-size: var(--tm-control-h); padding-inline: var(--tm-control-px); margin-inline-end: var(--tm-space-sm);
     border: 1px solid var(--tm-border-strong); border-radius: var(--tm-radius);
-    background: var(--tm-field); color: var(--tm-text); font: inherit; font-weight: 550; cursor: pointer;
+    background: var(--tm-field); color: var(--tm-text); font: inherit; font-weight: 600; cursor: pointer;
   }
 
   /* labels: a label wrapping a field stacks label text above it */
-  :where(label) { font-size: var(--tm-text-sm); font-weight: 550; }
+  :where(label) { font-size: var(--tm-text-sm); font-weight: 600; }
   :where(label:has(> input:not([type="checkbox"], [type="radio"]), > select, > textarea)) {
     display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.375rem; align-content: start;
   }
@@ -622,7 +622,7 @@
   :where(details[open]) { padding-block-end: var(--tm-space-md); }
   :where(summary) {
     display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-sm);
-    min-block-size: var(--tm-control-h); font-weight: 550; cursor: pointer; list-style: none;
+    min-block-size: var(--tm-control-h); font-weight: 600; cursor: pointer; list-style: none;
   }
   :where(summary)::-webkit-details-marker { display: none; }
   :where(summary)::after {
@@ -634,7 +634,7 @@
 
   /* table */
   :where(table) { inline-size: 100%; border-collapse: collapse; font-size: var(--tm-text-sm); }
-  :where(th) { text-align: start; font-weight: 550; color: var(--tm-text-muted); font-size: var(--tm-text-xs); }
+  :where(th) { text-align: start; font-weight: 600; color: var(--tm-text-muted); font-size: var(--tm-text-xs); }
   :where(th, td) { padding: var(--tm-space-sm) var(--tm-space-md); border-block-end: 1px solid var(--tm-border); }
   :where(tbody tr):hover { background: color-mix(in oklab, var(--tm-fill) 60%, #0000); }
 
@@ -685,7 +685,7 @@
   /* divider: a line with text in the middle ("or") */
   :where([data-divider]) { display: flex; align-items: center; gap: var(--tm-space-sm); color: var(--tm-text-muted); font-size: var(--tm-text-sm); }
   :where([data-divider])::before, :where([data-divider])::after { content: ""; flex: 1; border-block-start: 1px solid var(--tm-border); }
-  :where([aria-current="date"]:not(a, button)) { color: var(--tm-accent); font-weight: 650; }
+  :where([aria-current="date"]:not(a, button)) { color: var(--tm-accent); font-weight: 600; }
 
   /* avatar: initials or a photo in a circle, colored by tone */
   :where([data-avatar]) {

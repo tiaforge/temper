@@ -13,7 +13,7 @@
     white-space: nowrap;
   }
   :where(tfoot) :where(th, td) { border-block-end: 0; border-block-start: 1px solid var(--tm-border-strong); font-weight: 600; color: var(--tm-text); }
-  :where(tbody) :where(th) { color: var(--tm-text); font-size: inherit; font-weight: 550; }
+  :where(tbody) :where(th) { color: var(--tm-text); font-size: inherit; font-weight: 600; }
   :where(td) { vertical-align: middle; }
   :where(th, td)[data-num] { text-align: end; font-variant-numeric: tabular-nums; }
 

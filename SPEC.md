@@ -113,6 +113,10 @@ CI enforces the budgets (`size-limit`).
 - Default radius `--tm-radius` = 0.5rem. Everything else is derived from it (`sm` = 0.6×,
   `lg` = 1.5×, badges 0.67×, `full`).
 - Headings: weight 600, tracking −0.025em.
+- Two font weights, both present in static system fonts: 400 for text, menu and rail items; 600 for buttons, labels,
+  summaries, table headers, badges and other emphasis (decided 2026-11-24). No in-between weights: Segoe UI has
+  400/600/700, Roboto and Ubuntu 400/500/700, DejaVu 400/700, so 550 or 450 rendered medium on one system and bold or
+  regular on another. 600 is Semibold with Segoe UI, SF Pro and Noto Sans, and Bold (700) where no 600 exists.
 - **One control height.** Button, input, select and icon-button are all `--tm-control-h`
   (comfortable 2.5rem, compact 2rem), so toolbars line up without extra work.
 - `data-density="compact|comfortable"` can go on any subtree and scales control padding and height.

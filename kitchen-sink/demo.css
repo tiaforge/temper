@@ -11,7 +11,7 @@ body { min-block-size: 100dvh; }
   backdrop-filter: blur(8px);
 }
 .wordmark { font-weight: 700; letter-spacing: -0.02em; font-size: 1.0625rem; margin-inline-end: auto; }
-.wordmark span { color: var(--tm-text-muted); font-weight: 450; }
+.wordmark span { color: var(--tm-text-muted); font-weight: 400; }
 .segmented { display: inline-flex; gap: 2px; padding: 2px; border-radius: calc(var(--tm-radius) + 2px); background: var(--tm-fill); }
 
 .section-head { max-inline-size: 44rem; }
@@ -42,7 +42,7 @@ body { min-block-size: 100dvh; }
 .msg-list a:hover { background: color-mix(in oklab, var(--tm-fill) 60%, transparent); }
 .msg-list a[aria-current="true"] { background: var(--tm-tone-soft); box-shadow: inset 3px 0 var(--tm-accent); }
 .msg-list .from { font-weight: 500; }
-.msg-list .unread .from, .msg-list .unread .subject { font-weight: 650; }
+.msg-list .unread .from, .msg-list .unread .subject { font-weight: 600; }
 .msg-list time { color: var(--tm-text-muted); font-size: var(--tm-text-xs); }
 .msg-list .subject, .msg-list .snippet { grid-column: 1 / -1; }
 .msg-list .snippet { color: var(--tm-text-muted); }
@@ -53,7 +53,7 @@ body { min-block-size: 100dvh; }
 .avatar {
   display: grid; place-items: center; flex-shrink: 0;
   inline-size: 3rem; block-size: 3rem; border-radius: 50%;
-  background: var(--tm-tone-soft); color: var(--tm-tone-ink); font-weight: 650;
+  background: var(--tm-tone-soft); color: var(--tm-tone-ink); font-weight: 600;
 }
 
 /* static previews of overlay components */
