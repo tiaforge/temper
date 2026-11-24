@@ -69,9 +69,9 @@ First consumer: caley (replacing Pico CSS). Second: tia.vision (Astro marketing/
 
 | Bundle | Budget (brotli) |
 |---|---|
-| `core.css` | **≤ 5 KB** (Pico is about 11 KB gzipped) |
+| `core.css` | **≤ 6.6 KB** (6,800 B; Pico is about 11 KB gzipped) |
 | each module | ≤ 1.5 KB |
-| `all.css` | ≤ 12 KB |
+| `all.css` | ≤ 12.6 KB (12,950 B) |
 
 How we stay under budget:
 - Each color is declared once with `light-dark()`. Pico declares its palette about 3 times.

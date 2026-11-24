@@ -226,7 +226,7 @@ image with the changed pixels in red. Baselines depend on fonts and the Chrome v
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
 <!-- sizes -->
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 108 % of its budget, `icons.css` 77 % and `all.css` 108 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.6 KB, `icons.css` 2.8 KB, `all.css` 12.6 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 98 % of its budget, `icons.css` 97 % and `all.css` 98 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
