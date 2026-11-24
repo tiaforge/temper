@@ -19,7 +19,8 @@
   }
   /* a column instead of core's grid, so the footer can be pushed down; its parts keep their height (a scroll area in it
      would shrink to nothing), except a data-grow part */
-  :where(dialog:is([data-sheet="end"], [data-sheet="start"])[open]) { display: flex; flex-direction: column; }
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])[open]) { display: flex; }
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])) { flex-direction: column; } /* also while it slides out */
   :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > *,
   :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(article) > * { flex-shrink: 0; }
   :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(form, div:has(> footer)) { display: flex; flex-direction: column; flex-grow: 1; }

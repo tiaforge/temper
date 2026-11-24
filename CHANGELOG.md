@@ -9,6 +9,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Core
 
+- A closing dialog keeps its layout until it is gone. It is no longer `[open]` while it fades or slides out, and the
+  gap, the grid column, a stack wrapper's column and a side sheet's column were set on `dialog[open]`: they dropped
+  as the close started, so the dialog's parts closed up or lined up in a row during the fade (a 306px contact
+  dialog shrank to 258px). Only `display` depends on `[open]` now.
 - `data-gutter` (boolean): reserves the scrollbar's space on a scroll container (`scrollbar-gutter: stable`), so its
   content does not shift sideways when it starts or stops overflowing. With classic scrollbars (Chrome and Edge on
   Linux and Windows) a centered column moved by half the scrollbar width whenever a tab, a filter or loading data
