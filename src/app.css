@@ -42,7 +42,7 @@
 
   /* rail items: links and buttons look like quiet nav entries; aria-current marks the active one */
   :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
-    --_bg: transparent; --_fg: var(--tm-text);
+    --_bg: #0000; --_fg: var(--tm-text);
     justify-content: start; gap: var(--tm-space-sm);
     inline-size: 100%; block-size: var(--tm-control-h); padding-inline: calc((var(--tm-control-h) - 1.125rem) / 2);
     position: relative; border-radius: var(--tm-radius); font-size: var(--tm-control-font); font-weight: 400; text-decoration: none; white-space: nowrap;
@@ -66,10 +66,10 @@
   [data-rail-collapse] {
     appearance: none; display: inline-grid; place-content: center; flex-shrink: 0;
     inline-size: var(--tm-control-h); block-size: var(--tm-control-h);
-    border: 0; border-radius: var(--tm-radius); background: transparent; color: var(--tm-text-muted); cursor: pointer;
+    border: 0; border-radius: var(--tm-radius); background: #0000; color: var(--tm-text-muted); cursor: pointer;
   }
   [data-rail-collapse]:hover { background: var(--tm-fill); color: var(--tm-text); }
-  [data-rail-collapse]:checked { background: transparent; }
+  [data-rail-collapse]:checked { background: #0000; }
   [data-rail-collapse]::before {
     content: ""; inline-size: 1.125rem; block-size: 1.125rem; border: 0; rotate: 0deg; scale: var(--_x) 1; translate: 0; /* mirrored in RTL */
     background: currentColor; forced-color-adjust: preserve-parent-color;
