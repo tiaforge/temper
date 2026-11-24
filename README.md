@@ -226,7 +226,7 @@ image with the changed pixels in red. Baselines depend on fonts and the Chrome v
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
 <!-- sizes -->
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.6 KB, `icons.css` 2.8 KB, `all.css` 12.6 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 99 % of its budget, `icons.css` 97 % and `all.css` 98 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.6 KB, `icons.css` 2.8 KB, `all.css` 12.6 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 99 % of its budget, `icons.css` 97 % and `all.css` 99 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
@@ -239,8 +239,8 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 | `pico-compat.css` | 0.4 KB | opt-in, while migrating from Pico: maps its `--pico-*` variables to temper tokens |
 | `forms.css` | 1.1 KB | fields with an icon, unit or button (`data-field`), read-only and required marks, autofill tint, range slider, indeterminate progress |
 | `prose.css` | 0.6 KB | long-form text (`data-prose`): rhythm between blocks, reading measure, fluid headings, inline images in text, plain layout tables, blockquote, figure |
-| `sheet.css` | 0.5 KB | dialogs as sheets (`data-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
-| `all.css` | 12.4 KB | everything |
+| `sheet.css` | 0.6 KB | dialogs as sheets (`data-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
+| `all.css` | 12.5 KB | everything |
 | `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 <!-- /sizes -->
 
