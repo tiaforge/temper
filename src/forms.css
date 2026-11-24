@@ -46,6 +46,8 @@
   /* in a stacked label it shares the first row with the text; the field and the hint span both columns */
   :where(label:has(> [required]:not([type="checkbox"], [type="radio"]), > [data-field] > [required])) { grid-template-columns: auto 1fr; }
   :where(label:has(> [required]:not([type="checkbox"], [type="radio"]), > [data-field] > [required])) > :where(input, select, textarea, [data-field], small) { grid-column: 1 / -1; }
+  /* a <label for> just before its field (a data-field with a button, or a plain field): the mark follows the text, a gap apart */
+  :where(label[for]:has(+ [required]:not([type="radio"]), + [data-field] > [required]))::after { content: "*" / ""; margin-inline-start: 0.375rem; color: var(--tm-danger); }
 
   /* autofill: a soft accent tint instead of the browser's own color (which ignores the theme and dark mode) */
   :where(input:autofill, [data-field]:has(input:autofill)) { --_af: color-mix(in oklab, var(--tm-accent) 12%, var(--tm-field)); background-color: var(--_af); }

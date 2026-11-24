@@ -415,6 +415,10 @@ test('a table needs header cells', () => {
 test('a tooltip needs a focusable element', () => {
   assert.deepEqual(codes(checkMarkup('<span data-tooltip="Synced">x</span>')), ['TM116']);
   assert.deepEqual(codes(checkMarkup('<span data-tooltip="Synced" tabindex="0">x</span><a href="/" data-tooltip="x">y</a><button data-tooltip="z">z</button>')), []);
+  // a link whose href is bound: sinter data-sn-href, data-sn-attr, Vue :href
+  assert.deepEqual(codes(checkMarkup('<a download role="button" data-variant="ghost" data-icon="download" aria-label="Export" data-tooltip data-sn-href="/api/export?id={a.id}"></a>')), []);
+  assert.deepEqual(codes(checkMarkup(`<a data-tooltip="x" data-sn-attr="{href: a.url}">y</a><a data-tooltip="x" :href="a.url">y</a>`)), []);
+  assert.deepEqual(codes(checkMarkup('<a data-tooltip="x">y</a>')), ['TM116']);
 });
 
 test('heading levels do not skip (documents only)', () => {

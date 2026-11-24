@@ -186,14 +186,28 @@ export function install(opts) {
       ? `[commandfor="${id}"]:is([command="show-modal"], [command="show"])`
       : `[popovertarget="${id}"]:not([popovertargetaction="hide"]), [commandfor="${id}"]:is([command="toggle-popover"], [command="show-popover"])`)];
   };
+  // A user can reach an opener that renders and is on the page: not moved off it (an off-canvas drawer translated
+  // past the edge) or outside an ancestor that clips without scrolling. One below the fold counts (the page scrolls).
+  const reachable = op => {
+    if (!op.checkVisibility()) return false;
+    const r = R(op), page = document.scrollingElement;
+    if (r.width < 1 || r.height < 1 || r.right <= 0 || r.left >= innerWidth) return false;
+    if (r.bottom + page.scrollTop <= 0 || r.top + page.scrollTop >= page.scrollHeight) return false;
+    for (let a = op.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
+      const cs = getComputedStyle(a), b = R(a);
+      if (/hidden|clip/.test(cs.overflowX) && (r.right <= b.left || r.left >= b.right)) return false;
+      if (/hidden|clip/.test(cs.overflowY) && (r.bottom <= b.top || r.top >= b.bottom)) return false;
+    }
+    return true;
+  };
   let list = [], current = null, stack = [];
 
   async function openOverlay(el, depth) {
     for (const op of openersOf(el)) {
-      if (!op.checkVisibility()) {
+      if (!reachable(op)) {
         const outer = op.parentElement?.closest('dialog:not([open]), [popover]:not(:popover-open)');
         if (!outer || depth >= 3 || !(await openOverlay(outer, depth + 1))) continue;
-        if (!op.checkVisibility()) continue;
+        if (!reachable(op)) continue;
       }
       op.click();
       await frames(); await sleep(opts.overlayWait);
@@ -226,7 +240,7 @@ export function install(opts) {
         if (current.how.via) findings.push({ state, severity: 'info', code: 'opened', selector: sel(current.how.via), message: 'opened by clicking this' });
         if (current.how.direct) {
           const text = (current.el.innerText ?? '').replace(/\s+/g, ' ').trim();
-          const why = current.how.openers ? 'its button is hidden at this width' : 'no button opens it via commandfor or popovertarget';
+          const why = current.how.openers ? 'its button is hidden or off-screen at this width' : 'no button opens it via commandfor or popovertarget';
           if (text.length < 25) findings.push({ state, severity: 'warning', code: 'state', selector: sel(current.el).split(' "')[0],
             message: `opened directly because ${why}, and it is nearly empty: its content probably depends on app state, so this check says little about it` });
           else findings.push({ state, severity: 'info', code: 'state', selector: sel(current.el).split(' "')[0], message: `opened directly because ${why}` });

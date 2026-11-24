@@ -87,7 +87,8 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - **`forms.css`** (`@tiaforge-ui/temper/forms.css`, also in `all.css`): `data-field` puts an icon, prefix or suffix
   text, or a button inside a field (search field, amount with unit, password with reveal button); focus, hover, invalid,
   read-only and disabled show on the whole field. Also: `readonly` fields look read-only, the label of a `required`
-  field gets an asterisk that screen readers do not read twice (off: `label::after { content: none }`), autofilled
+  field gets an asterisk that screen readers do not read twice, whether it wraps the field or is a `<label for>` just
+  before it (the markup for a field with a button; off: `label::after { content: none }`), autofilled
   fields get a tint from the theme, `<input type="range">` is styled with a filled track, and a `<progress>` without a
   value shows a sweeping segment.
 - **`prose.css`**: `data-prose` for long-form text (rendered Markdown, CMS HTML, mail bodies): spacing between blocks
@@ -119,6 +120,8 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   comments of Svelte/Astro `{…}` and Vue `{{ }}` expressions, is no longer checked (it could fail the build). TypeScript
   generics are handled. A `<script>` or `<style>` tag with a `>` in a quoted attribute (Svelte `generics="…"`) no longer
   hides the rest of the file from the check.
+- TM116 (a tooltip on something that cannot take focus) counts a link whose `href` is bound by sinter's
+  `data-sn-href`, as it did one bound by `data-sn-attr` or `:href`.
 - New warning TM122: a `<button>` in a `data-field` inside a wrapping `<label>`. The label's text then includes the
   button's name, so the input is announced as "API key Copy" (measured in Chrome's accessibility tree); use
   `<label for="…">` with the field outside the label. Not judged through a component or custom element. The kitchen
@@ -161,6 +164,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### temper-inspect
 
+- An overlay's button must be on the page to be clicked, not only rendered: one moved past the edge (an app's own
+  off-canvas drawer, closed on phones) or outside an ancestor that clips does not count, so the overlay is opened
+  directly and the report says its button is hidden or off-screen at this width. Before, the click opened a popover
+  anchored to that off-screen button, and the inspector reported it as extending outside the viewport.
 - `--sheet <dir>` also writes every state at full size (1 CSS pixel = 1 pixel), to
   `<dir>/<page>/<state>-<width>-<scheme>.png`, and the report lists that directory. The contact sheet scales a
   1280px page down to 480px, too small to read its text or judge an icon. `--json` lists the files under `shots`.

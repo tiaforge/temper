@@ -163,8 +163,8 @@ test('read-only fields look read-only, and stay focusable and selectable', { ski
 
 test('required fields mark their label with an asterisk that is not read out, on the label text row', { skip }, async () => {
   await withPage({}, async page => {
-    const marks = await page.evaluate(`['r-req', 'r-opt', 'r-hint', 'r-field', 'r-check', 'r-radio'].map(id => cs(id, '::after').content)`);
-    assert.deepEqual(marks, ['"*" / ""', 'none', '"*" / ""', '"*" / ""', '"*" / ""', 'none']);
+    const marks = await page.evaluate(`['r-req', 'r-opt', 'r-hint', 'r-field', 'r-check', 'r-radio', 'r-for', 'r-for-opt', 'r-for-plain'].map(id => cs(id, '::after').content)`);
+    assert.deepEqual(marks, ['"*" / ""', 'none', '"*" / ""', '"*" / ""', '"*" / ""', 'none', '"*" / ""', 'none', '"*" / ""']);
     // on the first row: a required label is as tall as an optional one, and the field still fills the label
     const h = await page.evaluate(`[box('r-req').h, box('r-opt').h, $('r-hint').querySelector('input').getBoundingClientRect().width, box('r-hint').w]`);
     assert.equal(h[0], h[1]);

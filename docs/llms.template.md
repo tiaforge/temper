@@ -556,8 +556,8 @@ The header sticks while the page scrolls. Put `data-num` on every cell of a numb
 
 The button goes last. Your script toggles the input's `type` and the button's `aria-pressed` (and `data-icon` to
 `eye-off`). States go on the input (`aria-invalid`, `disabled`, `readonly`); the whole field shows them. forms.css
-also gives `readonly` fields a filled look, marks the label of a `required` field with `*` (not read out, since the
-field says "required"; off with `label::after { content: none }`), tints autofilled fields in the theme, styles
+also gives `readonly` fields a filled look, marks the label of a `required` field with `*` (a wrapping label, or a `<label for>`
+just before the field or data-field; not read out, since the field says "required"; off with `label::after { content: none }`), tints autofilled fields in the theme, styles
 `<input type="range">` and animates a `<progress>` without a value.
 
 ### Long-form text (prose.css)
