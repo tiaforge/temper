@@ -216,7 +216,7 @@ and not stale. Docs, editor autocomplete and the checker can't drift apart from 
 
 **Contrast is checked for every hue.** `npm run contrast` sweeps the accent hue 0–360 in light and
 dark mode, lets headless Chrome resolve the real tokens, and checks WCAG AA for every text and
-background pair (4.5:1 for text and solid buttons, 3:1 for the focus ring). All hues pass at the
+background pair (4.5:1 for text and solid buttons, 3:1 for the focus ring and scrollbar thumbs). All hues pass at the
 default chroma. `npm test` runs the same check for the default look and the two theme examples.
 
 **Visual regression tests.** `npm run visual` screenshots the kitchen sink and the app shell demo in

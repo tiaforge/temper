@@ -22,7 +22,8 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   off it; `--tm-fill` is L 0.955; print stays white. `--tm-shadow-lg` has two layers (a contact shadow and the ambient
   one). `data-bar` and toned toasts draw a straight bar. A multi-row `<select>` has padded, rounded option rows with a
   hover fill. The rail, menus, `data-scroll` panes, dialogs, list-box selects and textareas have thin scrollbars in the
-  theme's colors. A sticky table header paints the surface it sits on (page, card or dialog).
+  theme's colors, the thumb in the muted text color (at least 3:1 on every surface, light and dark, every hue; a
+  `--tm-border-strong` thumb was 1.5:1, and `npm run contrast` now checks it). A sticky table header paints the surface it sits on (page, card or dialog).
 - **Right-to-left** (`dir="rtl"`): switch, select arrow, vertical tabs, drawer, toasts, menus and the rail chevron
   mirror. **Forced colors** (Windows high contrast): icons, switches, selected, pressed and current items, progress,
   meter and menu focus stay visible. **Print**: no rail, floating action button, toasts, tooltips or shadows; fixed

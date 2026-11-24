@@ -26,12 +26,15 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
   const blend = (t, u) => ({ r: t.r * t.a + u.r * (1 - t.a), g: t.g * t.a + u.g * (1 - t.a), b: t.b * t.a + u.b * (1 - t.a), a: 1 });
   const hex = c => '#' + [c.r, c.g, c.b].map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
   // A fresh probe per read: Chrome can return a stale computed color for a reused element whose style was replaced.
+  // 'thumb' reads the scrollbar thumb color that core gives a data-scroll pane
   const read = (expr, tone) => {
     const probe = document.body.appendChild(document.createElement('div'));
     if (tone === 'primary') probe.style.setProperty('--tm-tone', 'var(--tm-primary)');
     else if (tone) probe.dataset.tone = tone;
-    probe.style.color = `var(${expr})`;
-    const c = rgba(getComputedStyle(probe).color);
+    if (expr === 'thumb') probe.dataset.scroll = '';
+    else probe.style.color = `var(${expr})`;
+    const s = getComputedStyle(probe);
+    const c = rgba(expr === 'thumb' ? s.scrollbarColor.match(/^[a-z-]+\([^)]*\)|^\S+/)[0] : s.color);
     probe.remove();
     return c;
   };
@@ -57,6 +60,9 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
       ...text.map(([bg, n, under]) => [`text on ${n}`, '--tm-text', bg, null, 4.5, under]),
       ...text.map(([bg, n, under]) => [`muted text on ${n}`, '--tm-text-muted', bg, null, 4.5, under]),
       ['muted text on field (placeholder)', '--tm-text-muted', '--tm-field', null, 4.5, '--tm-surface'],
+      // the thin scrollbar's thumb on a transparent track: panes, the rail, menus and dialogs, fields
+      ...text.slice(0, 3).map(([bg, n]) => [`scrollbar thumb on ${n}`, 'thumb', bg, null, 3]),
+      ['scrollbar thumb on field', 'thumb', '--tm-field', null, 3, '--tm-surface'],
       ['main button', '--tm-tone-on', '--tm-tone', 'primary', 4.5],
     ],
     accent: [
