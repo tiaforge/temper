@@ -219,9 +219,9 @@ dark mode, lets headless Chrome resolve the real tokens, and checks WCAG AA for 
 background pair (4.5:1 for text and solid buttons, 3:1 for the focus ring and scrollbar thumbs). All hues pass at the
 default chroma. `npm test` runs the same check for the default look and the two theme examples.
 
-**Visual regression tests.** `npm run visual` screenshots the kitchen sink and the app shell demo in
-17 states (light and dark, compact density, phone width, both theme examples, open menu, dialog and
-drawer) and compares them pixel by pixel with baselines in `test/visual/`. A change writes a diff
+**Visual regression tests.** `npm run visual` screenshots the kitchen-sink pages in 37 states (light and
+dark, compact density, phone width, both theme examples, open menus, a scrolled dialog, side and bottom
+sheets, the drawer) and compares them pixel by pixel with baselines in `test/visual/`. A change writes a diff
 image with the changed pixels in red. Baselines depend on fonts and the Chrome version, so they are
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 

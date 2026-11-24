@@ -446,7 +446,7 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 
 ### Shadows
 
-- `--tm-shadow-sm`: Resting shadow (none in the default look).
+- `--tm-shadow-sm`: Resting shadow: cards, the selected segment, tooltips. A faint 0 1px 2px by default; none in print.
 - `--tm-shadow-lg`: Overlay shadow: dialogs, popovers.
 
 ### Density (read only)

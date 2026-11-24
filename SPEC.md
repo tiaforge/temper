@@ -367,7 +367,7 @@ Missing, roughly in order:
    scroll behind a modal (keeping the scrollbar's space) and keep header and footer in view in a tall dialog;
    popovers and menus fade in and out. Next: `site` (site
    header and footer, hero) for tia.vision.
-5. ~~Visual regression tests~~ Done: `npm run visual`, 17 states of the kitchen sink and app shell
+5. ~~Visual regression tests~~ Done: `npm run visual`, 37 states of the kitchen-sink pages
    compared pixel by pixel with `test/visual/` (machine-specific baselines; `--update` accepts a change).
    Agent evals: done through the eval harness and the six caley migration runs. README: done, with
    2560×1440 screenshots from `npm run readme-shots`.

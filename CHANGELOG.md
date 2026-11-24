@@ -126,6 +126,14 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Docs and tooling
 
+- `--tm-shadow-sm` is described as what it is (a faint `0 1px 2px` resting shadow on cards, the selected segment and
+  tooltips), not "none in the default look".
+- `npm run visual` also covers `forms.html`, `layout.html`, `prose.html` and `overlays.html` (light, dark, phone; a tall
+  dialog scrolled, a side sheet, a bottom sheet on a phone, an open menu with captions and shortcuts): 37 states. A case
+  without a baseline is reported as new, with its shot in `shots/visual/`, instead of silently becoming its own
+  baseline; `--update --only <name>` makes it one. Shots take no width for a reserved scrollbar gutter (as in
+  temper-inspect); the existing 20 states are unchanged by that.
+
 - `data-shell` and the App shell recipe: panes that each scroll by themselves in a `data-shell="fixed"` app need
   `<main data-layout="split" data-wrap="none">`; with the default wrapping the panes grow to their content and the
   whole `<main>` scrolls. The panes recipe shows the phone case (`data-show="wide"` on the reader, the ☰ button in a
