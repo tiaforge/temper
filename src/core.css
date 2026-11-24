@@ -89,7 +89,7 @@
 
   /* Tone: every tone-aware element derives ink (text-safe), soft (tinted fill) and on (text on solid fill)
      from one --tm-tone, so a custom color (style="--tm-tone: #e11") works everywhere. */
-  :where(*) {
+  * {
     --tm-tone-ink: light-dark(oklch(from var(--tm-tone) min(l, 0.5) c h), oklch(from var(--tm-tone) max(l, 0.8) c h));
     --tm-tone-soft: light-dark(color-mix(in oklab, var(--tm-tone) 11%, var(--tm-surface)), color-mix(in oklab, var(--tm-tone) 20%, var(--tm-surface)));
     --tm-tone-on: oklch(from var(--tm-tone) clamp(0.2, calc((0.62 - l) * 100), 0.99) 0 0);
@@ -102,7 +102,7 @@
   :where([data-tone="success"]) { --tm-tone: var(--tm-success); }
   :where([data-tone="warning"]) { --tm-tone: var(--tm-warning); }
   :where([data-tone="info"]) { --tm-tone: var(--tm-info); }
-  :where([data-tone="neutral"], [data-variant="secondary"], [data-variant="outline"], [data-variant="ghost"], [data-badge]):not([data-tone]),
+  :where([data-variant="secondary"], [data-variant="outline"], [data-variant="ghost"], [data-badge]):not([data-tone]),
   :where([data-tone="neutral"]) {
     --tm-tone: var(--tm-neutral);
     --tm-tone-ink: var(--tm-text);
@@ -115,10 +115,6 @@
   /* `*` has no specificity, like :where(). Elements only: the ::before and ::after in this library keep the default
      content-box, which their sizes are written for (spinners, check marks, chevrons: borders come on top) */
   * { box-sizing: border-box; margin: 0; }
-  /* no browser tap highlight (Chromium on Android draws a rectangle over the tapped element as it fades): buttons,
-     links and items have their own hover, press and focus states, and a drawer opening over the tapped button
-     would show the rectangle on its first frames */
-  :where(html) { -webkit-text-size-adjust: none; text-size-adjust: none; -webkit-tap-highlight-color: transparent; }
   :where(img, video, canvas, svg, picture) { display: block; max-inline-size: 100%; }
   /* the height follows the width when max-inline-size narrows it: a height attribute alone would squash the image */
   :where(img, video, canvas) { block-size: auto; }
@@ -152,6 +148,11 @@
     color: var(--tm-text);
     accent-color: var(--tm-accent);
     -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: none; text-size-adjust: none;
+    /* no browser tap highlight (Chromium on Android draws a rectangle over the tapped element as it fades): buttons,
+       links and items have their own hover, press and focus states, and a drawer opening over the tapped button
+       would show the rectangle on its first frames */
+    -webkit-tap-highlight-color: #0000;
   }
   :where([data-theme]) { background: var(--tm-bg); color: var(--tm-text); }
   :where(h1, h2, h3, h4, h5, h6) {
@@ -171,7 +172,7 @@
     color: var(--tm-tone-ink);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
-    text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+    text-decoration-color: color-mix(in oklab, currentColor 40%, #0000);
   }
   :where(a:hover) { text-decoration-color: currentColor; }
   :where(a:not([role])[aria-current]:not([aria-current="false"])) { color: var(--tm-text); font-weight: 600; text-decoration: none; }
@@ -186,9 +187,9 @@
     border-radius: var(--tm-radius-sm);
     font-size: 0.8125em;
   }
-  :where(mark) { background: color-mix(in oklab, var(--tm-warning) 35%, transparent); color: inherit; border-radius: 2px; }
+  :where(mark) { background: color-mix(in oklab, var(--tm-warning) 35%, #0000); color: inherit; border-radius: 2px; }
   :where(table, time, data) { font-variant-numeric: tabular-nums; }
-  :where(::selection) { background: color-mix(in oklab, var(--tm-accent) 28%, transparent); }
+  :where(::selection) { background: color-mix(in oklab, var(--tm-accent) 28%, #0000); }
   :where(:focus-visible) { outline: 2px solid var(--tm-accent); outline-offset: 2px; }
   :where([data-tone]) { color: var(--tm-tone-ink); }
   :where([data-muted]) { color: var(--tm-text-muted); }
@@ -198,7 +199,7 @@
   :where([data-clamp="3"]) { --_clamp: 3; }
   /* data-lazy: on the container of a long list, its rows far off screen skip layout and paint (Chrome: restyle and layout
      of 500 rows 80 -> 1 ms). The row height is a first guess until a row has been shown once; set --tm-lazy-h. */
-  :where([data-lazy]) > :where(*) { content-visibility: auto; contain-intrinsic-size: auto var(--tm-lazy-h, 3rem); }
+  :where([data-lazy]) > * { content-visibility: auto; contain-intrinsic-size: auto var(--tm-lazy-h, 3rem); }
   /* shown again while it or a descendant has focus (a skip link) */
   :where([data-sr-only]:not(:focus-within)) {
     position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden;
@@ -291,7 +292,7 @@
   :where(button, [type="submit"], [type="button"], [type="reset"], a[role="button"]) {
     --_bg: var(--tm-tone);
     --_fg: var(--tm-tone-on);
-    --_bd: transparent;
+    --_bd: #0000;
     display: inline-flex; align-items: center; justify-content: center; gap: 0.5em;
     position: relative;
     min-block-size: calc(var(--tm-control-h) * var(--_size, 1));
@@ -317,17 +318,17 @@
   :where(button, [type="submit"], [type="button"], [type="reset"], a[role="button"]):active { transform: translateY(0.5px); }
   :where([data-variant="secondary"]) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); }
   :where([data-variant="outline"]) {
-    --_bg: transparent; --_fg: var(--tm-tone-ink);
+    --_bg: #0000; --_fg: var(--tm-tone-ink);
     --_bd: color-mix(in oklab, var(--tm-tone-ink) 22%, var(--tm-border-strong));
   }
-  :where([data-variant="outline"][data-tone]:not([data-tone="neutral"])) { --_bd: color-mix(in oklab, var(--tm-tone-ink) 65%, transparent); }
-  :where([data-variant="ghost"]) { --_bg: transparent; --_fg: var(--tm-tone-ink); }
+  :where([data-variant="outline"][data-tone]:not([data-tone="neutral"])) { --_bd: color-mix(in oklab, var(--tm-tone-ink) 65%, #0000); }
+  :where([data-variant="ghost"]) { --_bg: #0000; --_fg: var(--tm-tone-ink); }
   :where([data-variant="outline"], [data-variant="ghost"]):hover { background: var(--tm-tone-soft); }
   /* item: a full-width, multi-line list entry (message list, search results); selected = soft accent */
   :where(button, a)[data-variant="item"] {
-    --_bg: transparent; --_fg: var(--tm-text);
+    --_bg: #0000; --_fg: var(--tm-text);
     display: grid; justify-content: stretch; justify-items: start; align-items: start; align-content: center; gap: 0.125rem;
-    position: relative; inline-size: 100%; block-size: auto; min-block-size: var(--tm-control-h);
+    position: relative; inline-size: 100%; min-block-size: var(--tm-control-h);
     font-size: var(--tm-control-font);
     padding: var(--tm-space-sm) var(--tm-space-md); border-radius: var(--tm-radius-sm);
     background: var(--_bg); color: var(--_fg); font-weight: 400; line-height: 1.4; text-align: start;
@@ -339,12 +340,12 @@
     --tm-tone: var(--tm-accent); --_bg: var(--tm-tone-soft); --_fg: var(--tm-text); background: var(--_bg);
   }
   :where([data-variant="link"]) {
-    --_bg: transparent; --_fg: var(--tm-tone-ink);
+    --_bg: #0000; --_fg: var(--tm-tone-ink);
     min-block-size: 0; padding: 0; border: 0;
     text-decoration: underline; text-underline-offset: 0.2em;
-    text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+    text-decoration-color: color-mix(in oklab, currentColor 40%, #0000);
   }
-  :where([data-variant="link"]):hover { background: transparent; text-decoration-color: currentColor; }
+  :where([data-variant="link"]):hover { background: #0000; text-decoration-color: currentColor; }
   :where([aria-pressed="true"], :is(button, a[role="button"])[aria-current]:not([aria-current="false"])) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent); }
   :where([data-size="sm"]) { --_size: 0.8; --_font: 0.8125rem; }
   :where([data-size="md"]) { --_size: 1; }
@@ -353,7 +354,7 @@
   /* tabs: role="tablist" holding role="tab" buttons; the selected tab (aria-selected="true") is underlined */
   :where([role="tablist"]) { display: flex; flex-wrap: wrap; gap: var(--tm-space-xs); border-block-end: 1px solid var(--tm-border); }
   :where([role="tablist"][aria-orientation="vertical"]) { flex-direction: column; border-block-end: 0; border-inline-end: 1px solid var(--tm-border); }
-  :where([role="tab"]) { --_bg: transparent; --_fg: var(--tm-text-muted); --_bd: transparent; border-radius: var(--tm-radius) var(--tm-radius) 0 0; }
+  :where([role="tab"]) { --_bg: #0000; --_fg: var(--tm-text-muted); --_bd: #0000; border-radius: var(--tm-radius) var(--tm-radius) 0 0; }
   :where([role="tablist"][aria-orientation="vertical"]) > :where([role="tab"]) { justify-content: start; border-start-end-radius: 0; border-end-start-radius: var(--tm-radius); }
   :where([role="tab"]):hover { background: var(--tm-fill); color: var(--tm-text); }
   :where([role="tab"][aria-selected="true"]) { --_fg: var(--tm-text); box-shadow: inset 0 -2px 0 var(--tm-accent); }
@@ -401,19 +402,19 @@
   button:disabled:is(:hover, :active) { background: var(--_bg); color: var(--_fg); transform: none; }
   /* busy (sinter sets aria-busy while a request runs; a "Loading…" line has it while shown): input is blocked at once,
      the indicator shows after --tm-busy-delay, so a fast request shows none */
-  :where(button, a[role="button"])[aria-busy="true"] { color: transparent; pointer-events: none; animation: tm-busy-label var(--tm-duration) var(--tm-ease) var(--tm-busy-delay) backwards; }
+  :where(button, a[role="button"])[aria-busy="true"] { color: #0000; pointer-events: none; animation: tm-busy-label var(--tm-duration) var(--tm-ease) var(--tm-busy-delay) backwards; }
   :where(form, fieldset, section, article, ul, ol, table, [data-layout])[aria-busy="true"] { opacity: 0.65; transition: opacity var(--tm-duration) var(--tm-ease) var(--tm-busy-delay); }
   :where(button, a[role="button"])[aria-busy="true"]::after {
     content: ""; position: absolute; inset: 0; margin: auto;
     inline-size: 1.1em; block-size: 1.1em; border-radius: 50%;
-    border: 2px solid var(--_fg); border-inline-end-color: transparent;
+    border: 2px solid var(--_fg); border-inline-end-color: #0000;
     animation: tm-spin 0.7s linear infinite, tm-busy-in var(--tm-duration) var(--tm-ease) var(--tm-busy-delay) backwards;
   }
   :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"] { color: var(--_fg); pointer-events: auto; animation: none; }
   :where([data-variant="item"], [data-rail] :is(a, button), [data-menu] :is(a, button))[aria-busy="true"]::after {
     content: ""; position: absolute; inset-block: 0; inset-inline: auto var(--tm-space-sm); margin-block: auto;
     inline-size: 0.875em; block-size: 0.875em; border-radius: 50%;
-    border: 2px solid currentColor; border-inline-end-color: transparent; opacity: 0.7;
+    border: 2px solid currentColor; border-inline-end-color: #0000; opacity: 0.7;
     animation: tm-spin 0.7s linear infinite, tm-busy-in var(--tm-duration) var(--tm-ease) var(--tm-busy-delay) backwards;
   }
   /* a text line (<p aria-busy="true">Loading…</p>, shown while loading) appears after the delay, with a spinner */
@@ -421,7 +422,7 @@
   :where(p, span, small, output):where(:not([data-icon]))[aria-busy="true"]::before {
     content: ""; display: inline-block; vertical-align: -0.125em; margin-inline-end: 0.5em;
     inline-size: 0.875em; block-size: 0.875em; border-radius: 50%;
-    border: 2px solid currentColor; border-inline-end-color: transparent; opacity: 0.7;
+    border: 2px solid currentColor; border-inline-end-color: #0000; opacity: 0.7;
     animation: tm-spin 0.7s linear infinite;
   }
   /* the animations only hold the idle look during the delay: without them (frozen for screenshots) the busy look shows */
@@ -440,12 +441,12 @@
     background-color: var(--tm-field);
     font-size: var(--_font, var(--tm-control-font));
     font-weight: 400;
-    outline: 2px solid transparent;
+    outline: 2px solid #0000;
     transition: border-color var(--tm-duration) var(--tm-ease), box-shadow var(--tm-duration) var(--tm-ease);
   }
   :where(input, select, textarea):focus-visible {
     border-color: var(--tm-accent);
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--tm-accent) 25%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--tm-accent) 25%, #0000);
     outline-offset: 0;
   }
   /* In a row, fields take their natural width instead of 100%, so they don't push siblings onto a new line. */
@@ -455,12 +456,10 @@
   :where(select:not([multiple], [size])) {
     appearance: none;
     padding-inline-end: calc(var(--tm-control-px) + 1.25em);
-    background-image: conic-gradient(from -45deg at bottom, var(--tm-text-muted) 90deg, transparent 0); /* ▾ */
-    background-position: calc(50% + var(--_x) * (50% - var(--tm-control-px))) center; /* --tm-control-px from the end */
-    background-size: 0.6em 0.3em;
-    background-repeat: no-repeat;
+    /* ▾, --tm-control-px from the end; the color repeats the field's */
+    background: conic-gradient(from -45deg at bottom, var(--tm-text-muted) 90deg, #0000 0) calc(50% + var(--_x) * (50% - var(--tm-control-px))) center / 0.6em 0.3em no-repeat var(--tm-field);
   }
-  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding-block: var(--tm-space-xs); scrollbar-color: var(--tm-border-strong) transparent; }
+  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding-block: var(--tm-space-xs); scrollbar-color: var(--tm-border-strong) #0000; }
   /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode) */
   :where(select:is([multiple], [size]:not([size="1"]))) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--tm-text); --_sel: color-mix(in oklab, var(--tm-accent) 22%, var(--tm-field)); }
   :where(input[type="color"]) {
@@ -503,20 +502,17 @@
     --tm-tone: var(--tm-accent); /* the mark (--tm-tone-on) contrasts with the fill, whatever tone the container has */
   }
   :where(input[type="radio"]) { border-radius: 50%; }
-  :where(input[type="checkbox"], input[type="radio"]):checked { background: var(--tm-accent); border-color: var(--tm-accent); }
   :where(input[type="checkbox"]:not([role="switch"]))::before {
     content: ""; inline-size: 0.3rem; block-size: 0.58rem;
     border: solid var(--tm-tone-on); border-width: 0 2px 2px 0;
     translate: 0 -0.06rem; rotate: 45deg; scale: 0; transition: scale 120ms var(--tm-ease);
   }
-  :where(input[type="checkbox"]:not([role="switch"])):checked::before { scale: 1; }
-  :where(input[type="checkbox"]:not([role="switch"])):indeterminate { background: var(--tm-accent); border-color: var(--tm-accent); }
   :where(input[type="checkbox"]:not([role="switch"])):indeterminate::before { block-size: 0; inline-size: 0.55rem; border-width: 0 0 2px; rotate: 0deg; scale: 1; translate: 0; }
   :where(input[type="radio"])::before {
     content: ""; inline-size: 0; block-size: 0; border-radius: 50%; /* a border, which forced colors keep: 0.45rem across */
     border: 0.225rem solid var(--tm-tone-on); scale: 0; transition: scale 120ms var(--tm-ease);
   }
-  :where(input[type="radio"]):checked::before { scale: 1; }
+  :where(input[type="checkbox"]:not([role="switch"]), input[type="radio"]):checked::before { scale: 1; }
   :where(input[type="checkbox"][role="switch"]) {
     inline-size: 2.25rem; block-size: 1.25rem; place-content: center start; padding-inline: 2px;
     border: 0; border-radius: var(--tm-radius-full); background: var(--tm-border-strong);
@@ -527,7 +523,9 @@
     box-shadow: 0 1px 2px oklch(0 0 0 / 0.25);
     transition: translate var(--tm-duration) var(--tm-ease);
   }
-  :where(input[type="checkbox"][role="switch"]):checked { background: var(--tm-accent); }
+  /* after the switch track, which it colors too (its border is none) */
+  :where(input[type="checkbox"], input[type="radio"]):checked,
+  :where(input[type="checkbox"]:not([role="switch"])):indeterminate { background: var(--tm-accent); border-color: var(--tm-accent); }
   :where(input[type="checkbox"][role="switch"]):checked::before { translate: calc(var(--_x) * 1rem) 0; } /* toward the inline end, in RTL too */
   /* after the checkbox and color rules, which set a border: hover and invalid apply to them too. No specificity, so an
      invalid field keeps its danger border on hover */
@@ -545,7 +543,7 @@
     border-radius: var(--tm-radius-full); background: var(--tm-fill); overflow: hidden; color: var(--tm-tone);
     forced-color-adjust: none;
   }
-  :where(progress)::-webkit-progress-bar { background: transparent; }
+  :where(progress)::-webkit-progress-bar { background: #0000; }
   :where(progress)::-webkit-progress-value { background: var(--tm-tone); border-radius: inherit; }
   :where(progress)::-moz-progress-bar { background: var(--tm-tone); border-radius: inherit; }
   /* meter: like progress; the browser picks good (low/high/optimum), so-so or bad, shown as success, warning, danger */
@@ -600,11 +598,11 @@
   :where(dialog, article) :where(header) > :where(:not(h1, h2, h3, h4, h5, h6)) { flex-shrink: 0; }
   /* Close buttons in a dialog or card header look like quiet icon buttons; an empty one draws an ×. */
   :where(dialog, article) :where(header) :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])) {
-    --_bg: transparent; --_fg: var(--tm-text-muted); inline-size: calc(var(--tm-control-h) * var(--_size, 1)); padding: 0;
+    --_bg: #0000; --_fg: var(--tm-text-muted); inline-size: calc(var(--tm-control-h) * var(--_size, 1)); padding: 0;
   }
   :where(dialog, article) :where(header) :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])):empty::before {
     content: ""; inline-size: 1.125rem; block-size: 1.125rem; background: currentColor; forced-color-adjust: preserve-parent-color;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' stroke='black' stroke-linecap='round'%3E%3Cpath d='M9 3 3 9M3 3l6 6'/%3E%3C/svg%3E") center / contain no-repeat;
   }
   :where(dialog) > :where(header) :where(h1, h2, h3) { font-size: var(--tm-text-lg); }
 
@@ -638,7 +636,7 @@
   :where(table) { inline-size: 100%; border-collapse: collapse; font-size: var(--tm-text-sm); }
   :where(th) { text-align: start; font-weight: 550; color: var(--tm-text-muted); font-size: var(--tm-text-xs); }
   :where(th, td) { padding: var(--tm-space-sm) var(--tm-space-md); border-block-end: 1px solid var(--tm-border); }
-  :where(tbody tr):hover { background: color-mix(in oklab, var(--tm-fill) 60%, transparent); }
+  :where(tbody tr):hover { background: color-mix(in oklab, var(--tm-fill) 60%, #0000); }
 
   /* label/value pairs */
   :where(dl[data-pairs]) { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--tm-space-xs) var(--tm-space-md); }
@@ -677,7 +675,7 @@
     display: flex; flex-direction: column; padding: 0; list-style: none;
     border: 1px solid var(--tm-border); border-radius: var(--tm-radius); background: var(--tm-surface);
   }
-  :where([data-list]) > :where(*) { padding: var(--tm-space-sm) var(--tm-space-md); border: 0; border-radius: 0; background: none; box-shadow: none; }
+  :where([data-list]) > * { padding: var(--tm-space-sm) var(--tm-space-md); border: 0; border-radius: 0; background: none; box-shadow: none; }
   /* a ~ combinator, not :first-child: lists rendered from a leading <template> must get no line above the first row.
      Prepending or removing the first row restyles the rows of that list (data-lists are short); appending does not */
   :where([data-list]) > :where(:not(template) ~ :not(template)) { border-block-start: 1px solid var(--tm-border); }

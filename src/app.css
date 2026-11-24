@@ -70,7 +70,7 @@
   }
   [data-rail-collapse]:hover { background: var(--tm-fill); color: var(--tm-text); }
   [data-rail-collapse]:checked { background: transparent; }
-  [data-rail-collapse]::before, [data-rail-collapse]:checked::before {
+  [data-rail-collapse]::before {
     content: ""; inline-size: 1.125rem; block-size: 1.125rem; border: 0; rotate: 0deg; scale: var(--_x) 1; translate: 0; /* mirrored in RTL */
     background: currentColor; forced-color-adjust: preserve-parent-color;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m11 17-5-5 5-5M18 17l-5-5 5-5'/%3E%3C/svg%3E") center / contain no-repeat;
