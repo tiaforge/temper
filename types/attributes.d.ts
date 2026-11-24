@@ -160,4 +160,6 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-tooltip'?: string | Empty | null | Removes;
   /** Number cell: right-aligned, tabular figures (on th and every td of the column). Needs table.css. */
   'data-num'?: true | '' | null | Removes;
+  /** One field around an input and its icon, text (<span>€</span>) or end button. Needs forms.css. */
+  'data-field'?: true | '' | null | Removes;
 }

@@ -542,6 +542,17 @@
       ],
       "description": "A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
       "short": "Number cell: right-aligned, tabular figures (on th and every td of the column)."
+    },
+    "data-field": {
+      "module": "forms",
+      "boolean": true,
+      "on": "a div (a span inside a <label>) around one input and its adornments",
+      "tags": [
+        "div",
+        "span"
+      ],
+      "description": "One field drawn around an input and its adornments: an icon (<span data-icon=\"search\"></span>) or text (<span>€</span>, <span>kg</span>) before or after the input, and a button at the end (data-variant=\"ghost\" data-icon=\"eye\" aria-label=\"Show password\"). As tall as a plain field at every data-size and density (data-size goes on the wrapper); focus, hover, invalid (aria-invalid or :user-invalid on the input), read-only and disabled show on the whole field, and data-grow works on it in a row. Inside a <label> use <span data-field>. With a button in it, give the input <label for> and an id instead of wrapping it in the label, or the button's name becomes part of the field's name.",
+      "short": "One field around an input and its icon, text (<span>€</span>) or end button."
     }
   },
   "tokens": {

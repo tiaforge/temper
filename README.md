@@ -223,7 +223,7 @@ image with the changed pixels in red. Baselines depend on fonts and the Chrome v
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
 <!-- sizes -->
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 102 % of its budget, `icons.css` 77 % and `all.css` 93 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6 KB, `icons.css` 3.5 KB, `all.css` 11.5 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 102 % of its budget, `icons.css` 77 % and `all.css` 98 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
@@ -234,7 +234,8 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 | `table.css` | 0.8 KB | data tables: sortable headers (`aria-sort`), row selection, number columns, sticky header |
 | `icons.css` | 2.7 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
 | `pico-compat.css` | 0.4 KB | opt-in, while migrating from Pico: maps its `--pico-*` variables to temper tokens |
-| `all.css` | 10.7 KB | everything |
+| `forms.css` | 1.1 KB | fields with an icon, unit or button (`data-field`), read-only and required marks, autofill tint, range slider, indeterminate progress |
+| `all.css` | 11.3 KB | everything |
 | `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 <!-- /sizes -->
 
@@ -269,6 +270,7 @@ import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating
 import '@tiaforge-ui/temper/menu.css';   // dropdown menus
 import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/temper/table.css';  // data tables
+import '@tiaforge-ui/temper/forms.css';  // fields with icons, units and buttons; range, read-only, required
 import '@tiaforge-ui/temper/icons.css';  // the default icon set
 // or everything: import '@tiaforge-ui/temper/all.css';
 ```

@@ -249,6 +249,8 @@ temper/menu.css       popover menus and dropdowns, anchor positioning, menu sepa
 temper/nav.css        tabs, segmented control, breadcrumbs, pagination
 temper/data.css       dense list rows (mail list), selection states, sticky headers, resize handle
 temper/feedback.css   toast stack, skeleton, empty state
+temper/forms.css      fields with icons, units and buttons (data-field), read-only, required marker, autofill,
+                         range, indeterminate progress
 temper/prose.css      long-form text (`data-prose`), fluid type: email reader, blog, tia.vision
 temper/site.css       marketing: hero, section, feature grid, timeline, nav bar (tia.vision)
 temper/all.css        everything
@@ -347,7 +349,8 @@ Missing, roughly in order:
 1. ~~Vite plugin for the checker, and enhancement partials with the build option for them.~~ Done.
 2. ~~Trim `llms.txt` (322 lines now; goal about 200).~~ Done: about 150 lines; the rest is in `llms-full.txt`.
 3. ~~Contrast validator (hue sweep, WCAG AA).~~ Done: `npm run contrast`, see §1.6.
-4. Modules: `app`, `menu`, `icons`, `feedback` (toasts, tooltips) and `table` (data tables) exist;
+4. Modules: `app`, `menu`, `icons`, `feedback` (toasts, tooltips), `table` (data tables) and `forms` (fields with
+   adornments via `data-field`, read-only, required marker, autofill, range, indeterminate progress) exist;
    `nav` and `prose` ended up in core or were not needed for caley. Next: `site` (prose, figure,
    blockquote, site header and footer) for tia.vision.
 5. ~~Visual regression tests~~ Done: `npm run visual`, 17 states of the kitchen sink and app shell

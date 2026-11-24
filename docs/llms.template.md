@@ -17,6 +17,7 @@ import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating
 import '@tiaforge-ui/temper/menu.css';   // dropdown menus
 import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selection, number columns
+import '@tiaforge-ui/temper/forms.css';  // data-field (icon, unit, button in a field), range, read-only, required *, loading bar
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/temper/all.css';
@@ -414,6 +415,30 @@ after the dialog opens (the top layer stacks in opening order).
 The header sticks while the page scrolls. Put `data-num` on every cell of a number column. Never put
 `data-layout` on a `td` (it stops being a cell); wrap the cell content instead. No rows: one
 `<tr><td colspan="5" data-muted>No invoices yet.</td></tr>`.
+
+### Fields with an icon, a unit or a button (forms.css)
+
+```html
+<div data-field>                                     <!-- search: icon before the input -->
+  <span data-icon="search"></span><input type="search" aria-label="Search mail">
+</div>
+<label>Amount                                         <!-- in a label: <span data-field> -->
+  <span data-field><span>€</span><input inputmode="decimal" name="amount" required><span>EUR</span></span>
+</label>
+<div data-layout="stack" data-gap="xs">               <!-- with a button: <label for>, not a wrapping label -->
+  <label for="pw">Password</label>
+  <div data-field>
+    <input type="password" id="pw" autocomplete="current-password">
+    <button type="button" data-variant="ghost" data-icon="eye" aria-label="Show password" aria-pressed="false"></button>
+  </div>
+</div>
+```
+
+The button goes last. Your script toggles the input's `type` and the button's `aria-pressed` (and `data-icon` to
+`eye-off`). States go on the input (`aria-invalid`, `disabled`, `readonly`); the whole field shows them. forms.css
+also gives `readonly` fields a filled look, marks the label of a `required` field with `*` (not read out, since the
+field says "required"; off with `label::after { content: none }`), tints autofilled fields in the theme, styles
+`<input type="range">` and animates a `<progress>` without a value.
 
 ### Combobox (menu.css)
 

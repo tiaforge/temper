@@ -23,6 +23,7 @@
     "./menu.css": "./dist/menu.css",
     "./feedback.css": "./dist/feedback.css",
     "./table.css": "./dist/table.css",
+    "./forms.css": "./dist/forms.css",
     "./all.css": "./dist/all.css",
     "./vocab.json": "./vocab.json",
     "./html-custom-data.json": "./html-custom-data.json",
