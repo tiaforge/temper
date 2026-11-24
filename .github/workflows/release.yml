@@ -1,0 +1,226 @@
+name: Release
+
+# Publishes @tiaforge-ui/temper and @tiaforge-ui/temper-inspect to npm, both at one version.
+#
+# From GitHub's UI: Actions → Release → Run workflow (on main) → the version: patch, minor, major or an exact
+# version such as 0.4.0 (0.4.0-rc.1 for a pre-release). The workflow runs `npm run release -- <version>` (both
+# versions and the peer range bumped, the changelog's Unreleased section dated, commit "Release v<version>") and
+# pushes the commit to a branch of its own, release/v<version>; runs CI on it; only then tags it v<version> and
+# publishes; then moves main to the release commit, makes the GitHub release (its notes the version's changelog
+# section) and deletes the branch. A run that fails before the tag leaves nothing behind: run it again.
+#
+# Or locally: `npm run release -- <version>`, push the commit and the tag, and publish a GitHub release for that
+# tag: the same checks and publishes, without the first and last steps.
+#
+# Nothing is tagged or published unless both packages are at the version (scripts/release-check.mjs) and CI passes
+# on the release commit. A pre-release goes to npm under the `next` dist-tag, and its GitHub release is marked as
+# one.
+#
+# No long-lived token: npm trusts this workflow through GitHub's OIDC token (trusted publishing, set up once for
+# each of the two packages: workflow release.yml, environment `release`) and records a provenance attestation.
+# A publish job that is run again skips a package that is already published, so "Re-run failed jobs" retries a
+# failure part-way.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'patch, minor, major, or the version, such as 0.4.0 (0.4.0-rc.1 for a pre-release)'
+        required: true
+        type: string
+  release:
+    types: [published]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  # bump and commit (workflow_dispatch only), onto release/v<version>; it is tagged in `tag`, once CI passed,
+  # and reaches main in `finish`, once published
+  prepare:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.push.outputs.tag }}
+      ref: ${{ steps.push.outputs.ref }}
+    steps:
+      - if: github.ref != 'refs/heads/main'
+        run: |
+          echo "Run the Release workflow on main, not ${GITHUB_REF#refs/heads/}"
+          exit 1
+      - uses: actions/checkout@v7
+        with:
+          # the tags, so release.mjs refuses a version that was released already
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      # release.mjs reads and writes JSON and runs git: no npm ci. It tags here too; that tag is not pushed (the
+      # `tag` job tags the commit once CI passed on it)
+      - env:
+          VERSION: ${{ inputs.version }}
+        run: node scripts/release.mjs "$VERSION"
+      - id: push
+        run: |
+          tag="v$(node -p 'require("./package.json").version')"
+          # --force: the branch of an earlier run of this version that stopped before `cleanup`
+          git push --force origin "HEAD:refs/heads/release/$tag"
+          { echo "tag=$tag"; echo "ref=release/$tag"; } >> "$GITHUB_OUTPUT"
+
+  check:
+    needs: prepare
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.check.outputs.tag }}
+      ref: ${{ steps.check.outputs.ref }}
+      version: ${{ steps.check.outputs.version }}
+      dist-tag: ${{ steps.check.outputs.dist-tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.prepare.outputs.ref || github.event.release.tag_name }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - id: check
+        env:
+          TAG: ${{ needs.prepare.outputs.tag || github.event.release.tag_name }}
+          REF: ${{ needs.prepare.outputs.ref || github.event.release.tag_name }}
+          PRERELEASE: ${{ github.event.release.prerelease }}
+        run: |
+          dist_tag=$(node scripts/release-check.mjs "$TAG")
+          # a GitHub release marked as a pre-release goes out under `next` whatever its version
+          if [ "$PRERELEASE" = true ]; then dist_tag=next; fi
+          { echo "tag=$TAG"; echo "ref=$REF"; echo "version=${TAG#v}"; echo "dist-tag=$dist_tag"; } >> "$GITHUB_OUTPUT"
+
+  ci:
+    needs: check
+    if: ${{ !failure() && !cancelled() }}
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.check.outputs.ref }}
+
+  # workflow_dispatch only: the release commit is tagged once CI passed on it, before anything is published
+  tag:
+    needs: [check, ci]
+    if: ${{ github.event_name == 'workflow_dispatch' && !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.check.outputs.ref }}
+      - env:
+          TAG: ${{ needs.check.outputs.tag }}
+          VERSION: ${{ needs.check.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "temper $VERSION"
+          git push origin "refs/tags/$TAG"
+
+  # temper-inspect first: temper's peer range starts at this version of it
+  publish:
+    needs: [check, ci, tag]
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.check.outputs.tag }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: publish @tiaforge-ui/temper-inspect
+        working-directory: packages/inspect
+        env:
+          VERSION: ${{ needs.check.outputs.version }}
+          DIST_TAG: ${{ needs.check.outputs.dist-tag }}
+        run: |
+          if npm view "@tiaforge-ui/temper-inspect@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
+          npm publish --provenance --access public --tag "$DIST_TAG"
+      - run: npm ci
+      # dist/ is not committed: the build prepublishOnly would make. Its gen --check and tests passed in the ci job
+      - run: npm run build
+      - name: publish @tiaforge-ui/temper
+        env:
+          VERSION: ${{ needs.check.outputs.version }}
+          DIST_TAG: ${{ needs.check.outputs.dist-tag }}
+        run: |
+          if npm view "@tiaforge-ui/temper@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
+          npm publish --provenance --access public --tag "$DIST_TAG" --ignore-scripts
+
+  # workflow_dispatch only: main gets the release commit, and the tag its GitHub release
+  finish:
+    needs: [check, publish]
+    if: ${{ github.event_name == 'workflow_dispatch' && !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: main to the release commit
+        env:
+          TAG: ${{ needs.check.outputs.tag }}
+        run: |
+          git fetch origin "refs/tags/$TAG:refs/tags/$TAG"
+          if git merge-base --is-ancestor HEAD "$TAG"; then
+            git push origin "$TAG^{commit}:refs/heads/main"
+          else
+            # main moved on while the release ran: merge the release commit into it
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git merge --no-ff -m "Merge release $TAG" "$TAG"
+            git push origin HEAD:refs/heads/main
+          fi
+      - name: the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.check.outputs.tag }}
+          DIST_TAG: ${{ needs.check.outputs.dist-tag }}
+        run: |
+          git checkout -q "$TAG"
+          node scripts/release-check.mjs "$TAG" --notes > "$RUNNER_TEMP/notes.md"
+          flags=()
+          if [ "$DIST_TAG" = next ]; then flags+=(--prerelease); fi
+          gh release create "$TAG" --verify-tag --title "$TAG" --notes-file "$RUNNER_TEMP/notes.md" "${flags[@]}"
+
+  # workflow_dispatch only, whatever happened: the release branch goes. The tag, once made, holds the commit
+  cleanup:
+    needs: [prepare, finish]
+    if: ${{ always() && github.event_name == 'workflow_dispatch' && needs.prepare.outputs.ref != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - env:
+          REF: ${{ needs.prepare.outputs.ref }}
+        # gone already when a re-run of failed jobs runs this again
+        run: |
+          if git ls-remote --exit-code --heads origin "$REF" >/dev/null; then git push origin --delete "$REF"; else echo "$REF is gone already"; fi
