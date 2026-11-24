@@ -214,8 +214,8 @@
 /* ───────────── layout ───────────── */
 @layer tm.layout {
   :where([data-layout]) { --_gap: var(--tm-space-md); gap: var(--_gap); }
-  /* a dialog around one stack wrapper (dialog > form[data-layout="stack"]) is a column too: see data-grow below */
-  :where([data-layout="stack"], dialog[open]:has(> [data-layout="stack"]:only-child)) { display: flex; flex-direction: column; }
+  /* a dialog around a stack wrapper (dialog > form[data-layout="stack"] > header, footer) is a column too: see data-grow below */
+  :where([data-layout="stack"], dialog[open]:has(> [data-layout="stack"] > :is(header, footer))) { display: flex; flex-direction: column; }
   :where([data-layout="row"]) { display: flex; flex-wrap: wrap; align-items: center; }
   :where(:is(button, a, label)[data-layout="row"]:not([data-wrap])) { flex-wrap: nowrap; }
   :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(var(--tm-min, 16rem), 100%), 1fr)); }
@@ -267,12 +267,14 @@
   /* in a data-layout="stack" dialog (no set height) the growing part starts from its content, so the dialog grows with
      it up to its max-block-size and the part scrolls from there; from 8rem it stayed 8rem tall. Only in a stack: in a
      row or split dialog data-grow keeps its 8rem start, so a search field still wraps below its button only when the
-     row is narrow. The same through one stack wrapper that is the dialog's only child (a form, div or article around
-     header, part and footer): the dialog is then a column, and the wrapper may shrink to the dialog's limit (also in a
-     side sheet, which keeps its children from shrinking) */
-  :where(dialog) > :where([data-layout="stack"]:only-child) { min-block-size: 0; flex-shrink: 1; }
+     row is narrow. The same through a stack wrapper (a form, div or article around header, part and footer): the dialog
+     is then a column, and the wrapper may shrink to the dialog's limit (also in a side sheet, which keeps its children
+     from shrinking). The wrapper is the stack that holds the header or footer, as for the sticky rules below, so
+     helpers beside it ([hidden], template, an empty custom element) do not matter, and a content stack between the
+     dialog's own header and footer is not shrunk over the footer */
+  :where(dialog) > :where([data-layout="stack"]:has(> header, > footer)) { min-block-size: 0; flex-shrink: 1; }
   :where(dialog[data-layout="stack"]) > :where([data-grow]),
-  :where(dialog) > :where([data-layout="stack"]:only-child) > :where([data-grow]) { flex-basis: auto; }
+  :where(dialog) > :where([data-layout="stack"]:has(> header, > footer)) > :where([data-grow]) { flex-basis: auto; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
   :where([data-pad="xs"]) { --_pad: var(--tm-space-xs); }

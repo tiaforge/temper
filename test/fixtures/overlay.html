@@ -80,6 +80,46 @@
     <footer id="wrap-short-footer"><button>Save</button></footer>
   </form>
 </dialog>
+<!-- the wrapper beside helpers that render nothing (a framework's hidden elements, templates, custom elements), a
+     wrapper with the dialog's header outside it, and a content stack between the dialog's own header and footer -->
+<dialog id="wrap-hidden">
+  <span hidden></span>
+  <form method="dialog" data-layout="stack">
+    <header id="wrap-hidden-header"><h2>Settings</h2></header>
+    <div id="wrap-hidden-part" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></div>
+    <footer id="wrap-hidden-footer"><button>Save</button></footer>
+  </form>
+  <div hidden>helper</div>
+</dialog>
+<dialog id="wrap-template">
+  <template><p>Row</p></template>
+  <div data-layout="stack">
+    <header id="wrap-template-header"><h2>Settings</h2></header>
+    <div id="wrap-template-part" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></div>
+    <footer id="wrap-template-footer"><button>Save</button></footer>
+  </div>
+</dialog>
+<dialog id="wrap-custom">
+  <sn-portal></sn-portal>
+  <form method="dialog" data-layout="stack">
+    <header id="wrap-custom-header"><h2>Settings</h2></header>
+    <div id="wrap-custom-part" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></div>
+    <footer id="wrap-custom-footer"><button>Save</button></footer>
+  </form>
+  <sn-slot style="display: contents"></sn-slot>
+</dialog>
+<dialog id="wrap-outer-header">
+  <header id="wrap-outer-header-header"><h2>Settings</h2></header>
+  <form method="dialog" data-layout="stack">
+    <div id="wrap-outer-header-part" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></div>
+    <footer id="wrap-outer-header-footer"><button>Save</button></footer>
+  </form>
+</dialog>
+<dialog id="content-stack">
+  <header id="content-stack-header"><h2>Terms</h2></header>
+  <div data-layout="stack" id="content-stack-body"><p id="content-stack-first">First</p><p style="block-size: 1500px">Long</p></div>
+  <footer id="content-stack-footer"><button>OK</button></footer>
+</dialog>
 <!-- row dialogs: data-grow keeps its 8rem start (the stack rule must not reach them) -->
 <dialog id="row-search" data-layout="row" aria-label="Find"><input id="row-search-grow" data-grow aria-label="Search"><button id="row-search-button">Search</button></dialog>
 <dialog id="row-title" data-layout="row"><h2 id="row-title-grow" data-grow>A long title that takes some room in the row</h2><button id="row-title-button" data-variant="ghost">Close</button></dialog>

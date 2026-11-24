@@ -52,9 +52,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   starts from its content: the dialog grows with it up to the screen's height and the part scrolls from there, and a
   short one stays small. Only in stack dialogs: in a row or split dialog `data-grow` keeps its 8rem start (a first
   version applied it to every dialog, and a search field next to its button wrapped onto its own line). It also works
-  through one wrapper: in `<dialog><form data-layout="stack">header, part, footer</form></dialog>` (or a `div` or
-  `article`, as the dialog's only child) the dialog becomes a column and the wrapper shrinks to the dialog's limit; the
-  part stayed 8rem tall there too. Core +46 B (brotli) for both.
+  through a wrapper: in `<dialog><form data-layout="stack">header, part, footer</form></dialog>` (or a `div` or
+  `article`) the dialog becomes a column and the wrapper shrinks to the dialog's limit; the part stayed 8rem tall there
+  too. The wrapper is the stack that holds the header or footer, so `hidden` helpers, `<template>`s and custom elements
+  beside it (and the dialog's own header outside it) do not matter; a content stack between the dialog's own header
+  and footer stays as it was. Core +52 B (brotli) for both (requiring the wrapper to be the only child was 6 B less,
+  and fell back to the 8rem part with any sibling).
 - Fixed: an invalid field keeps its danger border on hover (an invalid checkbox shows it too); disabled buttons no longer
   change on hover or move when pressed, and disabled fields have no hover border; checkbox and radio marks contrast with
   their fill inside a toned container (a warning callout) and when invalid.

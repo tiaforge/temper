@@ -106,7 +106,7 @@ test('the page behind a modal dialog does not scroll; its scrollbar space stays 
 
 test('a tall dialog keeps its header and footer in place and scrolls what is between them, in every markup shape', { skip }, async () => {
   await withPage({}, async page => {
-    for (const id of ['tall', 'tall-form', 'tall-article', 'tall-stack']) {
+    for (const id of ['tall', 'tall-form', 'tall-article', 'tall-stack', 'content-stack']) {
       const r = await page.evaluate(`(() => {
         const d = $('${id}'); d.showModal(); d.getAnimations().forEach(a => a.finish());
         const scroller = '${id}' === 'tall-stack' ? $('tall-stack-scroll') : d;
@@ -132,7 +132,7 @@ test('a tall dialog keeps its header and footer in place and scrolls what is bet
   });
 });
 
-test('a stack dialog (or one stack wrapper): its data-grow data-scroll="y" part fills the dialog up to the screen limit and scrolls; with little content the dialog stays small',{ skip }, async () => {
+test('a stack dialog (or a stack wrapper, beside helpers): its data-grow data-scroll="y" part fills the dialog up to the screen limit and scrolls; with little content the dialog stays small',{ skip }, async () => {
   await withPage({}, async page => {
     const measure = (id, part) => page.evaluate(`(() => {
       const d = $('${id}'); d.showModal(); d.getAnimations().forEach(a => a.finish());
@@ -141,7 +141,10 @@ test('a stack dialog (or one stack wrapper): its data-grow data-scroll="y" part 
       d.close(); return r;
     })()`);
     // directly in a stack dialog, or through one stack wrapper (form, div, article) in an ordinary dialog
-    for (const [id, part] of [['tall-stack', 'tall-stack-scroll'], ['wrap-form', 'wrap-form-part'], ['wrap-div', 'wrap-div-part'], ['wrap-article', 'wrap-article-part']]) {
+    // also beside helpers that render nothing (hidden elements before and after it, a template, unknown custom
+    // elements, empty or display: contents), and with the dialog's own header outside the wrapper
+    const wrapped = ['form', 'div', 'article', 'hidden', 'template', 'custom', 'outer-header'].map(w => [`wrap-${w}`, `wrap-${w}-part`]);
+    for (const [id, part] of [['tall-stack', 'tall-stack-scroll'], ...wrapped]) {
       const r = await measure(id, part);
       assert.equal(r.dialog.h, r.max, `${id}: as tall as the screen allows`);
       assert.ok(r.part.h > r.max - 250, `${id}: the part takes the rest: ${r.part.h} of ${r.dialog.h}`);
@@ -154,6 +157,16 @@ test('a stack dialog (or one stack wrapper): its data-grow data-scroll="y" part 
       assert.equal(r.part.h, r.content, `${id}: the part is as tall as its content (not 8rem)`);
       assert.ok(r.dialog.h < 300 && !r.partScrolls && !r.dialogScrolls, `${id}: the dialog stays small: ${r.dialog.h}`);
     }
+    // a content stack between the dialog's own header and footer is not a wrapper: the dialog stays a grid and scrolls
+    // as a whole, the stack keeps its height and ends above the footer
+    const c = await page.evaluate(`(() => {
+      const d = $('content-stack'); d.showModal(); d.getAnimations().forEach(a => a.finish());
+      const r = { display: cs('content-stack').display, scrolls: d.scrollHeight > d.clientHeight + 1, body: box('content-stack-body').h };
+      d.scrollTop = d.scrollHeight; r.end = box('content-stack-body').bottom <= box('content-stack-footer').y + 0.5;
+      d.close(); return r;
+    })()`);
+    assert.deepEqual(c, { display: 'grid', scrolls: true, body: c.body, end: true });
+    assert.ok(c.body > 1500, `the content stack keeps its height: ${c.body}`);
   });
 });
 

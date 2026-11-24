@@ -208,7 +208,9 @@ loses that gap. A dialog taller than the screen scrolls between its header and f
 one part fill the remaining height instead (a message body, a long list), give the dialog
 `data-layout="stack"` and that part `data-grow data-scroll="y"`: the dialog grows with that part's content up to the
 screen's height, and the part scrolls from there. With a wrapper around header, content and footer (`dialog > form`),
-give the wrapper `data-layout="stack"` instead of the dialog; it has to be the dialog's only child. Pico-style `dialog > article` markup works too: the article adds no box of its own.
+give the wrapper `data-layout="stack"` instead of the dialog; it is the stack that holds the header or footer, so
+hidden helpers, templates and custom elements beside it do not matter (a content stack between the dialog's own header
+and footer stays content). Pico-style `dialog > article` markup works too: the article adds no box of its own.
 
 Add `closedby="any"` to close the dialog on a click outside it or on Esc, with no script (no backdrop
 click handlers).
