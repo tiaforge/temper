@@ -14,6 +14,7 @@
   <footer><button commandfor="edit" command="close">OK</button></footer>
 </dialog>
 <dialog id="actions" data-sheet="bottom" aria-label="Actions">
-  <div data-layout="row" data-gap="sm" data-justify="end"><button>Archive</button><button>Move</button><button data-variant="outline">Delete</button><button>Label</button></div>
+  <!-- fixed widths, so the row fits or wraps by the room alone, not by the machine's font: 3 x 104px + 2 gaps of 8px = 328px -->
+  <div data-layout="row" data-gap="sm" data-justify="end"><button style="inline-size: 104px">File</button><button style="inline-size: 104px">Move</button><button style="inline-size: 104px" data-variant="outline">Drop</button></div>
 </dialog>
 </body></html>
