@@ -15,8 +15,12 @@ mkdirSync(root + 'dist/enhance', { recursive: true });
 let failed = false;
 const css = dir => readdirSync(root + 'src/' + dir).filter(f => f.endsWith('.css')).map(f => dir + f);
 // enhancements (opt-in, see SPEC §1.5) get the module budget
+// Lightning CSS adds -webkit-text-decoration-color for Safari when the value is one it cannot resolve (our
+// color-mix() with currentColor), though it leaves a plain color unprefixed: Safari reads the unprefixed property
+// since 12.1, so the copy only costs bytes.
+const unprefix = css => css.replace(/-webkit-text-decoration-color:[^;}]*;/g, '');
 for (const file of [...css(''), ...css('enhance/')]) {
-  const { code } = bundle({ filename: root + 'src/' + file, minify: true, targets });
+  const code = Buffer.from(unprefix(bundle({ filename: root + 'src/' + file, minify: true, targets }).code.toString()));
   writeFileSync(root + 'dist/' + file, code);
   const br = brotliCompressSync(code).length, gz = gzipSync(code, { level: 9 }).length;
   const budget = budgets[file] ?? moduleBudget;
