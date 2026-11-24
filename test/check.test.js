@@ -368,7 +368,7 @@ test('tokens in style attributes are checked in plain HTML files too', () => {
   assert.match(r[0].message, /Did you mean --tm-text\?/);
 });
 
-// ───────────── structure and accessibility rules (TM113–TM122), fixes ─────────────
+// ───────────── structure and accessibility rules (TM113–TM123), fixes ─────────────
 
 const doc = body => `<html><body>${body}</body></html>`;
 
@@ -501,6 +501,44 @@ test('TM122: a button in a data-field inside a wrapping label', () => {
   // temper-ignore
   const r = check([writeTemp('a.html', `<label>API key <span data-field><input>\n<!-- temper-ignore -->\n${copy}</span></label>\n`)]);
   assert.deepEqual(codes(r).filter(c => c === 'TM122'), []);
+});
+
+// feedback.css: the tooltip is the ::after and gives way where that is taken. Each case here was checked against the
+// computed ::after content in Chrome (all.css): the warned ones never show the tooltip, the silent ones do.
+test('TM123: data-tooltip where it never shows (dropdown caret, data-stretch overlay, sort arrow)', () => {
+  const tm = (src, file = 'a.html') => codes(checkMarkup(src, file)).filter(c => c === 'TM123');
+  const [d] = checkMarkup('<button popovertarget="m" data-tooltip="More actions">Options</button>').filter(d => d.code === 'TM123');
+  assert.equal(d.severity, 'warning');
+  assert.match(d.message, /never shows: it opens a popover, so its ::after is the dropdown caret/);
+  assert.match(d.message, /hint in the button's label, or make it an icon button/);
+  // a text button that opens a popover: popovertarget (without action="hide"), command toggle- or show-popover; a
+  // data-icon button with text is a text button too
+  for (const b of ['popovertarget="m"', 'popovertarget="m" popovertargetaction="toggle"', 'popovertarget="m" popovertargetaction="show"',
+    'commandfor="m" command="toggle-popover"', 'commandfor="m" command="show-popover"', 'popovertarget="m" data-icon="filter"'])
+    assert.deepEqual(tm(`<button ${b} data-tooltip="x">Filter</button>`), ['TM123'], b);
+  assert.deepEqual(tm('<button popovertarget="m" data-icon="x" data-tooltip="x"><span>Menu</span></button>'), ['TM123']);
+  assert.deepEqual(tm('<button popovertarget="m" aria-label="Menu" data-tooltip></button>'), ['TM123']); // no data-icon: the caret
+  assert.deepEqual(tm('<button popovertarget="menu-{id}" data-tooltip="x"><Icon /> Menu</button>', 'A.svelte'), ['TM123']);
+  // the data-stretch overlay, the sort arrow of an aria-sort header
+  assert.deepEqual(tm('<article><a href="#" data-stretch data-tooltip="x">Open</a></article>'), ['TM123']);
+  assert.deepEqual(tm('<table><tr><th aria-sort="none"><button data-tooltip="Sort">Name</button></th></tr></table>'), ['TM123']);
+  // silent: an icon button (data-icon="" or no content), a close button, another command, no popover, the tooltip not
+  // directly in the aria-sort header
+  assert.deepEqual(tm('<button popovertarget="m" data-icon="ellipsis" aria-label="More" data-tooltip></button>'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-icon aria-label="More" data-tooltip>⋯</button>'), []);
+  assert.deepEqual(tm('<button popovertarget="m" popovertargetaction="hide" data-tooltip="x">Close</button>'), []);
+  assert.deepEqual(tm('<button commandfor="d" command="show-modal" data-tooltip="x">Open</button>'), []);
+  assert.deepEqual(tm('<button data-tooltip="x">Save</button><a href="#" popovertarget="m" data-tooltip="x">Link</a>'), []);
+  assert.deepEqual(tm('<table><tr><th aria-sort="none"><button>Name <span data-tooltip="x" tabindex="0">?</span></button></th></tr></table>'), []);
+  // not judged: what decides it is an expression (the attribute may not render), or the content may be empty
+  assert.deepEqual(tm('<button popovertarget={id} data-tooltip="x">Menu</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget="m" popovertargetaction={a} data-tooltip="x">Menu</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button commandfor="m" command={c} data-tooltip="x">Menu</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-icon={i} data-tooltip="x">Menu</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-icon="x" aria-label="o" data-tooltip>{label}</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-icon="x" aria-label="o" data-tooltip><Label /></button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button :popovertarget="id" data-tooltip="x">Menu</button>', 'A.vue'), []);
+  assert.deepEqual(tm('<table><tr><th aria-sort={s}><button data-tooltip="Sort">Name</button></th></tr></table>', 'A.svelte'), []);
 });
 
 test('fixed colors: light-dark() handles both schemes', () => {

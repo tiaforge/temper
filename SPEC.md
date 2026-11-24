@@ -351,7 +351,9 @@ Lessons:
   and, in whole documents, TM117 skipped heading level, TM118 duplicate id, TM119 `popovertarget`, `commandfor`,
   `for`, `list` or `aria-*` pointing at a missing id (with "did you mean"), TM120 popover or dialog nothing opens;
   TM121 two solid buttons side by side; TM122 a `<button>` in a `data-field` inside a wrapping `<label>` (its name
-  joins the field's name). Computed values are reduced
+  joins the field's name); TM123 a `data-tooltip` that never shows because the `::after` is taken (a text button
+  that opens a popover has the dropdown caret, `data-stretch` its overlay, a direct child of an `aria-sort` header
+  the sort arrow). Computed values are reduced
   to the literals they can produce; `types/*.d.ts` (generated) types them for React, Vue, Astro,
   Svelte component props and sinter's `data-sn-attr`. No findings on caley's current frontend.
 

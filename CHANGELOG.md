@@ -115,6 +115,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   button's name, so the input is announced as "API key Copy" (measured in Chrome's accessibility tree); use
   `<label for="…">` with the field outside the label. Not judged through a component or custom element. The kitchen
   sink's API key and disabled fields had this markup and now use `<label for>`.
+- New warning TM123: a `data-tooltip` that never shows. The tooltip is the `::after` and gives way where that is
+  taken: on a text button that opens a popover (`popovertarget` without `popovertargetaction="hide"`, or `commandfor`
+  with `command="toggle-popover"` or `"show-popover"`; its `::after` is the dropdown caret), on a `data-stretch`
+  element (the overlay) and on a direct child of an `aria-sort` header (the sort arrow). The message says to put the
+  hint in the label or use an icon button (`data-icon` with `aria-label` and no text), which keeps its tooltip. Not
+  judged where an expression decides the attribute or the button's content.
 - TM121 reports only solid buttons that certainly render side by side: not alternatives (`{#if}`/`{:else}`, `{#await}`
   branches, `a ? <x/> : <y/>`, `v-if`/`v-else`), and not conditional, repeated or hidden ones.
 - TM205 no longer reports colors inside `light-dark()`. TM101 names the range for a number outside it ("from 2 to 7")

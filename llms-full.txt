@@ -851,6 +851,10 @@ function toast(text, tone) {
 }
 ```
 
+A tooltip is the element's `::after`, so a text button that opens a menu (its dropdown caret), a `data-stretch` link
+and a sort button in an `aria-sort` header never show one (`temper check` warns, TM123): put the hint in the label,
+or use an icon button, which keeps its tooltip.
+
 In a framework, render the region once and the toasts from a list (`{#each toasts as t (t.id)}<div data-toast …>`).
 To show toasts above an open modal dialog, give the region `popover="manual"` and call `region.showPopover()`
 after the dialog opens (the top layer stacks in opening order).
