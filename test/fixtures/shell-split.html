@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Split panes in a fixed shell</title>
+<link rel="stylesheet" href="../../src/core.css">
+<link rel="stylesheet" href="../../src/app.css">
+<link rel="stylesheet" href="../../src/icons.css">
+</head>
+<!-- the markup of the "Panes that adapt to their own width" recipe (llms-full.txt) in a data-shell="fixed" app -->
+<body data-shell="fixed">
+  <nav data-rail popover id="rail" aria-label="Main"><a href="#" data-icon="mail"><span>Mail</span></a></nav>
+  <main data-layout="split" data-wrap="none" data-gap="none" id="main">
+    <section data-scroll="y" style="--tm-split: 22rem" id="list">
+      <header data-sticky="top" data-layout="row" data-gap="xs" data-pad="sm">
+        <button popovertarget="rail" data-show="narrow" id="menu" data-icon="menu" data-variant="ghost" aria-label="Open menu"></button>
+        <h1>Inbox</h1>
+      </header>
+      <p style="block-size: 3000px">…message list…</p>
+    </section>
+    <section data-scroll="y" data-container data-show="wide" id="reader">
+      <header data-sticky="top" data-layout="row" data-gap="xs" data-pad="sm">
+        <h2 data-grow data-truncate>Quarterly report</h2>
+        <button data-show="wide" data-icon="archive" data-variant="ghost">Archive</button>
+        <button data-show="narrow" data-icon="archive" data-variant="ghost" aria-label="Archive"></button>
+      </header>
+      <p style="block-size: 5000px">…message…</p>
+    </section>
+  </main>
+</body>
+</html>

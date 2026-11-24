@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>prose fixture</title>
+  <link rel="stylesheet" href="../../src/core.css">
+  <link rel="stylesheet" href="../../src/prose.css">
+  <style>body { padding: 1rem; } [data-prose] { font-size: 16px; }</style>
+</head>
+<body>
+<main data-layout="stack" data-gap="md">
+  <div data-prose id="flat">
+    <h2 id="h-first">First heading</h2>
+    <p id="p1">One.</p>
+    <p id="p2">Two.</p>
+    <h2 id="h2">Second heading</h2>
+    <p id="p3">Three.</p>
+    <ul id="ul"><li id="li1">a</li><li id="li2">b<ul id="nested"><li>c</li></ul></li></ul>
+    <blockquote id="quote"><p id="quote-p">Quoted.</p></blockquote>
+    <hr id="hr">
+    <p id="after-hr">After the rule.</p>
+    <div data-callout id="callout"><strong id="callout-title">Note</strong><p id="callout-p1">One.</p><p id="callout-p2">Two.</p></div>
+    <div data-layout="row" data-gap="sm" id="row"><button id="b1">Yes</button><button id="b2" data-variant="outline">No</button></div>
+    <article data-layout="stack" data-gap="xs" id="card"><h3 id="card-h">Card</h3><p id="card-p">Body.</p></article>
+    <form id="form"><label id="form-l">Name <input></label><p id="form-p">Hint.</p></form>
+    <p id="last">Last.</p>
+  </div>
+  <div data-prose id="nested-prose">
+    <div><section><h2 id="deep-first">Deep first</h2><p id="deep-p">Text.</p></section><section><h2 id="deep-second">Second section</h2></section></div>
+    <table id="layout-table"><tr><td id="layout-td"><p id="cell-first">Cell.</p><p id="cell-second">Cell two.</p></td></tr></table>
+    <table id="data-table"><tr><th id="data-th">Plant</th></tr><tr><td id="data-td">Basil</td></tr></table>
+    <p id="inline-p">Hi <img id="emoji" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23e33'/%3E%3C/svg%3E" width="16" height="16" alt=""> there</p>
+    <img id="solo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23e33'/%3E%3C/svg%3E" width="32" height="32" alt="">
+  </div>
+  <article data-prose id="post"><header id="post-header"><h1>Post</h1><p>By someone</p></header><p>Text.</p></article>
+  <div id="after">after</div>
+</main>
+</body>
+</html>

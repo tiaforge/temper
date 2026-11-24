@@ -46,7 +46,7 @@
     },
     "data-size": {
       "module": "core",
-      "on": "button (also icon buttons), input, select, [data-avatar]",
+      "on": "button (also icon buttons), input, select, [data-avatar], a [data-join] group",
       "description": "Control size relative to the current density.",
       "values": {
         "sm": "0.8× height, smaller text.",
@@ -275,7 +275,8 @@
         "summary",
         "button",
         "label",
-        "dialog"
+        "dialog",
+        "[data-join]"
       ],
       "loose": true,
       "short": "This child takes the remaining space in its row or stack."
@@ -366,7 +367,7 @@
       "module": "core",
       "boolean": true,
       "on": "any element",
-      "description": "Hidden visually, still read by screen readers."
+      "description": "Hidden visually, still read by screen readers. Shown again while it or an element inside it has focus, so it also makes a skip link (<a href=\"#main\" data-sr-only>Skip to content</a>)."
     },
     "data-pairs": {
       "module": "core",
@@ -388,7 +389,7 @@
       "module": "core",
       "boolean": true,
       "on": "any text element",
-      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
+      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index, the label of a group of items in a data-menu.",
       "short": "Small, muted label text (captions, group headings)."
     },
     "data-list": {
@@ -423,11 +424,28 @@
         "article"
       ]
     },
+    "data-sticky": {
+      "module": "core",
+      "on": "a page header, a toolbar above a list, a save bar after a long form",
+      "description": "Keeps the element at the top or bottom edge of the nearest scroll container while it scrolls: the page, the <main> of a data-shell=\"fixed\" app, a data-scroll=\"y\" pane. It gets the background of the surface it sits on (the page, a card, a dialog) and a line toward the content, and stays above a sticky table header. It sticks only while its parent is in view, so put it in the long element itself (main, the pane, the form), not in a wrapper of its own or inside a sideways data-scroll. Not sticky in print.",
+      "short": "Sticks to the top or bottom of the nearest scroll container (header, toolbar, save bar).",
+      "values": {
+        "top": "Sticks to the top edge, with a line below it.",
+        "bottom": "Sticks to the bottom edge, with a line above it; clear of the home indicator on phones."
+      }
+    },
+    "data-join": {
+      "module": "core",
+      "boolean": true,
+      "on": "a div around buttons, inputs, selects or a data-field",
+      "description": "Joins its children into one unit: shared borders, rounded only at the outer ends. Toolbar groups, a split button (the action plus a data-icon=\"chevron-down\" button that opens its menu), a pager, a search field with its button. Works with every data-variant, data-size (on the group or on each child) and density; a focused child shows its whole ring. Give a group of related actions role=\"group\" and an aria-label, and put a pager in a <nav aria-label=\"Pages\">. Do not add data-layout (its gap would split the group); data-grow works on the group and on a field inside it.",
+      "short": "Joins its children (buttons, fields) into one unit with shared borders."
+    },
     "data-shell": {
       "module": "app",
       "allowEmpty": true,
       "on": "body or the outermost app wrapper",
-      "description": "App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps (give inner panes data-scroll=\"y\"). On a fixed-shell page whose <main> itself scrolls (a settings page), add data-gutter to <main>, so its content does not shift when the scrollbar comes and goes.",
+      "description": "App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps: <main data-layout=\"split\" data-wrap=\"none\"> with data-scroll=\"y\" panes, so each pane is as tall as the screen and scrolls by itself (without data-wrap=\"none\" the panes grow to their content and the whole <main> scrolls); on phones show one pane with data-show. On a fixed-shell page whose <main> itself scrolls (a settings page), add data-gutter to <main>, so its content does not shift when the scrollbar comes and goes.",
       "short": "App shell (rail + main); data-shell=\"fixed\" fills the viewport and main scrolls inside.",
       "values": {
         "fixed": "Fills the viewport; main scrolls inside it."
@@ -477,7 +495,7 @@
       "module": "app",
       "boolean": true,
       "on": "button",
-      "description": "Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label.",
+      "description": "Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label. In RTL it sits bottom-left; on pages with viewport-fit=cover it keeps clear of the notch and home indicator.",
       "tags": [
         "button",
         "a[role=button]"
@@ -486,17 +504,25 @@
     "data-show": {
       "module": "app",
       "on": "any element",
-      "description": "Shows the element only on narrow (< 48rem) or wide screens.",
+      "description": "Shows the element only on narrow (< 48rem) or wide screens. Inside a data-container it follows the width of the nearest one instead (a pane of a multi-pane app).",
       "values": {
-        "narrow": "Only below 48rem (e.g. the button that opens the drawer).",
+        "narrow": "Only below 48rem (e.g. the button that opens the drawer; keep that one outside any data-container).",
         "wide": "Only from 48rem."
-      }
+      },
+      "short": "Shows the element only on narrow (< 48rem) or wide screens, or panes (data-container)."
+    },
+    "data-container": {
+      "module": "app",
+      "boolean": true,
+      "on": "a pane: main, a data-scroll pane, a data-grow or data-layout=\"split\" child",
+      "description": "Makes the element a container: data-show inside it follows its width instead of the screen's (the nearest one wins), so a pane adapts while the window is wide: the reader of a mail app, a detail panel next to a table. Its width must come from its parent (a block, main, a data-grow or split child), not from its content; on an element that shrinks to its content (a row child without data-grow, an inline element) it collapses. Keep the button that opens the rail drawer outside it: the drawer follows the screen.",
+      "short": "A pane whose width data-show inside follows, not the screen's."
     },
     "data-menu": {
       "module": "menu",
       "boolean": true,
       "on": "[popover] (dropdown) or any container (static menu)",
-      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
+      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport); it fades in and out.",
       "short": "Menu of buttons, links and checkbox labels; as a [popover] it opens under its button."
     },
     "data-combo": {
@@ -529,7 +555,7 @@
       "freeText": true,
       "values": {},
       "on": "buttons, links and any focusable element",
-      "description": "Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. Not for buttons that open a menu (their caret uses the same space).",
+      "description": "Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. It draws in the element's ::after, so it gives way where that is taken: a busy button (the spinner), data-stretch (the overlay), a sort button in a table header (the arrow) and a text button that opens a menu (the caret). An icon button that opens a menu keeps its tooltip, hidden while the menu is open (aria-expanded=\"true\").",
       "short": "Tooltip: the given text, or the aria-label when empty."
     },
     "data-num": {
@@ -540,8 +566,46 @@
         "th",
         "td"
       ],
-      "description": "A number cell: right-aligned with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
+      "description": "A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
       "short": "Number cell: right-aligned, tabular figures (on th and every td of the column)."
+    },
+    "data-prose": {
+      "module": "prose",
+      "boolean": true,
+      "on": "the container of long-form text: an article body, rendered Markdown or CMS HTML, a mail body (a div, article, section or main; not a dialog, popover or table cell)",
+      "notTags": [
+        "td",
+        "th",
+        "tr"
+      ],
+      "description": "Long-form text with a vertical rhythm: paragraphs, headings (more space above than below), lists, blockquote, figure and figcaption, hr, pre, tables, images, dl and details get space between them, at any depth (content nested in div and section wrappers too), with none before the first block or after the last. The one place with outer margins: write the HTML as it comes, without data-gap. Text is capped at a reading measure (--tm-measure, 65ch here; style=\"--tm-measure: none\" for the full width, e.g. a mail body with wide tables) and h1 and h2 scale with the viewport. temper components inside (data-layout, data-callout, data-list, a card, a form, a menu) keep their own spacing. Images in running text stay in the line (emoji, signature logos); layout tables (role=\"presentation\" or no th, as in mail) lose the data-table look. On an article it is a post, not a card. With data-layout=\"center\" on the same element it is a centered reading column; other layouts do not combine with it.",
+      "short": "Long-form text (Markdown, CMS, mail): spacing between blocks, reading width."
+    },
+    "data-field": {
+      "module": "forms",
+      "boolean": true,
+      "on": "a div (a span inside a <label>) around one input and its adornments",
+      "tags": [
+        "div",
+        "span"
+      ],
+      "description": "One field drawn around an input and its adornments: an icon (<span data-icon=\"search\"></span>) or text (<span>€</span>, <span>kg</span>) before or after the input, and a button at the end (data-variant=\"ghost\" data-icon=\"eye\" aria-label=\"Show password\"). As tall as a plain field at every data-size and density (data-size goes on the wrapper); focus, hover, invalid (aria-invalid or :user-invalid on the input), read-only and disabled show on the whole field, and data-grow works on it in a row. Inside a <label> use <span data-field>. With a button in it, give the input <label for> and an id instead of wrapping it in the label, or the button's name becomes part of the field's name.",
+      "short": "One field around an input and its icon, text (<span>€</span>) or end button."
+    },
+    "data-sheet": {
+      "module": "sheet",
+      "on": "dialog",
+      "tags": [
+        "dialog"
+      ],
+      "description": "The dialog is a sheet that slides in from an edge of the screen instead of appearing in the middle. Open and close it like any dialog (command=\"show-modal\", closedby=\"any\"); header and footer stay in view while its content scrolls. Width: --tm-dialog-width. Keeps clear of the notch and home indicator (viewport-fit=cover), mirrors in RTL.",
+      "short": "Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet.",
+      "values": {
+        "end": "Full-height panel at the inline end (right; left in RTL): details, an inspector. The footer sits at the bottom.",
+        "start": "Full-height panel at the inline start: filters, navigation. The footer sits at the bottom.",
+        "bottom": "Along the bottom edge, as tall as its content: actions, a short form. Full width on phones.",
+        "narrow": "A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem."
+      }
     }
   },
   "tokens": {
@@ -614,7 +678,7 @@
     "--tm-measure": {
       "kind": "input",
       "optional": true,
-      "description": "Max width for data-layout=\"center\". Default 72rem."
+      "description": "Content width: the max width of data-layout=\"center\" (default 72rem) and the reading measure of data-prose (default 65ch)."
     },
     "--tm-lazy-h": {
       "kind": "input",
@@ -624,7 +688,7 @@
     "--tm-dialog-width": {
       "kind": "input",
       "optional": true,
-      "description": "Dialog width. Default 30rem."
+      "description": "Dialog width, also of a data-sheet panel. Default 30rem."
     },
     "--tm-bg": {
       "kind": "color",
@@ -814,7 +878,7 @@
       "kind": "input",
       "optional": true,
       "pattern": true,
-      "description": "The icon image for data-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon=\"rocket\"] { --_icon: var(--tm-icon-rocket); }."
+      "description": "The icon image for data-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon=\"rocket\"] { --_icon: var(--tm-icon-rocket); }. An input only: temper does not declare it (the default image is the fallback in the [data-icon] rule), so var(--tm-icon-mail) in your CSS is empty unless you set it; draw a default icon with data-icon instead."
     }
   },
   "deprecated": {

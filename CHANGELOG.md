@@ -16,11 +16,132 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   `scrollbar-gutter-stable`: the space stays reserved when nothing overflows, so it belongs on the element that
   scrolls (that `<main>`, a pane, `<html>`), not on a `<main>` that only holds panes.
 
+- **Default look.** Font weights are only 400 and 600: buttons, labels, summary, table headers and the file button are
+  600 (were 550, which static system fonts render as medium on one system and bold on another); menu items, rail items
+  and tooltips are 400. In light mode the page is off-white (`--tm-bg` L 0.985) so white cards, fields and overlays lift
+  off it; `--tm-fill` is L 0.955; print stays white. `--tm-shadow-lg` has two layers (a contact shadow and the ambient
+  one). `data-bar` and toned toasts draw a straight bar. A multi-row `<select>` has padded, rounded option rows with a
+  hover fill. The rail, menus, `data-scroll` panes, dialogs, list-box selects and textareas have thin scrollbars in the
+  theme's colors. A sticky table header paints the surface it sits on (page, card or dialog).
+- **Right-to-left** (`dir="rtl"`): switch, select arrow, vertical tabs, drawer, toasts, menus and the rail chevron
+  mirror. **Forced colors** (Windows high contrast): icons, switches, selected, pressed and current items, progress,
+  meter and menu focus stay visible. **Print**: no rail, floating action button, toasts, tooltips or shadows; fixed
+  shells and scroll areas print in full, in the light scheme. **Safe areas**: the rail, drawer, floating action button
+  and toasts keep clear of notches and the home indicator with `viewport-fit=cover`.
+- **Dialogs.** The page behind an open modal dialog no longer scrolls; with classic scrollbars its scrollbar space stays
+  reserved, so nothing shifts (browsers without scroll-driven animations reserve it whenever a dialog is open). A dialog
+  taller than the screen keeps its header and footer in view and scrolls the content between them (`dialog >
+  header/footer`, also through one `form`, `div` or `article` wrapper). Popovers and `data-menu` popovers fade and scale
+  in and out like dialogs; the rail drawer and the toast region keep their own motion.
+- `data-sticky="top|bottom"`: header, toolbar and save bars stay at the edge of the nearest scroll container, opaque in
+  the color of the surface they sit on, above the sticky table header, clear of the home indicator, not sticky in print.
+- `data-join` (boolean): buttons, inputs, selects and `data-field` drawn as one unit (toolbar groups, split buttons,
+  pagers, search field + button), for every variant, size and density, in RTL, with the focus ring in front.
+- Cards: an `img`, `picture` or `video` as the first child of an `article` runs edge to edge under the card's rounded top
+  corners, also with `data-pad` and in clickable cards.
+- A focused `data-sr-only` element is shown, so a skip link works (recipe in llms-full.txt).
+- Fixed: a tooltip no longer moves a positioned element (the floating action button fell into the page flow), and no
+  longer hides a busy button's spinner, a `data-stretch` card overlay, a sort arrow or the caret of a text button that
+  opens a menu; it gives way there.
+- Fixed: an open dialog printed only the part that fits the screen (one page, clipped: it kept `position: fixed`, its
+  screen-height limit and its scrolling in print). It now prints all of its content from the top of the first page,
+  with its header and footer once, in place; sheets share the rule, so `sheet.css` is 15 B smaller (brotli) and core
+  28 B larger.
+- Fixed: in a `data-layout="stack"` dialog, the `data-grow data-scroll="y"` part stayed 8rem tall (`--tm-grow-basis`)
+  however much it held, so a dialog with a long list was 274px tall with the list scrolling in 128px. The part now
+  starts from its content: the dialog grows with it up to the screen's height and the part scrolls from there, and a
+  short one stays small. Only in stack dialogs: in a row or split dialog `data-grow` keeps its 8rem start (a first
+  version applied it to every dialog, and a search field next to its button wrapped onto its own line). It also works
+  through one wrapper: in `<dialog><form data-layout="stack">header, part, footer</form></dialog>` (or a `div` or
+  `article`, as the dialog's only child) the dialog becomes a column and the wrapper shrinks to the dialog's limit; the
+  part stayed 8rem tall there too. Core +46 B (brotli) for both.
+- Fixed: an invalid field keeps its danger border on hover (an invalid checkbox shows it too); disabled buttons no longer
+  change on hover or move when pressed, and disabled fields have no hover border; checkbox and radio marks contrast with
+  their fill inside a toned container (a warning callout) and when invalid.
+- Fixed: `::selection` and `::placeholder` styles never applied (pseudo-elements are not allowed inside `:where()`); for
+  the same reason reduced motion did not reach `::before`, `::after` and `::backdrop` (details chevron, check marks,
+  switch knob, dialog backdrop). iOS Safari did not get `-webkit-text-size-adjust`. `data-size="md"` inside a `sm` or
+  `lg` container kept the container's font size.
+- Performance: `data-layout="split"` no longer makes every container on the page restyle all its children when one child
+  is added or removed (Chrome, a 3,000-row list: 13–17 ms per append, now 0.3 ms). `test/perf.test.js` counts restyled
+  elements so it cannot come back.
+- Size: `icons.css` is 211 B smaller (brotli): each icon's image is the fallback in its `[data-icon]` rule
+  (`--_icon: var(--tm-icon-<name>, url(…))`) instead of a `:root` property. A byte-minimization pass over `core.css`
+  and the modules removed what could go without changing a pixel; the build strips a `-webkit-text-decoration-color`
+  copy the minifier adds needlessly.
+
+### New modules
+
+- **`forms.css`** (`@tiaforge-ui/temper/forms.css`, also in `all.css`): `data-field` puts an icon, prefix or suffix
+  text, or a button inside a field (search field, amount with unit, password with reveal button); focus, hover, invalid,
+  read-only and disabled show on the whole field. Also: `readonly` fields look read-only, the label of a `required`
+  field gets an asterisk that screen readers do not read twice (off: `label::after { content: none }`), autofilled
+  fields get a tint from the theme, `<input type="range">` is styled with a filled track, and a `<progress>` without a
+  value shows a sweeping segment.
+- **`prose.css`**: `data-prose` for long-form text (rendered Markdown, CMS HTML, mail bodies): spacing between blocks
+  that collapses through `div` and `section` wrappers, a 65ch reading width (`--tm-measure`, `none` for full width),
+  fluid `h1`/`h2`, images in running text stay inline, layout tables (`role="presentation"` or no `th`) lose the
+  data-table look, temper components inside keep their own spacing, and `<article data-prose>` is a post, not a card.
+- **`sheet.css`**: `<dialog data-sheet="end|start|bottom|narrow">` is a side panel or a bottom sheet that slides in from
+  its edge; `narrow` is a bottom sheet below 48rem and a centered dialog above.
+- `app.css`: `data-container`: inside one, `data-show` follows the width of the nearest container instead of the screen
+  (panes of multi-pane apps).
+- `menu.css`: `<span data-caption>` labels a group of items, and a `<kbd>` at the end of an item shows its shortcut.
+
+### Behavior changes to check in your app
+
+- CSS that reads `var(--tm-icon-<name>)` of a default icon gets nothing unless you set it; setting it to replace or add
+  an icon works as before. Use `data-icon` to draw a default icon.
+- A card whose first child is an `img`, `picture` or `video` now runs it edge to edge.
+- A closed `[popover]` is transparent so it can fade out: CSS that shows a closed popover statically must also set
+  `opacity: 1`.
+- `article` is not styled as a card when it has `data-prose`.
+- With `forms.css`, labels of `required` fields show an asterisk; remove one written in the label text.
+- `temper check --icons <dir>` with a folder that does not exist is an error (exit 2), and unknown options are errors.
+
+### Checker and CLI
+
+- Markup inside `//` comments, strings, template literals and regular expressions in .jsx/.tsx, and inside strings and
+  comments of Svelte/Astro `{…}` and Vue `{{ }}` expressions, is no longer checked (it could fail the build). TypeScript
+  generics are handled. A `<script>` or `<style>` tag with a `>` in a quoted attribute (Svelte `generics="…"`) no longer
+  hides the rest of the file from the check.
+- New warning TM122: a `<button>` in a `data-field` inside a wrapping `<label>`. The label's text then includes the
+  button's name, so the input is announced as "API key Copy" (measured in Chrome's accessibility tree); use
+  `<label for="…">` with the field outside the label. Not judged through a component or custom element. The kitchen
+  sink's API key and disabled fields had this markup and now use `<label for>`.
+- TM121 reports only solid buttons that certainly render side by side: not alternatives (`{#if}`/`{:else}`, `{#await}`
+  branches, `a ? <x/> : <y/>`, `v-if`/`v-else`), and not conditional, repeated or hidden ones.
+- TM205 no longer reports colors inside `light-dark()`. TM101 names the range for a number outside it ("from 2 to 7")
+  instead of guessing. TM106: a component named `<Select>` is no longer treated as a `<select>` field.
+- CLI: `--help`/`-h` exit 0, new `--version`/`-v`, unknown options and commands are errors (exit 2) with a suggestion,
+  `--` ends the options.
+- Type declarations for `@tiaforge-ui/temper/vite` and `@tiaforge-ui/temper/check`; they need no `vite` types.
+- The README size table is generated from a real build (`npm run gen`) and checked by `npm test`.
+
+### Docs and tooling
+
+- `data-shell` and the App shell recipe: panes that each scroll by themselves in a `data-shell="fixed"` app need
+  `<main data-layout="split" data-wrap="none">`; with the default wrapping the panes grow to their content and the
+  whole `<main>` scrolls. The panes recipe shows the phone case (`data-show="wide"` on the reader, the ☰ button in a
+  pane that is not a container). A render test pins that markup (`test/fixtures/shell-split.html`).
+
+### Vite plugin
+
+- On-demand icons include every name a `data-icon` expression can produce (`dark ? 'sun' : 'moon'`). New option
+  `icons: { include: [...] }` for names the source does not show; a notice with file and line points to such places
+  (silenced by `temper-ignore`), and `temper check --lucide` prints it too.
+
 ### temper-inspect
 
 - `--sheet <dir>` also writes every state at full size (1 CSS pixel = 1 pixel), to
   `<dir>/<page>/<state>-<width>-<scheme>.png`, and the report lists that directory. The contact sheet scales a
   1280px page down to 480px, too small to read its text or judge an icon. `--json` lists the files under `shots`.
+- On a signal or exit, the browser's profile directory is removed only once its processes have stopped (Linux: none
+  of its process group runs any more; at most 2 s), and the removal is repeated while the directory is still there.
+  SIGKILL is not instantaneous: under CPU and disk load a quarter of the runs still had browser processes running when
+  the removal started, and a write from one of them left the profile behind (seen once in 720 signal runs under load,
+  and as a rare failure of the recover test).
+- The DevTools page object has `on(method, fn)` for protocol events (used by the restyle-count tests).
 
 ## 0.3.0 (2026-11-12)
 

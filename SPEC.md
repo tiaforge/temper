@@ -69,9 +69,9 @@ First consumer: caley (replacing Pico CSS). Second: tia.vision (Astro marketing/
 
 | Bundle | Budget (brotli) |
 |---|---|
-| `core.css` | **≤ 5 KB** (Pico is about 11 KB gzipped) |
+| `core.css` | **≤ 6.6 KB** (6,800 B; Pico is about 11 KB gzipped) |
 | each module | ≤ 1.5 KB |
-| `all.css` | ≤ 12 KB |
+| `all.css` | ≤ 12.6 KB (12,950 B) |
 
 How we stay under budget:
 - Each color is declared once with `light-dark()`. Pico declares its palette about 3 times.
@@ -94,19 +94,31 @@ CI enforces the budgets (`size-limit`).
 - Dark mode is designed, not inverted: higher surfaces get *lighter* instead of using shadows, and
   accent chroma is lower.
 - Also covered: `prefers-reduced-motion`, `prefers-contrast: more` (stronger borders), and
-  `forced-colors` (system colors, visible focus).
+  `forced-colors`: icons, marks, switch thumbs and lines are drawn so they keep the text color; selected,
+  pressed and current items get a `Highlight` ring (their fills become the canvas color); focus stays an outline.
+- Right to left: logical properties throughout; the few values without a logical form (a translate, a scale, an
+  inset shadow, a background position) take their sign from `--_x`, which is -1 under `:dir(rtl)`.
+- Print: the rail, FAB, toasts and tooltips are not printed; a fixed shell and `data-scroll` areas print in full;
+  light scheme, no shadows. Each module owns its print rules.
+- Safe areas: with `viewport-fit=cover` the rail, drawer, FAB and toast region add `env(safe-area-inset-*)`.
 
 ### 1.4 Consistent, modern look: "Graphite" (decided)
 
-- Near-grey neutrals (`--tm-neutral-tint: 0.01`, a faint lean toward the accent hue), white surfaces in light mode, graphite (L 0.145)
-  in dark mode. Structure comes from 1px borders; there are no resting shadows. Only overlays
-  (dialog, popover) get a shadow.
+- Near-grey neutrals (`--tm-neutral-tint: 0.01`, a faint lean toward the accent hue), graphite (L 0.145) in dark mode.
+  In light mode the page is off-white (`--tm-bg` L 0.985, tinted like the other neutrals) and surfaces, fields and
+  overlays are white, so cards, fields and menus lift off the page (decided 2026-11-24; until then page and surfaces
+  were all white and only borders separated them). Print is on white paper. Structure comes from 1px borders; there are
+  no resting shadows. Only overlays (dialog, popover) get a shadow.
 - **Main buttons are monochrome:** black in light mode, white in dark mode
   (`--tm-primary: var(--tm-neutral)`). The accent is reserved for selection, focus, links and checked
   controls. So black means "do this" and blue means "this is selected or interactive".
 - Default radius `--tm-radius` = 0.5rem. Everything else is derived from it (`sm` = 0.6×,
   `lg` = 1.5×, badges 0.67×, `full`).
 - Headings: weight 600, tracking −0.025em.
+- Two font weights, both present in static system fonts: 400 for text, menu and rail items; 600 for buttons, labels,
+  summaries, table headers, badges and other emphasis (decided 2026-11-24). No in-between weights: Segoe UI has
+  400/600/700, Roboto and Ubuntu 400/500/700, DejaVu 400/700, so 550 or 450 rendered medium on one system and bold or
+  regular on another. 600 is Semibold with Segoe UI, SF Pro and Noto Sans, and Bold (700) where no 600 exists.
 - **One control height.** Button, input, select and icon-button are all `--tm-control-h`
   (comfortable 2.5rem, compact 2rem), so toolbars line up without extra work.
 - `data-density="compact|comfortable"` can go on any subtree and scales control padding and height.
@@ -219,8 +231,10 @@ Any role can also be set directly with a literal color (brand colors). Caley's o
 | `data-muted` | boolean | any text | |
 | `data-truncate` | boolean | any | Single-line ellipsis. |
 | `data-lazy` | boolean | list container | Its rows far off screen skip layout and paint (`content-visibility: auto`); `--tm-lazy-h` is the row height guess. |
-| `data-sr-only` | boolean | any | Visible to screen readers only. |
+| `data-sr-only` | boolean | any | Visible to screen readers only; shown while it has focus (skip links). |
 | `data-pairs` | boolean | `dl` | dt/dd shown as a label/value grid using subgrid. Replaces detail-row and compose-row. |
+| `data-sticky` | `top bottom` | page header, toolbar, save bar | Sticks to an edge of the nearest scroll container; opaque, a line toward the content, above the sticky table header. |
+| `data-join` | boolean | wrapper of buttons, fields, selects | One unit: shared borders, rounded only at the ends (toolbar groups, split button, pager, search + button). |
 
 That is about 15 attributes. The goal is that the whole core vocabulary plus its rules fit in an
 `llms.txt` of about 200 lines.
@@ -243,6 +257,9 @@ temper/menu.css       popover menus and dropdowns, anchor positioning, menu sepa
 temper/nav.css        tabs, segmented control, breadcrumbs, pagination
 temper/data.css       dense list rows (mail list), selection states, sticky headers, resize handle
 temper/feedback.css   toast stack, skeleton, empty state
+temper/forms.css      fields with icons, units and buttons (data-field), read-only, required marker, autofill,
+                         range, indeterminate progress
+temper/sheet.css      dialogs as sheets (data-sheet): side panels, bottom sheets
 temper/prose.css      long-form text (`data-prose`), fluid type: email reader, blog, tia.vision
 temper/site.css       marketing: hero, section, feature grid, timeline, nav bar (tia.vision)
 temper/all.css        everything
@@ -333,7 +350,8 @@ Lessons:
   dialog without a name, TM115 table without `<th>`, TM116 `data-tooltip` on something that cannot take focus,
   and, in whole documents, TM117 skipped heading level, TM118 duplicate id, TM119 `popovertarget`, `commandfor`,
   `for`, `list` or `aria-*` pointing at a missing id (with "did you mean"), TM120 popover or dialog nothing opens;
-  TM121 two solid buttons side by side. Computed values are reduced
+  TM121 two solid buttons side by side; TM122 a `<button>` in a `data-field` inside a wrapping `<label>` (its name
+  joins the field's name). Computed values are reduced
   to the literals they can produce; `types/*.d.ts` (generated) types them for React, Vue, Astro,
   Svelte component props and sinter's `data-sn-attr`. No findings on caley's current frontend.
 
@@ -341,9 +359,14 @@ Missing, roughly in order:
 1. ~~Vite plugin for the checker, and enhancement partials with the build option for them.~~ Done.
 2. ~~Trim `llms.txt` (322 lines now; goal about 200).~~ Done: about 150 lines; the rest is in `llms-full.txt`.
 3. ~~Contrast validator (hue sweep, WCAG AA).~~ Done: `npm run contrast`, see §1.6.
-4. Modules: `app`, `menu`, `icons`, `feedback` (toasts, tooltips) and `table` (data tables) exist;
-   `nav` and `prose` ended up in core or were not needed for caley. Next: `site` (prose, figure,
-   blockquote, site header and footer) for tia.vision.
+4. Modules: `app`, `menu`, `icons`, `feedback` (toasts, tooltips), `table` (data tables), `forms` (fields with
+   adornments via `data-field`, read-only, required marker, autofill, range, indeterminate progress) and `prose`
+   (`data-prose`: rhythm for long-form text, reading measure through `--tm-measure`, fluid h1/h2, blockquote,
+   figure, inline images, plain layout tables; 2026-11-23) and `sheet` (`data-sheet="end|start|bottom|narrow"`: a
+   dialog as a side panel or bottom sheet; 2026-11-24) exist; `nav` ended up in core. Core dialogs lock the page
+   scroll behind a modal (keeping the scrollbar's space) and keep header and footer in view in a tall dialog;
+   popovers and menus fade in and out. Next: `site` (site
+   header and footer, hero) for tia.vision.
 5. ~~Visual regression tests~~ Done: `npm run visual`, 17 states of the kitchen sink and app shell
    compared pixel by pixel with `test/visual/` (machine-specific baselines; `--update` accepts a change).
    Agent evals: done through the eval harness and the six caley migration runs. README: done, with

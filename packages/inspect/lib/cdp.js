@@ -1,7 +1,7 @@
 // Minimal Chrome DevTools Protocol client: launches a headless Chrome/Chromium and talks to it over
 // Node's built-in WebSocket. No dependencies.
 import { spawn, execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, rmdirSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, rmdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, basename } from 'node:path';
 
@@ -48,6 +48,44 @@ export function commandLine(browserCmd, profile, share = []) {
     '--disable-default-apps', '--metrics-recording-only', '--disable-breakpad', 'about:blank'];
 }
 
+const pause = ms => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+
+/**
+ * Whether a process of the process group `pgid` is still running (Linux, from /proc; a zombie writes nothing), or null
+ * where that cannot be told.
+ */
+function groupRunning(pgid) {
+  try { process.kill(-pgid, 0); } catch { return false; } // no process of the group is left
+  if (process.platform !== 'linux') return null;
+  try {
+    for (const p of readdirSync('/proc')) {
+      if (!/^\d+$/.test(p)) continue;
+      try {
+        const stat = readFileSync(`/proc/${p}/stat`, 'utf8'); // pid (comm) state ppid pgrp …; comm may hold spaces
+        const [state, , pgrp] = stat.slice(stat.lastIndexOf(')') + 2).split(' ');
+        if (+pgrp === pgid && state !== 'Z' && state !== 'X') return true;
+      } catch {} // gone meanwhile
+    }
+    return false;
+  } catch { return null; }
+}
+
+/**
+ * Removes a killed browser's profile. SIGKILL is not instantaneous: under load a quarter of the runs still had browser
+ * processes running when the removal started, and one that writes then (a file in a directory already emptied, a
+ * directory created again) leaves the profile behind. So wait until none runs, then remove, and repeat while the profile
+ * is still there. Synchronous and bounded (`ms`): it runs in exit and signal handlers.
+ */
+export function removeProfile(profile, pgid, ms = 2000) {
+  const end = Date.now() + ms;
+  while (groupRunning(pgid) && Date.now() < end) pause(10);
+  for (;;) {
+    try { rmSync(profile, { recursive: true, force: true, maxRetries: 3, retryDelay: 10 }); } catch {}
+    if (!existsSync(profile) || Date.now() >= end) return;
+    pause(20);
+  }
+}
+
 /** Thrown when the page's tab can no longer answer: its renderer is gone or its DevTools session was detached. */
 export class PageLostError extends Error {
   constructor(message) { super(message); this.name = 'PageLostError'; this.code = 'PAGE_LOST'; }
@@ -89,7 +127,7 @@ export async function launch(browserCmd = findBrowser(), { share = [], timeout =
     if (abandoned) return;
     abandoned = true;
     kill();
-    try { rmSync(profile, { recursive: true, force: true }); } catch {}
+    removeProfile(profile, proc.pid);
     if (mountPoint) try { rmdirSync(mountPoint); } catch {} // only when empty
   };
   process.once('exit', abandon);
@@ -214,6 +252,12 @@ export async function launch(browserCmd = findBrowser(), { share = [], timeout =
         const { result, exceptionDetails } = await s('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
         if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
         return result.value;
+      },
+      /** Calls fn(params) for every `method` event of this tab (e.g. Tracing.dataCollected); returns the unsubscribe. */
+      on(method, fn) {
+        const l = msg => { if (msg.sessionId === sessionId && msg.method === method) fn(msg.params); };
+        listeners.add(l);
+        return () => listeners.delete(l);
       },
       /** Closes the tab, without waiting long for a tab that no longer answers. */
       async close() { try { await send('Target.closeTarget', { targetId }, undefined, 2000); } catch {} },

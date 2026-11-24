@@ -1,0 +1,55 @@
+/* temper sheet: a <dialog> as a side panel or a bottom sheet. Requires core.css. No JavaScript needed: open and close
+   it like any dialog (command="show-modal", closedby="any"); it slides in from its edge and back out.
+   <dialog data-sheet="end" id="details"> <header>…</header> … <footer>…</footer> </dialog>
+   end / start: full height at the inline end or start (filters, details); bottom: along the bottom edge (actions);
+   narrow: a bottom sheet below 48rem, an ordinary centered dialog from 48rem. */
+
+@layer tm.components {
+  /* the edge a sheet slides in from, and the notch or home indicator it keeps clear of (pages with viewport-fit=cover;
+     phones report the same inset on both sides in landscape) */
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"], [data-sheet="bottom"])) {
+    --_off: calc(var(--_x) * 100%) 0; --_edge: max(env(safe-area-inset-left), env(safe-area-inset-right));
+    max-inline-size: none; margin: 0; opacity: 1; scale: 1; translate: var(--_off);
+    transition: translate var(--tm-duration) var(--tm-ease), overlay var(--tm-duration) allow-discrete, display var(--tm-duration) allow-discrete;
+  }
+
+  /* side panels: full height; the footer sits at the bottom when the content is short */
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])) {
+    block-size: 100%; max-block-size: none; border-block: 0; border-radius: 0;
+    padding-block: calc(var(--_pad) + env(safe-area-inset-top)) calc(var(--_pad) + env(safe-area-inset-bottom));
+  }
+  /* a column instead of core's grid, so the footer can be pushed down; its parts keep their height (a scroll area in it
+     would shrink to nothing), except a data-grow part */
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])[open]) { display: flex; flex-direction: column; }
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > *,
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(article) > * { flex-shrink: 0; }
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(form, div:has(> footer)) { display: flex; flex-direction: column; flex-grow: 1; }
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(footer),
+  :where(dialog:is([data-sheet="end"], [data-sheet="start"])) > :where(div, form, article) > :where(footer) { margin-block-start: auto; } /* pushed down, not an outer margin */
+  :where(dialog[data-sheet="end"]) { margin-inline-start: auto; border-inline-end: 0; padding-inline-end: calc(var(--_pad) + var(--_edge)); }
+  :where(dialog[data-sheet="start"]) { --_off: calc(var(--_x) * -100%) 0; margin-inline-end: auto; border-inline-start: 0; padding-inline-start: calc(var(--_pad) + var(--_edge)); }
+
+  /* bottom sheet: as wide as a dialog, the whole width on phones */
+  :where(dialog[data-sheet="bottom"]) {
+    --_off: 0 100%; inline-size: min(var(--tm-dialog-width, 30rem), 100%); margin: auto auto 0;
+    border-block-end: 0; border-end-start-radius: 0; border-end-end-radius: 0;
+    padding-inline: calc(var(--_pad) + var(--_edge)); padding-block-end: calc(var(--_pad) + env(safe-area-inset-bottom));
+  }
+  /* narrow: the same bottom sheet, below 48rem only; from 48rem it is an ordinary centered dialog */
+  @media (width < 48rem) {
+    :where(dialog[data-sheet="narrow"]) {
+      --_off: 0 100%; --_edge: max(env(safe-area-inset-left), env(safe-area-inset-right));
+      inline-size: 100%; max-inline-size: none; margin: auto auto 0; opacity: 1; scale: 1; translate: var(--_off);
+      transition: translate var(--tm-duration) var(--tm-ease), overlay var(--tm-duration) allow-discrete, display var(--tm-duration) allow-discrete;
+      border-block-end: 0; border-end-start-radius: 0; border-end-end-radius: 0;
+      padding-inline: calc(var(--_pad) + var(--_edge)); padding-block-end: calc(var(--_pad) + env(safe-area-inset-bottom));
+    }
+  }
+
+  /* open: in place; opening, it starts from its edge (after the rules above, which set where that is) */
+  :where(dialog[data-sheet][open]) { translate: none; }
+  @starting-style { :where(dialog[data-sheet][open]) { translate: var(--_off); } }
+
+  /* print what the sheet holds, not one screen of it (core prints every dialog in full; side panels are 100% tall) */
+  @media print { :where(dialog[data-sheet]) { block-size: auto; translate: none; } }
+}
