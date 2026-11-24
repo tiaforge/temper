@@ -189,7 +189,7 @@
   }
   :where(mark) { background: color-mix(in oklab, var(--tm-warning) 35%, #0000); color: inherit; border-radius: 2px; }
   :where(table, time, data) { font-variant-numeric: tabular-nums; }
-  :where(::selection) { background: color-mix(in oklab, var(--tm-accent) 28%, #0000); }
+  ::selection { background: color-mix(in oklab, var(--tm-accent) 28%, #0000); } /* (0,0,1): a pseudo-element cannot go in :where() (it matched nothing) */
   :where(:focus-visible) { outline: 2px solid var(--tm-accent); outline-offset: 2px; }
   :where([data-tone]) { color: var(--tm-tone-ink); }
   :where([data-muted]) { color: var(--tm-text-muted); }
@@ -452,7 +452,7 @@
   /* In a row, fields take their natural width instead of 100%, so they don't push siblings onto a new line. */
   :where([data-layout="row"]) > :where(input, select) { inline-size: auto; min-inline-size: 0; }
   :where(textarea) { block-size: auto; min-block-size: 5.5em; padding-block: 0.5em; resize: vertical; line-height: 1.5; }
-  :where(::placeholder) { color: var(--tm-text-muted); opacity: 1; }
+  ::placeholder { color: var(--tm-text-muted); opacity: 1; } /* (0,0,1), see ::selection */
   :where(select:not([multiple], [size])) {
     appearance: none;
     padding-inline-end: calc(var(--tm-control-px) + 1.25em);
