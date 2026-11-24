@@ -351,7 +351,9 @@ Lessons:
   and, in whole documents, TM117 skipped heading level, TM118 duplicate id, TM119 `popovertarget`, `commandfor`,
   `for`, `list` or `aria-*` pointing at a missing id (with "did you mean"), TM120 popover or dialog nothing opens;
   TM121 two solid buttons side by side; TM122 a `<button>` in a `data-field` inside a wrapping `<label>` (its name
-  joins the field's name). Computed values are reduced
+  joins the field's name); TM123 a `data-tooltip` that never shows because the `::after` is taken (a text button
+  that opens a popover has the dropdown caret, `data-stretch` its overlay, a direct child of an `aria-sort` header
+  the sort arrow). Computed values are reduced
   to the literals they can produce; `types/*.d.ts` (generated) types them for React, Vue, Astro,
   Svelte component props and sinter's `data-sn-attr`. No findings on caley's current frontend.
 
@@ -367,7 +369,7 @@ Missing, roughly in order:
    scroll behind a modal (keeping the scrollbar's space) and keep header and footer in view in a tall dialog;
    popovers and menus fade in and out. Next: `site` (site
    header and footer, hero) for tia.vision.
-5. ~~Visual regression tests~~ Done: `npm run visual`, 17 states of the kitchen sink and app shell
+5. ~~Visual regression tests~~ Done: `npm run visual`, 37 states of the kitchen-sink pages
    compared pixel by pixel with `test/visual/` (machine-specific baselines; `--update` accepts a change).
    Agent evals: done through the eval harness and the six caley migration runs. README: done, with
    2560×1440 screenshots from `npm run readme-shots`.

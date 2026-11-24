@@ -9,6 +9,7 @@ import { readFile } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from '../packages/inspect/lib/cdp.js';
+import { restyled } from './restyled.js';
 
 let browser = null;
 try { browser = findBrowser(); } catch {}
@@ -36,16 +37,6 @@ async function withPage(fn, { fixture = 'perf.html', motion = 'reduce' } = {}) {
   }
 }
 
-/** Runs `expression` (which must force a style update) under a trace; returns the number of elements restyled. */
-async function restyled(page, expression) {
-  const events = [];
-  const offData = page.on('Tracing.dataCollected', p => events.push(...p.value));
-  let offDone;
-  const complete = new Promise(r => { offDone = page.on('Tracing.tracingComplete', r); });
-  await page.send('Tracing.start', { traceConfig: { includedCategories: ['devtools.timeline'] }, transferMode: 'ReportEvents' });
-  try { await page.evaluate(expression); } finally { await page.send('Tracing.end'); await complete; offData(); offDone(); }
-  return events.filter(e => e.name === 'UpdateLayoutTree' && e.args?.elementCount != null).reduce((n, e) => n + e.args.elementCount, 0);
-}
 
 // A positional pseudo-class (:nth-child, :last-child, ...) or a sibling combinator in the subject compound of a rule
 // with nothing else to filter on is tried on every element, which marks every parent: then one child added anywhere

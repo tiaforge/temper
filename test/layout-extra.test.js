@@ -9,6 +9,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from '../packages/inspect/lib/cdp.js';
 import { checkMarkup } from '../lib/check.js';
+import { restyled } from './restyled.js';
 
 let browser = null;
 try { browser = findBrowser(); } catch {}
@@ -48,16 +49,6 @@ async function withPage({ width = 1280, dir, scheme = 'light', media = {}, file 
   }
 }
 
-/** Runs `expression` (which must force a style update) under a trace; returns the number of elements restyled. */
-async function restyled(page, expression) {
-  const events = [];
-  const offData = page.on('Tracing.dataCollected', p => events.push(...p.value));
-  let offDone;
-  const complete = new Promise(r => { offDone = page.on('Tracing.tracingComplete', r); });
-  await page.send('Tracing.start', { traceConfig: { includedCategories: ['devtools.timeline'] }, transferMode: 'ReportEvents' });
-  try { await page.evaluate(expression); } finally { await page.send('Tracing.end'); await complete; offData(); offDone(); }
-  return events.filter(e => e.name === 'UpdateLayoutTree' && e.args?.elementCount != null).reduce((n, e) => n + e.args.elementCount, 0);
-}
 
 const SHOW = ['vp-narrow', 'vp-wide', 'cn-narrow', 'cn-wide', 'cw-narrow', 'cw-wide', 'nest-narrow', 'nest-wide', 'self', 'own-narrow', 'own-wide'];
 

@@ -12,6 +12,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from '../packages/inspect/lib/cdp.js';
 import { checkMarkup } from '../lib/check.js';
+import { restyled } from './restyled.js';
 
 let browser = null;
 try { browser = findBrowser(); } catch {}
@@ -66,16 +67,6 @@ async function withPage({ width = 1280, height = 700, dir, motion = 'reduce', me
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const wheel = (page, x, y, deltaY) => page.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaX: 0, deltaY });
 
-/** Runs `expression` (which must force a style update) under a trace; returns the number of elements restyled. */
-async function restyled(page, expression) {
-  const events = [];
-  const offData = page.on('Tracing.dataCollected', p => events.push(...p.value));
-  let offDone;
-  const complete = new Promise(r => { offDone = page.on('Tracing.tracingComplete', r); });
-  await page.send('Tracing.start', { traceConfig: { includedCategories: ['devtools.timeline'] }, transferMode: 'ReportEvents' });
-  try { await page.evaluate(expression); } finally { await page.send('Tracing.end'); await complete; offData(); offDone(); }
-  return events.filter(e => e.name === 'UpdateLayoutTree' && e.args?.elementCount != null).reduce((n, e) => n + e.args.elementCount, 0);
-}
 
 // The harness hides scrollbars (and Chrome cannot show them again from here), so the no-shift part is checked through
 // the reserved gutter: stable while a page that overflows is locked, none on a page that does not.
@@ -106,7 +97,7 @@ test('the page behind a modal dialog does not scroll; its scrollbar space stays 
 
 test('a tall dialog keeps its header and footer in place and scrolls what is between them, in every markup shape', { skip }, async () => {
   await withPage({}, async page => {
-    for (const id of ['tall', 'tall-form', 'tall-article', 'tall-stack']) {
+    for (const id of ['tall', 'tall-form', 'tall-article', 'tall-stack', 'content-stack']) {
       const r = await page.evaluate(`(() => {
         const d = $('${id}'); d.showModal(); d.getAnimations().forEach(a => a.finish());
         const scroller = '${id}' === 'tall-stack' ? $('tall-stack-scroll') : d;
@@ -132,7 +123,7 @@ test('a tall dialog keeps its header and footer in place and scrolls what is bet
   });
 });
 
-test('a stack dialog (or one stack wrapper): its data-grow data-scroll="y" part fills the dialog up to the screen limit and scrolls; with little content the dialog stays small',{ skip }, async () => {
+test('a stack dialog (or a stack wrapper, beside helpers): its data-grow data-scroll="y" part fills the dialog up to the screen limit and scrolls; with little content the dialog stays small',{ skip }, async () => {
   await withPage({}, async page => {
     const measure = (id, part) => page.evaluate(`(() => {
       const d = $('${id}'); d.showModal(); d.getAnimations().forEach(a => a.finish());
@@ -141,7 +132,10 @@ test('a stack dialog (or one stack wrapper): its data-grow data-scroll="y" part 
       d.close(); return r;
     })()`);
     // directly in a stack dialog, or through one stack wrapper (form, div, article) in an ordinary dialog
-    for (const [id, part] of [['tall-stack', 'tall-stack-scroll'], ['wrap-form', 'wrap-form-part'], ['wrap-div', 'wrap-div-part'], ['wrap-article', 'wrap-article-part']]) {
+    // also beside helpers that render nothing (hidden elements before and after it, a template, unknown custom
+    // elements, empty or display: contents), and with the dialog's own header outside the wrapper
+    const wrapped = ['form', 'div', 'article', 'hidden', 'template', 'custom', 'outer-header'].map(w => [`wrap-${w}`, `wrap-${w}-part`]);
+    for (const [id, part] of [['tall-stack', 'tall-stack-scroll'], ...wrapped]) {
       const r = await measure(id, part);
       assert.equal(r.dialog.h, r.max, `${id}: as tall as the screen allows`);
       assert.ok(r.part.h > r.max - 250, `${id}: the part takes the rest: ${r.part.h} of ${r.dialog.h}`);
@@ -154,6 +148,16 @@ test('a stack dialog (or one stack wrapper): its data-grow data-scroll="y" part 
       assert.equal(r.part.h, r.content, `${id}: the part is as tall as its content (not 8rem)`);
       assert.ok(r.dialog.h < 300 && !r.partScrolls && !r.dialogScrolls, `${id}: the dialog stays small: ${r.dialog.h}`);
     }
+    // a content stack between the dialog's own header and footer is not a wrapper: the dialog stays a grid and scrolls
+    // as a whole, the stack keeps its height and ends above the footer
+    const c = await page.evaluate(`(() => {
+      const d = $('content-stack'); d.showModal(); d.getAnimations().forEach(a => a.finish());
+      const r = { display: cs('content-stack').display, scrolls: d.scrollHeight > d.clientHeight + 1, body: box('content-stack-body').h };
+      d.scrollTop = d.scrollHeight; r.end = box('content-stack-body').bottom <= box('content-stack-footer').y + 0.5;
+      d.close(); return r;
+    })()`);
+    assert.deepEqual(c, { display: 'grid', scrolls: true, body: c.body, end: true });
+    assert.ok(c.body > 1500, `the content stack keeps its height: ${c.body}`);
   });
 });
 
@@ -335,10 +339,20 @@ test('sheets: print in full, forced colors keep their edge, safe-area insets pad
     assert.deepEqual(r, [['1px', '0px', '0px'], ['0px', '1px', '0px'], ['1px', '1px', '1px']], 'the edge toward the page keeps its line');
   });
   // a phone with a notch, in landscape: the sheet pads the screen edges it touches by the insets
+  // (with data-pad="md" too: data-pad sets the padding, the edges add the inset to it)
+  const pads = `(ids => ids.map(id => { $(id).showModal(); const s = cs(id); const p = [s.paddingTop, s.paddingLeft, s.paddingRight, s.paddingBottom]; $(id).close(); return p; }))`;
   await withPage({ width: 844, height: 390 }, async page => {
     await page.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 0, bottom: 21, left: 47, right: 47 } });
-    const r = await page.evaluate(`['end', 'start', 'bottom'].map(id => { $(id).showModal(); const s = cs(id); const p = [s.paddingLeft, s.paddingRight, s.paddingBottom]; $(id).close(); return p; })`);
-    assert.deepEqual(r, [['24px', '71px', '45px'], ['71px', '24px', '45px'], ['71px', '71px', '45px']]);
+    assert.deepEqual(await page.evaluate(`${pads}(['end', 'start', 'bottom'])`), [['24px', '24px', '71px', '45px'], ['24px', '71px', '24px', '45px'], ['24px', '71px', '71px', '45px']]);
+    assert.deepEqual(await page.evaluate(`${pads}(['end-pad', 'start-pad', 'bottom-pad'])`), [['16px', '16px', '63px', '37px'], ['16px', '63px', '16px', '37px'], ['16px', '63px', '63px', '37px']], 'data-pad');
+  });
+  // portrait, with a notch and a home indicator: side sheets pad top and bottom, a narrow sheet is a bottom sheet here
+  await withPage({ width: 390, height: 844 }, async page => {
+    try { await page.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 47, bottom: 34, left: 0, right: 0 } }); } catch { return; }
+    assert.deepEqual(await page.evaluate(`${pads}(['end', 'narrow', 'end-pad', 'start-pad', 'bottom-pad', 'narrow-pad'])`), [
+      ['71px', '24px', '24px', '58px'], ['24px', '24px', '24px', '58px'],
+      ['63px', '16px', '16px', '50px'], ['63px', '16px', '16px', '50px'], ['16px', '16px', '16px', '50px'], ['16px', '16px', '16px', '50px'],
+    ], 'portrait');
   });
 });
 

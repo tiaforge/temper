@@ -22,7 +22,9 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   off it; `--tm-fill` is L 0.955; print stays white. `--tm-shadow-lg` has two layers (a contact shadow and the ambient
   one). `data-bar` and toned toasts draw a straight bar. A multi-row `<select>` has padded, rounded option rows with a
   hover fill. The rail, menus, `data-scroll` panes, dialogs, list-box selects and textareas have thin scrollbars in the
-  theme's colors. A sticky table header paints the surface it sits on (page, card or dialog).
+  theme's colors, the thumb a mix of the muted text color and `--tm-border-strong` (65/35): at least 3.4:1 on every
+  surface in light and 4.3:1 in dark, every hue (a `--tm-border-strong` thumb was 1.5:1; `npm run contrast` now checks
+  it); in forced colors the browser draws it in system colors. A sticky table header paints the surface it sits on (page, card or dialog).
 - **Right-to-left** (`dir="rtl"`): switch, select arrow, vertical tabs, drawer, toasts, menus and the rail chevron
   mirror. **Forced colors** (Windows high contrast): icons, switches, selected, pressed and current items, progress,
   meter and menu focus stay visible. **Print**: no rail, floating action button, toasts, tooltips or shadows; fixed
@@ -52,12 +54,22 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   starts from its content: the dialog grows with it up to the screen's height and the part scrolls from there, and a
   short one stays small. Only in stack dialogs: in a row or split dialog `data-grow` keeps its 8rem start (a first
   version applied it to every dialog, and a search field next to its button wrapped onto its own line). It also works
-  through one wrapper: in `<dialog><form data-layout="stack">header, part, footer</form></dialog>` (or a `div` or
-  `article`, as the dialog's only child) the dialog becomes a column and the wrapper shrinks to the dialog's limit; the
-  part stayed 8rem tall there too. Core +46 B (brotli) for both.
+  through a wrapper: in `<dialog><form data-layout="stack">header, part, footer</form></dialog>` (or a `div` or
+  `article`) the dialog becomes a column and the wrapper shrinks to the dialog's limit; the part stayed 8rem tall there
+  too. The wrapper is the stack that holds the header or footer, so `hidden` helpers, `<template>`s and custom elements
+  beside it (and the dialog's own header outside it) do not matter; a content stack between the dialog's own header
+  and footer stays as it was. Core +52 B (brotli) for both (requiring the wrapper to be the only child was 6 B less,
+  and fell back to the 8rem part with any sibling).
 - Fixed: an invalid field keeps its danger border on hover (an invalid checkbox shows it too); disabled buttons no longer
   change on hover or move when pressed, and disabled fields have no hover border; checkbox and radio marks contrast with
   their fill inside a toned container (a warning callout) and when invalid.
+- Fixed: in a focused list-box `<select multiple>` (or `size` > 1) the checked options' text was unreadable in Chrome
+  and Firefox (contrast 1.4): the browsers force the selection's text color over temper's accent tint while the list has
+  focus. A focused list now shows the browser's own selection colors; the tint stays for an unfocused one. Core +1 B.
+- Fixed: in forced colors (Windows high contrast) a `<select>` had no arrow and the checked options of a list-box select
+  were unreadable or looked unchecked: browsers drop gradient backgrounds in that mode, and both were gradients (seen in
+  Chrome and Firefox). Selects now get the native arrow (`appearance: auto`) and checked options the system's selection
+  colors there; the customizable-select enhancement keeps its own picker. Core +27 B.
 - Fixed: `::selection` and `::placeholder` styles never applied (pseudo-elements are not allowed inside `:where()`); for
   the same reason reduced motion did not reach `::before`, `::after` and `::backdrop` (details chevron, check marks,
   switch knob, dialog backdrop). iOS Safari did not get `-webkit-text-size-adjust`. `data-size="md"` inside a `sm` or
@@ -83,7 +95,9 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   fluid `h1`/`h2`, images in running text stay inline, layout tables (`role="presentation"` or no `th`) lose the
   data-table look, temper components inside keep their own spacing, and `<article data-prose>` is a post, not a card.
 - **`sheet.css`**: `<dialog data-sheet="end|start|bottom|narrow">` is a side panel or a bottom sheet that slides in from
-  its edge; `narrow` is a bottom sheet below 48rem and a centered dialog above.
+  its edge; `narrow` is a bottom sheet below 48rem and a centered dialog above. The edges a sheet touches add the
+  safe-area inset (notch, home indicator) to its padding, also with `data-pad` (which replaced it at first, so a padded
+  bottom sheet's content sat under the home indicator).
 - `app.css`: `data-container`: inside one, `data-show` follows the width of the nearest container instead of the screen
   (panes of multi-pane apps).
 - `menu.css`: `<span data-caption>` labels a group of items, and a `<kbd>` at the end of an item shows its shortcut.
@@ -109,6 +123,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   button's name, so the input is announced as "API key Copy" (measured in Chrome's accessibility tree); use
   `<label for="…">` with the field outside the label. Not judged through a component or custom element. The kitchen
   sink's API key and disabled fields had this markup and now use `<label for>`.
+- New warning TM123: a `data-tooltip` that never shows. The tooltip is the `::after` and gives way where that is
+  taken: on a text button that opens a popover (`popovertarget` without `popovertargetaction="hide"`, or `commandfor`
+  with `command="toggle-popover"` or `"show-popover"`; its `::after` is the dropdown caret), on a `data-stretch`
+  element (the overlay) and on a direct child of an `aria-sort` header (the sort arrow). The message says to put the
+  hint in the label or use an icon button (`data-icon` with `aria-label` and no text), which keeps its tooltip. Not
+  judged where an expression decides the attribute or the button's content.
 - TM121 reports only solid buttons that certainly render side by side: not alternatives (`{#if}`/`{:else}`, `{#await}`
   branches, `a ? <x/> : <y/>`, `v-if`/`v-else`), and not conditional, repeated or hidden ones.
 - TM205 no longer reports colors inside `light-dark()`. TM101 names the range for a number outside it ("from 2 to 7")
@@ -119,6 +139,14 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - The README size table is generated from a real build (`npm run gen`) and checked by `npm test`.
 
 ### Docs and tooling
+
+- `--tm-shadow-sm` is described as what it is (a faint `0 1px 2px` resting shadow on cards, the selected segment and
+  tooltips), not "none in the default look".
+- `npm run visual` also covers `forms.html`, `layout.html`, `prose.html` and `overlays.html` (light, dark, phone; a tall
+  dialog scrolled, a side sheet, a bottom sheet on a phone, an open menu with captions and shortcuts): 37 states. A case
+  without a baseline is reported as new, with its shot in `shots/visual/`, instead of silently becoming its own
+  baseline; `--update --only <name>` makes it one. Shots take no width for a reserved scrollbar gutter (as in
+  temper-inspect); the existing 20 states are unchanged by that.
 
 - `data-shell` and the App shell recipe: panes that each scroll by themselves in a `data-shell="fixed"` app need
   `<main data-layout="split" data-wrap="none">`; with the default wrapping the panes grow to their content and the
@@ -142,6 +170,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   the removal started, and a write from one of them left the profile behind (seen once in 720 signal runs under load,
   and as a rare failure of the recover test).
 - The DevTools page object has `on(method, fn)` for protocol events (used by the restyle-count tests).
+- A reserved scrollbar gutter takes no width any more. The browser hides its scrollbars, but `scrollbar-gutter:
+  stable` still reserved 15px: while a modal dialog was open on a page that scrolls (temper's scroll lock), the page
+  and every dialog were laid out 15px narrower than on any screen, so a dialog whose content just fits a phone was
+  reported as overflowing, rows in it as wrapped (one in the kitchen sink's details sheet), and the shots showed a
+  bottom sheet stopping short of the right edge and an end sheet with a strip of unshaded page beside it. The dev-page
+  audit of the Vite plugin runs in your own browser, where the gutter is the real scrollbar's, and is unchanged.
 
 ## 0.3.0 (2026-11-12)
 

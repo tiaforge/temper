@@ -833,7 +833,7 @@
     },
     "--tm-shadow-sm": {
       "kind": "shadow",
-      "description": "Resting shadow (none in the default look)."
+      "description": "Resting shadow: cards, the selected segment, tooltips. A faint 0 1px 2px by default; none in print."
     },
     "--tm-shadow-lg": {
       "kind": "shadow",

@@ -19,7 +19,8 @@ import { launch, findBrowser } from '../packages/inspect/lib/cdp.js';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const baseDir = join(root, 'test/visual'), outDir = join(root, 'shots/visual');
 
-// [name, page + query, width, full page?]. Height is 800 unless the full page is captured.
+// [name, page + query, width, full page?, script run before the shot]. Height is 800 unless the full page is captured.
+const tallScrolled = `document.getElementById('tall').scrollTop = 400`;
 const CASES = [
   ...['light', 'dark'].flatMap(t => [
     [`sink-${t}`, `index.html?t=${t}`, 1280, true],
@@ -37,9 +38,26 @@ const CASES = [
   ['components-light', 'components.html?t=light&tip', 1280, true],
   ['components-dark', 'components.html?t=dark&tip', 1280, true],
   ['components-phone', 'components.html?t=light', 390, true],
+  // the newer demo pages; overlays: a tall dialog scrolled (header and footer stay), a side sheet, a bottom sheet on a
+  // phone, an open menu with group captions and shortcuts
+  ...['light', 'dark'].flatMap(t => [
+    [`forms-${t}`, `forms.html?t=${t}`, 1280, true],
+    [`layout-${t}`, `layout.html?t=${t}`, 1280, true],
+    [`prose-${t}`, `prose.html?t=${t}`, 1280, true],
+    [`overlays-${t}`, `overlays.html?t=${t}`, 1280, true],
+    [`overlays-dialog-scrolled-${t}`, `overlays.html?t=${t}&open=tall`, 1280, false, tallScrolled],
+    [`overlays-menu-${t}`, `overlays.html?t=${t}&open=edit-menu`, 1280],
+  ]),
+  ['forms-phone', 'forms.html?t=light', 390, true],
+  ['layout-phone', 'layout.html?t=light', 390, true],
+  ['prose-phone', 'prose.html?t=light', 390, true],
+  ['overlays-sheet-end', 'overlays.html?t=light&open=details', 1280],
+  ['overlays-sheet-bottom-phone', 'overlays.html?t=light&open=actions', 390],
 ];
 
-const FREEZE = '*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }';
+// scrollbar-width: none: the scrollbars are hidden, and a reserved gutter (the scroll lock of an open modal dialog on a
+// page that scrolls) must not take 15px either (as in temper-inspect)
+const FREEZE = '*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; } * { scrollbar-width: none !important; }';
 
 /** Runs in the page: compares two PNGs (data URLs) and draws a diff image. */
 async function compare(a, b, threshold) {
@@ -85,13 +103,14 @@ export async function run({ update = false, only, tolerance = 0.0001, threshold 
   if (existsSync(outDir)) rmSync(outDir, { recursive: true });
   try {
     const page = await b.newPage(); // one tab only: a background tab gets throttled timers and painting
-    for (const [name, url, width, full] of CASES.filter(c => !only || c[0].includes(only))) {
+    for (const [name, url, width, full, script] of CASES.filter(c => !only || c[0].includes(only))) {
       const scheme = url.includes('t=dark') ? 'dark' : 'light';
       await page.goto(base + url, { width, height: 800, scheme, settle: 300 });
       await page.evaluate(`(async () => {
         document.head.appendChild(document.createElement('style')).textContent = ${JSON.stringify(FREEZE)};
         await document.fonts.ready;
         await new Promise(r => setTimeout(r, 150));
+        ${script ?? ''}
       })()`);
       if (full) {
         const height = await page.evaluate('document.documentElement.scrollHeight');
@@ -100,9 +119,15 @@ export async function run({ update = false, only, tolerance = 0.0001, threshold 
       }
       const { data } = await page.send('Page.captureScreenshot', { format: 'png' });
       const file = join(baseDir, `${name}.png`);
-      if (update || !existsSync(file)) {
-        results.push({ name, status: existsSync(file) ? 'updated' : 'new' });
+      if (update) {
+        results.push({ name, status: existsSync(file) ? 'updated' : 'created' });
         writeFileSync(file, Buffer.from(data, 'base64'));
+        continue;
+      }
+      if (!existsSync(file)) { // nothing to compare with: kept for a look, not made a baseline (that is --update's job)
+        mkdirSync(outDir, { recursive: true });
+        writeFileSync(join(outDir, `${name}.actual.png`), Buffer.from(data, 'base64'));
+        results.push({ name, status: 'new' });
         continue;
       }
       const r = await page.evaluate(`(${compare.toString()})(${JSON.stringify('data:image/png;base64,' + readFileSync(file).toString('base64'))}, ${JSON.stringify('data:image/png;base64,' + data)}, ${threshold})`);
@@ -122,13 +147,16 @@ export async function run({ update = false, only, tolerance = 0.0001, threshold 
 
 export function report({ results, stale }) {
   const lines = results.map(r => {
+    if (r.status === 'new') return `+ ${r.name}: new case, no baseline yet (shot in shots/visual/${r.name}.actual.png)`;
     if (r.status !== 'changed') return `${r.status === 'ok' ? '✓' : '+'} ${r.name}${r.status === 'ok' ? '' : ` (${r.status} baseline)`}`;
     if (r.size) return `✗ ${r.name}: size changed from ${r.size[0]} to ${r.size[1]}`;
     const [x0, y0, x1, y1] = r.box;
     return `✗ ${r.name}: ${r.changed} pixels changed (${(r.changed / r.total * 100).toFixed(3)}%) in x ${x0}–${x1}, y ${y0}–${y1}`;
   });
   for (const f of stale) lines.push(`? test/visual/${f} has no case; delete it`);
-  const failed = results.filter(r => r.status === 'changed');
+  const failed = results.filter(r => r.status === 'changed'), added = results.filter(r => r.status === 'new');
+  if (added.length) lines.push('', `${added.length} new case(s) without a baseline (not a failure). After looking at the shots, make them`,
+    `the baselines: node scripts/visual.mjs --update --only <name> (once per case; --update alone rewrites every baseline).`);
   if (failed.length) lines.push('', `${failed.length} of ${results.length} changed. See shots/visual/*.diff.png (changes in red) and *.actual.png.`,
     'If the change is intended: node scripts/visual.mjs --update');
   return { text: lines.join('\n'), failed: failed.length > 0 };

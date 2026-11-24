@@ -216,17 +216,17 @@ and not stale. Docs, editor autocomplete and the checker can't drift apart from 
 
 **Contrast is checked for every hue.** `npm run contrast` sweeps the accent hue 0–360 in light and
 dark mode, lets headless Chrome resolve the real tokens, and checks WCAG AA for every text and
-background pair (4.5:1 for text and solid buttons, 3:1 for the focus ring). All hues pass at the
+background pair (4.5:1 for text and solid buttons, 3:1 for the focus ring and scrollbar thumbs). All hues pass at the
 default chroma. `npm test` runs the same check for the default look and the two theme examples.
 
-**Visual regression tests.** `npm run visual` screenshots the kitchen sink and the app shell demo in
-17 states (light and dark, compact density, phone width, both theme examples, open menu, dialog and
-drawer) and compares them pixel by pixel with baselines in `test/visual/`. A change writes a diff
+**Visual regression tests.** `npm run visual` screenshots the kitchen-sink pages in 37 states (light and
+dark, compact density, phone width, both theme examples, open menus, a scrolled dialog, side and bottom
+sheets, the drawer) and compares them pixel by pixel with baselines in `test/visual/`. A change writes a diff
 image with the changed pixels in red. Baselines depend on fonts and the Chrome version, so they are
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
 <!-- sizes -->
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.6 KB, `icons.css` 2.8 KB, `all.css` 12.6 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 99 % of its budget, `icons.css` 97 % and `all.css` 98 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.6 KB, `icons.css` 2.8 KB, `all.css` 12.6 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 99 % of its budget, `icons.css` 97 % and `all.css` 99 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
@@ -239,8 +239,8 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 | `pico-compat.css` | 0.4 KB | opt-in, while migrating from Pico: maps its `--pico-*` variables to temper tokens |
 | `forms.css` | 1.1 KB | fields with an icon, unit or button (`data-field`), read-only and required marks, autofill tint, range slider, indeterminate progress |
 | `prose.css` | 0.6 KB | long-form text (`data-prose`): rhythm between blocks, reading measure, fluid headings, inline images in text, plain layout tables, blockquote, figure |
-| `sheet.css` | 0.5 KB | dialogs as sheets (`data-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
-| `all.css` | 12.4 KB | everything |
+| `sheet.css` | 0.6 KB | dialogs as sheets (`data-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
+| `all.css` | 12.5 KB | everything |
 | `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 <!-- /sizes -->
 

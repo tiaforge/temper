@@ -9,7 +9,7 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { inspect, format } from '../lib/inspect.js';
+import { inspect, format, NO_GUTTERS } from '../lib/inspect.js';
 import { findBrowser, launch } from '../lib/cdp.js';
 import { install } from '../lib/audit.js';
 
@@ -136,6 +136,37 @@ test('an overlay the user opened is checked as its own state, and findings carry
     assert.ok((await page.evaluate(`window.__tsi.check('page')`)).some(f => f.code === 'contrast'));
   } finally {
     await b.close();
+    if (prevTmp === undefined) delete process.env.TMPDIR; else process.env.TMPDIR = prevTmp;
+    rmSync(tmp, { recursive: true, force: true });
+    srv.close();
+  }
+});
+
+// With hidden scrollbars a reserved gutter took 15px that no screen has: while a modal dialog was open on a page that
+// scrolls (temper's scroll lock reserves the page's gutter), the page and its dialogs were laid out 15px narrower, so a
+// dialog whose content just fits a phone was reported as overflowing, a sheet's row as wrapped, and the screenshots
+// showed a bottom sheet stopping short of the right edge.
+test('the scroll lock of an open dialog costs no width: no findings or shots that only the reserved gutter makes', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  const { srv, base } = await serve();
+  const tmp = mkdtempSync(join(tmpdir(), 'temper-inspect-test-'));
+  const prevTmp = process.env.TMPDIR;
+  process.env.TMPDIR = tmp;
+  try {
+    const { findings } = await inspect([`${base}locked.html`], { widths: [390], schemes: ['light'], settle: 100 });
+    assert.deepEqual(findings.filter(f => f.code !== 'opened').map(f => `${f.state} ${f.severity} ${f.code} ${f.selector}`), []);
+    // the layout the inspector sees while the sheet is open: as wide as the screen, the page did not narrow
+    const b = await launch(browser, { share: [], timeout: 30000 });
+    try {
+      const page = await b.newPage();
+      await page.goto(`${base}locked.html`, { width: 390, height: 900, scheme: 'light', settle: 100 });
+      const measure = `(async () => { const d = document.getElementById('actions'); d.showModal(); d.getAnimations().forEach(a => a.finish());
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); // the scroll-driven lock
+        const r = [Math.round(d.getBoundingClientRect().width), Math.round(document.querySelector('main').getBoundingClientRect().width)]; d.close(); return r; })()`;
+      const plain = await page.evaluate(measure);
+      await page.evaluate(NO_GUTTERS);
+      assert.deepEqual([plain, await page.evaluate(measure)], [[375, 375], [390, 390]], 'without the fix the gutter takes 15px; with it none');
+    } finally { await b.close(); }
+  } finally {
     if (prevTmp === undefined) delete process.env.TMPDIR; else process.env.TMPDIR = prevTmp;
     rmSync(tmp, { recursive: true, force: true });
     srv.close();

@@ -38,6 +38,10 @@ replaces a dozen separate screenshots when you also need to judge how it looks. 
 at full size (1 CSS pixel = 1 pixel) to `<dir>/<page>/<state>-<width>-<scheme>.png`, for example
 `contacts/01-dialog-dialog-detail-390-dark.png`; `--json` lists them under `shots`.
 
+Scrollbars are hidden and take no space, as on phones and macOS, and so does a reserved scrollbar gutter
+(`scrollbar-gutter: stable`, which temper's scroll lock sets on the page while a modal dialog is open): the page
+and its dialogs are checked and shot at the full width.
+
 Pages behind a login: pass the session cookie with `--cookie name=value` (set for each page's origin
 before it loads) or a token with `--header "Authorization: Bearer …"` (sent with every request, also to
 other origins). Both can be repeated. Get the cookie from your dev login, for example

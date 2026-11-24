@@ -25,16 +25,31 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
     .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i], 0);
   const blend = (t, u) => ({ r: t.r * t.a + u.r * (1 - t.a), g: t.g * t.a + u.g * (1 - t.a), b: t.b * t.a + u.b * (1 - t.a), a: 1 });
   const hex = c => '#' + [c.r, c.g, c.b].map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
-  // A fresh probe per read: Chrome can return a stale computed color for a reused element whose style was replaced.
-  const read = (expr, tone) => {
-    const probe = document.body.appendChild(document.createElement('div'));
-    if (tone === 'primary') probe.style.setProperty('--tm-tone', 'var(--tm-primary)');
-    else if (tone) probe.dataset.tone = tone;
-    probe.style.color = `var(${expr})`;
-    const c = rgba(getComputedStyle(probe).color);
-    probe.remove();
-    return c;
+  // Fresh probes for every run of a group (Chrome can return a stale computed color for a reused element whose style
+  // was replaced), all appended at once: each insertion into the document invalidates core's html:has(dialog:modal)
+  // (the scroll lock) and so restyles the root, and one probe per read made the sweep take minutes instead of seconds.
+  // 'thumb' reads the scrollbar thumb color that core gives a data-scroll pane.
+  let colors = new Map();
+  const key = (expr, tone) => `${expr}\u0000${tone ?? ''}`;
+  const snapshot = list => {
+    const box = document.createElement('div'), probes = new Map();
+    for (const [expr, tone] of list) {
+      if (probes.has(key(expr, tone))) continue;
+      const probe = box.appendChild(document.createElement('div'));
+      if (tone === 'primary') probe.style.setProperty('--tm-tone', 'var(--tm-primary)');
+      else if (tone) probe.dataset.tone = tone;
+      if (expr === 'thumb') probe.dataset.scroll = '';
+      else probe.style.color = `var(${expr})`;
+      probes.set(key(expr, tone), [expr, probe]);
+    }
+    document.body.appendChild(box);
+    colors = new Map([...probes].map(([k, [expr, probe]]) => {
+      const s = getComputedStyle(probe);
+      return [k, rgba(expr === 'thumb' ? s.scrollbarColor.match(/^[a-z-]+\([^)]*\)|^\S+/)[0] : s.color)];
+    }));
+    box.remove();
   };
+  const read = (expr, tone) => colors.get(key(expr, tone));
   // bg is composited over `under` (itself over white): a translucent bg such as --tm-fill shows what it sits on.
   const ratio = (fg, bg, tone, under = '--tm-bg') => {
     const u = blend(read(under, tone), { r: 255, g: 255, b: 255, a: 1 });
@@ -57,6 +72,9 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
       ...text.map(([bg, n, under]) => [`text on ${n}`, '--tm-text', bg, null, 4.5, under]),
       ...text.map(([bg, n, under]) => [`muted text on ${n}`, '--tm-text-muted', bg, null, 4.5, under]),
       ['muted text on field (placeholder)', '--tm-text-muted', '--tm-field', null, 4.5, '--tm-surface'],
+      // the thin scrollbar's thumb on a transparent track: panes, the rail, menus and dialogs, fields
+      ...text.slice(0, 3).map(([bg, n]) => [`scrollbar thumb on ${n}`, 'thumb', bg, null, 3]),
+      ['scrollbar thumb on field', 'thumb', '--tm-field', null, 3, '--tm-surface'],
       ['main button', '--tm-tone-on', '--tm-tone', 'primary', 4.5],
     ],
     accent: [
@@ -70,22 +88,30 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
 
   // A checked checkbox inside a toned container (a warning callout): its mark must contrast with the accent fill it
   // sits on, not follow the container's tone; invalid, the fill turns danger. 3 = non-text UI.
-  const marks = () => ['warning', 'danger', 'neutral'].flatMap(tone => [false, true].map(invalid => {
-    const box = document.body.appendChild(document.createElement('div'));
-    box.dataset.tone = tone;
-    const input = box.appendChild(Object.assign(document.createElement('input'), { type: 'checkbox', checked: true }));
-    if (invalid) input.setAttribute('aria-invalid', 'true');
-    const bg = blend(rgba(getComputedStyle(input).backgroundColor), { r: 255, g: 255, b: 255, a: 1 });
-    const fg = blend(rgba(getComputedStyle(input, '::before').borderRightColor), bg);
-    box.remove();
-    const [x, y] = [lum(fg), lum(bg)].sort((p, q) => q - p);
-    return { label: `checkbox mark in a ${tone} container${invalid ? ', invalid' : ''}`, min: 3, ratio: (x + 0.05) / (y + 0.05), fg: hex(fg), bg: hex(bg) };
-  }));
+  const marks = () => {
+    const all = document.createElement('div');
+    const cases = ['warning', 'danger', 'neutral'].flatMap(tone => [false, true].map(invalid => {
+      const box = all.appendChild(document.createElement('div'));
+      box.dataset.tone = tone;
+      const input = box.appendChild(Object.assign(document.createElement('input'), { type: 'checkbox', checked: true }));
+      if (invalid) input.setAttribute('aria-invalid', 'true');
+      return { tone, invalid, input };
+    }));
+    document.body.appendChild(all); // at once, like the probes above
+    const out = cases.map(({ tone, invalid, input }) => {
+      const bg = blend(rgba(getComputedStyle(input).backgroundColor), { r: 255, g: 255, b: 255, a: 1 });
+      const fg = blend(rgba(getComputedStyle(input, '::before').borderRightColor), bg);
+      const [x, y] = [lum(fg), lum(bg)].sort((p, q) => q - p);
+      return { label: `checkbox mark in a ${tone} container${invalid ? ', invalid' : ''}`, min: 3, ratio: (x + 0.05) / (y + 0.05), fg: hex(fg), bg: hex(bg) };
+    });
+    all.remove();
+    return out;
+  };
   const set = (name, v) => v == null ? html.style.removeProperty(name) : html.style.setProperty(name, String(v));
-  const run = (group, scheme, at) => [
+  const run = (group, scheme, at) => (snapshot(checks[group].flatMap(([, fg, bg, tone, , under]) => [[fg, tone], [bg, tone], [under ?? '--tm-bg', tone]])), [
     ...checks[group].map(([label, fg, bg, tone, min, under]) => ({ group, label, scheme, ...at, min, ...ratio(fg, bg, tone, under) })),
     ...(group === 'accent' ? marks().map(m => ({ group, scheme, ...at, ...m })) : []),
-  ];
+  ]);
   const results = [], caps = [];
   for (const scheme of ['light', 'dark']) {
     html.dataset.theme = scheme;

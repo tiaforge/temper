@@ -208,7 +208,9 @@ loses that gap. A dialog taller than the screen scrolls between its header and f
 one part fill the remaining height instead (a message body, a long list), give the dialog
 `data-layout="stack"` and that part `data-grow data-scroll="y"`: the dialog grows with that part's content up to the
 screen's height, and the part scrolls from there. With a wrapper around header, content and footer (`dialog > form`),
-give the wrapper `data-layout="stack"` instead of the dialog; it has to be the dialog's only child. Pico-style `dialog > article` markup works too: the article adds no box of its own.
+give the wrapper `data-layout="stack"` instead of the dialog; it is the stack that holds the header or footer, so
+hidden helpers, templates and custom elements beside it do not matter (a content stack between the dialog's own header
+and footer stays content). Pico-style `dialog > article` markup works too: the article adds no box of its own.
 
 Add `closedby="any"` to close the dialog on a click outside it or on Esc, with no script (no backdrop
 click handlers).
@@ -469,7 +471,7 @@ Dialog recipe. `end` and `start` are full-height side panels (details, filters) 
 `bottom` runs along the bottom edge (actions; the whole width on phones), and `narrow` is a bottom sheet below
 48rem and an ordinary centered dialog from there (pick it when a dialog should feel native on phones). Side
 panels are `--tm-dialog-width` wide, and on phones leave a strip of the page to tap. They mirror in RTL and
-keep clear of the notch with `viewport-fit=cover`.
+keep clear of the notch and the home indicator with `viewport-fit=cover`, also with `data-pad`.
 
 ### Toasts and tooltips (feedback.css)
 
@@ -492,6 +494,10 @@ function toast(text, tone) {
   setTimeout(() => { t.hidden = true; setTimeout(() => t.remove(), 300); }, 5000);
 }
 ```
+
+A tooltip is the element's `::after`, so a text button that opens a menu (its dropdown caret), a `data-stretch` link
+and a sort button in an `aria-sort` header never show one (`temper check` warns, TM123): put the hint in the label,
+or use an icon button, which keeps its tooltip.
 
 In a framework, render the region once and the toasts from a list (`{#each toasts as t (t.id)}<div data-toast …>`).
 To show toasts above an open modal dialog, give the region `popover="manual"` and call `region.showPopover()`

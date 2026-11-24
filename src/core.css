@@ -214,8 +214,8 @@
 /* ───────────── layout ───────────── */
 @layer tm.layout {
   :where([data-layout]) { --_gap: var(--tm-space-md); gap: var(--_gap); }
-  /* a dialog around one stack wrapper (dialog > form[data-layout="stack"]) is a column too: see data-grow below */
-  :where([data-layout="stack"], dialog[open]:has(> [data-layout="stack"]:only-child)) { display: flex; flex-direction: column; }
+  /* a dialog around a stack wrapper (dialog > form[data-layout="stack"] > header, footer) is a column too: see data-grow below */
+  :where([data-layout="stack"], dialog[open]:has(> [data-layout="stack"] > :is(header, footer))) { display: flex; flex-direction: column; }
   :where([data-layout="row"]) { display: flex; flex-wrap: wrap; align-items: center; }
   :where(:is(button, a, label)[data-layout="row"]:not([data-wrap])) { flex-wrap: nowrap; }
   :where([data-layout="grid"]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(var(--tm-min, 16rem), 100%), 1fr)); }
@@ -267,12 +267,14 @@
   /* in a data-layout="stack" dialog (no set height) the growing part starts from its content, so the dialog grows with
      it up to its max-block-size and the part scrolls from there; from 8rem it stayed 8rem tall. Only in a stack: in a
      row or split dialog data-grow keeps its 8rem start, so a search field still wraps below its button only when the
-     row is narrow. The same through one stack wrapper that is the dialog's only child (a form, div or article around
-     header, part and footer): the dialog is then a column, and the wrapper may shrink to the dialog's limit (also in a
-     side sheet, which keeps its children from shrinking) */
-  :where(dialog) > :where([data-layout="stack"]:only-child) { min-block-size: 0; flex-shrink: 1; }
+     row is narrow. The same through a stack wrapper (a form, div or article around header, part and footer): the dialog
+     is then a column, and the wrapper may shrink to the dialog's limit (also in a side sheet, which keeps its children
+     from shrinking). The wrapper is the stack that holds the header or footer, as for the sticky rules below, so
+     helpers beside it ([hidden], template, an empty custom element) do not matter, and a content stack between the
+     dialog's own header and footer is not shrunk over the footer */
+  :where(dialog) > :where([data-layout="stack"]:has(> header, > footer)) { min-block-size: 0; flex-shrink: 1; }
   :where(dialog[data-layout="stack"]) > :where([data-grow]),
-  :where(dialog) > :where([data-layout="stack"]:only-child) > :where([data-grow]) { flex-basis: auto; }
+  :where(dialog) > :where([data-layout="stack"]:has(> header, > footer)) > :where([data-grow]) { flex-basis: auto; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
   :where([data-pad="xs"]) { --_pad: var(--tm-space-xs); }
@@ -490,14 +492,23 @@
     /* ▾, --tm-control-px from the end; the color repeats the field's */
     background: conic-gradient(from -45deg at bottom, var(--tm-text-muted) 90deg, #0000 0) calc(50% + var(--_x) * (50% - var(--tm-control-px))) center / 0.6em 0.3em no-repeat var(--tm-field);
   }
-  /* thin scrollbars in the theme's colors where panes scroll (classic scrollbars are wide and grey); not the page's */
-  :where([data-scroll], [data-rail], [data-menu], dialog, textarea, select) { scrollbar-width: thin; scrollbar-color: var(--tm-border-strong) #0000; }
+  /* thin scrollbars in the theme's colors where panes scroll (classic scrollbars are wide and grey); not the page's.
+     The thumb between the muted text and the strong border: at least 3:1 on every surface (non-text contrast;
+     scripts/contrast.mjs) */
+  :where([data-scroll], [data-rail], [data-menu], dialog, textarea, select) { scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--tm-text-muted) 65%, var(--tm-border-strong)) #0000; }
   /* a list box: rows like menu items (rounded, a fill on hover), the text in line with the other fields' */
   :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding: var(--tm-space-xs); }
   :where(select:is([multiple], [size]:not([size="1"]))) :where(option) { padding: 0.25em calc(var(--tm-control-px) - var(--tm-space-xs)); border-radius: var(--tm-radius-sm); }
   :where(select:is([multiple], [size]:not([size="1"]))) :where(option:hover) { background-color: var(--tm-fill); }
-  /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode) */
-  :where(select:is([multiple], [size]:not([size="1"]))) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--tm-text); --_sel: color-mix(in oklab, var(--tm-accent) 22%, var(--tm-field)); }
+  /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode). Not while the
+     list has focus: Chrome and Firefox then force the selection's text color (white) over the tint */
+  :where(select:is([multiple], [size]:not([size="1"])):not(:focus)) :where(option:checked) { background: linear-gradient(var(--_sel), var(--_sel)); color: var(--tm-text); --_sel: color-mix(in oklab, var(--tm-accent) 22%, var(--tm-field)); }
+  /* forced colors drop gradients: the arrow above and that tint (the text was unreadable). The native arrow and the
+     system's selection colors instead; the customizable-select enhancement, loaded later, keeps its own picker */
+  @media (forced-colors: active) {
+    :where(select) { appearance: auto; }
+    :where(option:checked) { background: SelectedItem; color: SelectedItemText; }
+  }
   :where(input[type="color"]) {
     inline-size: calc(var(--tm-control-h) * 1.5); block-size: var(--tm-control-h); padding: 3px;
     border: 1px solid var(--tm-field-border); border-radius: var(--tm-radius); background: var(--tm-field); cursor: pointer;
