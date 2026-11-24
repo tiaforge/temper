@@ -36,12 +36,14 @@
         <span data-field><span>https://</span><input value="tiaforge" aria-invalid="true"><span>.example.com</span></span>
         <small data-tone="danger">This name is taken.</small>
       </label>
-      <label>API key
-        <span data-field><input value="tm_live_8f2c41" readonly><button type="button" data-variant="ghost" data-icon="copy" aria-label="Copy"></button></span>
-      </label>
-      <label>Disabled
-        <span data-field><span data-icon="lock"></span><input value="Locked" disabled><button type="button" data-variant="ghost" data-icon="x" aria-label="Clear" disabled></button></span>
-      </label>
+      <div data-layout="stack" data-gap="xs">
+        <label for="api-key">API key</label>
+        <div data-field><input id="api-key" value="tm_live_8f2c41" readonly><button type="button" data-variant="ghost" data-icon="copy" aria-label="Copy"></button></div>
+      </div>
+      <div data-layout="stack" data-gap="xs">
+        <label for="locked">Disabled</label>
+        <div data-field><span data-icon="lock"></span><input id="locked" value="Locked" disabled><button type="button" data-variant="ghost" data-icon="x" aria-label="Clear" disabled></button></div>
+      </div>
     </div>
     <div data-layout="stack" data-gap="xs">
       <label for="pw">Password</label>

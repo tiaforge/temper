@@ -350,7 +350,8 @@ Lessons:
   dialog without a name, TM115 table without `<th>`, TM116 `data-tooltip` on something that cannot take focus,
   and, in whole documents, TM117 skipped heading level, TM118 duplicate id, TM119 `popovertarget`, `commandfor`,
   `for`, `list` or `aria-*` pointing at a missing id (with "did you mean"), TM120 popover or dialog nothing opens;
-  TM121 two solid buttons side by side. Computed values are reduced
+  TM121 two solid buttons side by side; TM122 a `<button>` in a `data-field` inside a wrapping `<label>` (its name
+  joins the field's name). Computed values are reduced
   to the literals they can produce; `types/*.d.ts` (generated) types them for React, Vue, Astro,
   Svelte component props and sinter's `data-sn-attr`. No findings on caley's current frontend.
 

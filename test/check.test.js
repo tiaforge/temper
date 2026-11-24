@@ -368,7 +368,7 @@ test('tokens in style attributes are checked in plain HTML files too', () => {
   assert.match(r[0].message, /Did you mean --tm-text\?/);
 });
 
-// ───────────── structure and accessibility rules (TM113–TM121), fixes ─────────────
+// ───────────── structure and accessibility rules (TM113–TM122), fixes ─────────────
 
 const doc = body => `<html><body>${body}</body></html>`;
 
@@ -477,6 +477,30 @@ test('two solid buttons: alternatives in JSX, Astro, Vue and sinter', () => {
   assert.deepEqual(tm('const x = <div><button>Close</button><button>Open</button></div>;', 'A.tsx'), ['TM121']);
   assert.deepEqual(tm('<div>{a && <p><button>A</button><button>B</button></p>}</div>', 'a.astro'), ['TM121']);
   assert.deepEqual(tm('<div><template v-if="a"><button>A</button><button>B</button></template></div>', 'A.vue'), ['TM121']);
+});
+
+test('TM122: a button in a data-field inside a wrapping label', () => {
+  const tm = (src, file = 'a.html') => codes(checkMarkup(src, file)).filter(c => c === 'TM122');
+  const copy = '<button type="button" data-variant="ghost" data-icon="copy" aria-label="Copy"></button>';
+  const [d] = checkMarkup(`<label>API key <span data-field><input name="key">${copy}</span></label>`);
+  assert.equal(d.code, 'TM122');
+  assert.equal(d.severity, 'warning');
+  assert.match(d.message, /label for=/);
+  assert.deepEqual(tm(`<label>API key <span><span data-field><input>${copy}</span></span></label>`), ['TM122']);
+  assert.deepEqual(tm(`<label>API key <span data-field><input>${copy}</span></label>`, 'A.svelte'), ['TM122']);
+  // silent: label for with the field outside it, no button, an icon span, the button outside the field
+  assert.deepEqual(tm(`<label for="k">API key</label><div data-field><input id="k">${copy}</div>`), []);
+  assert.deepEqual(tm('<label>Amount <span data-field><span>€</span><input><span>EUR</span></span></label>'), []);
+  assert.deepEqual(tm('<label>Search <span data-field><span data-icon="search"></span><input></span></label>'), []);
+  assert.deepEqual(tm(`<label>API key <span data-field><input></span></label>${copy}`), []);
+  assert.deepEqual(tm(`<div data-field><input aria-label="API key">${copy}</div>`), []);
+  // not judged: a component or custom element between them, or a component instead of a button
+  assert.deepEqual(tm(`<label>API key <Field><span data-field><input>${copy}</span></Field></label>`, 'A.svelte'), []);
+  assert.deepEqual(tm(`<label>API key <span data-field><my-copy>${copy}</my-copy><input></span></label>`), []);
+  assert.deepEqual(tm('<label>API key <span data-field><input><CopyButton /></span></label>', 'A.svelte'), []);
+  // temper-ignore
+  const r = check([writeTemp('a.html', `<label>API key <span data-field><input>\n<!-- temper-ignore -->\n${copy}</span></label>\n`)]);
+  assert.deepEqual(codes(r).filter(c => c === 'TM122'), []);
 });
 
 test('fixed colors: light-dark() handles both schemes', () => {

@@ -93,6 +93,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   comments of Svelte/Astro `{…}` and Vue `{{ }}` expressions, is no longer checked (it could fail the build). TypeScript
   generics are handled. A `<script>` or `<style>` tag with a `>` in a quoted attribute (Svelte `generics="…"`) no longer
   hides the rest of the file from the check.
+- New warning TM122: a `<button>` in a `data-field` inside a wrapping `<label>`. The label's text then includes the
+  button's name, so the input is announced as "API key Copy" (measured in Chrome's accessibility tree); use
+  `<label for="…">` with the field outside the label. Not judged through a component or custom element. The kitchen
+  sink's API key and disabled fields had this markup and now use `<label for>`.
 - TM121 reports only solid buttons that certainly render side by side: not alternatives (`{#if}`/`{:else}`, `{#await}`
   branches, `a ? <x/> : <y/>`, `v-if`/`v-else`), and not conditional, repeated or hidden ones.
 - TM205 no longer reports colors inside `light-dark()`. TM101 names the range for a number outside it ("from 2 to 7")
