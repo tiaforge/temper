@@ -469,7 +469,7 @@
   :where(input[type="color"])::-webkit-color-swatch-wrapper { padding: 0; }
   :where(input[type="color"])::-webkit-color-swatch { border: 0; border-radius: var(--tm-radius-sm); }
   :where(input[type="color"])::-moz-color-swatch { border: 0; border-radius: var(--tm-radius-sm); }
-  :where(input[type="file"]) { max-inline-size: 100%; font-size: var(--tm-control-font); }
+  :where(input[type="file"]) { max-inline-size: 100%; font-size: var(--tm-control-font); font-weight: 400; } /* not the label's */
   :where(input[type="file"])::file-selector-button {
     block-size: var(--tm-control-h); padding-inline: var(--tm-control-px); margin-inline-end: var(--tm-space-sm);
     border: 1px solid var(--tm-border-strong); border-radius: var(--tm-radius);
