@@ -459,8 +459,10 @@
     /* ▾, --tm-control-px from the end; the color repeats the field's */
     background: conic-gradient(from -45deg at bottom, var(--tm-text-muted) 90deg, #0000 0) calc(50% + var(--_x) * (50% - var(--tm-control-px))) center / 0.6em 0.3em no-repeat var(--tm-field);
   }
+  /* thin scrollbars in the theme's colors where panes scroll (classic scrollbars are wide and grey); not the page's */
+  :where([data-scroll], [data-rail], [data-menu], textarea, select) { scrollbar-width: thin; scrollbar-color: var(--tm-border-strong) #0000; }
   /* a list box: rows like menu items (rounded, a fill on hover), the text in line with the other fields' */
-  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding: var(--tm-space-xs); scrollbar-color: var(--tm-border-strong) #0000; }
+  :where(select:is([multiple], [size]:not([size="1"]))) { block-size: auto; padding: var(--tm-space-xs); }
   :where(select:is([multiple], [size]:not([size="1"]))) :where(option) { padding: 0.25em calc(var(--tm-control-px) - var(--tm-space-xs)); border-radius: var(--tm-radius-sm); }
   :where(select:is([multiple], [size]:not([size="1"]))) :where(option:hover) { background-color: var(--tm-fill); }
   /* selected options: an accent tint instead of the system highlight (Firefox: bright cyan in dark mode) */
