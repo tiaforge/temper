@@ -56,6 +56,9 @@
   <form id="stack-form-part" method="dialog" data-grow data-scroll="y"><p style="block-size: 1500px">Fields</p></form>
   <footer id="stack-form-footer"><button form="stack-form-part">Save</button></footer>
 </dialog>
+<!-- row dialogs: data-grow keeps its 8rem start (the stack rule must not reach them) -->
+<dialog id="row-search" data-layout="row" aria-label="Find"><input id="row-search-grow" data-grow aria-label="Search"><button id="row-search-button">Search</button></dialog>
+<dialog id="row-title" data-layout="row"><h2 id="row-title-grow" data-grow>A long title that takes some room in the row</h2><button id="row-title-button" data-variant="ghost">Close</button></dialog>
 <dialog id="padded" data-pad="md" aria-label="Padded">
   <article>
     <header id="padded-header"><h2>Article</h2></header>

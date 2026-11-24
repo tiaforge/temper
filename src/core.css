@@ -264,9 +264,10 @@
   }
   :where([data-grow]) { flex: 1 1 var(--tm-grow-basis, 8rem); min-inline-size: 0; min-block-size: 0; }
   /* in a data-layout="stack" dialog (no set height) the growing part starts from its content, so the dialog grows with
-     it up to its max-block-size and the part scrolls from there; from 8rem it stayed 8rem tall. Side sheets (a column
-     of full height) fill the same way; in an ordinary dialog (a grid) flex-basis does nothing */
-  :where(dialog) > :where([data-grow]) { flex-basis: auto; }
+     it up to its max-block-size and the part scrolls from there; from 8rem it stayed 8rem tall. Only in a stack: in a
+     row or split dialog data-grow keeps its 8rem start, so a search field still wraps below its button only when the
+     row is narrow */
+  :where(dialog[data-layout="stack"]) > :where([data-grow]) { flex-basis: auto; }
   :where([data-pad]) { padding: var(--_pad); }
   :where([data-pad="none"]) { --_pad: 0; }
   :where([data-pad="xs"]) { --_pad: var(--tm-space-xs); }

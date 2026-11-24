@@ -153,6 +153,19 @@ test('a stack dialog: its data-grow data-scroll="y" part fills the dialog up to 
   });
 });
 
+// The stack dialog's rule (data-grow starts from its content) must not reach a row dialog: there data-grow starts from
+// 8rem, so a search field or a title shares the line with its button (from its content, both wrapped onto two lines).
+test('a row dialog: a data-grow child keeps its 8rem start and shares the line with its button', { skip }, async () => {
+  for (const width of [360, 1280]) await withPage({ width }, async page => {
+    const r = await page.evaluate(`['row-search', 'row-title'].map(id => {
+      const d = $(id); d.showModal(); d.getAnimations().forEach(a => a.finish());
+      const g = box(id + '-grow'), b = box(id + '-button'), basis = cs(id + '-grow').flexBasis;
+      d.close(); return { id, oneLine: b.x > g.right - 1 && b.y < g.bottom, basis };
+    })`);
+    assert.deepEqual(r, [{ id: 'row-search', oneLine: true, basis: '128px' }, { id: 'row-title', oneLine: true, basis: '128px' }], `${width}px`);
+  });
+});
+
 test('inside a dialog: dialog > article takes the dialog padding (not the card one), sticky bars and table headers paint the raised surface and slide under the header', { skip }, async () => {
   await withPage({}, async page => {
     const r = await page.evaluate(`(() => {
