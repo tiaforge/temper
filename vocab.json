@@ -388,7 +388,7 @@
       "module": "core",
       "boolean": true,
       "on": "any text element",
-      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
+      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index, the label of a group of items in a data-menu.",
       "short": "Small, muted label text (captions, group headings)."
     },
     "data-list": {
@@ -496,7 +496,7 @@
       "module": "menu",
       "boolean": true,
       "on": "[popover] (dropdown) or any container (static menu)",
-      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
+      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport); it fades in and out.",
       "short": "Menu of buttons, links and checkbox labels; as a [popover] it opens under its button."
     },
     "data-combo": {
@@ -565,6 +565,21 @@
       ],
       "description": "One field drawn around an input and its adornments: an icon (<span data-icon=\"search\"></span>) or text (<span>€</span>, <span>kg</span>) before or after the input, and a button at the end (data-variant=\"ghost\" data-icon=\"eye\" aria-label=\"Show password\"). As tall as a plain field at every data-size and density (data-size goes on the wrapper); focus, hover, invalid (aria-invalid or :user-invalid on the input), read-only and disabled show on the whole field, and data-grow works on it in a row. Inside a <label> use <span data-field>. With a button in it, give the input <label for> and an id instead of wrapping it in the label, or the button's name becomes part of the field's name.",
       "short": "One field around an input and its icon, text (<span>€</span>) or end button."
+    },
+    "data-sheet": {
+      "module": "sheet",
+      "on": "dialog",
+      "tags": [
+        "dialog"
+      ],
+      "description": "The dialog is a sheet that slides in from an edge of the screen instead of appearing in the middle. Open and close it like any dialog (command=\"show-modal\", closedby=\"any\"); header and footer stay in view while its content scrolls. Width: --tm-dialog-width. Keeps clear of the notch and home indicator (viewport-fit=cover), mirrors in RTL.",
+      "short": "Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet.",
+      "values": {
+        "end": "Full-height panel at the inline end (right; left in RTL): details, an inspector. The footer sits at the bottom.",
+        "start": "Full-height panel at the inline start: filters, navigation. The footer sits at the bottom.",
+        "bottom": "Along the bottom edge, as tall as its content: actions, a short form. Full width on phones.",
+        "narrow": "A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem."
+      }
     }
   },
   "tokens": {
@@ -647,7 +662,7 @@
     "--tm-dialog-width": {
       "kind": "input",
       "optional": true,
-      "description": "Dialog width. Default 30rem."
+      "description": "Dialog width, also of a data-sheet panel. Default 30rem."
     },
     "--tm-bg": {
       "kind": "color",

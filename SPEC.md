@@ -251,6 +251,7 @@ temper/data.css       dense list rows (mail list), selection states, sticky head
 temper/feedback.css   toast stack, skeleton, empty state
 temper/forms.css      fields with icons, units and buttons (data-field), read-only, required marker, autofill,
                          range, indeterminate progress
+temper/sheet.css      dialogs as sheets (data-sheet): side panels, bottom sheets
 temper/prose.css      long-form text (`data-prose`), fluid type: email reader, blog, tia.vision
 temper/site.css       marketing: hero, section, feature grid, timeline, nav bar (tia.vision)
 temper/all.css        everything
@@ -352,7 +353,10 @@ Missing, roughly in order:
 4. Modules: `app`, `menu`, `icons`, `feedback` (toasts, tooltips), `table` (data tables), `forms` (fields with
    adornments via `data-field`, read-only, required marker, autofill, range, indeterminate progress) and `prose`
    (`data-prose`: rhythm for long-form text, reading measure through `--tm-measure`, fluid h1/h2, blockquote,
-   figure, inline images, plain layout tables; 2026-11-23) exist; `nav` ended up in core. Next: `site` (site
+   figure, inline images, plain layout tables; 2026-11-23) and `sheet` (`data-sheet="end|start|bottom|narrow"`: a
+   dialog as a side panel or bottom sheet; 2026-11-24) exist; `nav` ended up in core. Core dialogs lock the page
+   scroll behind a modal (keeping the scrollbar's space) and keep header and footer in view in a tall dialog;
+   popovers and menus fade in and out. Next: `site` (site
    header and footer, hero) for tia.vision.
 5. ~~Visual regression tests~~ Done: `npm run visual`, 17 states of the kitchen sink and app shell
    compared pixel by pixel with `test/visual/` (machine-specific baselines; `--update` accepts a change).

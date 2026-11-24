@@ -164,4 +164,6 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-prose'?: true | '' | null | Removes;
   /** One field around an input and its icon, text (<span>€</span>) or end button. Needs forms.css. */
   'data-field'?: true | '' | null | Removes;
+  /** Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. Needs sheet.css. */
+  'data-sheet'?: 'end' | 'start' | 'bottom' | 'narrow' | null | Removes;
 }

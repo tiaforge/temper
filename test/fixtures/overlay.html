@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, viewport-fit=cover">
+<title>Dialogs, sheets, popovers and menus</title>
+<link rel="stylesheet" href="../../src/core.css">
+<link rel="stylesheet" href="../../src/app.css">
+<link rel="stylesheet" href="../../src/menu.css">
+<link rel="stylesheet" href="../../src/feedback.css">
+<link rel="stylesheet" href="../../src/sheet.css">
+<link rel="stylesheet" href="../../src/icons.css">
+</head>
+<body data-shell>
+<nav data-rail popover id="rail" aria-label="Main"><a href="#" data-icon="mail"><span>Mail</span></a></nav>
+<main data-layout="stack" data-pad="md" id="main">
+  <button id="opener" popovertarget="menu">Options</button>
+  <ul id="rows"></ul>
+</main>
+
+<!-- tall dialogs, one per markup shape: header + content + footer, a form wrapper, an article, data-layout="stack" -->
+<dialog id="tall">
+  <header id="tall-header"><h2>Terms</h2><button commandfor="tall" command="close" aria-label="Close"></button></header>
+  <p id="tall-first">First</p>
+  <p style="block-size: 1500px">Long</p>
+  <p>Last</p>
+  <footer id="tall-footer"><button>Cancel</button><button>Save</button></footer>
+</dialog>
+<dialog id="tall-form">
+  <form method="dialog">
+    <header id="tall-form-header"><h2>Form</h2></header>
+    <p id="tall-form-first" style="block-size: 1500px">Long</p>
+    <footer id="tall-form-footer"><button>OK</button></footer>
+  </form>
+</dialog>
+<dialog id="tall-article">
+  <article>
+    <header id="tall-article-header"><h2>Article</h2></header>
+    <p id="tall-article-first" style="block-size: 1500px">Long</p>
+    <footer id="tall-article-footer"><button>OK</button></footer>
+  </article>
+</dialog>
+<dialog id="tall-stack" data-layout="stack">
+  <header id="tall-stack-header"><h2>Mail</h2></header>
+  <div id="tall-stack-scroll" data-grow data-scroll="y"><p id="tall-stack-first" style="block-size: 1500px">Long</p></div>
+  <footer id="tall-stack-footer"><button>Send</button></footer>
+</dialog>
+<dialog id="short" closedby="any">
+  <header id="short-header"><h2>Delete?</h2></header>
+  <p id="short-first">This sends a cancellation.</p>
+  <footer id="short-footer"><button>Keep</button><button>Delete</button></footer>
+</dialog>
+
+<!-- sheets -->
+<dialog id="end" data-sheet="end"><header><h2>Details</h2></header><p>Short</p><footer id="end-footer"><button>Edit</button></footer></dialog>
+<dialog id="start" data-sheet="start"><form method="dialog"><header><h2>Filters</h2></header><p>Short</p><footer id="start-footer"><button>Apply</button></footer></form></dialog>
+<dialog id="bottom" data-sheet="bottom"><header><h2>Actions</h2></header><p>Short</p><footer><button>Cancel</button></footer></dialog>
+<dialog id="narrow" data-sheet="narrow"><header><h2>Share</h2></header><p>Short</p><footer><button>Done</button></footer></dialog>
+<dialog id="end-tall" data-sheet="end">
+  <header id="end-tall-header"><h2>Long details</h2></header>
+  <pre id="end-tall-pre">a wide, scrolling block that must keep its height in the panel's column</pre>
+  <p style="block-size: 1500px">Long</p>
+  <footer id="end-tall-footer"><button>Edit</button></footer>
+</dialog>
+
+<!-- popovers -->
+<div popover id="menu" data-menu>
+  <span data-caption id="caption">Clipboard</span>
+  <button id="plain">Rename</button>
+  <button id="with-kbd">Paste without formatting <kbd id="kbd">Ctrl Shift V</kbd></button>
+  <button data-icon="copy" id="icon-kbd">Copy <kbd>Ctrl C</kbd></button>
+  <label id="check-kbd"><input type="checkbox"> Weekends <kbd>W</kbd></label>
+</div>
+<div popover id="note"><p>A plain popover.</p></div>
+<div data-toasts popover="manual" role="status" id="toasts"></div>
+<script>
+  document.getElementById('rows').innerHTML = Array.from({ length: 300 }, (_, i) => `<li>Row ${i}</li>`).join('');
+</script>
+</body>
+</html>

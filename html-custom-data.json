@@ -539,7 +539,7 @@
     },
     {
       "name": "data-caption",
-      "description": "temper. On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index.",
+      "description": "temper. On: any text element. Small, semibold, muted label text: captions above values, group headings like a letter in an index, the label of a group of items in a data-menu.",
       "valueSet": "v"
     },
     {
@@ -613,7 +613,7 @@
     },
     {
       "name": "data-menu",
-      "description": "temper (menu.css). On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport).",
+      "description": "temper (menu.css). On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport); it fades in and out.",
       "valueSet": "v"
     },
     {
@@ -650,6 +650,28 @@
       "name": "data-field",
       "description": "temper (forms.css). On: a div (a span inside a <label>) around one input and its adornments. One field drawn around an input and its adornments: an icon (<span data-icon=\"search\"></span>) or text (<span>€</span>, <span>kg</span>) before or after the input, and a button at the end (data-variant=\"ghost\" data-icon=\"eye\" aria-label=\"Show password\"). As tall as a plain field at every data-size and density (data-size goes on the wrapper); focus, hover, invalid (aria-invalid or :user-invalid on the input), read-only and disabled show on the whole field, and data-grow works on it in a row. Inside a <label> use <span data-field>. With a button in it, give the input <label for> and an id instead of wrapping it in the label, or the button's name becomes part of the field's name.",
       "valueSet": "v"
+    },
+    {
+      "name": "data-sheet",
+      "description": "temper (sheet.css). On: dialog. The dialog is a sheet that slides in from an edge of the screen instead of appearing in the middle. Open and close it like any dialog (command=\"show-modal\", closedby=\"any\"); header and footer stay in view while its content scrolls. Width: --tm-dialog-width. Keeps clear of the notch and home indicator (viewport-fit=cover), mirrors in RTL.",
+      "values": [
+        {
+          "name": "end",
+          "description": "Full-height panel at the inline end (right; left in RTL): details, an inspector. The footer sits at the bottom."
+        },
+        {
+          "name": "start",
+          "description": "Full-height panel at the inline start: filters, navigation. The footer sits at the bottom."
+        },
+        {
+          "name": "bottom",
+          "description": "Along the bottom edge, as tall as its content: actions, a short form. Full width on phones."
+        },
+        {
+          "name": "narrow",
+          "description": "A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem."
+        }
+      ]
     }
   ]
 }

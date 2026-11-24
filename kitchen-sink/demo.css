@@ -58,7 +58,7 @@ body { min-block-size: 100dvh; }
 
 /* static previews of overlay components */
 .preview-dialog { position: static; display: grid; opacity: 1; scale: 1; inline-size: 100%; }
-.preview-menu { position: static; display: block; inset: auto; margin: 0; inline-size: 14rem; }
+.preview-menu { position: static; display: block; inset: auto; margin: 0; inline-size: 14rem; opacity: 1; scale: 1; }
 .preview-menu button { inline-size: 100%; justify-content: start; }
 .preview-menu hr { margin-block: var(--tm-space-xs); }
 

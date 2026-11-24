@@ -37,6 +37,7 @@ const probe = `(() => {
   const box = id => el(id).getBoundingClientRect();
   const firstLine = id => { const r = document.createRange(); r.selectNodeContents(el(id)); return r.getClientRects()[0].left - box(id).left; };
   el('open').click();
+  el('menu').getAnimations().forEach(a => a.finish()); // measure the menu where it rests, not where its fade-in starts
   return {
     justifyText: firstLine('justify'),
     stackChild: el('item-stack').firstElementChild.getBoundingClientRect().left - box('item-stack').left,

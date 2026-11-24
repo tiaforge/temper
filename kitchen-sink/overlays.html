@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>temper overlays</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/menu.css">
+  <link rel="stylesheet" href="../src/sheet.css">
+  <link rel="stylesheet" href="../src/icons.css">
+  <script>
+    // ?t=light|dark, ?dir=rtl, ?open=<id of a dialog or popover to open on load>
+    { const q = new URLSearchParams(location.search);
+      if (q.get('t')) document.documentElement.dataset.theme = q.get('t');
+      if (q.get('dir')) document.documentElement.dir = q.get('dir');
+      if (q.get('open')) addEventListener('load', () => {
+        const el = document.getElementById(q.get('open'));
+        if (el.localName === 'dialog') el.showModal();
+        else el.showPopover({ source: document.querySelector(`[popovertarget="${el.id}"]`) });
+      }); }
+  </script>
+</head>
+<body>
+<main data-layout="center" data-gap="xl" data-pad="xl">
+  <h1>Overlays <small data-muted>dialogs, sheets (sheet.css), menus (menu.css)</small></h1>
+
+  <section data-layout="stack" data-gap="md">
+    <h2>Dialogs</h2>
+    <p>A tall dialog keeps its header and footer in view and scrolls the content between them. The page behind an open
+      modal dialog does not scroll.</p>
+    <div data-layout="row" data-gap="sm">
+      <button type="button" commandfor="tall" command="show-modal">Tall dialog</button>
+      <button type="button" commandfor="tall-form" command="show-modal" data-variant="outline">Tall form</button>
+      <button type="button" commandfor="short" command="show-modal" data-variant="outline">Short dialog</button>
+    </div>
+  </section>
+
+  <section data-layout="stack" data-gap="md">
+    <h2>Sheets</h2>
+    <p>A dialog with <code>data-sheet</code> slides in from an edge: <code>end</code> and <code>start</code> are
+      full-height side panels, <code>bottom</code> runs along the bottom edge, <code>narrow</code> is a bottom sheet on
+      phones and an ordinary dialog on wider screens.</p>
+    <div data-layout="row" data-gap="sm">
+      <button type="button" commandfor="details" command="show-modal">Details (end)</button>
+      <button type="button" commandfor="filters" command="show-modal" data-variant="outline">Filters (start)</button>
+      <button type="button" commandfor="actions" command="show-modal" data-variant="outline">Actions (bottom)</button>
+      <button type="button" commandfor="share" command="show-modal" data-variant="outline">Share (narrow)</button>
+    </div>
+  </section>
+
+  <section data-layout="stack" data-gap="md">
+    <h2>Menus and popovers</h2>
+    <p>Popovers and menus fade in and out like dialogs. A <code>data-caption</code> labels a group of items; a
+      <code>kbd</code> at the end of an item is its shortcut.</p>
+    <div data-layout="row" data-gap="sm">
+      <button type="button" popovertarget="edit-menu" data-variant="outline">Edit</button>
+      <button type="button" popovertarget="view-menu" data-variant="outline">View</button>
+      <button type="button" popovertarget="note" data-variant="ghost">About</button>
+    </div>
+  </section>
+
+  <div data-layout="stack" data-gap="md" aria-hidden="true">
+    <p data-muted>Page content, so the page itself scrolls.</p>
+    <div data-layout="grid" data-gap="md" style="--tm-min: 14rem">
+      <article><h3>Week 46</h3><p>12 events, 3 invitations.</p></article>
+      <article><h3>Week 47</h3><p>9 events, 1 invitation.</p></article>
+      <article><h3>Week 48</h3><p>14 events, no invitations.</p></article>
+      <article><h3>Week 49</h3><p>7 events, 2 invitations.</p></article>
+      <article><h3>Week 50</h3><p>11 events, 4 invitations.</p></article>
+      <article><h3>Week 51</h3><p>5 events, no invitations.</p></article>
+      <article><h3>Week 52</h3><p>2 events, no invitations.</p></article>
+      <article><h3>Week 1</h3><p>8 events, 1 invitation.</p></article>
+      <article><h3>Week 2</h3><p>10 events, 2 invitations.</p></article>
+    </div>
+    <p data-muted style="min-block-size: 60vh">End of the page.</p>
+  </div>
+</main>
+
+<dialog id="tall" closedby="any">
+  <header>
+    <h2>Terms of service</h2>
+    <button type="button" commandfor="tall" command="close" aria-label="Close"></button>
+  </header>
+  <p>Please read these terms before you continue. The header and the buttons stay where they are while this text scrolls.</p>
+  <h3>1. Accounts</h3>
+  <p>You are responsible for the activity on your account and for keeping your password safe. Tell us at once if you
+    notice access you did not allow.</p>
+  <h3>2. Your content</h3>
+  <p>You keep the rights to what you upload. You give us the permission we need to store it, back it up and show it
+    to the people you share it with.</p>
+  <h3>3. Calendars and invitations</h3>
+  <p>Invitations you send go out from your address. Guests see the event title, the time and the other guests unless
+    you hide the guest list.</p>
+  <h3>4. Availability</h3>
+  <p>We aim for the service to be available at all times but cannot promise it. Planned maintenance is announced a
+    week ahead.</p>
+  <h3>5. Ending the service</h3>
+  <p>You can export your data and close your account at any time. We keep backups for 30 days after that, then
+    delete them.</p>
+  <h3>6. Changes</h3>
+  <p>When these terms change we tell you a month ahead, by mail and in the app.</p>
+  <h3>7. Contact</h3>
+  <p>Questions about these terms go to the address in the imprint.</p>
+  <footer>
+    <button type="button" commandfor="tall" command="close" data-variant="ghost">Decline</button>
+    <button type="button" commandfor="tall" command="close">Accept</button>
+  </footer>
+</dialog>
+
+<dialog id="tall-form">
+  <form method="dialog">
+    <header>
+      <h2>New event</h2>
+      <button type="button" commandfor="tall-form" command="close" aria-label="Close"></button>
+    </header>
+    <div data-layout="stack" data-gap="md">
+      <label>Title <input value="Team retro"></label>
+      <label>Location <input value="Room 4"></label>
+      <div data-layout="grid" data-cols="2" data-gap="md">
+        <label>Starts <input type="time" value="10:00"></label>
+        <label>Ends <input type="time" value="11:00"></label>
+      </div>
+      <label>Calendar <select><option>Work</option><option>Personal</option></select></label>
+      <label>Guests <input value="Priya, Mira, Jonas"></label>
+      <label>Notes <textarea rows="6">Bring the sticky notes.</textarea></label>
+      <label>Reminder <select><option>10 minutes before</option><option>1 hour before</option></select></label>
+      <label><input type="checkbox" checked> Send invitations</label>
+    </div>
+    <footer>
+      <button type="button" commandfor="tall-form" command="close" data-variant="ghost">Cancel</button>
+      <button>Save event</button>
+    </footer>
+  </form>
+</dialog>
+
+<dialog id="short" closedby="any">
+  <header><h2>Delete “Team retro”?</h2></header>
+  <p>This sends a cancellation to all guests.</p>
+  <footer>
+    <button type="button" commandfor="short" command="close" data-variant="ghost">Keep</button>
+    <button type="button" commandfor="short" command="close" data-tone="danger">Delete event</button>
+  </footer>
+</dialog>
+
+<dialog id="details" data-sheet="end" closedby="any">
+  <header>
+    <h2>Priya Raman</h2>
+    <button type="button" commandfor="details" command="close" aria-label="Close"></button>
+  </header>
+  <div data-layout="row" data-gap="md">
+    <span data-avatar>PR</span>
+    <div><strong>Priya Raman</strong><p data-muted>Product designer, Raman Studio</p></div>
+  </div>
+  <dl data-pairs>
+    <dt>Email</dt><dd>priya@raman.dev</dd>
+    <dt>Phone</dt><dd>+44 20 7946 0958</dd>
+    <dt>Address</dt><dd>12 Ropemaker Street, London</dd>
+    <dt>Birthday</dt><dd>14 March</dd>
+  </dl>
+  <p>Met at the design systems meetup. Prefers mail over calls.</p>
+  <footer>
+    <button type="button" data-variant="ghost" data-tone="danger" data-icon="trash-2">Delete</button>
+    <button type="button" data-icon="pencil">Edit</button>
+  </footer>
+</dialog>
+
+<dialog id="filters" data-sheet="start" closedby="any">
+  <form method="dialog" data-layout="stack">
+    <header>
+      <h2>Filters</h2>
+      <button type="button" commandfor="filters" command="close" aria-label="Close"></button>
+    </header>
+    <fieldset data-layout="stack" data-gap="sm">
+      <legend>Calendars</legend>
+      <label><input type="checkbox" checked> Work</label>
+      <label><input type="checkbox" checked> Personal</label>
+      <label><input type="checkbox"> Holidays</label>
+    </fieldset>
+    <footer>
+      <button type="reset" data-variant="ghost">Reset</button>
+      <button>Apply</button>
+    </footer>
+  </form>
+</dialog>
+
+<dialog id="actions" data-sheet="bottom" closedby="any" aria-label="Message actions">
+  <div data-layout="stack" data-gap="xs">
+    <button type="button" data-variant="ghost" data-justify="start" data-icon="send" commandfor="actions" command="close">Forward</button>
+    <button type="button" data-variant="ghost" data-justify="start" data-icon="archive" commandfor="actions" command="close">Archive</button>
+    <button type="button" data-variant="ghost" data-justify="start" data-icon="trash-2" data-tone="danger" commandfor="actions" command="close">Delete</button>
+  </div>
+  <footer>
+    <button type="button" commandfor="actions" command="close" data-variant="secondary">Cancel</button>
+  </footer>
+</dialog>
+
+<dialog id="share" data-sheet="narrow" closedby="any">
+  <header>
+    <h2>Share “Team retro”</h2>
+    <button type="button" commandfor="share" command="close" aria-label="Close"></button>
+  </header>
+  <label>Link <input value="https://cal.example.com/e/8f2c41" readonly></label>
+  <footer>
+    <button type="button" commandfor="share" command="close" data-variant="ghost">Done</button>
+    <button type="button" data-icon="copy">Copy link</button>
+  </footer>
+</dialog>
+
+<div popover id="edit-menu" data-menu>
+  <span data-caption>Clipboard</span>
+  <button type="button" data-icon="copy">Copy <kbd>Ctrl C</kbd></button>
+  <button type="button">Paste <kbd>Ctrl V</kbd></button>
+  <button type="button">Paste without formatting <kbd>Ctrl Shift V</kbd></button>
+  <hr>
+  <span data-caption>Event</span>
+  <button type="button" data-icon="pencil">Rename <kbd>F2</kbd></button>
+  <button type="button" data-icon="trash-2" data-tone="danger">Delete <kbd>Del</kbd></button>
+</div>
+
+<div popover id="view-menu" data-menu>
+  <span data-caption>Show</span>
+  <label><input type="checkbox" checked> Weekends</label>
+  <label><input type="checkbox"> Declined events</label>
+  <hr>
+  <span data-caption>Range</span>
+  <label><input type="radio" name="range" checked> Week <kbd>W</kbd></label>
+  <label><input type="radio" name="range"> Month <kbd>M</kbd></label>
+</div>
+
+<div popover id="note">
+  <p data-pad="sm">temper 0.3: popovers and menus fade in and out.</p>
+</div>
+</body>
+</html>

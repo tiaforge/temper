@@ -19,6 +19,7 @@ import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selection, number columns
 import '@tiaforge-ui/temper/prose.css';  // data-prose: articles, Markdown, mail bodies
 import '@tiaforge-ui/temper/forms.css';  // data-field (icon, unit, button in a field), range, read-only, required *, loading bar
+import '@tiaforge-ui/temper/sheet.css';  // data-sheet: a dialog as a side panel or bottom sheet
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/temper/all.css';
@@ -189,7 +190,9 @@ buttons to the end.
 ```
 
 The open dialog is a grid with a gap between its direct children, so content inside a wrapper element
-loses that gap. To let one part fill the remaining height (a message body, a long list), give the dialog
+loses that gap. A dialog taller than the screen scrolls between its header and footer, which stay in view
+(also through one `form`, `div` or `article` wrapper); the page behind a modal dialog does not scroll. To let
+one part fill the remaining height instead (a message body, a long list), give the dialog
 `data-layout="stack"` and that part `data-grow data-scroll="y"`. Pico-style `dialog > article` markup
 works too: the article adds no box of its own.
 
@@ -352,11 +355,43 @@ c.addEventListener('change', () => localStorage.setItem('rail-collapsed', c.chec
 </div>
 ```
 
+Group labels and shortcuts need no new attributes:
+
+```html
+<div popover id="edit-menu" data-menu>
+  <span data-caption>Clipboard</span>
+  <button data-icon="copy">Copy <kbd>Ctrl C</kbd></button>
+  <button>Paste <kbd>Ctrl V</kbd></button>
+</div>
+```
+
+A `<kbd>` at the end of an item sits at its end edge, muted. Menus and popovers fade in and out like dialogs.
 Buttons that open a popover (`popovertarget`, `command="toggle-popover"`) get a ▾ caret automatically;
 icon buttons (`data-icon`) do not. A submit button (`type="submit"`, the default inside a form) ignores
 `popovertarget` and `commandfor`; give opener and closer buttons `type="button"`.
 
 A `data-menu` popover can hold any content, not only items: a month picker, a small form.
+
+### Sheet: side panel or bottom sheet (sheet.css)
+
+```html
+<button commandfor="contact" command="show-modal">Details</button>
+<dialog id="contact" data-sheet="end" closedby="any">
+  <header>
+    <h2>Priya Raman</h2>
+    <button commandfor="contact" command="close" aria-label="Close"></button>
+  </header>
+  <dl data-pairs><dt>Email</dt><dd>priya@raman.dev</dd></dl>
+  <footer><button data-icon="pencil">Edit</button></footer>
+</dialog>
+```
+
+A sheet is a dialog that slides in from an edge; everything else (header, footer, closing, `closedby`) is the
+Dialog recipe. `end` and `start` are full-height side panels (details, filters) with the footer at the bottom,
+`bottom` runs along the bottom edge (actions; the whole width on phones), and `narrow` is a bottom sheet below
+48rem and an ordinary centered dialog from there (pick it when a dialog should feel native on phones). Side
+panels are `--tm-dialog-width` wide, and on phones leave a strip of the page to tap. They mirror in RTL and
+keep clear of the notch with `viewport-fit=cover`.
 
 ### Toasts and tooltips (feedback.css)
 

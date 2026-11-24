@@ -34,6 +34,9 @@
   }
   :where([data-menu]) :where(label):hover { background: var(--tm-fill); }
   :where([data-menu]) :where(hr) { margin-block: var(--tm-space-xs); }
+  /* a group label (data-caption) lines up with the item text; a shortcut (kbd) sits at the end of its item, muted */
+  :where([data-menu]) > :where([data-caption]) { padding: var(--tm-space-xs) var(--tm-space-sm) 0; }
+  :where([data-menu]) :where(button, a, label) > :where(kbd) { margin-inline-start: auto; padding: 0; padding-inline-start: var(--tm-space-sm); border: 0; color: var(--tm-text-muted); } /* pushed to the end, not an outer margin */
   /* combobox: a non-popover data-menu (role=listbox) inside a data-combo wrapper opens under the field */
   :where([data-combo]) { position: relative; }
   :where([data-combo]) > :where([data-menu]) { position: absolute; inset-block-start: calc(100% + var(--tm-space-xs)); inset-inline: 0; z-index: 20; }

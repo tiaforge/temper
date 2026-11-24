@@ -569,20 +569,30 @@
   /* The reset removes margins; modal dialogs and popovers need the browser's margin: auto to stay centered. */
   :where(dialog, [popover]) { margin: auto; }
   :where(dialog) {
+    --_pad: var(--tm-space-lg);
     inline-size: min(var(--tm-dialog-width, 30rem), 100% - 2rem);
     max-block-size: calc(100dvh - 2rem);
-    padding: var(--tm-space-lg);
+    padding: var(--_pad);
     border: 1px solid var(--tm-border);
     border-radius: var(--tm-radius-lg);
     background: var(--tm-surface-raised);
     color: var(--tm-text);
     box-shadow: var(--tm-shadow-lg);
+    overscroll-behavior: contain;
+  }
+  /* dialogs and popovers fade and scale in and out; not the rail drawer and the toast region, which move their own way */
+  :where(dialog, [popover]:not([data-rail], [data-toasts])) {
     opacity: 0; scale: 0.97;
     transition: opacity var(--tm-duration) var(--tm-ease), scale var(--tm-duration) var(--tm-ease),
       overlay var(--tm-duration) allow-discrete, display var(--tm-duration) allow-discrete;
   }
-  :where(dialog[open]) { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--tm-space-md); opacity: 1; scale: 1; }
-  @starting-style { :where(dialog[open]) { opacity: 0; scale: 0.97; } }
+  :where(dialog[open], [popover]:popover-open) { opacity: 1; scale: 1; }
+  @starting-style { :where(dialog[open], [popover]:popover-open) { opacity: 0; scale: 0.97; } }
+  :where(dialog[open]) { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--tm-space-md); }
+  /* The page behind a modal dialog does not scroll. Its scrollbar keeps its space while it is hidden (only on a page
+     that overflows: the scroll timeline, and so the animation, is inactive on one that does not), so nothing shifts. */
+  :where(html:has(dialog:modal)) { overflow: hidden; animation: tm-gutter both; animation-timeline: scroll(); }
+  @keyframes tm-gutter { from, to { scrollbar-gutter: stable; } }
   :where(dialog)::backdrop {
     background: oklch(0.2 0.02 var(--tm-neutral-hue) / 0.45);
     opacity: 0;
@@ -595,6 +605,14 @@
   :where(dialog, article) > :where(div, form, section, article) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-sm); }
   :where(dialog, article) > :where(footer),
   :where(dialog, article) > :where(div, form, section, article) > :where(footer) { display: flex; flex-wrap: wrap; justify-content: end; gap: var(--tm-space-sm); }
+  /* A tall dialog scrolls between its header and footer: they stick to its edges, over the padding there, so they do
+     not move when the content starts scrolling (the negative margin and the padding cancel out at rest). */
+  :where(dialog) > :where(header, footer),
+  :where(dialog) > :where(div, form, article) > :where(header, footer) { position: sticky; inset-block: calc(-1 * var(--_pad)); z-index: 1; background: var(--tm-surface-raised); }
+  :where(dialog) > :where(header),
+  :where(dialog) > :where(div, form, article) > :where(header) { margin-block-start: calc(-1 * var(--_pad)); padding-block-start: var(--_pad); }
+  :where(dialog) > :where(footer),
+  :where(dialog) > :where(div, form, article) > :where(footer) { margin-block-end: calc(-1 * var(--_pad)); padding-block-end: var(--_pad); }
   :where(dialog, article) :where(header) > :where(:not(h1, h2, h3, h4, h5, h6)) { flex-shrink: 0; }
   /* Close buttons in a dialog or card header look like quiet icon buttons; an empty one draws an ×. */
   :where(dialog, article) :where(header) :where(button:is([command="close"], [command="hide-popover"], [popovertargetaction="hide"])) {
