@@ -142,6 +142,26 @@ test('an overlay the user opened is checked as its own state, and findings carry
   }
 });
 
+// An opener that renders but sits off the page (an app's off-canvas drawer, closed on phones) is not one a user can
+// click: a click opened the menu anchored off-screen and reported it outside the viewport, an error of the inspector's.
+test('a popover whose button is off-screen is opened directly and said so, not reported as off-screen', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  const { srv, base } = await serve();
+  const tmp = mkdtempSync(join(tmpdir(), 'temper-inspect-test-'));
+  const prevTmp = process.env.TMPDIR;
+  process.env.TMPDIR = tmp;
+  try {
+    const { findings } = await inspect([`${base}drawer.html`], { settle: 200, schemes: ['light'] });
+    const menu = width => findings.filter(f => f.state === 'popover div#account-menu' && f.where.includes(`${width} light`));
+    assert.deepEqual(menu(1280).map(f => `${f.severity} ${f.code}`), ['info opened']);
+    assert.deepEqual(menu(390).map(f => `${f.severity} ${f.code} ${f.message}`), ['info state opened directly because its button is hidden or off-screen at this width']);
+    assert.deepEqual(findings.filter(f => f.severity === 'error'), []);
+  } finally {
+    if (prevTmp === undefined) delete process.env.TMPDIR; else process.env.TMPDIR = prevTmp;
+    rmSync(tmp, { recursive: true, force: true });
+    srv.close();
+  }
+});
+
 // With hidden scrollbars a reserved gutter took 15px that no screen has: while a modal dialog was open on a page that
 // scrolls (temper's scroll lock reserves the page's gutter), the page and its dialogs were laid out 15px narrower, so a
 // dialog whose content just fits a phone was reported as overflowing, a sheet's row as wrapped, and the screenshots
