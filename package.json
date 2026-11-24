@@ -24,6 +24,7 @@
     "./feedback.css": "./dist/feedback.css",
     "./table.css": "./dist/table.css",
     "./prose.css": "./dist/prose.css",
+    "./forms.css": "./dist/forms.css",
     "./all.css": "./dist/all.css",
     "./vocab.json": "./vocab.json",
     "./html-custom-data.json": "./html-custom-data.json",
@@ -45,8 +46,14 @@
     "./sinter": {
       "types": "./types/sinter.d.ts"
     },
-    "./check": "./lib/check.js",
-    "./vite": "./lib/vite.js",
+    "./check": {
+      "types": "./lib/check.d.ts",
+      "default": "./lib/check.js"
+    },
+    "./vite": {
+      "types": "./lib/vite.d.ts",
+      "default": "./lib/vite.js"
+    },
     "./icons.css": "./dist/icons.css",
     "./pico-compat.css": "./dist/pico-compat.css",
     "./enhance/*": "./dist/enhance/*"
@@ -79,9 +86,9 @@
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
-    "gen": "node scripts/gen.mjs",
+    "gen": "node scripts/gen.mjs && node scripts/sizes.mjs",
     "check": "node bin/temper.js check kitchen-sink",
-    "test": "node scripts/gen.mjs --check && node --test test/*.test.js packages/inspect/test/*.test.js",
+    "test": "node scripts/gen.mjs --check && node scripts/sizes.mjs --check && node --test test/*.test.js packages/inspect/test/*.test.js",
     "shots": "scripts/shoot.sh",
     "contrast": "node scripts/contrast.mjs",
     "visual": "node scripts/visual.mjs",
@@ -134,6 +141,12 @@
       ],
       "sinter": [
         "types/sinter.d.ts"
+      ],
+      "check": [
+        "lib/check.d.ts"
+      ],
+      "vite": [
+        "lib/vite.d.ts"
       ]
     }
   },

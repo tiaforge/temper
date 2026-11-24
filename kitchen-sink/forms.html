@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>temper forms</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/forms.css">
+  <link rel="stylesheet" href="../src/icons.css">
+  <script>
+    // ?t=light|dark, ?dir=rtl
+    { const q = new URLSearchParams(location.search);
+      if (q.get('t')) document.documentElement.dataset.theme = q.get('t');
+      if (q.get('dir')) document.documentElement.dir = q.get('dir'); }
+  </script>
+</head>
+<body>
+<main data-layout="center" data-gap="xl" data-pad="xl">
+  <h1>Forms <small data-muted>forms.css</small></h1>
+
+  <section data-layout="stack" data-gap="md">
+    <h2>Fields with adornments</h2>
+    <div data-layout="grid" data-gap="md" style="--tm-min: 15rem">
+      <label>Search
+        <span data-field><span data-icon="search"></span><input type="search" placeholder="Search mail"></span>
+      </label>
+      <label>Amount
+        <span data-field><span>€</span><input inputmode="decimal" value="1,204.50" required><span>EUR</span></span>
+        <small>Before tax.</small>
+      </label>
+      <label>Weight
+        <span data-field><input inputmode="decimal" value="72"><span>kg</span></span>
+      </label>
+      <label>Website
+        <span data-field><span>https://</span><input value="tiaforge" aria-invalid="true"><span>.example.com</span></span>
+        <small data-tone="danger">This name is taken.</small>
+      </label>
+      <label>API key
+        <span data-field><input value="tm_live_8f2c41" readonly><button type="button" data-variant="ghost" data-icon="copy" aria-label="Copy"></button></span>
+      </label>
+      <label>Disabled
+        <span data-field><span data-icon="lock"></span><input value="Locked" disabled><button type="button" data-variant="ghost" data-icon="x" aria-label="Clear" disabled></button></span>
+      </label>
+    </div>
+    <div data-layout="stack" data-gap="xs">
+      <label for="pw">Password</label>
+      <div data-field>
+        <input type="password" id="pw" value="hunter22" required>
+        <button type="button" data-variant="ghost" data-icon="eye" aria-label="Show password"></button>
+      </div>
+    </div>
+    <div data-layout="row" data-gap="sm">
+      <div data-field data-grow><span data-icon="search"></span><input type="search" aria-label="Filter contacts" placeholder="Filter"></div>
+      <input aria-label="Plain field, same height" placeholder="Plain field">
+      <button>Search</button>
+    </div>
+    <div data-layout="row" data-gap="sm" data-density="compact">
+      <div data-field data-grow><span data-icon="search"></span><input type="search" aria-label="Compact filter" placeholder="Compact"></div>
+      <input aria-label="Compact plain field" placeholder="Plain field">
+      <button data-variant="outline">Search</button>
+    </div>
+    <div data-layout="row" data-gap="sm">
+      <div data-field data-size="sm"><span>$</span><input aria-label="Small amount" value="12"></div>
+      <div data-field data-size="lg" data-grow><span data-icon="search"></span><input type="search" aria-label="Large search" placeholder="Large"><button type="button" data-variant="ghost" data-icon="x" aria-label="Clear search"></button></div>
+    </div>
+  </section>
+
+  <section data-layout="stack" data-gap="md">
+    <h2>Read-only and required</h2>
+    <div data-layout="grid" data-gap="md" style="--tm-min: 15rem">
+      <label>Account ID <input value="acct_29f1" readonly></label>
+      <label>Name <input autocomplete="name" required></label>
+      <label>Notes <textarea readonly>Imported from the old system.</textarea></label>
+      <label>Country <select required><option>Germany</option><option>France</option></select></label>
+    </div>
+    <label><input type="checkbox" required> I accept the terms</label>
+  </section>
+
+  <section data-layout="stack" data-gap="md">
+    <h2>Range and progress</h2>
+    <div data-layout="grid" data-gap="md" style="--tm-min: 15rem">
+      <label>Volume <input type="range" value="60"></label>
+      <label>Disabled <input type="range" value="30" disabled></label>
+      <label>Uploading <progress value="40" max="100">40 %</progress></label>
+      <label>Loading <progress>Loading</progress></label>
+    </div>
+  </section>
+</main>
+</body>
+</html>

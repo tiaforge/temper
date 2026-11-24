@@ -14,11 +14,14 @@ const fixtures = {
   vue: [bin('vue-tsc'), '-p', '.', '--pretty', 'false'],
   astro: [bin('tsc'), '-p', '.', '--pretty', 'false'],
   sinter: [bin('tsc'), '-p', '.', '--pretty', 'false'],
+  // a strict vite.config.ts importing @tiaforge-ui/temper/vite and /check, without vite or @types/node installed
+  'config (nodenext)': [bin('tsc'), '-p', 'tsconfig.nodenext.json', '--pretty', 'false'],
+  'config (bundler)': [bin('tsc'), '-p', 'tsconfig.bundler.json', '--pretty', 'false'],
 };
 
 for (const [name, [cmd, ...args]] of Object.entries(fixtures)) {
-  test(`${name}: bad computed values are type errors`, () => {
-    const dir = root + 'test/types/' + name;
+  test(`${name}: ${name.startsWith('config') ? 'plugin options and checker results are typed' : 'bad computed values are type errors'}`, () => {
+    const dir = root + 'test/types/' + name.split(' ')[0];
     const run = spawnSync(cmd, args, { cwd: dir, encoding: 'utf8' });
     const out = run.stdout + run.stderr;
     // "App.tsx(6,6): error" (tsc, vue-tsc) or `ERROR "App.svelte" 8:8` (svelte-check)

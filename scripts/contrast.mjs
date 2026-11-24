@@ -68,8 +68,24 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
     status: ['danger', 'success', 'warning', 'info'].flatMap(tonePairs),
   };
 
+  // A checked checkbox inside a toned container (a warning callout): its mark must contrast with the accent fill it
+  // sits on, not follow the container's tone; invalid, the fill turns danger. 3 = non-text UI.
+  const marks = () => ['warning', 'danger', 'neutral'].flatMap(tone => [false, true].map(invalid => {
+    const box = document.body.appendChild(document.createElement('div'));
+    box.dataset.tone = tone;
+    const input = box.appendChild(Object.assign(document.createElement('input'), { type: 'checkbox', checked: true }));
+    if (invalid) input.setAttribute('aria-invalid', 'true');
+    const bg = blend(rgba(getComputedStyle(input).backgroundColor), { r: 255, g: 255, b: 255, a: 1 });
+    const fg = blend(rgba(getComputedStyle(input, '::before').borderRightColor), bg);
+    box.remove();
+    const [x, y] = [lum(fg), lum(bg)].sort((p, q) => q - p);
+    return { label: `checkbox mark in a ${tone} container${invalid ? ', invalid' : ''}`, min: 3, ratio: (x + 0.05) / (y + 0.05), fg: hex(fg), bg: hex(bg) };
+  }));
   const set = (name, v) => v == null ? html.style.removeProperty(name) : html.style.setProperty(name, String(v));
-  const run = (group, scheme, at) => checks[group].map(([label, fg, bg, tone, min, under]) => ({ group, label, scheme, ...at, min, ...ratio(fg, bg, tone, under) }));
+  const run = (group, scheme, at) => [
+    ...checks[group].map(([label, fg, bg, tone, min, under]) => ({ group, label, scheme, ...at, min, ...ratio(fg, bg, tone, under) })),
+    ...(group === 'accent' ? marks().map(m => ({ group, scheme, ...at, ...m })) : []),
+  ];
   const results = [], caps = [];
   for (const scheme of ['light', 'dark']) {
     html.dataset.theme = scheme;

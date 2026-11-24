@@ -18,6 +18,7 @@ import '@tiaforge-ui/temper/menu.css';   // dropdown menus
 import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selection, number columns
 import '@tiaforge-ui/temper/prose.css';  // data-prose: articles, Markdown, mail bodies
+import '@tiaforge-ui/temper/forms.css';  // data-field (icon, unit, button in a field), range, read-only, required *, loading bar
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/temper/all.css';
@@ -30,6 +31,10 @@ export default { plugins: [temper()] };
 // with icons: every Lucide icon by name (only the used ones are emitted) plus your own SVG folder
 // export default { plugins: [temper({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:temper-icons.css';
 // (then do not also import icons.css; the CLI equivalent is: npx temper check --lucide --icons src/icons <paths>)
+<!-- full -->
+// computed names: data-icon={dark ? 'sun' : 'moon'} emits both; names the source does not show (data-icon={item.icon})
+// get a notice with file and line: list them in temper({ icons: { include: ['rocket', 'star'] } })
+<!-- /full -->
 // while migrating step by step, check only the migrated parts: temper({ paths: ['src/contacts', 'contacts'] })
 // opt-in enhancements (newer CSS, fine to leave off): temper({ enhance: ['customizable-select'] }) or enhance: 'all'
 // smaller builds: temper({ prune: true }) drops rules for attributes and values the project never uses
@@ -103,6 +108,16 @@ Names are Lucide's (https://lucide.dev/icons). icons.css contains: {{iconNames}}
 use end up in the CSS. Do not paste inline `<svg>` for an icon that has a name.
 
 <!-- full -->
+The plugin finds the names in your markup: static ones and every literal an expression can produce
+(`data-icon={dark ? 'sunrise' : 'moon-star'}` emits both). A name it cannot see, such as
+`data-icon={item.icon}` from a data array or a component prop, is not emitted and would render blank, so the
+plugin prints a notice with the file and line (it does not fail the build). List those names in
+`include`, then add a `temper-ignore` comment on that line to silence the notice:
+
+```js
+temper({ icons: { include: ['rocket', 'star', 'zap'] } })
+```
+
 Your own icons: put SVG files in the plugin's `icons.dir` (file name = icon name; it replaces a default
 of the same name), or without the plugin:
 
@@ -111,6 +126,9 @@ of the same name), or without the plugin:
 :root { --tm-icon-rocket: url(/icons/rocket.svg); }         /* add one */
 [data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }
 ```
+
+`--tm-icon-<name>` is an input only: temper's own icons are not declared as properties, so reading
+`var(--tm-icon-mail)` in your CSS gives nothing unless you set it. Use `data-icon` to draw a default icon.
 
 <!-- /full -->
 Icons are one color (the text color); keep multicolor logos as `<img>`.
@@ -305,6 +323,11 @@ panes `data-scroll="y"`). A page of such an app whose `<main>` itself scrolls (s
 place when a tab or loaded data makes it shorter or taller than the screen. Not on a `<main>` that only holds
 panes: the reserved space would stay there as an empty strip.
 
+For phones with a notch, put `viewport-fit=cover` in the viewport meta
+(`<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`): the page then uses the
+whole screen, and the rail, the drawer, the FAB and the toasts keep clear of the notch and the home indicator. Your
+own fixed or edge-to-edge elements need `env(safe-area-inset-*)` themselves.
+
 `[data-rail]` must be a direct child of `[data-shell]` (no wrapper element in between). When an app
 moves to temper page by page, keep the old nav partial for the old pages and add a second one with
 this markup for the migrated pages; delete the old one when the last page has moved.
@@ -394,6 +417,30 @@ The header sticks while the page scrolls. Put `data-num` on every cell of a numb
 `data-layout` on a `td` (it stops being a cell); wrap the cell content instead. No rows: one
 `<tr><td colspan="5" data-muted>No invoices yet.</td></tr>`.
 
+### Fields with an icon, a unit or a button (forms.css)
+
+```html
+<div data-field>                                     <!-- search: icon before the input -->
+  <span data-icon="search"></span><input type="search" aria-label="Search mail">
+</div>
+<label>Amount                                         <!-- in a label: <span data-field> -->
+  <span data-field><span>€</span><input inputmode="decimal" name="amount" required><span>EUR</span></span>
+</label>
+<div data-layout="stack" data-gap="xs">               <!-- with a button: <label for>, not a wrapping label -->
+  <label for="pw">Password</label>
+  <div data-field>
+    <input type="password" id="pw" autocomplete="current-password">
+    <button type="button" data-variant="ghost" data-icon="eye" aria-label="Show password" aria-pressed="false"></button>
+  </div>
+</div>
+```
+
+The button goes last. Your script toggles the input's `type` and the button's `aria-pressed` (and `data-icon` to
+`eye-off`). States go on the input (`aria-invalid`, `disabled`, `readonly`); the whole field shows them. forms.css
+also gives `readonly` fields a filled look, marks the label of a `required` field with `*` (not read out, since the
+field says "required"; off with `label::after { content: none }`), tints autofilled fields in the theme, styles
+`<input type="range">` and animates a `<progress>` without a value.
+
 ### Long-form text (prose.css)
 
 ```html
@@ -473,6 +520,27 @@ A `div` around a `dt`/`dd` pair is allowed (to show or hide the pair as one).
   <section data-layout="grid" data-gap="lg" style="--tm-min: 20rem">…</section>
 </main>
 ```
+
+### Skip link
+
+```html
+<body>
+  <a href="#main" data-sr-only>Skip to content</a>   <!-- the first focusable element of the page -->
+  …navigation…
+  <main id="main">…</main>
+```
+
+Hidden until a keyboard user tabs to it; while focused it shows where it stands (in a `data-shell`, at the start of
+the row). Following it moves the focus to `<main>`.
+
+### Right to left, high contrast, print
+
+Nothing to add for these. `dir="rtl"` (on `<html>`, or any element) mirrors the layout and the components: the rail
+and the drawer on the right, the FAB and the toasts at the bottom left, switches, the select arrow, menus, vertical
+tabs, number columns. Icons are not mirrored: pick `arrow-left` or `arrow-right` by meaning. In forced colors
+(Windows high contrast) icons keep the text color and selected, pressed and current items get a ring in the
+system's highlight color. Printed, a page leaves out the rail, the FAB, toasts and tooltips, prints a fixed shell
+and `data-scroll` areas in full, light and without shadows.
 
 <!-- /full -->
 ## Anti-patterns

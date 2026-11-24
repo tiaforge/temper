@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, viewport-fit=cover">
+<title>App shell: RTL, print</title>
+<link rel="stylesheet" href="../../src/all.css">
+</head>
+<body data-shell="fixed">
+  <nav id="rail" data-rail popover aria-label="Main">
+    <header>
+      <span data-rail-label>App</span>
+      <input id="collapse" type="checkbox" data-rail-collapse aria-label="Collapse menu">
+    </header>
+    <a href="#a" data-icon="mail" aria-current="page"><span>Mail</span></a>
+    <a href="#b" data-icon="users"><span>Contacts</span></a>
+  </nav>
+  <main id="main" data-layout="stack" data-gap="md" data-pad="md">
+    <div data-layout="row" data-gap="sm">
+      <button id="open" popovertarget="rail" data-show="narrow" data-icon="menu" data-variant="ghost" aria-label="Open menu"></button>
+      <h1>Mail</h1>
+      <button id="opener" type="button" popovertarget="menu" data-variant="outline">Sort</button>
+      <div popover id="menu" data-menu><button>Newest first</button><button>Oldest first</button></div>
+    </div>
+    <article id="card">Card</article>
+    <div id="tall" style="block-size: 3000px">Long content</div>
+    <p id="end">The end</p>
+  </main>
+  <button id="fab" data-fab data-icon="plus" aria-label="New" data-tooltip></button>
+  <div id="toasts" data-toasts role="status"><div id="toast" data-toast data-tone="success">Saved.</div></div>
+</body>
+</html>

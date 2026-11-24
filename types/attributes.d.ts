@@ -162,4 +162,6 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-num'?: true | '' | null | Removes;
   /** Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. Needs prose.css. */
   'data-prose'?: true | '' | null | Removes;
+  /** One field around an input and its icon, text (<span>€</span>) or end button. Needs forms.css. */
+  'data-field'?: true | '' | null | Removes;
 }
