@@ -5,6 +5,15 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### Vite plugin
+
+- `@import 'virtual:temper-icons.css'` from CSS also works for tools that compile project CSS through Vite's
+  `preprocessCSS`, past the plugin's rewrite: sinter, reading image sizes, failed with ENOENT (SN527) and gave the
+  page's images `sizes="auto, 100vw"`. The icon CSS is now a real file, written when the config resolves, and
+  `resolve.alias` points the virtual name at it.
+
 ## 0.4.1 (2026-11-25)
 
 ### Core
