@@ -18,6 +18,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Vite plugin
 
+- `icons: { strokeWidth: 1.5 }` draws the Lucide icons the plugin emits with that stroke width (0.5 to 3; Lucide's
+  own is 2), for type lighter than Lucide's default weight. Icons are masks, so CSS cannot change the stroke
+  afterwards, and copying each SVG into the icon folder defeated Lucide on demand. Folder icons stay as they are;
+  a value outside the range fails when the plugin starts.
 - `icons`, `enhance` and `prune` work when a CSS file imports temper. `@import 'virtual:temper-icons.css'` failed
   with ENOENT, and an `@import '@tiaforge-ui/temper/core.css'` silently got no enhancements and no pruning (a
   static site: 56 KB with or without `prune`, 45 KB once the import moved to JS). Vite resolves and reads a CSS

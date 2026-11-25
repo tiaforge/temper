@@ -15,6 +15,11 @@ export interface TemperIconsOptions {
    * The plugin prints a notice with file and line for each such place.
    */
   include?: readonly string[];
+  /**
+   * The stroke width of the Lucide icons, from 0.5 to 3 (Lucide's own is 2): 1.5 draws them thinner, for lighter
+   * type. Applied when the plugin emits them; your folder's SVGs stay as they are.
+   */
+  strokeWidth?: number;
 }
 
 export interface TemperPruneOptions {
