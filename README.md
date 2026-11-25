@@ -310,6 +310,13 @@ export default {
 The plugin and `@tiaforge-ui/temper/check` come with type declarations, so a strict `vite.config.ts`
 type-checks its options (they don't need `vite` itself to be installed for that).
 
+`icons`, `enhance` and `prune` work whichever way temper is imported: from JS (`import 'virtual:temper-icons.css'`)
+or from a CSS file (`@import '@tiaforge-ui/temper/core.css'; @import 'virtual:temper-icons.css';`), which a
+static site without a script needs. Vite reads a CSS `@import` itself, past every plugin, so the plugin writes
+what such an `@import` should get into Vite's cache folder (`node_modules/.vite/temper/`) and points the
+`@import` there. Sass, Less and Stylus resolve their own imports, which the plugin cannot reach: it warns, and
+temper is then imported from JS or a plain `.css` file.
+
 `prune` scans every source file under the Vite root (or `prune: { paths }`) and only drops a rule
 when an attribute or value it requires appears nowhere. Values it can't resolve (`data-icon={icon}`)
 keep every value of that attribute, and `data-*` names in scripts (`el.dataset.tone = …`) keep the

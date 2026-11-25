@@ -5,6 +5,17 @@ All notable changes to `@tiaforge-ui/temper` and `@tiaforge-ui/temper-inspect`. 
 through `deprecated` in `vocab.json` first: the old name keeps working, `temper check` warns (TM112) and
 `temper check --fix` rewrites it.
 
+## Unreleased
+
+### Vite plugin
+
+- `icons`, `enhance` and `prune` work when a CSS file imports temper. `@import 'virtual:temper-icons.css'` failed
+  with ENOENT, and an `@import '@tiaforge-ui/temper/core.css'` silently got no enhancements and no pruning (a
+  static site: 56 KB with or without `prune`, 45 KB once the import moved to JS). Vite resolves and reads a CSS
+  `@import` itself, past every plugin, so the plugin now writes what the `@import` should get into Vite's cache
+  folder and points it there. Icon changes in dev update CSS files that import the icons this way. In Sass, Less
+  and Stylus, whose imports the plugin cannot reach, it warns instead.
+
 ## 0.4.0 (2026-11-24)
 
 ### Core
