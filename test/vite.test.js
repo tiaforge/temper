@@ -427,3 +427,18 @@ test('icons.strokeWidth thins the Lucide icons the plugin emits, not the folder 
   for (const bad of [0.2, 4, '1.5', NaN])
     assert.throws(() => temper({ icons: { strokeWidth: bad } }), /icons\.strokeWidth must be a number from 0\.5 to 3/, String(bad));
 });
+
+test('icons: virtual:temper-icons.css is also a real file, written when the config resolves and aliased for every resolver', async () => {
+  const { readFileSync } = await import('node:fs');
+  const dir = project('<span data-icon="rocket"></span>');
+  mkdirSync(join(dir, 'icons'));
+  writeFileSync(join(dir, 'icons', 'rocket.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 1h22"/></svg>');
+  const plugin = temper({ icons: { dir: 'icons', lucide: false } });
+  const { resolve: { alias: [alias] } } = plugin.config({ root: dir, cacheDir: 'cache' });
+  assert.equal(alias.replacement, join(dir, 'cache', 'temper', 'icons.css'));
+  assert.ok(alias.find.test('virtual:temper-icons.css') && !alias.find.test('virtual:temper-icons.css.map'));
+  plugin.configResolved({ root: dir, command: 'build', cacheDir: join(dir, 'elsewhere'), logger: { warn() {} } });
+  assert.match(readFileSync(alias.replacement, 'utf8'), /data-icon="rocket"/); // the alias's file, not the cacheDir Vite reports
+  // without the icons option there is nothing to alias
+  assert.equal(temper().config({ root: dir }), undefined);
+});

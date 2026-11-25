@@ -316,7 +316,9 @@ type-checks its options (they don't need `vite` itself to be installed for that)
 or from a CSS file (`@import '@tiaforge-ui/temper/core.css'; @import 'virtual:temper-icons.css';`), which a
 static site without a script needs. Vite reads a CSS `@import` itself, past every plugin, so the plugin writes
 what such an `@import` should get into Vite's cache folder (`node_modules/.vite/temper/`) and points the
-`@import` there. Sass, Less and Stylus resolve their own imports, which the plugin cannot reach: it warns, and
+`@import` there. The icon CSS is also a real file, written when the config resolves, and `resolve.alias` points
+`virtual:temper-icons.css` at it, so tools that compile project CSS through Vite's `preprocessCSS` (sinter, for
+image sizes) find it too. Sass, Less and Stylus resolve their own imports, which the plugin cannot reach: it warns, and
 temper is then imported from JS or a plain `.css` file.
 
 A build also checks its own output: every `data-icon` value in the built pages needs an icon rule in the built
