@@ -416,6 +416,42 @@ test('popovers and menus fade in and out; the rail drawer and the toast region k
   });
 });
 
+test('an open popover or dialog does not trap position: fixed children, and backdrops fade with it', { skip }, async () => {
+  await withPage({ motion: 'no-preference', width: 390 }, async page => {
+    const r = await page.evaluate(`(() => {
+      const out = {};
+      const fixed = document.createElement('button');
+      fixed.style.cssText = 'position: fixed; inset-block-start: 0; inset-inline-end: 0';
+      $('note').append(fixed);
+      $('note').showPopover();
+      $('note').getAnimations().forEach(a => a.finish());
+      const box = fixed.getBoundingClientRect();
+      out.scale = cs('note').scale;
+      out.fixed = [Math.round(box.top), Math.round(innerWidth - box.right)]; // the viewport's corner, not the popover's
+      $('note').hidePopover();
+      // the transitions running on a popover's ::backdrop
+      const fades = id => document.getAnimations().filter(a => a.effect.target === $(id) && a.effect.pseudoElement === '::backdrop').map(a => a.transitionProperty);
+      for (const id of ['note', 'rail']) {
+        $(id).showPopover();
+        out[id] = { opening: fades(id) };
+        document.getAnimations().forEach(a => a.finish());
+        out[id].open = cs(id, '::backdrop').opacity;
+        $(id).hidePopover();
+        out[id].closing = fades(id);
+        document.getAnimations().forEach(a => a.finish());
+      }
+      return out;
+    })()`);
+    assert.equal(r.scale, 'none');
+    assert.deepEqual(r.fixed, [0, 0]);
+    for (const id of ['note', 'rail']) {
+      assert.ok(r[id].opening.includes('opacity'), `${id} backdrop fades in: ${r[id].opening}`);
+      assert.equal(r[id].open, '1', id);
+      assert.ok(r[id].closing.includes('opacity'), `${id} backdrop fades out: ${r[id].closing}`);
+    }
+  });
+});
+
 test('menus: a data-caption labels a group, a kbd sits at the end of its item; items keep their height', { skip }, async () => {
   await withPage({}, async page => {
     const r = await page.evaluate(`(() => {

@@ -644,7 +644,9 @@
     transition: opacity var(--tm-duration) var(--tm-ease), scale var(--tm-duration) var(--tm-ease),
       overlay var(--tm-duration) allow-discrete, display var(--tm-duration) allow-discrete;
   }
-  :where(dialog[open], [popover]:popover-open) { opacity: 1; scale: 1; }
+  /* open: scale none, not 1. Any other value makes the dialog or popover the containing block of its position: fixed
+     descendants (a fixed close button in a full-screen menu landed inside the menu's box) */
+  :where(dialog[open], [popover]:popover-open) { opacity: 1; scale: none; }
   @starting-style { :where(dialog[open], [popover]:popover-open) { opacity: 0; scale: 0.97; } }
   /* Only display depends on [open]: a closing dialog is not [open] but stays shown until its fade ends, and its
      layout must hold until then (on dialog[open], the gap and the column dropped and it fell apart as it faded) */
@@ -654,13 +656,14 @@
      that overflows: the scroll timeline, and so the animation, is inactive on one that does not), so nothing shifts. */
   :where(html:has(dialog:modal)) { overflow: hidden; animation: tm-gutter both; animation-timeline: scroll(); }
   @keyframes tm-gutter { from, to { scrollbar-gutter: stable; } }
-  :where(dialog)::backdrop {
-    background: oklch(0.2 0.02 var(--tm-neutral-hue) / 0.45);
+  :where(dialog)::backdrop { background: oklch(0.2 0.02 var(--tm-neutral-hue) / 0.45); }
+  /* backdrops fade with their dialog or popover: a popover's scrim (the rail drawer's, a site's own) vanished in one frame */
+  :where(dialog, [popover])::backdrop {
     opacity: 0;
     transition: opacity var(--tm-duration) var(--tm-ease), overlay var(--tm-duration) allow-discrete, display var(--tm-duration) allow-discrete;
   }
-  :where(dialog[open])::backdrop { opacity: 1; }
-  @starting-style { :where(dialog[open])::backdrop { opacity: 0; } }
+  :where(dialog[open], [popover]:popover-open)::backdrop { opacity: 1; }
+  @starting-style { :where(dialog[open], [popover]:popover-open)::backdrop { opacity: 0; } }
   :where(dialog) > :where(article) { display: contents; --_pad: inherit; --_sf: inherit; } /* not a card: the dialog's padding and surface */
   :where(dialog, article) > :where(header),
   :where(dialog, article) > :where(div, form, section, article) > :where(header) { display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-sm); }

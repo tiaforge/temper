@@ -7,6 +7,15 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### Core
+
+- An open dialog or popover no longer traps its `position: fixed` children: its resting scale is `none` instead of
+  `1`. Any `scale` other than `none` makes an element the containing block of its fixed descendants, so a fixed
+  close button in a full-screen menu sat in the menu's box instead of the viewport's corner. The fade and scale
+  in and out look the same.
+- Popover backdrops fade in and out with their popover, as dialog backdrops do. A scrim set on a popover (the rail
+  drawer's, a site's mobile menu) vanished in one frame on close, while the popover itself still faded.
+
 ### Vite plugin
 
 - `icons`, `enhance` and `prune` work when a CSS file imports temper. `@import 'virtual:temper-icons.css'` failed
