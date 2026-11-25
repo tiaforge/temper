@@ -48,7 +48,7 @@ export interface TemperOptions {
 
 /**
  * The plugin object. Its hooks are Vite's (configResolved, configureServer, transformIndexHtml, resolveId, load,
- * transform, buildStart, handleHotUpdate); they are typed loosely here so this file needs no types from Vite.
+ * transform, generateBundle, buildStart, handleHotUpdate); they are typed loosely here so this file needs no types from Vite.
  */
 export interface TemperPlugin {
   name: 'temper';

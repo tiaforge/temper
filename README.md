@@ -317,6 +317,10 @@ what such an `@import` should get into Vite's cache folder (`node_modules/.vite/
 `@import` there. Sass, Less and Stylus resolve their own imports, which the plugin cannot reach: it warns, and
 temper is then imported from JS or a plain `.css` file.
 
+A build also checks its own output: every `data-icon` value in the built pages needs an icon rule in the built
+CSS, or the plugin warns with page and line (`warningsFail` makes that fail the build). That catches names the
+source does not show, such as a value bound from a JSON file whose SVG was deleted or misspelled.
+
 `prune` scans every source file under the Vite root (or `prune: { paths }`) and only drops a rule
 when an attribute or value it requires appears nowhere. Values it can't resolve (`data-icon={icon}`)
 keep every value of that attribute, and `data-*` names in scripts (`el.dataset.tone = …`) keep the
