@@ -246,3 +246,27 @@ test('checker: accepts the new vocabulary, rejects misuse', () => {
   assert.deepEqual(codes('<section data-container></section>', { modules: new Set(['core']) }), ['TM110']);
   assert.deepEqual(codes('<div data-join><button>A</button></div>', { modules: new Set(['core']) }), [], 'data-join and data-sticky are core');
 });
+
+test('data-layout="center" sits on a whole pixel at odd widths, and still fills a narrower parent', { skip }, async () => {
+  for (const dir of ['ltr', 'rtl']) {
+    const r = await withPage({ width: 1280, dir }, page => page.evaluate(`(() => {
+      const out = [];
+      for (const [width, pad] of [[1301, ''], [1000, ''], [999, 'xl'], [500, ''], [633, 'lg']]) {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'inline-size: ' + width + 'px';
+        wrap.innerHTML = '<div data-layout="center" ' + (pad ? 'data-pad="' + pad + '" ' : '') + 'style="--tm-measure: 600px"><p>x</p></div>';
+        document.body.prepend(wrap);
+        const w = wrap.getBoundingClientRect(), c = wrap.firstChild.getBoundingClientRect();
+        out.push({ width, pad, start: c.left - w.left, end: w.right - c.right, w: c.width });
+        wrap.remove();
+      }
+      return out;
+    })()`));
+    for (const m of r) {
+      const name = `${dir} ${m.width}px${m.pad ? ' data-pad=' + m.pad : ''}`;
+      assert.ok(Number.isInteger(m.start) && Number.isInteger(m.end), `${name}: whole pixels, ${m.start} / ${m.end}`);
+      assert.ok(Math.abs(m.start - m.end) <= 1, `${name}: centered, ${m.start} / ${m.end}`);
+      if (m.width <= 600 + 2 * 16) assert.deepEqual([m.start, m.w], [0, m.width], `${name}: fills its parent`);
+    }
+  }
+});
