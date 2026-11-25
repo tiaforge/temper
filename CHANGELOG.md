@@ -24,6 +24,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   `@import` itself, past every plugin, so the plugin now writes what the `@import` should get into Vite's cache
   folder and points it there. Icon changes in dev update CSS files that import the icons this way. In Sass, Less
   and Stylus, whose imports the plugin cannot reach, it warns instead.
+- A build warns about a `data-icon` in its built pages that no icon rule in its built CSS draws, with page and line
+  (`warningsFail` makes it fail the build). A name bound from data, such as sinter's `data-sn-attr` over a JSON
+  file, is not in the source, so `temper check` could not see it: a card whose SVG had been deleted shipped
+  without its icon and nothing said so.
 
 ## 0.4.0 (2026-11-24)
 

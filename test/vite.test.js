@@ -382,3 +382,27 @@ test('a CSS @import of temper stays as it is when there is nothing to add or dro
   sass.transform.handler(`@import '@tiaforge-ui/temper/core.css';`, join(dir, 'site.scss'));
   assert.match(warnings[0], /site\.scss imports temper's CSS with prune or enhance on/);
 });
+
+test('build: a data-icon in the built pages without an icon rule in the built CSS is reported', async () => {
+  const { missingIcons } = await import('../lib/vite.js');
+  const page = '<!doctype html>\n<p>\n<span data-icon="server"></span><span data-icon="mail"></span>\n<i data-icon=server></i><a data-icon="inline">x</a><button data-icon aria-label="x"></button></p>';
+  const bundle = {
+    'index.html': { type: 'asset', fileName: 'index.html', source: page + '<style>:where([data-icon="inline"]){--_icon:none}</style>' },
+    'assets/site.css': { type: 'asset', fileName: 'assets/site.css', source: new TextEncoder().encode(':where([data-icon=mail]){--_icon:url(x)}') },
+    'assets/main.js': { type: 'chunk', fileName: 'assets/main.js', code: 'data-icon="nope"' },
+  };
+  assert.deepEqual(missingIcons(bundle), [{ file: 'index.html', line: 3, name: 'server', count: 2 }]);
+  assert.deepEqual(missingIcons({ 'index.html': bundle['index.html'], 'x.css': { type: 'asset', fileName: 'x.css', source: 'p{}' } }).map(m => m.name), ['server', 'mail']); // the page's own <style> counts
+  // no icon rules anywhere (the CSS is not among the emitted files): nothing to tell
+  assert.deepEqual(missingIcons({ 'a.html': { type: 'asset', fileName: 'a.html', source: page } }), []);
+
+  const dir = project('<p>x</p>');
+  const warnings = [];
+  const plugin = temper();
+  plugin.configResolved({ root: dir, command: 'build', logger: { warn: m => warnings.push(m) } });
+  plugin.generateBundle.handler.call({ error: m => { throw new Error(m); } }, { dir: join(dir, 'dist') }, bundle);
+  assert.match(warnings[0], /dist\/index\.html:3 data-icon="server" \(and 1 more on this page\)/);
+  const strict = temper({ warningsFail: true });
+  strict.configResolved({ root: dir, command: 'build', logger: { warn() {} } });
+  assert.throws(() => strict.generateBundle.handler.call({ error: m => { throw new Error(m); } }, { dir: join(dir, 'dist') }, bundle), /no icon in the built CSS/);
+});
