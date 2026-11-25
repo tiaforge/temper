@@ -7,6 +7,13 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### Core
+
+- `data-layout="center"` sits on a whole pixel. `margin-inline: auto` split an odd remainder in two (a 2560px window
+  minus a 17px scrollbar leaves 2543px), so everything in the column sat at x.5 and mask icons drew soft vertical
+  edges, visible at 100% scaling. The start margin is now rounded down and the end takes the rest; browsers without
+  `round()` (before Chrome 125) keep `auto`. The `core.css` budget is 6960 B brotli (was 6800) for it.
+
 ### Vite plugin
 
 - `@import 'virtual:temper-icons.css'` from CSS also works for tools that compile project CSS through Vite's

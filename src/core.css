@@ -236,6 +236,13 @@
     inline-size: 100%; max-inline-size: calc(var(--tm-measure, 72rem) + 2 * var(--_px)); /* --tm-measure is the content width */
     margin-inline: auto; padding-inline: var(--_px);
   }
+  /* centered on a whole pixel: auto splits an odd remainder (2543px: a 2560px window minus a scrollbar) in two, and
+     everything inside then sits at x.5, where mask icons draw soft edges. The start margin is rounded down, the end
+     takes the rest. In @supports, not as a second declaration: with var() in it, a browser without round() (before
+     Chrome 125) would not fall back to auto but drop the margin to 0. */
+  @supports (margin: round(down, 1px, 1px)) {
+    :where([data-layout="center"]) { margin-inline: max(0px, round(down, (100% - var(--tm-measure, 72rem) - 2 * var(--_px)) / 2, 1px)) auto; }
+  }
   /* data-layout must not reveal a closed dialog or popover. */
   [data-layout]:is(dialog:not([open]), [popover]:not(:popover-open)) { display: none; }
   :where([data-gap="none"]) { --_gap: 0; }
