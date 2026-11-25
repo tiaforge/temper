@@ -24,7 +24,7 @@ import '@tiaforge-ui/temper/pico-compat.css'; // only while components written f
 import temper from '@tiaforge-ui/temper/vite';
 export default { plugins: [temper()] };
 // with icons: every Lucide icon by name (only the used ones are emitted) plus your own SVG folder
-// export default { plugins: [temper({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:temper-icons.css';
+// export default { plugins: [temper({ icons: { dir: 'src/icons' } })] };  and  import 'virtual:temper-icons.css'; (or @import it from CSS)
 // (then do not also import icons.css; the CLI equivalent is: npx temper check --lucide --icons src/icons <paths>)
 // computed names: data-icon={dark ? 'sun' : 'moon'} emits both; names the source does not show (data-icon={item.icon})
 // get a notice with file and line: list them in temper({ icons: { include: ['rocket', 'star'] } })

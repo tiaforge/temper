@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import temper from '../lib/vite.js';
 
 function project(html) {
@@ -334,4 +334,51 @@ test('inspect: a current temper-inspect is found through the package exports', (
   const { plugin, warnings } = pluginIn(root);
   assert.deepEqual(warnings, []);
   assert.equal(plugin.transformIndexHtml.handler('<p>x</p>').length, 1);
+});
+
+test('a CSS @import of the icons and of temper gets enhancements, pruning and the icons through written files', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { fileURLToPath } = await import('node:url');
+  const { dirname, resolve } = await import('node:path');
+  const dir = project('<span data-icon="rocket"></span><span data-badge data-tone="danger">x</span>');
+  mkdirSync(join(dir, 'icons'));
+  writeFileSync(join(dir, 'icons', 'rocket.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 1h22v22H1z"/></svg>');
+  const core = fileURLToPath(new URL('../dist/core.css', import.meta.url));
+  const cacheDir = join(dir, 'cache');
+  const plugin = temper({ icons: { dir: 'icons', lucide: false }, prune: true, enhance: ['customizable-select'] });
+  const info = [];
+  plugin.configResolved({ root: dir, command: 'build', cacheDir, logger: { warn() {}, info: m => info.push(m) } });
+  const site = join(dir, 'site.css');
+  const css = `@import url("${relative(dir, core)}") layer(base);\n@import 'virtual:temper-icons.css';\n@import './other.css';\np { color: red }`;
+  const out = (await plugin.transform.handler(css, site)).code;
+  const [coreTo, iconsTo] = [...out.matchAll(/@import (?:url\()?"?'?([^"')]+)/g)].map(m => resolve(dirname(site), m[1]));
+  assert.equal(coreTo, join(cacheDir, 'temper', 'core.css'));
+  assert.equal(iconsTo, join(cacheDir, 'temper', 'icons.css'));
+  assert.match(out, /\) layer\(base\);/);          // the rest of the statement stays
+  assert.match(out, /@import '\.\/other\.css';/);  // not temper's: untouched
+  const written = readFileSync(coreTo, 'utf8');
+  assert.ok(written.length < readFileSync(core, 'utf8').length, 'pruned');
+  assert.match(written, /data-tone=danger/);
+  assert.doesNotMatch(written, /data-tone=success/);
+  assert.match(written, /appearance:\s*base-select/); // the enhancement
+  assert.match(info.join('\n'), /pruned core\.css/);
+  assert.match(readFileSync(iconsTo, 'utf8'), /data-icon="rocket"/);
+});
+
+test('a CSS @import of temper stays as it is when there is nothing to add or drop, and in Sass it gets a warning', async () => {
+  const { fileURLToPath } = await import('node:url');
+  const dir = project('<p>x</p>');
+  const core = fileURLToPath(new URL('../dist/core.css', import.meta.url));
+  const plain = temper();
+  plain.configResolved({ root: dir, command: 'build', cacheDir: join(dir, 'cache'), logger: { warn() {} } });
+  assert.equal(await plain.transform.handler(`@import '${relative(dir, core)}';`, join(dir, 'site.css')), undefined);
+  // the dev server does not prune: nothing to rewrite
+  const dev = temper({ prune: true });
+  dev.configResolved({ root: dir, command: 'serve', cacheDir: join(dir, 'cache'), logger: { warn() {} } });
+  assert.equal(await dev.transform.handler(`@import '${relative(dir, core)}';`, join(dir, 'site.css')), undefined);
+  const warnings = [];
+  const sass = temper({ prune: true });
+  sass.configResolved({ root: dir, command: 'build', logger: { warn: m => warnings.push(m) } });
+  sass.transform.handler(`@import '@tiaforge-ui/temper/core.css';`, join(dir, 'site.scss'));
+  assert.match(warnings[0], /site\.scss imports temper's CSS with prune or enhance on/);
 });
