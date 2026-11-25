@@ -295,6 +295,8 @@ export default {
     temper(),
     // every Lucide icon by name, only the used ones emitted, plus your own SVG folder:
     // temper({ icons: { dir: 'src/icons' } })   and   import 'virtual:temper-icons.css';
+    // thinner Lucide strokes for light type (0.5 to 3, Lucide's own is 2; folder icons stay as they are):
+    // temper({ icons: { strokeWidth: 1.5 } })
     // migrating step by step? check only the migrated parts:
     // temper({ paths: ['src/contacts'] })
     // opt-in enhancements, appended to core.css / all.css (see Browser support):

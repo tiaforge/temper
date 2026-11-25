@@ -406,3 +406,24 @@ test('build: a data-icon in the built pages without an icon rule in the built CS
   strict.configResolved({ root: dir, command: 'build', logger: { warn() {} } });
   assert.throws(() => strict.generateBundle.handler.call({ error: m => { throw new Error(m); } }, { dir: join(dir, 'dist') }, bundle), /no icon in the built CSS/);
 });
+
+test('icons.strokeWidth thins the Lucide icons the plugin emits, not the folder icons; a bad value fails early', () => {
+  const dir = project('<span data-icon="rocket"></span><span data-icon="mail"></span><span data-icon="alarm-clock"></span>');
+  mkdirSync(join(dir, 'icons'));
+  writeFileSync(join(dir, 'icons', 'rocket.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"><path d="M1 1h22"/></svg>');
+  const emit = opts => {
+    const plugin = temper({ icons: { dir: 'icons', ...opts } });
+    plugin.configResolved({ root: dir, command: 'build', logger: { warn() {} } });
+    return plugin.load('/__temper-icons.css');
+  };
+  const rule = (css, name) => new RegExp(`\\[data-icon="${name}"\\][^\\n]*`).exec(css)[0];
+  const thin = emit({ strokeWidth: 1.5 }), plain = emit({});
+  for (const name of ['mail', 'alarm-clock']) { // a default-set name and one only Lucide has
+    assert.match(rule(thin, name), /stroke-width='1\.5'/, name);
+    assert.doesNotMatch(rule(thin, name), /stroke-width='2'/, name);
+    assert.match(rule(plain, name), /stroke-width='2'/, name);
+  }
+  assert.match(rule(thin, 'rocket'), /stroke-width='2'/); // the folder's own SVG
+  for (const bad of [0.2, 4, '1.5', NaN])
+    assert.throws(() => temper({ icons: { strokeWidth: bad } }), /icons\.strokeWidth must be a number from 0\.5 to 3/, String(bad));
+});
