@@ -44,8 +44,8 @@
   /* font pairings: the display face, its weight and tracking (the faces come from Fontsource packages the app imports) */
   :where([data-tm-pairing="editorial"]) {
     --tm-font-display: "Fraunces Variable", "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-    --tm-display-weight: 600;
-    --tm-display-tracking: -0.02em;
+    --tm-display-weight: 500; /* Fraunces is heavy above it at display sizes, more so on a dark page */
+    --tm-display-tracking: -0.01em;
   }
   :where([data-tm-pairing="grotesk"]) {
     --tm-font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", var(--tm-font-sans);

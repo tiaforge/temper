@@ -40,10 +40,16 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   people work. In dark mode it runs at 60%.
 - The mesh's tints sit at the brand hue ±20° and the seeds at ±50° (the second stop +20°), so nothing strays into
   cyan, blue or red; light tints are paler (chroma ×0.24–0.28), dark seeds calmer (lightness 0.34–0.42).
+- A hero's paragraph with `data-tm-display` keeps its display size (the lead style is for plain paragraphs), and
+  the editorial pairing sets Fraunces at weight 500, tracking −0.01em (600 looked heavy at display sizes).
 - `temper check`: a number on another numeric axis is no longer suggested as a mix-up (`data-tm-cols="8"` is not
   "did you mean data-tm-seed").
 
 ### Core
+
+- `data-tm-layout="center"` with `data-tm-pad="none"` keeps its width. The padding token was a unitless `0`, and
+  center takes `max(var(--tm-space-md), <padding>)`, which a unitless 0 makes invalid, so the width limit was dropped
+  and the column ran full width. `--tm-space-none`, `data-tm-pad="none"` and `data-tm-gap="none"` are `0px` now.
 
 - `data-layout="center"` sits on a whole pixel. `margin-inline: auto` split an odd remainder in two (a 2560px window
   minus a 17px scrollbar leaves 2543px), so everything in the column sat at x.5 and mask icons drew soft vertical
