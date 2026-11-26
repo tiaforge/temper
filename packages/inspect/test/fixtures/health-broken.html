@@ -1,0 +1,58 @@
+<!-- No doctype (quirks mode), no lang, no title, a viewport tag without width that also stops zooming. Every runtime
+     and document check fires here; runtime.test.js lists what each one says. -->
+<html><head><meta charset="utf-8"><meta name="viewport" content="user-scalable=no, maximum-scale=1">
+<meta http-equiv="Content-Security-Policy" content="img-src 'self' data:">
+<link rel="stylesheet" href="health-missing.css">
+<script src="health-missing.js"></script>
+<style>
+  @font-face { font-family: Missing; src: url(health-missing.woff2) format("woff2"); }
+  .missing-font { font-family: Missing, sans-serif; }
+  @keyframes pulse { 50% { opacity: 0.5; } }
+  .pulse { animation: pulse 2s infinite; }
+  .blocked { background-image: url(https://example.invalid/bg.png); }
+</style></head>
+<body>
+<div id="late"></div>
+<p class="missing-font">Text in a web font that does not load.</p>
+<p class="pulse">Pulsing forever.</p>
+<div class="blocked">A background the CSP blocks.</div>
+<img id="photo" src="health-missing.png" alt="A photo that does not load">
+
+<!-- a duplicate id that a label refers to (error), and one that nothing refers to (warning) -->
+<label for="email">Email</label><input id="email"><input id="email" aria-label="Email again">
+<p id="note">One</p><p id="note">Two</p>
+
+<!-- dangling and mistargeted references -->
+<label for="nothing">Orphan label</label>
+<button commandfor="no-dialog" command="show-modal">Open missing dialog</button>
+<button popovertarget="no-popover">Open missing popover</button>
+<button popovertarget="plain">Open a plain div</button><div id="plain">not a popover</div>
+<button data-testid="dangling-name" aria-labelledby="no-label"></button>
+<button data-testid="empty-name" aria-labelledby="empty-label"></button><span id="empty-label"></span>
+<input aria-label="Search" aria-describedby="no-hint" list="no-list">
+<a href="#nowhere">Jump to nowhere</a>
+
+<!-- forms: a popover button without type submits; a commandfor button without type does nothing; three typeless
+     buttons each submit -->
+<form id="filters" action="javascript:void 0">
+  <button popovertarget="filter-menu">Filters</button><div popover id="filter-menu">Menu</div>
+  <button commandfor="help" command="show-modal">Help</button><dialog id="help"><p>Help text, long enough to not count as empty.</p></dialog>
+</form>
+<form id="rows" action="javascript:void 0">
+  <input aria-label="Row"><button>Add row</button><button>Remove row</button><button>Save</button>
+</form>
+
+<!-- an opener whose handler throws, and a dialog that fetches something missing when it opens -->
+<button commandfor="detail" command="show-modal" onclick="throw new Error('opener failed')">Details</button>
+<dialog id="detail" ontoggle="if (event.newState === 'open') fetch('api/detail-missing')"><p>Detail of the contact, with enough text to not count as empty.</p></dialog>
+
+<script>
+  console.error('Something failed:', { code: 42 });
+  console.error('Another thing failed');
+  Promise.reject(new Error('nobody handles this'));
+  setTimeout(() => { throw new TypeError('late is undefined'); }, 0);
+  fetch('api/missing');
+  // late content pushes the page down: a layout shift
+  setTimeout(() => { document.getElementById('late').style.height = '600px'; }, 50);
+</script>
+</body></html>

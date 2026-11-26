@@ -3,6 +3,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from './cdp.js';
 import { install } from './audit.js';
+import { watchRuntime } from './runtime.js';
 
 /**
  * Loads each URL at each width and color scheme, opens every dialog and popover one at a time, and
@@ -10,6 +11,8 @@ import { install } from './audit.js';
  * (split into parts of `sheetRows` states) showing every state at every width and scheme, scaled down for an
  * overview, and next to them each state at full size (`<dir>/<page>/<state>-<width>-<scheme>.png`, 1 CSS px = 1 px),
  * to look at details the sheet is too small for.
+ * Besides the in-page audit, each tab reports what only DevTools sees (runtime.js): exceptions, console errors and
+ * failed requests, each in the state during which it happened. A finding with `resource` names the URL it is about.
  * `cookies` ([{ name, value }]) are set for the origin of every http(s) URL before it loads, and `headers`
  * ({ Name: value }) go with every request: for pages behind a login.
  * `timeout`: ms the browser gets to answer one command. A tab that stops answering (its renderer gone, e.g. while
@@ -26,7 +29,7 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
   const origins = [...new Set(urls.filter(u => /^https?:/.test(u)).map(u => new URL(u).origin))];
   const openPage = async () => {
     const page = await b.newPage();
-    if (cookies.length || Object.keys(headers).length) await page.send('Network.enable');
+    page.runtime = await watchRuntime(page); // enables Network: also needed for the headers and cookies below
     if (Object.keys(headers).length) await page.send('Network.setExtraHTTPHeaders', { headers });
     for (const origin of origins) for (const { name, value } of cookies) {
       const { success } = await page.send('Network.setCookie', { name, value, url: origin + '/' });
@@ -37,7 +40,8 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
   // One width and scheme of one URL: the page, then each overlay. Findings and screenshots only count once the
   // whole step went through, so a step that is run again does not leave half a step behind.
   async function step(page, url, width, scheme) {
-    const found = [], shots = [];
+    const found = [], shots = [], rt = page.runtime;
+    rt.reset(url);
     await page.goto(url, { width, height, scheme, settle });
     await page.evaluate(NO_GUTTERS);
     await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})`);
@@ -53,12 +57,18 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
     await take('page');
     const count = await page.evaluate('window.__tsi.list()');
     for (let i = 0; i < count; i++) {
+      rt.begin(); // what the opener's handlers throw or request belongs to the overlay, once its name is known
       const state = await page.evaluate(`window.__tsi.open(${i})`);
-      if (!state) continue;
+      rt.claim(state);
+      if (!state) { rt.end(); continue; }
       found.push(...await page.evaluate(`window.__tsi.check(${JSON.stringify(state)})`));
       await take(state);
       await page.evaluate(`window.__tsi.close(${i})`);
+      rt.end();
     }
+    // A broken <img> is reported by the page with its element; its failed request would say the same again.
+    const broken = new Set(found.filter(f => f.code === 'image' && f.resource).map(f => f.resource));
+    found.push(...rt.findings().filter(f => !(f.code === 'request' && broken.has(f.resource))));
     return { found, shots };
   }
   const replaceable = e => e?.code === 'PAGE_LOST' || e?.code === 'COMMAND_TIMEOUT';
@@ -71,7 +81,8 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
           try {
             const result = await step(page, url, width, scheme);
             for (const f of result.found) {
-              const key = [url, f.state, f.severity, f.code, f.selector].join('\u0000');
+              // a finding about no element (an exception, a console error, the document) is told apart by its message
+              const key = [url, f.state, f.severity, f.code, f.selector, f.selector ? '' : f.message].join('\u0000');
               const entry = merged.get(key) ?? { url, ...f, where: [] };
               const at = `${width} ${scheme}`;
               if (!entry.where.includes(at)) entry.where.push(at);
@@ -183,7 +194,7 @@ export function format(findings, { verbose = false, limit = 8, allWhere = [] } =
       for (const [, group] of byCode) {
         for (const f of group.slice(0, limit)) {
           const where = f.where.length === allWhere.length ? '' : ` [${f.where.join(', ')}]`;
-          out.push(`    ${f.severity} ${f.code}: ${f.selector} ${f.message}${where}`);
+          out.push(`    ${f.severity} ${f.code}: ${f.selector ? f.selector + ' ' : ''}${f.message}${where}`);
         }
         if (group.length > limit) out.push(`    … ${group.length - limit} more ${group[0].code} findings (--limit to show more)`);
       }
