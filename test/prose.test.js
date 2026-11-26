@@ -1,4 +1,4 @@
-// prose.css (data-prose) in a real browser (fixtures/prose.html, served over HTTP from the repository root), and
+// prose.css (data-tm-prose) in a real browser (fixtures/prose.html, served over HTTP from the repository root), and
 // what the checker says about the attribute. The browser tests are skipped when no Chrome/Chromium is installed.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -57,10 +57,10 @@ async function measure(width, scheme = 'light') {
   }
 }
 
-test('data-prose: rhythm between blocks, none at the edges, components untouched', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+test('data-tm-prose: rhythm between blocks, none at the edges, components untouched', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   for (const [width, scheme] of [[1280, 'light'], [390, 'dark']]) {
     const r = await measure(width, scheme);
-    // nothing before the first block or after the last: the parent's data-gap is all the space around the prose
+    // nothing before the first block or after the last: the parent's data-tm-gap is all the space around the prose
     assert.equal(r.firstTop, 0);
     assert.equal(r.lastBottom, 0);
     assert.equal(r.proseGap, 16, 'margins leak out of the prose into the stack gap');
@@ -91,18 +91,18 @@ test('data-prose: rhythm between blocks, none at the edges, components untouched
     assert.equal(r.layoutFont, '16px');
     assert.equal(r.dataTd, '8px');
     assert.equal(r.dataFont, '14px');
-    // article[data-prose] is a post, not a card, and its header is not a toolbar
+    // article[data-tm-prose] is a post, not a card, and its header is not a toolbar
     assert.deepEqual(r.post, ['0px', '0px', 'none']);
     assert.equal(r.postHeader, 'block');
   }
 });
 
-test('checker: data-prose is valid, needs prose.css, not on table cells', () => {
+test('checker: data-tm-prose is valid, needs prose.css, not on table cells', () => {
   const codes = r => r.map(d => d.code);
-  assert.deepEqual(codes(checkMarkup('<div data-prose><p>x</p></div>', 'a.html', { modules: new Set(['core', 'prose']) })), []);
-  const [d] = checkMarkup('<div data-prose><p>x</p></div>', 'a.html', { modules: new Set(['core']) });
+  assert.deepEqual(codes(checkMarkup('<div data-tm-prose><p>x</p></div>', 'a.html', { modules: new Set(['core', 'prose']) })), []);
+  const [d] = checkMarkup('<div data-tm-prose><p>x</p></div>', 'a.html', { modules: new Set(['core']) });
   assert.equal(d.code, 'TM110');
-  assert.match(d.message, /data-prose needs prose\.css/);
-  assert.deepEqual(codes(checkMarkup('<div data-prose="yes"></div>', 'a.html', { modules: null })), ['TM102']);
-  assert.deepEqual(codes(checkMarkup('<table><tr><th>a</th><td data-prose>x</td></tr></table>', 'a.html', { modules: null })), ['TM108']);
+  assert.match(d.message, /data-tm-prose needs prose\.css/);
+  assert.deepEqual(codes(checkMarkup('<div data-tm-prose="yes"></div>', 'a.html', { modules: null })), ['TM102']);
+  assert.deepEqual(codes(checkMarkup('<table><tr><th>a</th><td data-tm-prose>x</td></tr></table>', 'a.html', { modules: null })), ['TM108']);
 });

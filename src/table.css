@@ -1,8 +1,8 @@
 /* temper table: data tables. Requires core.css. State is HTML and ARIA, as everywhere:
    <th aria-sort="ascending"><button>Name</button></th>   sortable column (your code sorts and sets aria-sort)
-   <td data-num>1,204.50</td>                              numbers: right-aligned, tabular figures
+   <td data-tm-num>1,204.50</td>                              numbers: right-aligned, tabular figures
    a checked checkbox in the first cell (or aria-selected="true" on the row) highlights the row.
-   The header sticks to the top while the page (or a data-scroll="y|both" wrapper) scrolls. */
+   The header sticks to the top while the page (or a data-tm-scroll="y|both" wrapper) scrolls. */
 
 @layer tm.components {
   :where(caption) { padding-block-end: var(--tm-space-sm); caption-side: top; text-align: start; font-weight: 600; }
@@ -15,7 +15,7 @@
   :where(tfoot) :where(th, td) { border-block-end: 0; border-block-start: 1px solid var(--tm-border-strong); font-weight: 600; color: var(--tm-text); }
   :where(tbody) :where(th) { color: var(--tm-text); font-size: inherit; } /* its weight is core's th */
   :where(td) { vertical-align: middle; }
-  :where(th, td)[data-num] { text-align: end; font-variant-numeric: tabular-nums; }
+  :where(th, td)[data-tm-num] { text-align: end; font-variant-numeric: tabular-nums; }
 
   /* sortable header: the button looks like the header text, with an arrow for the direction */
   :where(th[aria-sort]) > :where(button) {
@@ -35,7 +35,7 @@
   }
   :where(th[aria-sort="descending"]) > :where(button)::after { rotate: 180deg; }
   /* in a number column the arrow goes first, so the labels line up with the figures */
-  :where(th[data-num][aria-sort]) > :where(button) { flex-direction: row-reverse; }
+  :where(th[data-tm-num][aria-sort]) > :where(button) { flex-direction: row-reverse; }
   @media print { :where(thead) :where(th) { position: static; } } /* the browser repeats the header on every page */
 
   /* selection: a checkbox column, and the selected rows */

@@ -14,8 +14,8 @@
     // ?css=dist loads the built, minified file instead of the source.
     if (q.get('css') === 'dist') document.getElementById('core-css').href = '../dist/core.css';
     if (q.get('example')) h.dataset.exampleTheme = q.get('example');
-    if (q.get('t')) h.dataset.theme = q.get('t');
-    if (q.get('density')) h.dataset.density = q.get('density');
+    if (q.get('t')) h.dataset.tmTheme = q.get('t');
+    if (q.get('density')) h.dataset.tmDensity = q.get('density');
     // ?enhance=customizable-select (or several, comma-separated) adds opt-in enhancements after core.
     for (const id of (q.get('enhance') ?? '').split(',').filter(Boolean)) {
       const l = document.createElement('link'); l.rel = 'stylesheet';
@@ -40,108 +40,108 @@
   </defs>
 </svg>
 
-<header class="topbar" data-layout="row" data-gap="sm">
+<header class="topbar" data-tm-layout="row" data-tm-gap="sm">
   <div class="wordmark">temper <span>kitchen sink</span></div>
   <div class="segmented" role="group" aria-label="Theme example" id="example">
-    <button data-variant="ghost" data-size="sm" value="">Default</button>
-    <button data-variant="ghost" data-size="sm" value="ink">Ink</button>
-    <button data-variant="ghost" data-size="sm" value="fjord">Fjord</button>
+    <button data-tm-variant="ghost" data-tm-size="sm" value="">Default</button>
+    <button data-tm-variant="ghost" data-tm-size="sm" value="ink">Ink</button>
+    <button data-tm-variant="ghost" data-tm-size="sm" value="fjord">Fjord</button>
   </div>
   <div class="segmented" role="group" aria-label="Theme" id="theme">
-    <button data-variant="ghost" data-size="sm" value="">Auto</button>
-    <button data-variant="ghost" data-size="sm" value="light">Light</button>
-    <button data-variant="ghost" data-size="sm" value="dark">Dark</button>
+    <button data-tm-variant="ghost" data-tm-size="sm" value="">Auto</button>
+    <button data-tm-variant="ghost" data-tm-size="sm" value="light">Light</button>
+    <button data-tm-variant="ghost" data-tm-size="sm" value="dark">Dark</button>
   </div>
   <div class="segmented" role="group" aria-label="Density" id="density">
-    <button data-variant="ghost" data-size="sm" value="">Comfortable</button>
-    <button data-variant="ghost" data-size="sm" value="compact">Compact</button>
+    <button data-tm-variant="ghost" data-tm-size="sm" value="">Comfortable</button>
+    <button data-tm-variant="ghost" data-tm-size="sm" value="compact">Compact</button>
   </div>
 </header>
 
-<main data-layout="center" data-gap="xl" data-pad="xl">
+<main data-tm-layout="center" data-tm-gap="xl" data-tm-pad="xl">
 
   <!-- ───────── Mail ───────── -->
-  <section data-layout="stack" data-gap="md">
-    <div class="section-head" data-layout="stack" data-gap="xs">
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <div class="section-head" data-tm-layout="stack" data-tm-gap="xs">
       <h2>Mail</h2>
       <p>Ghost buttons with counts, a dense message list and a reader with label/value pairs.</p>
     </div>
 
     <div class="mail">
-      <nav class="folders" data-layout="stack" data-gap="none" aria-label="Folders">
-        <button data-variant="secondary" data-tone="accent" aria-current="page"><svg><use href="#i-inbox"/></svg>Inbox <span data-badge data-tone="accent">12</span></button>
-        <button data-variant="ghost"><svg><use href="#i-file"/></svg>Drafts <span data-badge>2</span></button>
-        <button data-variant="ghost"><svg><use href="#i-send"/></svg>Sent</button>
-        <button data-variant="ghost"><svg><use href="#i-trash"/></svg>Trash</button>
+      <nav class="folders" data-tm-layout="stack" data-tm-gap="none" aria-label="Folders">
+        <button data-tm-variant="secondary" data-tm-tone="accent" aria-current="page"><svg><use href="#i-inbox"/></svg>Inbox <span data-tm-badge data-tm-tone="accent">12</span></button>
+        <button data-tm-variant="ghost"><svg><use href="#i-file"/></svg>Drafts <span data-tm-badge>2</span></button>
+        <button data-tm-variant="ghost"><svg><use href="#i-send"/></svg>Sent</button>
+        <button data-tm-variant="ghost"><svg><use href="#i-trash"/></svg>Trash</button>
 <!-- temper-ignore: deliberate demo -->
         <h4>Calendars</h4>
-        <button data-variant="ghost" style="--tm-tone: oklch(0.6 0.15 250)"><span class="cal-dot"></span>Work</button>
-        <button data-variant="ghost" style="--tm-tone: oklch(0.65 0.16 150)"><span class="cal-dot"></span>Family</button>
-        <button data-variant="ghost" style="--tm-tone: oklch(0.68 0.16 55)"><span class="cal-dot"></span>Climbing club</button>
+        <button data-tm-variant="ghost" style="--tm-tone: oklch(0.6 0.15 250)"><span class="cal-dot"></span>Work</button>
+        <button data-tm-variant="ghost" style="--tm-tone: oklch(0.65 0.16 150)"><span class="cal-dot"></span>Family</button>
+        <button data-tm-variant="ghost" style="--tm-tone: oklch(0.68 0.16 55)"><span class="cal-dot"></span>Climbing club</button>
       </nav>
 
       <div class="msgs">
-        <div class="msgs-head" data-layout="row" data-gap="xs">
+        <div class="msgs-head" data-tm-layout="row" data-tm-gap="xs">
           <input type="search" placeholder="Search mail" aria-label="Search mail" style="flex:1; inline-size:auto">
-          <button data-icon data-variant="ghost" aria-label="New message"><svg><use href="#i-plus"/></svg></button>
+          <button data-tm-icon data-tm-variant="ghost" aria-label="New message"><svg><use href="#i-plus"/></svg></button>
         </div>
         <ul class="msg-list">
-          <li><a href="#" class="unread"><span class="from">Jonas Weber</span><time>09:42</time><span class="subject" data-truncate>Venue options for the March offsite</span><span class="snippet" data-truncate>I shortlisted three places near Leipzig, all with rooms for twelve and a quiet…</span></a></li>
-          <li><a href="#" aria-current="true"><span class="from">Priya Raman</span><time>08:15</time><span class="subject" data-truncate>Re: CalDAV sync drops recurring exceptions</span><span class="snippet" data-truncate>Confirmed on Nextcloud 31 as well. The EXDATE is still on the server…</span></a></li>
-          <li><a href="#" class="unread"><span class="from">Calendar</span><time>Yesterday</time><span class="subject" data-truncate>Invitation: Design review, Thu 12 Nov 14:00</span><span class="snippet" data-truncate>Mira Okafor invited you and 4 others.</span></a></li>
-          <li><a href="#"><span class="from">Mira Okafor</span><time>Tue</time><span class="subject" data-truncate>Photos from Saturday</span><span class="snippet" data-truncate>The light at the crag was ridiculous. Four attached, more in the album.</span></a></li>
-          <li><a href="#"><span class="from">Deutsche Bahn</span><time>Mon</time><span class="subject" data-truncate>Your booking: Berlin Hbf → Leipzig Hbf</span><span class="snippet" data-truncate>ICE 1537, 13 Mar, coach 7, seat 64. Show this ticket on board.</span></a></li>
+          <li><a href="#" class="unread"><span class="from">Jonas Weber</span><time>09:42</time><span class="subject" data-tm-truncate>Venue options for the March offsite</span><span class="snippet" data-tm-truncate>I shortlisted three places near Leipzig, all with rooms for twelve and a quiet…</span></a></li>
+          <li><a href="#" aria-current="true"><span class="from">Priya Raman</span><time>08:15</time><span class="subject" data-tm-truncate>Re: CalDAV sync drops recurring exceptions</span><span class="snippet" data-tm-truncate>Confirmed on Nextcloud 31 as well. The EXDATE is still on the server…</span></a></li>
+          <li><a href="#" class="unread"><span class="from">Calendar</span><time>Yesterday</time><span class="subject" data-tm-truncate>Invitation: Design review, Thu 12 Nov 14:00</span><span class="snippet" data-tm-truncate>Mira Okafor invited you and 4 others.</span></a></li>
+          <li><a href="#"><span class="from">Mira Okafor</span><time>Tue</time><span class="subject" data-tm-truncate>Photos from Saturday</span><span class="snippet" data-tm-truncate>The light at the crag was ridiculous. Four attached, more in the album.</span></a></li>
+          <li><a href="#"><span class="from">Deutsche Bahn</span><time>Mon</time><span class="subject" data-tm-truncate>Your booking: Berlin Hbf → Leipzig Hbf</span><span class="snippet" data-tm-truncate>ICE 1537, 13 Mar, coach 7, seat 64. Show this ticket on board.</span></a></li>
         </ul>
       </div>
 
-      <article class="reader" style="border:0; border-radius:0; box-shadow:none; border-inline-start: 1px solid var(--tm-border)" data-layout="stack" data-gap="md">
+      <article class="reader" style="border:0; border-radius:0; box-shadow:none; border-inline-start: 1px solid var(--tm-border)" data-tm-layout="stack" data-tm-gap="md">
         <header>
           <h3>Re: CalDAV sync drops recurring exceptions</h3>
-          <div data-layout="row" data-gap="xs">
-            <button data-icon data-variant="ghost" aria-label="Previous"><svg><use href="#i-left"/></svg></button>
-            <button data-icon data-variant="ghost" aria-label="Next"><svg><use href="#i-right"/></svg></button>
+          <div data-tm-layout="row" data-tm-gap="xs">
+            <button data-tm-icon data-tm-variant="ghost" aria-label="Previous"><svg><use href="#i-left"/></svg></button>
+            <button data-tm-icon data-tm-variant="ghost" aria-label="Next"><svg><use href="#i-right"/></svg></button>
           </div>
         </header>
-        <dl data-pairs>
+        <dl data-tm-pairs>
           <dt>From</dt><dd>Priya Raman &lt;priya@raman.dev&gt;</dd>
           <dt>To</dt><dd>you, sync-team</dd>
           <dt>Date</dt><dd><time>Sat 7 Nov 2026, 08:15</time></dd>
         </dl>
         <hr>
-        <div class="reader-body" data-layout="stack" data-gap="sm">
+        <div class="reader-body" data-tm-layout="stack" data-tm-gap="sm">
           <p>Confirmed on Nextcloud 31 as well. The <code>EXDATE</code> is still on the server, but after the next sync the cancelled Tuesday shows up again in the week view.</p>
           <p>My guess is the override with <code>RECURRENCE-ID</code> gets written before the master event. Logs are attached. Happy to pair on it Monday.</p>
         </div>
-        <div data-layout="row" data-gap="xs">
-          <span data-badge><svg width="12" height="12"><use href="#i-file"/></svg>sync-trace.log · 48 KB</span>
-          <span data-badge data-tone="success">Signed</span>
+        <div data-tm-layout="row" data-tm-gap="xs">
+          <span data-tm-badge><svg width="12" height="12"><use href="#i-file"/></svg>sync-trace.log · 48 KB</span>
+          <span data-tm-badge data-tm-tone="success">Signed</span>
         </div>
         <footer style="justify-content:start">
           <button><svg><use href="#i-reply"/></svg>Reply</button>
-          <button data-variant="secondary">Forward</button>
-          <button data-variant="ghost" data-tone="danger"><svg><use href="#i-trash"/></svg>Delete</button>
+          <button data-tm-variant="secondary">Forward</button>
+          <button data-tm-variant="ghost" data-tm-tone="danger"><svg><use href="#i-trash"/></svg>Delete</button>
         </footer>
       </article>
     </div>
   </section>
 
   <!-- ───────── Event form, dialog, contact ───────── -->
-  <section data-layout="stack" data-gap="md">
-    <div class="section-head" data-layout="stack" data-gap="xs">
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <div class="section-head" data-tm-layout="stack" data-tm-gap="xs">
       <h2>Calendar and contacts</h2>
       <p>A form with every field type and an invalid field, a confirmation dialog, a menu and a contact card.</p>
     </div>
 
-    <div data-layout="grid" data-gap="lg" style="--tm-min: 22rem; align-items:start">
-      <article data-layout="stack" data-gap="md">
-        <header><h3>Edit event</h3><button data-icon data-variant="ghost" aria-label="Close"><svg><use href="#i-x"/></svg></button></header>
-        <form data-layout="stack" data-gap="md" onsubmit="return false">
+    <div data-tm-layout="grid" data-tm-gap="lg" style="--tm-min: 22rem; align-items:start">
+      <article data-tm-layout="stack" data-tm-gap="md">
+        <header><h3>Edit event</h3><button data-tm-icon data-tm-variant="ghost" aria-label="Close"><svg><use href="#i-x"/></svg></button></header>
+        <form data-tm-layout="stack" data-tm-gap="md" onsubmit="return false">
           <label>Title <input value="Design review"></label>
-          <div data-layout="grid" data-gap="sm" style="--tm-min: 9rem">
+          <div data-tm-layout="grid" data-tm-gap="sm" style="--tm-min: 9rem">
             <label>Starts <input type="date" value="2026-11-12"></label>
             <label>Time <input type="time" value="14:00"></label>
           </div>
-          <div data-layout="grid" data-gap="sm" style="--tm-min: 9rem">
+          <div data-tm-layout="grid" data-tm-gap="sm" style="--tm-min: 9rem">
             <label>Calendar
               <select><option>Work</option><option>Family</option><option>Climbing club</option></select>
             </label>
@@ -157,7 +157,7 @@
           <label><input type="checkbox" role="switch"> All day</label>
           <fieldset>
             <legend>Repeat</legend>
-            <div data-layout="row" data-gap="md">
+            <div data-tm-layout="row" data-tm-gap="md">
               <label><input type="radio" name="r"> Never</label>
               <label><input type="radio" name="r" checked> Weekly</label>
               <label><input type="radio" name="r"> Monthly</label>
@@ -165,51 +165,51 @@
           </fieldset>
           <label>Guests
             <input value="mira@okafor.io, priya@" aria-invalid="true">
-            <small data-tone="danger">“priya@” is incomplete. Enter a full address, like name@example.com.</small>
+            <small data-tm-tone="danger">“priya@” is incomplete. Enter a full address, like name@example.com.</small>
           </label>
           <label>Notes <textarea placeholder="Agenda, links, dial-in"></textarea></label>
           <label><input type="checkbox" checked> Email me 30 minutes before</label>
         </form>
         <footer>
-          <button data-variant="ghost">Cancel</button>
+          <button data-tm-variant="ghost">Cancel</button>
           <button>Save event</button>
         </footer>
       </article>
 
-      <div data-layout="stack" data-gap="lg">
+      <div data-tm-layout="stack" data-tm-gap="lg">
         <dialog open class="preview-dialog" aria-labelledby="del-title">
-          <header><h3 id="del-title">Delete “Team retro”?</h3><button data-icon data-variant="ghost" aria-label="Close"><svg><use href="#i-x"/></svg></button></header>
+          <header><h3 id="del-title">Delete “Team retro”?</h3><button data-tm-icon data-tm-variant="ghost" aria-label="Close"><svg><use href="#i-x"/></svg></button></header>
           <p>This removes the event from your calendar and sends a cancellation to all 6 guests.</p>
-          <div data-callout data-tone="warning"><strong>This event repeats weekly.</strong>Only Thursday 12 Nov is deleted. Later dates stay.</div>
+          <div data-tm-callout data-tm-tone="warning"><strong>This event repeats weekly.</strong>Only Thursday 12 Nov is deleted. Later dates stay.</div>
           <footer>
-            <button data-variant="secondary">Keep event</button>
-            <button data-tone="danger">Delete event</button>
+            <button data-tm-variant="secondary">Keep event</button>
+            <button data-tm-tone="danger">Delete event</button>
           </footer>
         </dialog>
 
-        <div data-layout="row" data-gap="lg" data-align="start">
+        <div data-tm-layout="row" data-tm-gap="lg" data-tm-align="start">
 <!-- temper-ignore: static preview, never opened -->
           <div popover class="preview-menu" id="menu-preview">
-            <button data-variant="ghost" data-size="sm">Open in new tab</button>
-            <button data-variant="ghost" data-size="sm">Mark as unread</button>
-            <button data-variant="ghost" data-size="sm">Move to…</button>
+            <button data-tm-variant="ghost" data-tm-size="sm">Open in new tab</button>
+            <button data-tm-variant="ghost" data-tm-size="sm">Mark as unread</button>
+            <button data-tm-variant="ghost" data-tm-size="sm">Move to…</button>
             <hr>
-            <button data-variant="ghost" data-size="sm" data-tone="danger">Delete</button>
+            <button data-tm-variant="ghost" data-tm-size="sm" data-tm-tone="danger">Delete</button>
           </div>
 
-          <article data-layout="stack" data-gap="sm" style="flex:1; min-inline-size: 14rem">
-            <div data-layout="row" data-gap="sm" style="flex-wrap:nowrap">
+          <article data-tm-layout="stack" data-tm-gap="sm" style="flex:1; min-inline-size: 14rem">
+            <div data-tm-layout="row" data-tm-gap="sm" style="flex-wrap:nowrap">
               <div class="avatar" style="--tm-tone: oklch(0.65 0.16 150)">MO</div>
-              <div data-layout="stack" data-gap="none" style="min-inline-size:0">
+              <div data-tm-layout="stack" data-tm-gap="none" style="min-inline-size:0">
                 <strong>Mira Okafor</strong>
-                <small data-muted data-truncate>mira@okafor.io</small>
+                <small data-tm-muted data-tm-truncate>mira@okafor.io</small>
               </div>
             </div>
-            <dl data-pairs>
+            <dl data-tm-pairs>
               <dt>Mobile</dt><dd>+49 151 2345 6789</dd>
               <dt>Birthday</dt><dd>14 March</dd>
             </dl>
-            <div data-layout="row" data-gap="xs"><span data-badge>Climbing club</span><span data-badge data-tone="accent">Favourite</span></div>
+            <div data-tm-layout="row" data-tm-gap="xs"><span data-tm-badge>Climbing club</span><span data-tm-badge data-tm-tone="accent">Favourite</span></div>
           </article>
         </div>
       </div>
@@ -217,118 +217,118 @@
   </section>
 
   <!-- ───────── Reference ───────── -->
-  <section data-layout="stack" data-gap="md">
-    <div class="section-head" data-layout="stack" data-gap="xs">
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <div class="section-head" data-tm-layout="stack" data-tm-gap="xs">
       <h2>Reference</h2>
-      <p>Every variant against every tone. Rows are <code>data-variant</code>, columns are <code>data-tone</code>.</p>
+      <p>Every variant against every tone. Rows are <code>data-tm-variant</code>, columns are <code>data-tm-tone</code>.</p>
     </div>
 
-    <article data-layout="stack" data-gap="lg">
-      <div data-scroll>
+    <article data-tm-layout="stack" data-tm-gap="lg">
+      <div data-tm-scroll>
         <table class="matrix">
           <thead><tr><th></th><th>default</th><th>accent</th><th>danger</th><th>success</th><th>warning</th></tr></thead>
           <tbody>
-            <tr><th>primary</th><td><button>Save</button></td><td><button data-tone="accent">Save</button></td><td><button data-tone="danger">Delete</button></td><td><button data-tone="success">Accept</button></td><td><button data-tone="warning">Retry</button></td></tr>
-            <tr><th>secondary</th><td><button data-variant="secondary">Forward</button></td><td><button data-variant="secondary" data-tone="accent">Forward</button></td><td><button data-variant="secondary" data-tone="danger">Delete</button></td><td><button data-variant="secondary" data-tone="success">Accept</button></td><td><button data-variant="secondary" data-tone="warning">Retry</button></td></tr>
-            <tr><th>outline</th><td><button data-variant="outline">Export</button></td><td><button data-variant="outline" data-tone="accent">Export</button></td><td><button data-variant="outline" data-tone="danger">Delete</button></td><td><button data-variant="outline" data-tone="success">Accept</button></td><td><button data-variant="outline" data-tone="warning">Retry</button></td></tr>
-            <tr><th>ghost</th><td><button data-variant="ghost">Cancel</button></td><td><button data-variant="ghost" data-tone="accent">Cancel</button></td><td><button data-variant="ghost" data-tone="danger">Delete</button></td><td><button data-variant="ghost" data-tone="success">Accept</button></td><td><button data-variant="ghost" data-tone="warning">Retry</button></td></tr>
-            <tr><th>link</th><td><button data-variant="link">Details</button></td><td><button data-variant="link" data-tone="accent">Details</button></td><td><button data-variant="link" data-tone="danger">Delete</button></td><td><button data-variant="link" data-tone="success">Accept</button></td><td><button data-variant="link" data-tone="warning">Retry</button></td></tr>
+            <tr><th>primary</th><td><button>Save</button></td><td><button data-tm-tone="accent">Save</button></td><td><button data-tm-tone="danger">Delete</button></td><td><button data-tm-tone="success">Accept</button></td><td><button data-tm-tone="warning">Retry</button></td></tr>
+            <tr><th>secondary</th><td><button data-tm-variant="secondary">Forward</button></td><td><button data-tm-variant="secondary" data-tm-tone="accent">Forward</button></td><td><button data-tm-variant="secondary" data-tm-tone="danger">Delete</button></td><td><button data-tm-variant="secondary" data-tm-tone="success">Accept</button></td><td><button data-tm-variant="secondary" data-tm-tone="warning">Retry</button></td></tr>
+            <tr><th>outline</th><td><button data-tm-variant="outline">Export</button></td><td><button data-tm-variant="outline" data-tm-tone="accent">Export</button></td><td><button data-tm-variant="outline" data-tm-tone="danger">Delete</button></td><td><button data-tm-variant="outline" data-tm-tone="success">Accept</button></td><td><button data-tm-variant="outline" data-tm-tone="warning">Retry</button></td></tr>
+            <tr><th>ghost</th><td><button data-tm-variant="ghost">Cancel</button></td><td><button data-tm-variant="ghost" data-tm-tone="accent">Cancel</button></td><td><button data-tm-variant="ghost" data-tm-tone="danger">Delete</button></td><td><button data-tm-variant="ghost" data-tm-tone="success">Accept</button></td><td><button data-tm-variant="ghost" data-tm-tone="warning">Retry</button></td></tr>
+            <tr><th>link</th><td><button data-tm-variant="link">Details</button></td><td><button data-tm-variant="link" data-tm-tone="accent">Details</button></td><td><button data-tm-variant="link" data-tm-tone="danger">Delete</button></td><td><button data-tm-variant="link" data-tm-tone="success">Accept</button></td><td><button data-tm-variant="link" data-tm-tone="warning">Retry</button></td></tr>
           </tbody>
         </table>
       </div>
 
-      <div data-layout="row" data-gap="sm">
-        <button data-size="sm">Small</button>
+      <div data-tm-layout="row" data-tm-gap="sm">
+        <button data-tm-size="sm">Small</button>
 <!-- temper-ignore: deliberate demo -->
         <button>Medium</button>
-        <button data-size="lg">Large</button>
-        <button data-icon data-variant="outline" aria-label="Search"><svg><use href="#i-search"/></svg></button>
+        <button data-tm-size="lg">Large</button>
+        <button data-tm-icon data-tm-variant="outline" aria-label="Search"><svg><use href="#i-search"/></svg></button>
         <button aria-busy="true">Saving</button>
-        <button data-variant="secondary" aria-busy="true">Syncing</button>
+        <button data-tm-variant="secondary" aria-busy="true">Syncing</button>
         <button disabled>Disabled</button>
-        <button data-variant="outline" aria-pressed="true">Pressed</button>
+        <button data-tm-variant="outline" aria-pressed="true">Pressed</button>
         <input placeholder="Inputs match button height" aria-label="Example input" style="inline-size: 16rem">
       </div>
 
-      <div data-layout="row" data-gap="sm">
-        <span data-badge>Neutral</span>
-        <span data-badge data-tone="accent">Accent</span>
-        <span data-badge data-tone="info">Info</span>
-        <span data-badge data-tone="success">Synced</span>
-        <span data-badge data-tone="warning">Pending</span>
-        <span data-badge data-tone="danger">Failed</span>
-        <span data-badge style="--tm-tone: oklch(0.6 0.2 330)">Custom colour</span>
+      <div data-tm-layout="row" data-tm-gap="sm">
+        <span data-tm-badge>Neutral</span>
+        <span data-tm-badge data-tm-tone="accent">Accent</span>
+        <span data-tm-badge data-tm-tone="info">Info</span>
+        <span data-tm-badge data-tm-tone="success">Synced</span>
+        <span data-tm-badge data-tm-tone="warning">Pending</span>
+        <span data-tm-badge data-tm-tone="danger">Failed</span>
+        <span data-tm-badge style="--tm-tone: oklch(0.6 0.2 330)">Custom colour</span>
       </div>
 
-      <div data-layout="grid" data-gap="sm" style="--tm-min: 15rem">
-        <div data-callout><strong>Sync paused</strong>Caley syncs again when you are back online.</div>
-        <div data-callout data-tone="success"><strong>Calendar imported</strong>48 events added to Work.</div>
-        <div data-callout data-tone="warning"><strong>Password expires soon</strong>Update it before 1 December to keep syncing.</div>
-        <div data-callout data-tone="danger" role="alert"><strong>Could not send</strong>The SMTP server refused the login. Check the password in Settings.</div>
+      <div data-tm-layout="grid" data-tm-gap="sm" style="--tm-min: 15rem">
+        <div data-tm-callout><strong>Sync paused</strong>Caley syncs again when you are back online.</div>
+        <div data-tm-callout data-tm-tone="success"><strong>Calendar imported</strong>48 events added to Work.</div>
+        <div data-tm-callout data-tm-tone="warning"><strong>Password expires soon</strong>Update it before 1 December to keep syncing.</div>
+        <div data-tm-callout data-tm-tone="danger" role="alert"><strong>Could not send</strong>The SMTP server refused the login. Check the password in Settings.</div>
       </div>
 
-      <div data-layout="grid" data-gap="lg" style="--tm-min: 15rem">
-        <div data-layout="stack" data-gap="sm">
+      <div data-tm-layout="grid" data-tm-gap="lg" style="--tm-min: 15rem">
+        <div data-tm-layout="stack" data-tm-gap="sm">
           <label><input type="checkbox" checked> Checked</label>
           <label><input type="checkbox"> Unchecked</label>
           <label><input type="checkbox" id="indet"> Indeterminate</label>
           <label><input type="checkbox" role="switch" checked> Switch on</label>
           <label><input type="checkbox" disabled> Disabled</label>
         </div>
-        <div data-layout="stack" data-gap="sm">
+        <div data-tm-layout="stack" data-tm-gap="sm">
           <label>Import progress <progress value="64" max="100"></progress></label>
-          <label>Storage <progress value="88" max="100" data-tone="warning"></progress></label>
+          <label>Storage <progress value="88" max="100" data-tm-tone="warning"></progress></label>
           <label>Attachment <input type="file"></label>
         </div>
-        <div data-layout="stack" data-gap="sm">
-          <details open><summary>What syncs automatically?</summary><p data-muted>Calendars, contacts and mail every 5 minutes, and instantly when your server supports push.</p></details>
+        <div data-tm-layout="stack" data-tm-gap="sm">
+          <details open><summary>What syncs automatically?</summary><p data-tm-muted>Calendars, contacts and mail every 5 minutes, and instantly when your server supports push.</p></details>
           <details><summary>Can I use more than one account?</summary><p>Yes.</p></details>
         </div>
       </div>
 
-      <div data-layout="grid" data-gap="lg" style="--tm-min: 22rem">
-        <div data-layout="stack" data-gap="md">
+      <div data-tm-layout="grid" data-tm-gap="lg" style="--tm-min: 22rem">
+        <div data-tm-layout="stack" data-tm-gap="md">
           <div role="tablist" aria-label="Settings">
             <button role="tab" aria-selected="true">General</button>
 <!-- temper-ignore: deliberate demo -->
             <button role="tab" aria-selected="false">Encryption</button>
             <button role="tab" aria-selected="false">Accounts</button>
           </div>
-          <div data-layout="row" data-gap="md" data-wrap="wrap">
-            <div role="radiogroup" data-segmented aria-label="View">
+          <div data-tm-layout="row" data-tm-gap="md" data-tm-wrap="wrap">
+            <div role="radiogroup" data-tm-segmented aria-label="View">
               <label><input type="radio" name="ks-view" value="week" checked>Week</label>
               <label><input type="radio" name="ks-view" value="month">Month</label>
             </div>
-            <div role="radiogroup" data-segmented data-size="sm" aria-label="Layout">
+            <div role="radiogroup" data-tm-segmented data-tm-size="sm" aria-label="Layout">
               <label><input type="radio" name="ks-layout" value="list">List</label>
               <label><input type="radio" name="ks-layout" value="grid" checked>Grid</label>
               <label><input type="radio" name="ks-layout" value="cards">Cards</label>
             </div>
           </div>
-          <ul data-list>
-            <li data-layout="row" data-justify="between" data-gap="sm">
-              <span data-layout="row" data-gap="sm" data-grow>Firefox on Linux <span data-badge data-tone="accent">This browser</span></span>
-              <button data-icon="" data-variant="ghost" data-size="sm" data-tone="danger" aria-label="Remove"><svg><use href="#i-trash"/></svg></button>
+          <ul data-tm-list>
+            <li data-tm-layout="row" data-tm-justify="between" data-tm-gap="sm">
+              <span data-tm-layout="row" data-tm-gap="sm" data-tm-grow>Firefox on Linux <span data-tm-badge data-tm-tone="accent">This browser</span></span>
+              <button data-tm-icon="" data-tm-variant="ghost" data-tm-size="sm" data-tm-tone="danger" aria-label="Remove"><svg><use href="#i-trash"/></svg></button>
             </li>
-            <li data-layout="row" data-justify="between" data-gap="sm">
-              <span data-grow>Pixel 8</span>
-              <button data-icon="" data-variant="ghost" data-size="sm" data-tone="danger" aria-label="Remove"><svg><use href="#i-trash"/></svg></button>
+            <li data-tm-layout="row" data-tm-justify="between" data-tm-gap="sm">
+              <span data-tm-grow>Pixel 8</span>
+              <button data-tm-icon="" data-tm-variant="ghost" data-tm-size="sm" data-tm-tone="danger" aria-label="Remove"><svg><use href="#i-trash"/></svg></button>
             </li>
           </ul>
         </div>
-        <div data-layout="center" data-gap="sm" style="--tm-measure: 14rem" lang="de">
-          <button data-variant="secondary">Mit einem Passkey anmelden</button>
-          <p data-divider>oder</p>
+        <div data-tm-layout="center" data-tm-gap="sm" style="--tm-measure: 14rem" lang="de">
+          <button data-tm-variant="secondary">Mit einem Passkey anmelden</button>
+          <p data-tm-divider>oder</p>
           <button>Wiederherstellungsschlüssel herunterladen</button>
         </div>
       </div>
 
-      <div data-scroll><table>
+      <div data-tm-scroll><table>
         <thead><tr><th>Account</th><th>Type</th><th>Last sync</th><th>Status</th></tr></thead>
         <tbody>
-          <tr><td>tia@posteo.de</td><td>IMAP</td><td><time>08:15</time></td><td><span data-badge data-tone="success">Synced</span></td></tr>
-          <tr><td>Nextcloud</td><td>CalDAV</td><td><time>08:14</time></td><td><span data-badge data-tone="success">Synced</span></td></tr>
-          <tr><td>Work Exchange</td><td>CardDAV</td><td><time>Yesterday</time></td><td><span data-badge data-tone="danger">Login failed</span></td></tr>
+          <tr><td>tia@posteo.de</td><td>IMAP</td><td><time>08:15</time></td><td><span data-tm-badge data-tm-tone="success">Synced</span></td></tr>
+          <tr><td>Nextcloud</td><td>CalDAV</td><td><time>08:14</time></td><td><span data-tm-badge data-tm-tone="success">Synced</span></td></tr>
+          <tr><td>Work Exchange</td><td>CardDAV</td><td><time>Yesterday</time></td><td><span data-tm-badge data-tm-tone="danger">Login failed</span></td></tr>
         </tbody>
       </table></div>
 

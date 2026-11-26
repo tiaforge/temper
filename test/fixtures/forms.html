@@ -10,25 +10,25 @@
 <style>#probe-danger { color: var(--tm-danger); } #probe-accent { color: var(--tm-accent); } #probe-fill { color: var(--tm-fill); }</style>
 </head>
 <body>
-<main data-layout="stack" data-pad="md" data-gap="md" style="--tm-measure: 40rem">
+<main data-tm-layout="stack" data-tm-pad="md" data-tm-gap="md" style="--tm-measure: 40rem">
   <span id="probe-danger"></span><span id="probe-accent"></span><span id="probe-fill"></span>
   <!-- heights: a field and a plain input side by side, at both densities and every size -->
-  <div data-layout="row"><input id="h-plain" aria-label="a"><div data-field id="h-field"><span data-icon="search"></span><input aria-label="b"></div></div>
-  <div data-layout="row" data-density="compact"><input id="hc-plain" aria-label="a"><div data-field id="hc-field"><span>€</span><input aria-label="b"></div></div>
-  <div data-layout="row"><input data-size="sm" id="hs-plain" aria-label="a"><div data-field data-size="sm" id="hs-field"><input aria-label="b"><span>kg</span></div></div>
-  <div data-layout="row"><input data-size="lg" id="hl-plain" aria-label="a"><div data-field data-size="lg" id="hl-field"><input aria-label="b"><button type="button" data-variant="ghost" data-icon="x" aria-label="Clear" id="hl-button"></button></div></div>
-  <div data-layout="row" id="row"><div data-field data-grow id="grow"><span data-icon="search"></span><input aria-label="q"></div><button>Go</button></div>
+  <div data-tm-layout="row"><input id="h-plain" aria-label="a"><div data-tm-field id="h-field"><span data-tm-icon="search"></span><input aria-label="b"></div></div>
+  <div data-tm-layout="row" data-tm-density="compact"><input id="hc-plain" aria-label="a"><div data-tm-field id="hc-field"><span>€</span><input aria-label="b"></div></div>
+  <div data-tm-layout="row"><input data-tm-size="sm" id="hs-plain" aria-label="a"><div data-tm-field data-tm-size="sm" id="hs-field"><input aria-label="b"><span>kg</span></div></div>
+  <div data-tm-layout="row"><input data-tm-size="lg" id="hl-plain" aria-label="a"><div data-tm-field data-tm-size="lg" id="hl-field"><input aria-label="b"><button type="button" data-tm-variant="ghost" data-tm-icon="x" aria-label="Clear" id="hl-button"></button></div></div>
+  <div data-tm-layout="row" id="row"><div data-tm-field data-tm-grow id="grow"><span data-tm-icon="search"></span><input aria-label="q"></div><button>Go</button></div>
   <label id="l-plain">Plain <input></label>
-  <label id="l-field">Weight <span data-field id="lf"><input id="lf-input"><span>kg</span></span></label>
+  <label id="l-field">Weight <span data-tm-field id="lf"><input id="lf-input"><span>kg</span></span></label>
 
   <!-- states -->
-  <div data-field id="s-focus"><span>https://</span><input id="s-focus-input" aria-label="Site"></div>
-  <div data-field id="s-hover"><span>€</span><input aria-label="Amount"></div>
-  <div data-field id="s-aria"><input aria-invalid="true" aria-label="Taken"></div>
-  <div data-field id="s-user"><input required id="s-user-input" aria-label="Required"></div>
-  <div data-field id="s-disabled"><span data-icon="lock"></span><input disabled id="s-disabled-input" aria-label="Locked"><button type="button" data-variant="ghost" data-icon="x" aria-label="Clear" disabled id="s-disabled-button"></button></div>
-  <div data-field id="s-button"><input type="password" aria-label="Password"><button type="button" data-variant="ghost" data-icon="eye" aria-label="Show" id="s-button-button"></button></div>
-  <div data-field id="s-readonly"><input readonly value="abc" aria-label="Key" id="s-readonly-input"></div>
+  <div data-tm-field id="s-focus"><span>https://</span><input id="s-focus-input" aria-label="Site"></div>
+  <div data-tm-field id="s-hover"><span>€</span><input aria-label="Amount"></div>
+  <div data-tm-field id="s-aria"><input aria-invalid="true" aria-label="Taken"></div>
+  <div data-tm-field id="s-user"><input required id="s-user-input" aria-label="Required"></div>
+  <div data-tm-field id="s-disabled"><span data-tm-icon="lock"></span><input disabled id="s-disabled-input" aria-label="Locked"><button type="button" data-tm-variant="ghost" data-tm-icon="x" aria-label="Clear" disabled id="s-disabled-button"></button></div>
+  <div data-tm-field id="s-button"><input type="password" aria-label="Password"><button type="button" data-tm-variant="ghost" data-tm-icon="eye" aria-label="Show" id="s-button-button"></button></div>
+  <div data-tm-field id="s-readonly"><input readonly value="abc" aria-label="Key" id="s-readonly-input"></div>
   <input readonly value="read only text" id="ro" aria-label="Read only">
   <input value="editable" id="rw" aria-label="Editable">
 
@@ -36,13 +36,13 @@
   <label id="r-req">Name <input required></label>
   <label id="r-opt">Name <input></label>
   <label id="r-hint">Name <input required><small>Shown to others.</small></label>
-  <label id="r-field">Amount <span data-field><input required><span>€</span></span></label>
+  <label id="r-field">Amount <span data-tm-field><input required><span>€</span></span></label>
   <label id="r-check"><input type="checkbox" required> I agree</label>
   <label id="r-radio"><input type="radio" name="r" required> One</label>
   <label id="r-for" for="r-for-input">Password</label>
-  <div data-field><input id="r-for-input" type="password" required><button type="button" data-variant="ghost" data-icon="eye" aria-label="Show"></button></div>
+  <div data-tm-field><input id="r-for-input" type="password" required><button type="button" data-tm-variant="ghost" data-tm-icon="eye" aria-label="Show"></button></div>
   <label id="r-for-opt" for="r-for-opt-input">Password</label>
-  <div data-field><input id="r-for-opt-input" type="password"><button type="button" data-variant="ghost" data-icon="eye" aria-label="Show"></button></div>
+  <div data-tm-field><input id="r-for-opt-input" type="password"><button type="button" data-tm-variant="ghost" data-tm-icon="eye" aria-label="Show"></button></div>
   <label id="r-for-plain" for="r-for-plain-input">Email</label>
   <input id="r-for-plain-input" type="email" required>
 
@@ -53,9 +53,9 @@
   <progress id="determinate" value="40" max="100" style="inline-size: 400px">40 %</progress>
 
   <!-- autofill (Chrome's Autofill.trigger fills a card form) -->
-  <form action="/pay" method="post" data-layout="stack">
+  <form action="/pay" method="post" data-tm-layout="stack">
     <label>Name on card <input id="cc-name" name="ccname" autocomplete="cc-name"></label>
-    <label>Card number <span data-field id="cc-field"><span>#</span><input id="cc-number" name="cardnumber" autocomplete="cc-number"></span></label>
+    <label>Card number <span data-tm-field id="cc-field"><span>#</span><input id="cc-number" name="cardnumber" autocomplete="cc-number"></span></label>
     <label>Month <input name="ccmonth" autocomplete="cc-exp-month"></label>
     <label>Year <input name="ccyear" autocomplete="cc-exp-year"></label>
     <label>CVC <input name="cvc" autocomplete="cc-csc"></label>
@@ -64,7 +64,7 @@
 
   <!-- performance: long containers on a page that loads forms.css -->
   <ul id="ul"></ul>
-  <div id="inputs" data-layout="stack"></div>
+  <div id="inputs" data-tm-layout="stack"></div>
 </main>
 <script>
   const N = 300, fill = (id, row) => { document.getElementById(id).innerHTML = Array.from({ length: N }, (_, i) => row(i)).join(''); };

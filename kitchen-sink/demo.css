@@ -27,7 +27,7 @@ body { min-block-size: 100dvh; }
 .mail > * + * { border-inline-start: 1px solid var(--tm-border); }
 .folders { padding: var(--tm-space-sm); background: var(--tm-bg); }
 .folders button { justify-content: start; inline-size: 100%; }
-.folders button [data-badge] { margin-inline-start: auto; }
+.folders button [data-tm-badge] { margin-inline-start: auto; }
 .folders h4 { padding: var(--tm-space-md) var(--tm-space-sm) var(--tm-space-xs); font-size: var(--tm-text-xs); color: var(--tm-text-muted); font-weight: 600; letter-spacing: 0; }
 .cal-dot { inline-size: 0.625rem; block-size: 0.625rem; border-radius: 50%; background: var(--tm-tone); }
 .msgs { display: flex; flex-direction: column; min-inline-size: 0; }

@@ -123,7 +123,7 @@ test('a tall dialog keeps its header and footer in place and scrolls what is bet
   });
 });
 
-test('a stack dialog (or a stack wrapper, beside helpers): its data-grow data-scroll="y" part fills the dialog up to the screen limit and scrolls; with little content the dialog stays small',{ skip }, async () => {
+test('a stack dialog (or a stack wrapper, beside helpers): its data-tm-grow data-tm-scroll="y" part fills the dialog up to the screen limit and scrolls; with little content the dialog stays small',{ skip }, async () => {
   await withPage({}, async page => {
     const measure = (id, part) => page.evaluate(`(() => {
       const d = $('${id}'); d.showModal(); d.getAnimations().forEach(a => a.finish());
@@ -161,9 +161,9 @@ test('a stack dialog (or a stack wrapper, beside helpers): its data-grow data-sc
   });
 });
 
-// The stack dialog's rule (data-grow starts from its content) must not reach a row dialog: there data-grow starts from
+// The stack dialog's rule (data-tm-grow starts from its content) must not reach a row dialog: there data-tm-grow starts from
 // 8rem, so a search field or a title shares the line with its button (from its content, both wrapped onto two lines).
-test('a row dialog: a data-grow child keeps its 8rem start and shares the line with its button', { skip }, async () => {
+test('a row dialog: a data-tm-grow child keeps its 8rem start and shares the line with its button', { skip }, async () => {
   for (const width of [360, 1280]) await withPage({ width }, async page => {
     const r = await page.evaluate(`['row-search', 'row-title'].map(id => {
       const d = $(id); d.showModal(); d.getAnimations().forEach(a => a.finish());
@@ -264,7 +264,7 @@ test('side sheets: the footer sits at the bottom, header and footer stay while i
 // While a dialog fades or slides out it is no longer [open]: rules on dialog[open] stopped applying mid-transition,
 // so the dialog's gap and column (or a stack wrapper's column) dropped while it was still shown, and it visibly fell
 // apart as it closed (a contact dialog 306px tall shrank to 258px for the whole fade).
-test('a closing dialog keeps its layout until it is gone, in every shape (plain, wrappers, data-layout, sheets)', { skip }, async () => {
+test('a closing dialog keeps its layout until it is gone, in every shape (plain, wrappers, data-tm-layout, sheets)', { skip }, async () => {
   await withPage({ motion: 'no-preference' }, async page => {
     const ids = ['short', 'wrap-form', 'wrap-div', 'wrap-article', 'tall-stack', 'short-stack', 'content-stack', 'row-search', 'padded', 'end', 'start', 'bottom', 'narrow'];
     const r = await page.evaluate(`(${JSON.stringify(ids)}).map(id => {
@@ -364,12 +364,12 @@ test('sheets: print in full, forced colors keep their edge, safe-area insets pad
     assert.deepEqual(r, [['1px', '0px', '0px'], ['0px', '1px', '0px'], ['1px', '1px', '1px']], 'the edge toward the page keeps its line');
   });
   // a phone with a notch, in landscape: the sheet pads the screen edges it touches by the insets
-  // (with data-pad="md" too: data-pad sets the padding, the edges add the inset to it)
+  // (with data-tm-pad="md" too: data-tm-pad sets the padding, the edges add the inset to it)
   const pads = `(ids => ids.map(id => { $(id).showModal(); const s = cs(id); const p = [s.paddingTop, s.paddingLeft, s.paddingRight, s.paddingBottom]; $(id).close(); return p; }))`;
   await withPage({ width: 844, height: 390 }, async page => {
     await page.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 0, bottom: 21, left: 47, right: 47 } });
     assert.deepEqual(await page.evaluate(`${pads}(['end', 'start', 'bottom'])`), [['24px', '24px', '71px', '45px'], ['24px', '71px', '24px', '45px'], ['24px', '71px', '71px', '45px']]);
-    assert.deepEqual(await page.evaluate(`${pads}(['end-pad', 'start-pad', 'bottom-pad'])`), [['16px', '16px', '63px', '37px'], ['16px', '63px', '16px', '37px'], ['16px', '63px', '63px', '37px']], 'data-pad');
+    assert.deepEqual(await page.evaluate(`${pads}(['end-pad', 'start-pad', 'bottom-pad'])`), [['16px', '16px', '63px', '37px'], ['16px', '63px', '16px', '37px'], ['16px', '63px', '63px', '37px']], 'data-tm-pad');
   });
   // portrait, with a notch and a home indicator: side sheets pad top and bottom, a narrow sheet is a bottom sheet here
   await withPage({ width: 390, height: 844 }, async page => {
@@ -452,7 +452,7 @@ test('an open popover or dialog does not trap position: fixed children, and back
   });
 });
 
-test('menus: a data-caption labels a group, a kbd sits at the end of its item; items keep their height', { skip }, async () => {
+test('menus: a data-tm-caption labels a group, a kbd sits at the end of its item; items keep their height', { skip }, async () => {
   await withPage({}, async page => {
     const r = await page.evaluate(`(() => {
       $('menu').showPopover();
@@ -515,11 +515,11 @@ test('restyle cost: the scroll lock adds next to nothing to opening a modal dial
   });
 });
 
-test('checker: data-sheet takes end, start, bottom or narrow, on a dialog, and needs sheet.css', () => {
+test('checker: data-tm-sheet takes end, start, bottom or narrow, on a dialog, and needs sheet.css', () => {
   const codes = (html, ctx = { modules: new Set(['core', 'sheet']) }) => checkMarkup(html, 'x.html', ctx).map(d => d.code);
-  assert.deepEqual(codes('<dialog data-sheet="end" aria-label="Details"></dialog>'), []);
-  assert.deepEqual(codes('<dialog data-sheet="narrow" aria-label="Share"></dialog>'), []);
-  assert.deepEqual(codes('<dialog data-sheet="left" aria-label="Details"></dialog>'), ['TM101']);
-  assert.ok(codes('<div data-sheet="end"></div>').length > 0, 'not on a div');
-  assert.deepEqual(codes('<dialog data-sheet="end" aria-label="Details"></dialog>', { modules: new Set(['core']) }), ['TM110']);
+  assert.deepEqual(codes('<dialog data-tm-sheet="end" aria-label="Details"></dialog>'), []);
+  assert.deepEqual(codes('<dialog data-tm-sheet="narrow" aria-label="Share"></dialog>'), []);
+  assert.deepEqual(codes('<dialog data-tm-sheet="left" aria-label="Details"></dialog>'), ['TM101']);
+  assert.ok(codes('<div data-tm-sheet="end"></div>').length > 0, 'not on a div');
+  assert.deepEqual(codes('<dialog data-tm-sheet="end" aria-label="Details"></dialog>', { modules: new Set(['core']) }), ['TM110']);
 });

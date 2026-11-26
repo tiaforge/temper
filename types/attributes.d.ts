@@ -71,105 +71,105 @@ export type TemperIcon =
  */
 export interface TemperAttributes<Removes = never, Empty = never> {
   /** Button style; leave it out for the solid main button. */
-  'data-variant'?: 'secondary' | 'outline' | 'ghost' | 'link' | 'item' | null | Removes;
+  'data-tm-variant'?: 'secondary' | 'outline' | 'ghost' | 'link' | 'item' | null | Removes;
   /** Color, independent of the style; for any other color use style="--tm-tone: …". */
-  'data-tone'?: 'accent' | 'neutral' | 'danger' | 'success' | 'warning' | 'info' | null | Removes;
+  'data-tm-tone'?: 'accent' | 'neutral' | 'danger' | 'success' | 'warning' | 'info' | null | Removes;
   /** Control size relative to the current density. */
-  'data-size'?: 'sm' | 'md' | 'lg' | null | Removes;
+  'data-tm-size'?: 'sm' | 'md' | 'lg' | null | Removes;
   /** Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label). */
-  'data-icon'?: TemperIcon | (string & {}) | '' | Empty | null | Removes;
+  'data-tm-icon'?: TemperIcon | (string & {}) | '' | Empty | null | Removes;
   /** Lays out the element's children (overrides its own display). */
-  'data-layout'?: 'stack' | 'row' | 'grid' | 'split' | 'center' | null | Removes;
+  'data-tm-layout'?: 'stack' | 'row' | 'grid' | 'split' | 'center' | null | Removes;
   /** Exactly this many equal grid columns. */
-  'data-cols'?: '2' | '3' | '4' | '5' | '6' | '7' | 2 | 3 | 4 | 5 | 6 | 7 | null | Removes;
-  /** Space between the children of a data-layout element. */
-  'data-gap'?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | null | Removes;
+  'data-tm-cols'?: '2' | '3' | '4' | '5' | '6' | '7' | 2 | 3 | 4 | 5 | 6 | 7 | null | Removes;
+  /** Space between the children of a data-tm-layout element. */
+  'data-tm-gap'?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | null | Removes;
   /** Padding inside the element, on all sides. */
-  'data-pad'?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | null | Removes;
+  'data-tm-pad'?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | null | Removes;
   /** Cross-axis alignment of children (align-items). */
-  'data-align'?: 'start' | 'center' | 'end' | 'stretch' | null | Removes;
+  'data-tm-align'?: 'start' | 'center' | 'end' | 'stretch' | null | Removes;
   /** Main-axis distribution of children (justify-content). */
-  'data-justify'?: 'start' | 'center' | 'end' | 'between' | null | Removes;
-  /** Aligns this one child (e.g. data-self="start" keeps a button in a stack from stretching). */
-  'data-self'?: 'start' | 'center' | 'end' | 'stretch' | null | Removes;
+  'data-tm-justify'?: 'start' | 'center' | 'end' | 'between' | null | Removes;
+  /** Aligns this one child (e.g. data-tm-self="start" keeps a button in a stack from stretching). */
+  'data-tm-self'?: 'start' | 'center' | 'end' | 'stretch' | null | Removes;
   /** Whether a row wraps onto more lines. */
-  'data-wrap'?: 'wrap' | 'none' | null | Removes;
+  'data-tm-wrap'?: 'wrap' | 'none' | null | Removes;
   /** This child takes the remaining space in its row or stack. */
-  'data-grow'?: true | '' | null | Removes;
+  'data-tm-grow'?: true | '' | null | Removes;
   /** Scroll container: sideways by default, "y" vertical (panes), "both". */
-  'data-scroll'?: 'y' | 'both' | '' | Empty | null | Removes;
+  'data-tm-scroll'?: 'y' | 'both' | '' | Empty | null | Removes;
   /** Reserves the scrollbar space: no sideways shift. */
-  'data-gutter'?: true | '' | null | Removes;
+  'data-tm-gutter'?: true | '' | null | Removes;
   /** Control height and padding for everything inside. */
-  'data-density'?: 'comfortable' | 'compact' | null | Removes;
+  'data-tm-density'?: 'comfortable' | 'compact' | null | Removes;
   /** Forces light or dark mode. */
-  'data-theme'?: 'light' | 'dark' | null | Removes;
+  'data-tm-theme'?: 'light' | 'dark' | null | Removes;
   /** Small status label (counts, tags, states). */
-  'data-badge'?: true | '' | null | Removes;
+  'data-tm-badge'?: true | '' | null | Removes;
   /** Tinted message box. */
-  'data-callout'?: true | '' | null | Removes;
+  'data-tm-callout'?: true | '' | null | Removes;
   /** Secondary text color. */
-  'data-muted'?: true | '' | null | Removes;
+  'data-tm-muted'?: true | '' | null | Removes;
   /** Single line, cut off with an ellipsis. */
-  'data-truncate'?: true | '' | null | Removes;
+  'data-tm-truncate'?: true | '' | null | Removes;
   /** On the container of a long list: its rows far off screen skip layout and paint. */
-  'data-lazy'?: true | '' | null | Removes;
+  'data-tm-lazy'?: true | '' | null | Removes;
   /** Ellipsis after this many lines. */
-  'data-clamp'?: '2' | '3' | 2 | 3 | null | Removes;
+  'data-tm-clamp'?: '2' | '3' | 2 | 3 | null | Removes;
   /** A colored bar on the start edge in the element's tone. */
-  'data-bar'?: true | '' | null | Removes;
+  'data-tm-bar'?: true | '' | null | Removes;
   /** Hidden visually, still read by screen readers. */
-  'data-sr-only'?: true | '' | null | Removes;
+  'data-tm-sr-only'?: true | '' | null | Removes;
   /** Shows dt/dd pairs as a two-column label/value grid. */
-  'data-pairs'?: true | '' | null | Removes;
+  'data-tm-pairs'?: true | '' | null | Removes;
   /** Radio group drawn as a segmented control (labels with radios). */
-  'data-segmented'?: true | '' | null | Removes;
+  'data-tm-segmented'?: true | '' | null | Removes;
   /** Small, muted label text (captions, group headings). */
-  'data-caption'?: true | '' | null | Removes;
+  'data-tm-caption'?: true | '' | null | Removes;
   /** One bordered box; its children are rows separated by lines. */
-  'data-list'?: true | '' | null | Removes;
+  'data-tm-list'?: true | '' | null | Removes;
   /** A horizontal line with the element's text in the middle, e.g. */
-  'data-divider'?: true | '' | null | Removes;
+  'data-tm-divider'?: true | '' | null | Removes;
   /** Round avatar with initials, or an <img> child that fills it. */
-  'data-avatar'?: true | '' | null | Removes;
+  'data-tm-avatar'?: true | '' | null | Removes;
   /** Makes the whole card clickable through this element. */
-  'data-stretch'?: true | '' | null | Removes;
+  'data-tm-stretch'?: true | '' | null | Removes;
   /** Sticks to the top or bottom of the nearest scroll container (header, toolbar, save bar). */
-  'data-sticky'?: 'top' | 'bottom' | null | Removes;
+  'data-tm-sticky'?: 'top' | 'bottom' | null | Removes;
   /** Joins its children (buttons, fields) into one unit with shared borders. */
-  'data-join'?: true | '' | null | Removes;
-  /** App shell (rail + main); data-shell="fixed" fills the viewport and main scrolls inside. Needs app.css. */
-  'data-shell'?: 'fixed' | '' | Empty | null | Removes;
+  'data-tm-join'?: true | '' | null | Removes;
+  /** App shell (rail + main); data-tm-shell="fixed" fills the viewport and main scrolls inside. Needs app.css. */
+  'data-tm-shell'?: 'fixed' | '' | Empty | null | Removes;
   /** Navigation rail next to <main>; with popover it is a drawer on narrow screens. Needs app.css. */
-  'data-rail'?: true | '' | null | Removes;
+  'data-tm-rail'?: true | '' | null | Removes;
   /** Icon-only rail, set in the markup (e.g. Needs app.css. */
-  'data-collapsed'?: true | '' | null | Removes;
+  'data-tm-collapsed'?: true | '' | null | Removes;
   /** Collapse toggle drawn as a chevron icon button. Needs app.css. */
-  'data-rail-collapse'?: true | '' | null | Removes;
+  'data-tm-rail-collapse'?: true | '' | null | Removes;
   /** Hidden while the rail is collapsed (e.g. Needs app.css. */
-  'data-rail-label'?: true | '' | null | Removes;
+  'data-tm-rail-label'?: true | '' | null | Removes;
   /** Floating action button fixed in the bottom-right corner. Needs app.css. */
-  'data-fab'?: true | '' | null | Removes;
-  /** Shows the element only on narrow (< 48rem) or wide screens, or panes (data-container). Needs app.css. */
-  'data-show'?: 'narrow' | 'wide' | null | Removes;
-  /** A pane whose width data-show inside follows, not the screen's. Needs app.css. */
-  'data-container'?: true | '' | null | Removes;
+  'data-tm-fab'?: true | '' | null | Removes;
+  /** Shows the element only on narrow (< 48rem) or wide screens, or panes (data-tm-container). Needs app.css. */
+  'data-tm-show'?: 'narrow' | 'wide' | null | Removes;
+  /** A pane whose width data-tm-show inside follows, not the screen's. Needs app.css. */
+  'data-tm-container'?: true | '' | null | Removes;
   /** Menu of buttons, links and checkbox labels; as a [popover] it opens under its button. Needs menu.css. */
-  'data-menu'?: true | '' | null | Removes;
-  /** Wraps a field and its suggestion list (data-menu, role="listbox"), which opens under it. Needs menu.css. */
-  'data-combo'?: true | '' | null | Removes;
-  /** Toast region (one per page, role="status"); holds data-toast children. Needs feedback.css. */
-  'data-toasts'?: true | '' | null | Removes;
-  /** A toast inside data-toasts; data-tone colors its bar. Needs feedback.css. */
-  'data-toast'?: true | '' | null | Removes;
+  'data-tm-menu'?: true | '' | null | Removes;
+  /** Wraps a field and its suggestion list (data-tm-menu, role="listbox"), which opens under it. Needs menu.css. */
+  'data-tm-combo'?: true | '' | null | Removes;
+  /** Toast region (one per page, role="status"); holds data-tm-toast children. Needs feedback.css. */
+  'data-tm-toasts'?: true | '' | null | Removes;
+  /** A toast inside data-tm-toasts; data-tm-tone colors its bar. Needs feedback.css. */
+  'data-tm-toast'?: true | '' | null | Removes;
   /** Tooltip: the given text, or the aria-label when empty. Needs feedback.css. */
-  'data-tooltip'?: string | Empty | null | Removes;
+  'data-tm-tooltip'?: string | Empty | null | Removes;
   /** Number cell: right-aligned, tabular figures (on th and every td of the column). Needs table.css. */
-  'data-num'?: true | '' | null | Removes;
+  'data-tm-num'?: true | '' | null | Removes;
   /** Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. Needs prose.css. */
-  'data-prose'?: true | '' | null | Removes;
+  'data-tm-prose'?: true | '' | null | Removes;
   /** One field around an input and its icon, text (<span>€</span>) or end button. Needs forms.css. */
-  'data-field'?: true | '' | null | Removes;
+  'data-tm-field'?: true | '' | null | Removes;
   /** Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. Needs sheet.css. */
-  'data-sheet'?: 'end' | 'start' | 'bottom' | 'narrow' | null | Removes;
+  'data-tm-sheet'?: 'end' | 'start' | 'bottom' | 'narrow' | null | Removes;
 }

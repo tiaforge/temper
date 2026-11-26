@@ -3,4 +3,4 @@
   let { children, ...rest }: HTMLAttributes<HTMLSpanElement> = $props();
 </script>
 
-<span data-badge {...rest}>{@render children?.()}</span>
+<span data-tm-badge {...rest}>{@render children?.()}</span>

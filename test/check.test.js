@@ -13,33 +13,33 @@ test('the kitchen sink has no errors', () => {
 });
 
 test('a value from another axis suggests that axis', () => {
-  const [d] = checkMarkup('<button data-variant="danger">Delete</button>');
+  const [d] = checkMarkup('<button data-tm-variant="danger">Delete</button>');
   assert.equal(d.code, 'TM101');
-  assert.match(d.message, /Did you mean data-tone="danger"\?/);
+  assert.match(d.message, /Did you mean data-tm-tone="danger"\?/);
 });
 
-test('data-variant="primary" explains the default', () => {
-  assert.match(checkMarkup('<button data-variant="primary">Save</button>')[0].message, /Leave data-variant out/);
+test('data-tm-variant="primary" explains the default', () => {
+  assert.match(checkMarkup('<button data-tm-variant="primary">Save</button>')[0].message, /Leave data-tm-variant out/);
 });
 
 test('typos in values get a suggestion', () => {
-  assert.match(checkMarkup('<div data-layout="stak"></div>')[0].message, /Did you mean "stack"\?/);
+  assert.match(checkMarkup('<div data-tm-layout="stak"></div>')[0].message, /Did you mean "stack"\?/);
 });
 
 test('numeric gaps are rejected', () => {
-  const [d] = checkMarkup('<div data-layout="stack" data-gap="4"></div>');
+  const [d] = checkMarkup('<div data-tm-layout="stack" data-tm-gap="4"></div>');
   assert.equal(d.code, 'TM101');
   assert.match(d.message, /allowed: none, xs, sm, md, lg, xl/);
 });
 
 test('boolean attributes must not have a value', () => {
-  assert.deepEqual(codes(checkMarkup('<span data-badge="true">3</span>')), ['TM102']);
-  assert.deepEqual(codes(checkMarkup('<span data-badge>3</span><span data-badge="">3</span>')), []);
+  assert.deepEqual(codes(checkMarkup('<span data-tm-badge="true">3</span>')), ['TM102']);
+  assert.deepEqual(codes(checkMarkup('<span data-tm-badge>3</span><span data-tm-badge="">3</span>')), []);
 });
 
 test('icon buttons need a label', () => {
-  assert.deepEqual(codes(checkMarkup('<button data-icon data-variant="ghost">×</button>')), ['TM103']);
-  assert.deepEqual(codes(checkMarkup('<button data-icon aria-label="Close">×</button>')), []);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-icon data-tm-variant="ghost">×</button>')), ['TM103']);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-icon aria-label="Close">×</button>')), []);
 });
 
 test('empty close buttons need a label', () => {
@@ -50,18 +50,18 @@ test('empty close buttons need a label', () => {
 });
 
 test('icons: known names pass, typos get a suggestion, project icons count', () => {
-  assert.deepEqual(codes(checkMarkup('<span data-icon="mail"></span><button data-icon="plus">New</button>')), []);
-  const [d] = checkMarkup('<span data-icon="maill"></span>');
+  assert.deepEqual(codes(checkMarkup('<span data-tm-icon="mail"></span><button data-tm-icon="plus">New</button>')), []);
+  const [d] = checkMarkup('<span data-tm-icon="maill"></span>');
   assert.equal(d.code, 'TM105');
   assert.match(d.message, /Did you mean "mail"\?/);
-  assert.deepEqual(codes(checkMarkup('<span data-icon="rocket"></span>', 'a', { icons: new Set(['rocket']) })), []);
+  assert.deepEqual(codes(checkMarkup('<span data-tm-icon="rocket"></span>', 'a', { icons: new Set(['rocket']) })), []);
 });
 
 test('icon-only buttons need a label, icon + text buttons do not', () => {
-  assert.deepEqual(codes(checkMarkup('<button data-icon="plus"></button>')), ['TM103']);
-  assert.deepEqual(codes(checkMarkup('<button data-icon="plus" aria-label="New contact"></button>')), []);
-  assert.deepEqual(codes(checkMarkup('<button data-icon="plus">New contact</button>')), []);
-  assert.deepEqual(codes(checkMarkup('<button data-icon><svg></svg></button>')), ['TM103']);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-icon="plus"></button>')), ['TM103']);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-icon="plus" aria-label="New contact"></button>')), []);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-icon="plus">New contact</button>')), []);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-icon><svg></svg></button>')), ['TM103']);
 });
 
 test('fields need a label (warning)', () => {
@@ -70,26 +70,41 @@ test('fields need a label (warning)', () => {
   assert.deepEqual(codes(checkMarkup('<select aria-label="Type"></select><input data-sn-attr="{\'aria-label\': m.x()}"><input type="hidden">')), []);
 });
 
-test('layout attributes need data-layout', () => {
-  assert.deepEqual(codes(checkMarkup('<div data-gap="sm" data-justify="end"></div>')), ['TM107']);
-  assert.deepEqual(codes(checkMarkup('<div data-layout="row" data-gap="sm"></div><dl data-pairs></dl>')), []);
-  // a button is a flex row already: data-justify and data-align work on it without data-layout
-  assert.deepEqual(codes(checkMarkup('<button data-justify="start" data-align="start">From</button><a role="button" data-justify="end">x</a>')), []);
-  assert.deepEqual(codes(checkMarkup('<span data-justify="start">x</span>')), ['TM107']);
+test('layout attributes need data-tm-layout', () => {
+  assert.deepEqual(codes(checkMarkup('<div data-tm-gap="sm" data-tm-justify="end"></div>')), ['TM107']);
+  assert.deepEqual(codes(checkMarkup('<div data-tm-layout="row" data-tm-gap="sm"></div><dl data-tm-pairs></dl>')), []);
+  // a button is a flex row already: data-tm-justify and data-tm-align work on it without data-tm-layout
+  assert.deepEqual(codes(checkMarkup('<button data-tm-justify="start" data-tm-align="start">From</button><a role="button" data-tm-justify="end">x</a>')), []);
+  assert.deepEqual(codes(checkMarkup('<span data-tm-justify="start">x</span>')), ['TM107']);
 });
 
-test('misspelled attribute names are warnings', () => {
-  const [d] = checkMarkup('<button data-varient="ghost">x</button>');
-  assert.equal(d.severity, 'warning');
-  assert.match(d.message, /Did you mean data-variant\?/);
+test('data-tm-* is temper\'s namespace: an unknown name in it is an error, with a suggestion', () => {
+  const [d] = checkMarkup('<button data-tm-varient="ghost">x</button>');
+  assert.equal(d.code, 'TM104');
+  assert.equal(d.severity, 'error');
+  assert.match(d.message, /Did you mean data-tm-variant\?/);
+  assert.deepEqual(codes(checkMarkup('<div data-tm-sparkle></div>')), ['TM104']);
+  assert.deepEqual(codes(checkMarkup(`<p data-sn-attr="{ 'data-tm-sparkle': x }">a</p>`)), ['TM104']);
+});
+
+test('other data-* names are the app\'s: never reported, however close to a temper name', () => {
+  assert.deepEqual(checkMarkup('<div data-varient="x" data-glow="1" data-shortcut="c" data-tm-src="a.html:1"></div>'), []);
+});
+
+test('temper\'s names without the prefix are an error that --fix rewrites, and their values are still checked', () => {
+  const r = checkMarkup('<button data-variant="ghost" data-tone="danger">x</button><div data-layout="nope"></div>', 'a.html');
+  assert.deepEqual(codes(r), ['TM104', 'TM104', 'TM104', 'TM101']);
+  assert.match(r[0].message, /data-variant is data-tm-variant now/);
+  const { text } = applyFixes('<button data-variant="ghost" data-tone="danger">x</button>', checkMarkup('<button data-variant="ghost" data-tone="danger">x</button>'));
+  assert.equal(text, '<button data-tm-variant="ghost" data-tm-tone="danger">x</button>');
 });
 
 test('dynamic values and sinter attributes are skipped', () => {
-  assert.deepEqual(checkMarkup('<button data-variant={v} data-tone="{tone}" data-sn-attr="{x: 1}">x</button>'), []);
+  assert.deepEqual(checkMarkup('<button data-tm-variant={v} data-tm-tone="{tone}" data-sn-attr="{x: 1}">x</button>'), []);
 });
 
 test('positions are reported', () => {
-  const [d] = checkMarkup('<p>ok</p>\n  <button data-tone="red">x</button>', 'a.html');
+  const [d] = checkMarkup('<p>ok</p>\n  <button data-tm-tone="red">x</button>', 'a.html');
   assert.equal(d.file, 'a.html');
   assert.equal(d.line, 2);
 });
@@ -118,72 +133,72 @@ test('outcomes: literals, ternaries and logical operators', async () => {
 });
 
 test('Svelte: every literal a {expression} can produce is checked', () => {
-  const r = checkMarkup(`<span data-tone={failed ? 'danger' : 'sucess'}>x</span>`, 'A.svelte');
+  const r = checkMarkup(`<span data-tm-tone={failed ? 'danger' : 'sucess'}>x</span>`, 'A.svelte');
   assert.deepEqual(codes(r), ['TM101']);
-  assert.match(r[0].message, /data-tone="sucess" is not valid \(a value of this expression\)\. Did you mean "success"\?/);
-  assert.deepEqual(codes(checkMarkup(`<span data-tone={failed ? 'danger' : null}>x</span><span data-tone={tone}>x</span>`, 'A.svelte')), []);
-  assert.deepEqual(codes(checkMarkup(`<span data-tone="{failed ? 'danger' : 'nope'}">x</span>`, 'A.svelte')), ['TM101']);
+  assert.match(r[0].message, /data-tm-tone="sucess" is not valid \(a value of this expression\)\. Did you mean "success"\?/);
+  assert.deepEqual(codes(checkMarkup(`<span data-tm-tone={failed ? 'danger' : null}>x</span><span data-tm-tone={tone}>x</span>`, 'A.svelte')), []);
+  assert.deepEqual(codes(checkMarkup(`<span data-tm-tone="{failed ? 'danger' : 'nope'}">x</span>`, 'A.svelte')), ['TM101']);
 });
 
 test('false renders the attribute in Svelte, JSX, Vue and Astro, but not in sinter', () => {
-  assert.deepEqual(codes(checkMarkup(`<span data-tone={failed && 'danger'}>x</span>`, 'A.svelte')), ['TM111']);
-  assert.deepEqual(codes(checkMarkup(`<span data-tone={failed && 'danger'}>x</span>`, 'A.tsx')), ['TM111']);
-  assert.deepEqual(codes(checkMarkup(`<span :data-tone="failed && 'danger'">x</span>`, 'A.vue')), ['TM111']);
-  assert.deepEqual(codes(checkMarkup(`<span data-tone={failed && 'danger'}>x</span>`, 'a.astro')), ['TM111']);
-  assert.deepEqual(codes(checkMarkup(`<span data-sn-attr="{'data-tone': failed && 'danger'}">x</span>`, 'a.html')), []);
+  assert.deepEqual(codes(checkMarkup(`<span data-tm-tone={failed && 'danger'}>x</span>`, 'A.svelte')), ['TM111']);
+  assert.deepEqual(codes(checkMarkup(`<span data-tm-tone={failed && 'danger'}>x</span>`, 'A.tsx')), ['TM111']);
+  assert.deepEqual(codes(checkMarkup(`<span :data-tm-tone="failed && 'danger'">x</span>`, 'A.vue')), ['TM111']);
+  assert.deepEqual(codes(checkMarkup(`<span data-tm-tone={failed && 'danger'}>x</span>`, 'a.astro')), ['TM111']);
+  assert.deepEqual(codes(checkMarkup(`<span data-sn-attr="{'data-tm-tone': failed && 'danger'}">x</span>`, 'a.html')), []);
   // a bare boolean on a boolean attribute is the common case of this bug
-  const [w] = checkMarkup(`<nav data-rail data-collapsed={collapsed}></nav>`, 'A.svelte');
+  const [w] = checkMarkup(`<nav data-tm-rail data-tm-collapsed={collapsed}></nav>`, 'A.svelte');
   assert.equal(w.severity, 'warning');
   assert.match(w.message, /collapsed \|\| null/);
-  assert.deepEqual(codes(checkMarkup(`<nav data-rail data-collapsed={collapsed || null}></nav>`, 'A.svelte')), []);
+  assert.deepEqual(codes(checkMarkup(`<nav data-tm-rail data-tm-collapsed={collapsed || null}></nav>`, 'A.svelte')), []);
 });
 
 test('Vue bindings and sinter data-sn-attr values are checked', () => {
-  assert.deepEqual(codes(checkMarkup(`<b :data-variant="x ? 'ghost' : 'danger'">x</b>`, 'A.vue')), ['TM101', 'TM108']);
-  const src = `<span data-badge data-sn-attr="{'data-tone': bad ? 'danger' : 'oops', title: t}">x</span>`;
+  assert.deepEqual(codes(checkMarkup(`<b :data-tm-variant="x ? 'ghost' : 'danger'">x</b>`, 'A.vue')), ['TM101', 'TM108']);
+  const src = `<span data-tm-badge data-sn-attr="{'data-tm-tone': bad ? 'danger' : 'oops', title: t}">x</span>`;
   const [d] = checkMarkup(src, 'a.html');
   assert.equal(d.code, 'TM101');
   assert.equal(d.col, src.indexOf('bad ?') + 1); // at the entry's value, not the attribute
 });
 
 test('nested braces in attributes do not hide the tag', () => {
-  assert.deepEqual(codes(checkMarkup(`<button onclick={() => { open = true }} data-variant="danger">x</button>`, 'A.svelte')), ['TM101']);
+  assert.deepEqual(codes(checkMarkup(`<button onclick={() => { open = true }} data-tm-variant="danger">x</button>`, 'A.svelte')), ['TM101']);
 });
 
 // ───── context ─────
 
 test('attributes on elements they do not work on', () => {
-  assert.deepEqual(codes(checkMarkup('<div data-pairs></div>')), ['TM108']);
-  const [d] = checkMarkup('<a href="/x" data-variant="outline">x</a>');
+  assert.deepEqual(codes(checkMarkup('<div data-tm-pairs></div>')), ['TM108']);
+  const [d] = checkMarkup('<a href="/x" data-tm-variant="outline">x</a>');
   assert.match(d.message, /Add role="button"/);
-  assert.deepEqual(codes(checkMarkup('<a href="/x" data-variant="item">x</a><a href="/x" role="button" data-variant="ghost">x</a>')), []);
-  assert.deepEqual(codes(checkMarkup('<Button data-variant="ghost">x</Button>', 'A.svelte')), []); // components pass props on
+  assert.deepEqual(codes(checkMarkup('<a href="/x" data-tm-variant="item">x</a><a href="/x" role="button" data-tm-variant="ghost">x</a>')), []);
+  assert.deepEqual(codes(checkMarkup('<Button data-tm-variant="ghost">x</Button>', 'A.svelte')), []); // components pass props on
 });
 
 test('attributes that need another one on the same element', () => {
-  assert.deepEqual(codes(checkMarkup('<div data-layout="stack" data-cols="3"></div>')), ['TM107']);
-  assert.deepEqual(codes(checkMarkup('<div data-layout="grid" data-cols="3"></div><nav data-rail data-collapsed></nav>')), []);
+  assert.deepEqual(codes(checkMarkup('<div data-tm-layout="stack" data-tm-cols="3"></div>')), ['TM107']);
+  assert.deepEqual(codes(checkMarkup('<div data-tm-layout="grid" data-tm-cols="3"></div><nav data-tm-rail data-tm-collapsed></nav>')), []);
 });
 
 test('parents and ancestors', () => {
-  const [d] = checkMarkup('<body><div><nav data-rail></nav></div></body>');
+  const [d] = checkMarkup('<body><div><nav data-tm-rail></nav></div></body>');
   assert.equal(d.code, 'TM109');
-  assert.match(d.message, /direct child of \[data-shell\]; here its parent is <div>/);
-  assert.deepEqual(codes(checkMarkup('<body data-shell><template data-sn-if="x"><nav data-rail></nav></template><main></main></body>')), []);
-  assert.deepEqual(codes(checkMarkup('<body><a data-stretch href="/">x</a></body>')), ['TM109']);
-  assert.deepEqual(codes(checkMarkup('<a data-stretch href="/">x</a>', 'Card.svelte')), []); // a component: the article may be outside
-  assert.deepEqual(codes(checkMarkup('<Card><a data-stretch href="/">x</a></Card>', 'A.svelte')), []);
+  assert.match(d.message, /direct child of \[data-tm-shell\]; here its parent is <div>/);
+  assert.deepEqual(codes(checkMarkup('<body data-tm-shell><template data-sn-if="x"><nav data-tm-rail></nav></template><main></main></body>')), []);
+  assert.deepEqual(codes(checkMarkup('<body><a data-tm-stretch href="/">x</a></body>')), ['TM109']);
+  assert.deepEqual(codes(checkMarkup('<a data-tm-stretch href="/">x</a>', 'Card.svelte')), []); // a component: the article may be outside
+  assert.deepEqual(codes(checkMarkup('<Card><a data-tm-stretch href="/">x</a></Card>', 'A.svelte')), []);
   // grow/self: warnings, and only when the parent is plain (no class or style of its own)
-  const [w] = checkMarkup('<div><input data-grow aria-label="q"></div>');
+  const [w] = checkMarkup('<div><input data-tm-grow aria-label="q"></div>');
   assert.equal(w.severity, 'warning');
-  assert.deepEqual(codes(checkMarkup('<div class="bar"><input data-grow aria-label="q"></div><header><span data-grow></span></header>')), []);
+  assert.deepEqual(codes(checkMarkup('<div class="bar"><input data-tm-grow aria-label="q"></div><header><span data-tm-grow></span></header>')), []);
 });
 
 test('modules the project does not import', () => {
-  const r = checkMarkup('<nav data-rail></nav><div data-menu></div><div data-menu></div>', 'a.html', { modules: new Set(['core']) });
+  const r = checkMarkup('<nav data-tm-rail></nav><div data-tm-menu></div><div data-tm-menu></div>', 'a.html', { modules: new Set(['core']) });
   assert.deepEqual(codes(r), ['TM110', 'TM110']);
-  assert.match(r[0].message, /data-rail needs app\.css, .*import '@tiaforge-ui\/temper\/app\.css'/);
-  assert.deepEqual(codes(checkMarkup('<nav data-rail></nav>', 'a.html', { modules: null })), []);
+  assert.match(r[0].message, /data-tm-rail needs app\.css, .*import '@tiaforge-ui\/temper\/app\.css'/);
+  assert.deepEqual(codes(checkMarkup('<nav data-tm-rail></nav>', 'a.html', { modules: null })), []);
 });
 
 test('imports are found in JS, CSS and HTML; all.css counts as every module', async () => {
@@ -198,15 +213,15 @@ test('imports are found in JS, CSS and HTML; all.css counts as every module', as
   assert.equal(importedModules([mkdtempSync(tmpdir() + '/tm-mod-')]), null);
 });
 
-test('an empty data-tooltip needs an aria-label to show', () => {
-  assert.deepEqual(codes(checkMarkup('<button data-tooltip>Save</button>')), ['TM103']);
-  assert.deepEqual(codes(checkMarkup('<button data-tooltip aria-label="Save" data-icon="check"></button><span data-tooltip="Synced" tabindex="0">x</span>')), []);
+test('an empty data-tm-tooltip needs an aria-label to show', () => {
+  assert.deepEqual(codes(checkMarkup('<button data-tm-tooltip>Save</button>')), ['TM103']);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-tooltip aria-label="Save" data-tm-icon="check"></button><span data-tm-tooltip="Synced" tabindex="0">x</span>')), []);
 });
 
-test('data-layout on table parts and data-num off cells', () => {
-  assert.deepEqual(codes(checkMarkup('<table><tr><th>h</th><td data-layout="row">x</td></tr></table>')), ['TM108']);
-  assert.deepEqual(codes(checkMarkup('<span data-num>3</span>')), ['TM108']);
-  assert.deepEqual(codes(checkMarkup('<table><tr><th>h</th><td data-num><div data-layout="row">3</div></td></tr></table>')), []);
+test('data-tm-layout on table parts and data-tm-num off cells', () => {
+  assert.deepEqual(codes(checkMarkup('<table><tr><th>h</th><td data-tm-layout="row">x</td></tr></table>')), ['TM108']);
+  assert.deepEqual(codes(checkMarkup('<span data-tm-num>3</span>')), ['TM108']);
+  assert.deepEqual(codes(checkMarkup('<table><tr><th>h</th><td data-tm-num><div data-tm-layout="row">3</div></td></tr></table>')), []);
 });
 
 // ───── fixes and deprecations ─────
@@ -215,25 +230,25 @@ const applyFixesTo = (src, diags) => applyFixes(src, diags).text;
 const fixed = (src, file = 'a.html', ctx) => applyFixesTo(src, checkMarkup(src, file, ctx));
 
 test('--fix: wrong axis, typos, boolean values, primary', () => {
-  assert.equal(fixed('<button data-variant="danger">x</button>'), '<button data-tone="danger">x</button>');
-  assert.equal(fixed('<div data-layout="stak"></div>'), '<div data-layout="stack"></div>');
-  assert.equal(fixed('<span data-badge="true">3</span>'), '<span data-badge>3</span>');
-  assert.equal(fixed('<button data-variant="primary" type="submit">x</button>'), '<button type="submit">x</button>');
-  assert.equal(fixed('<button data-varient="ghost">x</button>'), '<button data-variant="ghost">x</button>');
-  assert.equal(fixed('<span data-icon="maill"></span>'), '<span data-icon="mail"></span>');
+  assert.equal(fixed('<button data-tm-variant="danger">x</button>'), '<button data-tm-tone="danger">x</button>');
+  assert.equal(fixed('<div data-tm-layout="stak"></div>'), '<div data-tm-layout="stack"></div>');
+  assert.equal(fixed('<span data-tm-badge="true">3</span>'), '<span data-tm-badge>3</span>');
+  assert.equal(fixed('<button data-tm-variant="primary" type="submit">x</button>'), '<button type="submit">x</button>');
+  assert.equal(fixed('<button data-tm-varient="ghost">x</button>'), '<button data-tm-variant="ghost">x</button>');
+  assert.equal(fixed('<span data-tm-icon="maill"></span>'), '<span data-tm-icon="mail"></span>');
   // two fixes in one tag, both applied
-  assert.equal(fixed('<button data-variant="danger" data-size="smm">x</button>'), '<button data-tone="danger" data-size="sm">x</button>');
+  assert.equal(fixed('<button data-tm-variant="danger" data-tm-size="smm">x</button>'), '<button data-tm-tone="danger" data-tm-size="sm">x</button>');
 });
 
 test('--fix leaves ambiguous and conflicting cases alone', () => {
-  // data-tone is already set: moving danger there would lose a value
-  const src = '<button data-variant="danger" data-tone="accent">x</button>';
+  // data-tm-tone is already set: moving danger there would lose a value
+  const src = '<button data-tm-variant="danger" data-tm-tone="accent">x</button>';
   assert.equal(fixed(src), src);
   // computed values are reported, not rewritten
-  const svelte = `<span data-tone={x ? 'danger' : 'sucess'}>x</span>`;
+  const svelte = `<span data-tm-tone={x ? 'danger' : 'sucess'}>x</span>`;
   assert.equal(fixed(svelte, 'A.svelte'), svelte);
   // equally close candidates: no guess ("ss" is one edit from both sm and xs)
-  assert.equal(checkMarkup('<div data-layout="row" data-gap="ss"></div>')[0].fix, undefined);
+  assert.equal(checkMarkup('<div data-tm-layout="row" data-tm-gap="ss"></div>')[0].fix, undefined);
 });
 
 test('--fix for tokens', () => {
@@ -243,12 +258,12 @@ test('--fix for tokens', () => {
 
 test('deprecated names warn (TM112), keep working and get rewritten', () => {
   const vocab = structuredClone(JSON.parse(readFileSync(new URL('../vocab.json', import.meta.url), 'utf8')));
-  vocab.deprecated = { attributes: { 'data-kind': 'data-variant' }, values: { 'data-variant': { subtle: 'ghost' } }, tokens: { '--tm-muted': '--tm-text-muted' } };
-  const r = checkMarkup('<button data-variant="subtle">x</button><button data-kind="outline">y</button>', 'a.html', { vocab });
+  vocab.deprecated = { attributes: { 'data-kind': 'data-tm-variant' }, values: { 'data-tm-variant': { subtle: 'ghost' } }, tokens: { '--tm-muted': '--tm-text-muted' } };
+  const r = checkMarkup('<button data-tm-variant="subtle">x</button><button data-kind="outline">y</button>', 'a.html', { vocab });
   assert.deepEqual(codes(r), ['TM112', 'TM112']);
   assert.equal(r[0].severity, 'warning');
-  assert.equal(fixed('<button data-variant="subtle">x</button><button data-kind="outline">y</button>', 'a.html', { vocab }),
-    '<button data-variant="ghost">x</button><button data-variant="outline">y</button>');
+  assert.equal(fixed('<button data-tm-variant="subtle">x</button><button data-kind="outline">y</button>', 'a.html', { vocab }),
+    '<button data-tm-variant="ghost">x</button><button data-tm-variant="outline">y</button>');
   // the old attribute's value is still checked against the new one
   assert.deepEqual(codes(checkMarkup('<button data-kind="nope">x</button>', 'a.html', { vocab })), ['TM112', 'TM101']);
   const css = ':root { --tm-muted: red; } .x { color: var(--tm-muted); }';
@@ -260,13 +275,13 @@ test('the CLI fixes files and reports what is left', async () => {
   const { tmpdir } = await import('node:os');
   const { spawnSync } = await import('node:child_process');
   const dir = mkdtempSync(tmpdir() + '/tm-fix-');
-  writeFileSync(dir + '/a.html', '<button data-variant="danger">x</button>\n<div data-gap="ss"></div>\n');
+  writeFileSync(dir + '/a.html', '<button data-tm-variant="danger">x</button>\n<div data-tm-gap="ss"></div>\n');
   const before = spawnSync(process.execPath, [new URL('../bin/temper.js', import.meta.url).pathname, 'check', dir], { encoding: 'utf8' });
   assert.match(before.stdout, /1 fixable with --fix/);
   const run = spawnSync(process.execPath, [new URL('../bin/temper.js', import.meta.url).pathname, 'check', '--fix', dir], { encoding: 'utf8' });
   assert.match(run.stdout, /Fixed 1 problem\(s\) in 1 file\(s\)/);
-  assert.match(run.stdout, /data-gap="ss" is not valid/);
-  assert.equal(read(dir + '/a.html', 'utf8'), '<button data-tone="danger">x</button>\n<div data-gap="ss"></div>\n');
+  assert.match(run.stdout, /data-tm-gap="ss" is not valid/);
+  assert.equal(read(dir + '/a.html', 'utf8'), '<button data-tm-tone="danger">x</button>\n<div data-tm-gap="ss"></div>\n');
 });
 
 test('the CLI: --help and --version exit 0, unknown options and commands exit 2 with a suggestion', async () => {
@@ -295,9 +310,9 @@ test('the CLI: --help and --version exit 0, unknown options and commands exit 2 
   assert.equal(cli('check', '--warnings-as-errors', '--lucide', '--icons', 'kitchen-sink', '--', 'kitchen-sink').status, 0);
 });
 
-test('the CLI with --lucide says where data-icon names cannot be seen, without failing', async () => {
+test('the CLI with --lucide says where data-tm-icon names cannot be seen, without failing', async () => {
   const { spawnSync } = await import('node:child_process');
-  const dir = writeTemp('a.svelte', '<span data-icon={item.icon}></span>\n<span data-icon={on ? "sunrise" : "moon-star"}></span>\n');
+  const dir = writeTemp('a.svelte', '<span data-tm-icon={item.icon}></span>\n<span data-tm-icon={on ? "sunrise" : "moon-star"}></span>\n');
   const run = spawnSync(process.execPath, [new URL('../bin/temper.js', import.meta.url).pathname, 'check', '--lucide', dir], { encoding: 'utf8', cwd: new URL('..', import.meta.url).pathname });
   assert.equal(run.status, 0, run.stdout + run.stderr);
   assert.match(run.stdout, /a\.svelte:1:\d+ {2}item\.icon/);
@@ -312,16 +327,16 @@ test('app CSS: !important, fixed colors, margins, scale values, restyled variant
   const css = `.card { color: #666 !important; margin-top: 1rem; padding: 16px 0.75rem; gap: 0.5rem; }
 .ok { color: var(--tm-text-muted); background: color-mix(in oklab, var(--tm-accent) 10%, white); margin-inline: auto; margin: 0; padding: 0.75rem; }
 :root { --brand: #e8590c; $x: red; }
-button[data-variant="ghost"] { background: var(--tm-fill); padding: 0; }
-[data-theme="dark"] .logo { filter: invert(1); }
-.list [data-tone] { --tm-tone: var(--tm-info); }`;
+button[data-tm-variant="ghost"] { background: var(--tm-fill); padding: 0; }
+[data-tm-theme="dark"] .logo { filter: invert(1); }
+.list [data-tm-tone] { --tm-tone: var(--tm-info); }`;
   const r = checkStyles(css, 'a.css');
   assert.deepEqual(codes(r), ['TM204', 'TM205', 'TM206', 'TM207', 'TM207', 'TM208']);
   assert.match(r[1].message, /var\(--tm-text\) or var\(--tm-text-muted\)/);
   assert.equal(applyFixesTo(css, r).split('\n')[0], '.card { color: #666 !important; margin-top: 1rem; padding: var(--tm-space-md) 0.75rem; gap: var(--tm-space-sm); }');
 });
 
-test('inline styles: margins and paddings point to data-gap and data-pad; tokens are fine', () => {
+test('inline styles: margins and paddings point to data-tm-gap and data-tm-pad; tokens are fine', () => {
   assert.deepEqual(codes(checkMarkup('<p style="margin-top: 8px; color: red">x</p>')), ['TM206', 'TM205']);
   assert.deepEqual(codes(checkMarkup('<div style="padding: 1rem">x</div>')), ['TM206']);
   assert.deepEqual(codes(checkMarkup('<div style="--tm-min: 12rem; --tm-tone: #e11">x</div>')), []);
@@ -346,20 +361,20 @@ function writeTemp(name, text) {
 }
 
 test('--fix never guesses between axes that share a value', () => {
-  // "sm" is a value of data-size, data-gap and data-pad: name them, apply nothing
-  const [d] = checkMarkup('<button data-variant="sm">x</button>');
+  // "sm" is a value of data-tm-size, data-tm-gap and data-tm-pad: name them, apply nothing
+  const [d] = checkMarkup('<button data-tm-variant="sm">x</button>');
   assert.equal(d.code, 'TM101');
-  assert.match(d.message, /"sm" is a value of data-size="sm", data-gap="sm" or data-pad="sm"/);
+  assert.match(d.message, /"sm" is a value of data-tm-size="sm", data-tm-gap="sm" or data-tm-pad="sm"/);
   assert.equal(d.fix, undefined);
-  assert.equal(checkMarkup('<button data-size="center">x</button>')[0].fix, undefined);
+  assert.equal(checkMarkup('<button data-tm-size="center">x</button>')[0].fix, undefined);
   // one other axis: the value moves there
-  assert.equal(fixed('<button data-variant="danger">x</button>'), '<button data-tone="danger">x</button>');
+  assert.equal(fixed('<button data-tm-variant="danger">x</button>'), '<button data-tm-tone="danger">x</button>');
 });
 
 test('an icon or close button with only whitespace or a comment inside has no visible text', () => {
-  assert.deepEqual(codes(checkMarkup('<button data-icon="x">\n</button>')), ['TM103']);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-icon="x">\n</button>')), ['TM103']);
   assert.deepEqual(codes(checkMarkup('<button commandfor="d" command="close">\n  <!-- icon -->\n</button>')), ['TM103']);
-  assert.deepEqual(codes(checkMarkup('<button data-icon="x">\n  New\n</button>')), []);
+  assert.deepEqual(codes(checkMarkup('<button data-tm-icon="x">\n  New\n</button>')), []);
 });
 
 test('tokens in style attributes are checked in plain HTML files too', () => {
@@ -373,11 +388,11 @@ test('tokens in style attributes are checked in plain HTML files too', () => {
 const doc = body => `<html><body>${body}</body></html>`;
 
 test('--fix stubs a missing label, and the stub stays an error until it is replaced', () => {
-  const src = '<button data-icon="x"></button>';
+  const src = '<button data-tm-icon="x"></button>';
   const before = checkMarkup(src);
   assert.deepEqual(codes(before), ['TM103']);
   const { text } = applyFixes(src, before);
-  assert.equal(text, '<button aria-label="TODO" data-icon="x"></button>');
+  assert.equal(text, '<button aria-label="TODO" data-tm-icon="x"></button>');
   const after = checkMarkup(text);
   assert.deepEqual(codes(after), ['TM113']);
   assert.equal(after[0].severity, 'error');
@@ -385,16 +400,16 @@ test('--fix stubs a missing label, and the stub stays an error until it is repla
 });
 
 test('the label stub also covers close buttons, empty tooltips and requires', () => {
-  assert.equal(applyFixes('<button data-tooltip>x</button>', checkMarkup('<button data-tooltip>x</button>')).text, '<button aria-label="TODO" data-tooltip>x</button>');
+  assert.equal(applyFixes('<button data-tm-tooltip>x</button>', checkMarkup('<button data-tm-tooltip>x</button>')).text, '<button aria-label="TODO" data-tm-tooltip>x</button>');
   const close = '<button command="close" commandfor="d"></button>';
   assert.deepEqual(codes(checkMarkup(applyFixes(close, checkMarkup(close)).text)), ['TM113']);
 });
 
 test('TM111: a bare boolean gets || null', () => {
-  const src = '<script>let on;</script><div data-menu={on}></div>';
+  const src = '<script>let on;</script><div data-tm-menu={on}></div>';
   const d = checkMarkup(src, 'a.svelte');
   const { text } = applyFixes(src, d);
-  assert.match(text, /data-menu=\{on \|\| null\}/);
+  assert.match(text, /data-tm-menu=\{on \|\| null\}/);
   assert.deepEqual(codes(checkMarkup(text, 'a.svelte')), []);
 });
 
@@ -413,12 +428,12 @@ test('a table needs header cells', () => {
 });
 
 test('a tooltip needs a focusable element', () => {
-  assert.deepEqual(codes(checkMarkup('<span data-tooltip="Synced">x</span>')), ['TM116']);
-  assert.deepEqual(codes(checkMarkup('<span data-tooltip="Synced" tabindex="0">x</span><a href="/" data-tooltip="x">y</a><button data-tooltip="z">z</button>')), []);
+  assert.deepEqual(codes(checkMarkup('<span data-tm-tooltip="Synced">x</span>')), ['TM116']);
+  assert.deepEqual(codes(checkMarkup('<span data-tm-tooltip="Synced" tabindex="0">x</span><a href="/" data-tm-tooltip="x">y</a><button data-tm-tooltip="z">z</button>')), []);
   // a link whose href is bound: sinter data-sn-href, data-sn-attr, Vue :href
-  assert.deepEqual(codes(checkMarkup('<a download role="button" data-variant="ghost" data-icon="download" aria-label="Export" data-tooltip data-sn-href="/api/export?id={a.id}"></a>')), []);
-  assert.deepEqual(codes(checkMarkup(`<a data-tooltip="x" data-sn-attr="{href: a.url}">y</a><a data-tooltip="x" :href="a.url">y</a>`)), []);
-  assert.deepEqual(codes(checkMarkup('<a data-tooltip="x">y</a>')), ['TM116']);
+  assert.deepEqual(codes(checkMarkup('<a download role="button" data-tm-variant="ghost" data-tm-icon="download" aria-label="Export" data-tm-tooltip data-sn-href="/api/export?id={a.id}"></a>')), []);
+  assert.deepEqual(codes(checkMarkup(`<a data-tm-tooltip="x" data-sn-attr="{href: a.url}">y</a><a data-tm-tooltip="x" :href="a.url">y</a>`)), []);
+  assert.deepEqual(codes(checkMarkup('<a data-tm-tooltip="x">y</a>')), ['TM116']);
 });
 
 test('heading levels do not skip (documents only)', () => {
@@ -447,7 +462,7 @@ test('a popover or dialog nothing opens', () => {
 
 test('two solid buttons side by side', () => {
   assert.deepEqual(codes(checkMarkup('<div><button>Save</button><button>Send</button></div>')), ['TM121']);
-  assert.deepEqual(codes(checkMarkup('<div><button>Save</button><button data-variant="ghost">Cancel</button></div>')), []);
+  assert.deepEqual(codes(checkMarkup('<div><button>Save</button><button data-tm-variant="ghost">Cancel</button></div>')), []);
   assert.deepEqual(codes(checkMarkup('<div><button role="tab">A</button><button role="tab">B</button></div>')), []);
 });
 
@@ -483,66 +498,66 @@ test('two solid buttons: alternatives in JSX, Astro, Vue and sinter', () => {
   assert.deepEqual(tm('<div><template v-if="a"><button>A</button><button>B</button></template></div>', 'A.vue'), ['TM121']);
 });
 
-test('TM122: a button in a data-field inside a wrapping label', () => {
+test('TM122: a button in a data-tm-field inside a wrapping label', () => {
   const tm = (src, file = 'a.html') => codes(checkMarkup(src, file)).filter(c => c === 'TM122');
-  const copy = '<button type="button" data-variant="ghost" data-icon="copy" aria-label="Copy"></button>';
-  const [d] = checkMarkup(`<label>API key <span data-field><input name="key">${copy}</span></label>`);
+  const copy = '<button type="button" data-tm-variant="ghost" data-tm-icon="copy" aria-label="Copy"></button>';
+  const [d] = checkMarkup(`<label>API key <span data-tm-field><input name="key">${copy}</span></label>`);
   assert.equal(d.code, 'TM122');
   assert.equal(d.severity, 'warning');
   assert.match(d.message, /label for=/);
-  assert.deepEqual(tm(`<label>API key <span><span data-field><input>${copy}</span></span></label>`), ['TM122']);
-  assert.deepEqual(tm(`<label>API key <span data-field><input>${copy}</span></label>`, 'A.svelte'), ['TM122']);
+  assert.deepEqual(tm(`<label>API key <span><span data-tm-field><input>${copy}</span></span></label>`), ['TM122']);
+  assert.deepEqual(tm(`<label>API key <span data-tm-field><input>${copy}</span></label>`, 'A.svelte'), ['TM122']);
   // silent: label for with the field outside it, no button, an icon span, the button outside the field
-  assert.deepEqual(tm(`<label for="k">API key</label><div data-field><input id="k">${copy}</div>`), []);
-  assert.deepEqual(tm('<label>Amount <span data-field><span>€</span><input><span>EUR</span></span></label>'), []);
-  assert.deepEqual(tm('<label>Search <span data-field><span data-icon="search"></span><input></span></label>'), []);
-  assert.deepEqual(tm(`<label>API key <span data-field><input></span></label>${copy}`), []);
-  assert.deepEqual(tm(`<div data-field><input aria-label="API key">${copy}</div>`), []);
+  assert.deepEqual(tm(`<label for="k">API key</label><div data-tm-field><input id="k">${copy}</div>`), []);
+  assert.deepEqual(tm('<label>Amount <span data-tm-field><span>€</span><input><span>EUR</span></span></label>'), []);
+  assert.deepEqual(tm('<label>Search <span data-tm-field><span data-tm-icon="search"></span><input></span></label>'), []);
+  assert.deepEqual(tm(`<label>API key <span data-tm-field><input></span></label>${copy}`), []);
+  assert.deepEqual(tm(`<div data-tm-field><input aria-label="API key">${copy}</div>`), []);
   // not judged: a component or custom element between them, or a component instead of a button
-  assert.deepEqual(tm(`<label>API key <Field><span data-field><input>${copy}</span></Field></label>`, 'A.svelte'), []);
-  assert.deepEqual(tm(`<label>API key <span data-field><my-copy>${copy}</my-copy><input></span></label>`), []);
-  assert.deepEqual(tm('<label>API key <span data-field><input><CopyButton /></span></label>', 'A.svelte'), []);
+  assert.deepEqual(tm(`<label>API key <Field><span data-tm-field><input>${copy}</span></Field></label>`, 'A.svelte'), []);
+  assert.deepEqual(tm(`<label>API key <span data-tm-field><my-copy>${copy}</my-copy><input></span></label>`), []);
+  assert.deepEqual(tm('<label>API key <span data-tm-field><input><CopyButton /></span></label>', 'A.svelte'), []);
   // temper-ignore
-  const r = check([writeTemp('a.html', `<label>API key <span data-field><input>\n<!-- temper-ignore -->\n${copy}</span></label>\n`)]);
+  const r = check([writeTemp('a.html', `<label>API key <span data-tm-field><input>\n<!-- temper-ignore -->\n${copy}</span></label>\n`)]);
   assert.deepEqual(codes(r).filter(c => c === 'TM122'), []);
 });
 
 // feedback.css: the tooltip is the ::after and gives way where that is taken. Each case here was checked against the
 // computed ::after content in Chrome (all.css): the warned ones never show the tooltip, the silent ones do.
-test('TM123: data-tooltip where it never shows (dropdown caret, data-stretch overlay, sort arrow)', () => {
+test('TM123: data-tm-tooltip where it never shows (dropdown caret, data-tm-stretch overlay, sort arrow)', () => {
   const tm = (src, file = 'a.html') => codes(checkMarkup(src, file)).filter(c => c === 'TM123');
-  const [d] = checkMarkup('<button popovertarget="m" data-tooltip="More actions">Options</button>').filter(d => d.code === 'TM123');
+  const [d] = checkMarkup('<button popovertarget="m" data-tm-tooltip="More actions">Options</button>').filter(d => d.code === 'TM123');
   assert.equal(d.severity, 'warning');
   assert.match(d.message, /never shows: it opens a popover, so its ::after is the dropdown caret/);
   assert.match(d.message, /hint in the button's label, or make it an icon button/);
   // a text button that opens a popover: popovertarget (without action="hide"), command toggle- or show-popover; a
-  // data-icon button with text is a text button too
+  // data-tm-icon button with text is a text button too
   for (const b of ['popovertarget="m"', 'popovertarget="m" popovertargetaction="toggle"', 'popovertarget="m" popovertargetaction="show"',
-    'commandfor="m" command="toggle-popover"', 'commandfor="m" command="show-popover"', 'popovertarget="m" data-icon="filter"'])
-    assert.deepEqual(tm(`<button ${b} data-tooltip="x">Filter</button>`), ['TM123'], b);
-  assert.deepEqual(tm('<button popovertarget="m" data-icon="x" data-tooltip="x"><span>Menu</span></button>'), ['TM123']);
-  assert.deepEqual(tm('<button popovertarget="m" aria-label="Menu" data-tooltip></button>'), ['TM123']); // no data-icon: the caret
-  assert.deepEqual(tm('<button popovertarget="menu-{id}" data-tooltip="x"><Icon /> Menu</button>', 'A.svelte'), ['TM123']);
-  // the data-stretch overlay, the sort arrow of an aria-sort header
-  assert.deepEqual(tm('<article><a href="#" data-stretch data-tooltip="x">Open</a></article>'), ['TM123']);
-  assert.deepEqual(tm('<table><tr><th aria-sort="none"><button data-tooltip="Sort">Name</button></th></tr></table>'), ['TM123']);
-  // silent: an icon button (data-icon="" or no content), a close button, another command, no popover, the tooltip not
+    'commandfor="m" command="toggle-popover"', 'commandfor="m" command="show-popover"', 'popovertarget="m" data-tm-icon="filter"'])
+    assert.deepEqual(tm(`<button ${b} data-tm-tooltip="x">Filter</button>`), ['TM123'], b);
+  assert.deepEqual(tm('<button popovertarget="m" data-tm-icon="x" data-tm-tooltip="x"><span>Menu</span></button>'), ['TM123']);
+  assert.deepEqual(tm('<button popovertarget="m" aria-label="Menu" data-tm-tooltip></button>'), ['TM123']); // no data-tm-icon: the caret
+  assert.deepEqual(tm('<button popovertarget="menu-{id}" data-tm-tooltip="x"><Icon /> Menu</button>', 'A.svelte'), ['TM123']);
+  // the data-tm-stretch overlay, the sort arrow of an aria-sort header
+  assert.deepEqual(tm('<article><a href="#" data-tm-stretch data-tm-tooltip="x">Open</a></article>'), ['TM123']);
+  assert.deepEqual(tm('<table><tr><th aria-sort="none"><button data-tm-tooltip="Sort">Name</button></th></tr></table>'), ['TM123']);
+  // silent: an icon button (data-tm-icon="" or no content), a close button, another command, no popover, the tooltip not
   // directly in the aria-sort header
-  assert.deepEqual(tm('<button popovertarget="m" data-icon="ellipsis" aria-label="More" data-tooltip></button>'), []);
-  assert.deepEqual(tm('<button popovertarget="m" data-icon aria-label="More" data-tooltip>⋯</button>'), []);
-  assert.deepEqual(tm('<button popovertarget="m" popovertargetaction="hide" data-tooltip="x">Close</button>'), []);
-  assert.deepEqual(tm('<button commandfor="d" command="show-modal" data-tooltip="x">Open</button>'), []);
-  assert.deepEqual(tm('<button data-tooltip="x">Save</button><a href="#" popovertarget="m" data-tooltip="x">Link</a>'), []);
-  assert.deepEqual(tm('<table><tr><th aria-sort="none"><button>Name <span data-tooltip="x" tabindex="0">?</span></button></th></tr></table>'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-tm-icon="ellipsis" aria-label="More" data-tm-tooltip></button>'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-tm-icon aria-label="More" data-tm-tooltip>⋯</button>'), []);
+  assert.deepEqual(tm('<button popovertarget="m" popovertargetaction="hide" data-tm-tooltip="x">Close</button>'), []);
+  assert.deepEqual(tm('<button commandfor="d" command="show-modal" data-tm-tooltip="x">Open</button>'), []);
+  assert.deepEqual(tm('<button data-tm-tooltip="x">Save</button><a href="#" popovertarget="m" data-tm-tooltip="x">Link</a>'), []);
+  assert.deepEqual(tm('<table><tr><th aria-sort="none"><button>Name <span data-tm-tooltip="x" tabindex="0">?</span></button></th></tr></table>'), []);
   // not judged: what decides it is an expression (the attribute may not render), or the content may be empty
-  assert.deepEqual(tm('<button popovertarget={id} data-tooltip="x">Menu</button>', 'A.svelte'), []);
-  assert.deepEqual(tm('<button popovertarget="m" popovertargetaction={a} data-tooltip="x">Menu</button>', 'A.svelte'), []);
-  assert.deepEqual(tm('<button commandfor="m" command={c} data-tooltip="x">Menu</button>', 'A.svelte'), []);
-  assert.deepEqual(tm('<button popovertarget="m" data-icon={i} data-tooltip="x">Menu</button>', 'A.svelte'), []);
-  assert.deepEqual(tm('<button popovertarget="m" data-icon="x" aria-label="o" data-tooltip>{label}</button>', 'A.svelte'), []);
-  assert.deepEqual(tm('<button popovertarget="m" data-icon="x" aria-label="o" data-tooltip><Label /></button>', 'A.svelte'), []);
-  assert.deepEqual(tm('<button :popovertarget="id" data-tooltip="x">Menu</button>', 'A.vue'), []);
-  assert.deepEqual(tm('<table><tr><th aria-sort={s}><button data-tooltip="Sort">Name</button></th></tr></table>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget={id} data-tm-tooltip="x">Menu</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget="m" popovertargetaction={a} data-tm-tooltip="x">Menu</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button commandfor="m" command={c} data-tm-tooltip="x">Menu</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-tm-icon={i} data-tm-tooltip="x">Menu</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-tm-icon="x" aria-label="o" data-tm-tooltip>{label}</button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button popovertarget="m" data-tm-icon="x" aria-label="o" data-tm-tooltip><Label /></button>', 'A.svelte'), []);
+  assert.deepEqual(tm('<button :popovertarget="id" data-tm-tooltip="x">Menu</button>', 'A.vue'), []);
+  assert.deepEqual(tm('<table><tr><th aria-sort={s}><button data-tm-tooltip="Sort">Name</button></th></tr></table>', 'A.svelte'), []);
 });
 
 test('fixed colors: light-dark() handles both schemes', () => {
@@ -552,11 +567,11 @@ test('fixed colors: light-dark() handles both schemes', () => {
 });
 
 test('a number outside a numeric range names the range instead of guessing', () => {
-  const [d] = checkMarkup('<div data-layout="grid" data-cols="8"></div>');
-  assert.match(d.message, /data-cols="8" is not valid\. It takes a whole number from 2 to 7\./);
+  const [d] = checkMarkup('<div data-tm-layout="grid" data-tm-cols="8"></div>');
+  assert.match(d.message, /data-tm-cols="8" is not valid\. It takes a whole number from 2 to 7\./);
   assert.doesNotMatch(d.message, /Did you mean/);
   assert.equal(d.fix, undefined);
-  assert.match(checkMarkup('<div data-layout="grid" data-cols={9}></div>', 'A.tsx')[0].message, /from 2 to 7/);
+  assert.match(checkMarkup('<div data-tm-layout="grid" data-tm-cols={9}></div>', 'A.tsx')[0].message, /from 2 to 7/);
 });
 
 // ───── what is markup in JSX, Svelte and Astro files ─────
@@ -564,17 +579,17 @@ test('a number outside a numeric range names the range instead of guessing', () 
 test('JSX: markup in comments, strings, template literals and regular expressions is not checked', () => {
   const src = [
     `import { useState } from 'react';`,
-    `// a comment with <button data-variant="danger">x</button>`,
-    `const help = '<button data-variant="primary">';`,
-    `const twice = "<span data-tone='nope'>";`,
-    'const tpl = `<b data-tone="x">${user ? `<i data-tone="${\'y\'}">` : \'\'}</b>`;',
-    `const re = /<b data-tone="y">/g, half = total / 2 / count;`,
-    `/* <div data-layout="stak"></div> */`,
+    `// a comment with <button data-tm-variant="danger">x</button>`,
+    `const help = '<button data-tm-variant="primary">';`,
+    `const twice = "<span data-tm-tone='nope'>";`,
+    'const tpl = `<b data-tm-tone="x">${user ? `<i data-tm-tone="${\'y\'}">` : \'\'}</b>`;',
+    `const re = /<b data-tm-tone="y">/g, half = total / 2 / count;`,
+    `/* <div data-tm-layout="stak"></div> */`,
     `export function List<T extends object>({ items }: { items: Array<T> }) {`,
     `  const [open, setOpen] = useState<boolean>(false);`,
     `  const id = <T,>(x: T) => x;`,
     `  if (a < b && c > d) return null;`,
-    `  return <div data-layout="row">{/* <b data-tone="q"> */}{"<i data-tone='z'>"}don't // not a comment</div>;`,
+    `  return <div data-tm-layout="row">{/* <b data-tm-tone="q"> */}{"<i data-tm-tone='z'>"}don't // not a comment</div>;`,
     `}`,
   ].join('\n');
   assert.deepEqual(checkMarkup(src, 'A.tsx'), []);
@@ -582,36 +597,36 @@ test('JSX: markup in comments, strings, template literals and regular expression
 
 test('JSX: attribute values, text and nested elements are still checked', () => {
   const count = (src, file = 'A.tsx') => codes(checkMarkup(src, file)).filter(c => c === 'TM101').length;
-  const src1 = 'const f = <T,>(x: T) => <b data-tone="nope">{x}</b>;';
-  assert.equal(checkMarkup(src1, 'A.tsx')[0].col, src1.indexOf('data-tone') + 1);
-  assert.equal(count('const [o] = useState<boolean>(false); const e = <b data-tone={o ? "danger" : "nope"}>x</b>;'), 1);
-  assert.equal(count('const s = a ? <b data-tone="nope" /> : null; const q = x / 2;', 'a.jsx'), 1);
-  assert.equal(count('x = a.filter(i => i < 3).map(i => <li data-tone="nope">{i}</li>)', 'a.jsx'), 1);
-  assert.deepEqual(codes(checkMarkup('const el = <Select<string> data-tone="nope" />;', 'A.tsx')), ['TM101']); // a component, not a <select> field
-  assert.equal(count('<div onClick={() => /\'/.test(s)} data-tone="nope">x</div>', 'a.jsx'), 1);
-  assert.equal(count('const s = `a ${`b ${"c"}`} d`; const e = <b data-tone="nope" />;', 'a.jsx'), 1);
-  assert.equal(count('return <ul>{items.map(i => <li key={i}><span data-tone="nope">{i}</span></li>)}</ul>'), 1);
+  const src1 = 'const f = <T,>(x: T) => <b data-tm-tone="nope">{x}</b>;';
+  assert.equal(checkMarkup(src1, 'A.tsx')[0].col, src1.indexOf('data-tm-tone') + 1);
+  assert.equal(count('const [o] = useState<boolean>(false); const e = <b data-tm-tone={o ? "danger" : "nope"}>x</b>;'), 1);
+  assert.equal(count('const s = a ? <b data-tm-tone="nope" /> : null; const q = x / 2;', 'a.jsx'), 1);
+  assert.equal(count('x = a.filter(i => i < 3).map(i => <li data-tm-tone="nope">{i}</li>)', 'a.jsx'), 1);
+  assert.deepEqual(codes(checkMarkup('const el = <Select<string> data-tm-tone="nope" />;', 'A.tsx')), ['TM101']); // a component, not a <select> field
+  assert.equal(count('<div onClick={() => /\'/.test(s)} data-tm-tone="nope">x</div>', 'a.jsx'), 1);
+  assert.equal(count('const s = `a ${`b ${"c"}`} d`; const e = <b data-tm-tone="nope" />;', 'a.jsx'), 1);
+  assert.equal(count('return <ul>{items.map(i => <li key={i}><span data-tm-tone="nope">{i}</span></li>)}</ul>'), 1);
 });
 
 test('Svelte and Astro: strings and comments in expressions are not markup; script and frontmatter are not either', () => {
-  assert.deepEqual(checkMarkup(`<script lang="ts">const a = '<b data-tone="x">'; let b: Array<string> = [];</script>
-<p>{"<b data-tone='x'>"}{/* <i data-tone="q"> */}</p>{#if a < b}<span data-tone="danger">x</span>{/if}`, 'A.svelte'), []);
-  const astro = `---\nconst a = "<b data-tone='x'>";\nconst b = 1 < 2;\n---\n<p>{"<i data-tone='z'>"}{/* <b data-tone="w"> */}</p>\n<span data-tone="bad">x</span>`;
+  assert.deepEqual(checkMarkup(`<script lang="ts">const a = '<b data-tm-tone="x">'; let b: Array<string> = [];</script>
+<p>{"<b data-tm-tone='x'>"}{/* <i data-tm-tone="q"> */}</p>{#if a < b}<span data-tm-tone="danger">x</span>{/if}`, 'A.svelte'), []);
+  const astro = `---\nconst a = "<b data-tm-tone='x'>";\nconst b = 1 < 2;\n---\n<p>{"<i data-tm-tone='z'>"}{/* <b data-tm-tone="w"> */}</p>\n<span data-tm-tone="bad">x</span>`;
   assert.deepEqual(checkMarkup(astro, 'a.astro').map(d => `${d.code}:${d.line}`), ['TM101:6']);
   // attribute expressions keep their strings: their values are checked
-  assert.deepEqual(codes(checkMarkup(`<span data-tone={a ? 'danger' : 'nope'}>{'x'}</span>`, 'a.astro')), ['TM101']);
+  assert.deepEqual(codes(checkMarkup(`<span data-tm-tone={a ? 'danger' : 'nope'}>{'x'}</span>`, 'a.astro')), ['TM101']);
 });
 
 test('a <script> whose attributes contain > (Svelte generics) is still blanked, and the markup after it checked', () => {
-  const src = `<script lang="ts" generics="T extends Record<string, unknown>">\n  const t = '<b data-tone="x">';\n</script>\n<p>"quoted"</p>\n{@html '<i data-tone="y">'}\n<span data-tone="nope">x</span>`;
+  const src = `<script lang="ts" generics="T extends Record<string, unknown>">\n  const t = '<b data-tm-tone="x">';\n</script>\n<p>"quoted"</p>\n{@html '<i data-tm-tone="y">'}\n<span data-tm-tone="nope">x</span>`;
   assert.deepEqual(checkMarkup(src, 'A.svelte').map(d => `${d.code}:${d.line}`), ['TM101:6']);
 });
 
 test('Vue: strings in {{ }} are not markup, a single { in text is text, bindings are still checked', () => {
-  const src = `<script setup lang="ts">const html = '<b data-tone="x">';</script>
+  const src = `<script setup lang="ts">const html = '<b data-tm-tone="x">';</script>
 <template>
-  <p>{{ "<b data-tone='x'>" }} { it's text } <span data-tone="nope">x</span></p>
-  <span :data-tone="bad ? 'danger' : 'oops'">y</span>
+  <p>{{ "<b data-tm-tone='x'>" }} { it's text } <span data-tm-tone="nope">x</span></p>
+  <span :data-tm-tone="bad ? 'danger' : 'oops'">y</span>
 </template>`;
   assert.deepEqual(checkMarkup(src, 'A.vue').map(d => `${d.code}:${d.line}`), ['TM101:3', 'TM101:4']);
 });

@@ -9,16 +9,16 @@
 <link rel="stylesheet" href="../../src/feedback.css">
 </head>
 <body>
-<main id="main" data-layout="stack" data-pad="md">
+<main id="main" data-tm-layout="stack" data-tm-pad="md">
   <p id="text">Selectable text</p>
   <input id="field" placeholder="Search">
   <textarea id="area"></textarea>
   <!-- a md control inside a sm container gets the control font again -->
-  <div data-size="sm"><button id="sm">Small</button> <button id="md" data-size="md">Medium</button></div>
-  <button id="bar" type="button" data-variant="item" data-bar data-tone="danger">Dentist</button>
-  <div data-toasts><div id="toast" data-toast data-tone="success">Saved.</div></div>
+  <div data-tm-size="sm"><button id="sm">Small</button> <button id="md" data-tm-size="md">Medium</button></div>
+  <button id="bar" type="button" data-tm-variant="item" data-tm-bar data-tm-tone="danger">Dentist</button>
+  <div data-tm-toasts><div id="toast" data-tm-toast data-tm-tone="success">Saved.</div></div>
   <!-- a sticky table header paints what the table sits on -->
-  <div data-scroll><table><thead><tr><th id="th-page">On the page</th></tr></thead></table></div>
+  <div data-tm-scroll><table><thead><tr><th id="th-page">On the page</th></tr></thead></table></div>
   <article><table><thead><tr><th id="th-card">In a card</th></tr></thead></table></article>
 </main>
 </body>

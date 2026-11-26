@@ -22,7 +22,7 @@ export interface Diagnostic {
 
 /** What a check needs to know beyond the file. */
 export interface CheckContext {
-  /** Extra valid data-icon names (an icon folder, Lucide names, the project's own --tm-icon-* rules). */
+  /** Extra valid data-tm-icon names (an icon folder, Lucide names, the project's own --tm-icon-* rules). */
   icons?: ReadonlySet<string>;
   /** The temper modules the project imports ('core', 'app', …); null or undefined: unknown, TM110 is not checked. */
   modules?: ReadonlySet<string> | null;
@@ -61,7 +61,7 @@ export function walk(path: string, exts?: ReadonlySet<string> | null): Generator
 /** The temper modules the project's sources import, or null when none is visible. all.css counts as every module. */
 export function importedModules(paths: readonly string[]): Set<string> | null;
 
-/** Icon names the project defines itself in CSS: [data-icon="name"] rules and --tm-icon-name declarations. */
+/** Icon names the project defines itself in CSS: [data-tm-icon="name"] rules and --tm-icon-name declarations. */
 export function definedIcons(paths: readonly string[]): Set<string>;
 
 /**

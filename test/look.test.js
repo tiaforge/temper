@@ -68,7 +68,7 @@ test('placeholder, selection, md size, tone bars, scrollbars and sticky headers'
     // ::placeholder and ::selection used to be in :where(), where they matched nothing
     assert.equal(r.placeholder, r.muted);
     assert.notEqual(r.selection, 'rgba(0, 0, 0, 0)');
-    // data-size="md" inside a sm container: md height and the control font, not the small one
+    // data-tm-size="md" inside a sm container: md height and the control font, not the small one
     assert.equal(r.sm, '13px');
     assert.equal(r.md, '15px', `md button font ${r.md}, control font ${r.control}`);
     // tone bars are straight: square start corners on an item button and a toast

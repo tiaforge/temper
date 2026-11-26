@@ -4,10 +4,10 @@
   .drawer { position: fixed; inset-block: 0; inset-inline-start: 0; inline-size: 16rem; background: var(--tm-surface); }
   @media (width < 48rem) { .drawer { translate: -100% 0; } }
 </style></head>
-<body data-layout="stack" data-pad="lg">
-<aside class="drawer" data-pad="sm">
-  <button data-variant="ghost" popovertarget="account-menu">Account</button>
-  <div popover id="account-menu" data-menu role="menu"><button role="menuitem">Edit account</button><button role="menuitem">Remove account</button></div>
+<body data-tm-layout="stack" data-tm-pad="lg">
+<aside class="drawer" data-tm-pad="sm">
+  <button data-tm-variant="ghost" popovertarget="account-menu">Account</button>
+  <div popover id="account-menu" data-tm-menu role="menu"><button role="menuitem">Edit account</button><button role="menuitem">Remove account</button></div>
 </aside>
 <main style="margin-inline-start: 17rem"><p>Mail</p></main>
 </body></html>

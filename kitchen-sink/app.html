@@ -12,34 +12,34 @@
   <script>
     // ?t=light|dark, ?collapsed, ?open (drawer), ?menu (open the dropdown)
     { const q = new URLSearchParams(location.search);
-      if (q.get('t')) document.documentElement.dataset.theme = q.get('t'); }
+      if (q.get('t')) document.documentElement.dataset.tmTheme = q.get('t'); }
   </script>
 </head>
-<body data-shell data-density="compact">
+<body data-tm-shell data-tm-density="compact">
 
-<nav data-rail popover id="rail" aria-label="Main">
+<nav data-tm-rail popover id="rail" aria-label="Main">
   <header>
-    <strong data-rail-label>Caley</strong>
-    <input type="checkbox" data-rail-collapse aria-label="Collapse menu" id="collapse">
+    <strong data-tm-rail-label>Caley</strong>
+    <input type="checkbox" data-tm-rail-collapse aria-label="Collapse menu" id="collapse">
   </header>
-  <a href="#" data-icon="mail"><span>Mail</span><span data-badge data-tone="accent">12</span></a>
-  <a href="#" data-icon="calendar"><span>Calendar</span></a>
-  <a href="#" aria-current="page" data-icon="users"><span>Contacts</span></a>
-  <a href="#" data-icon="search"><span>Search</span></a>
+  <a href="#" data-tm-icon="mail"><span>Mail</span><span data-tm-badge data-tm-tone="accent">12</span></a>
+  <a href="#" data-tm-icon="calendar"><span>Calendar</span></a>
+  <a href="#" aria-current="page" data-tm-icon="users"><span>Contacts</span></a>
+  <a href="#" data-tm-icon="search"><span>Search</span></a>
   <footer>
-    <span data-caption data-rail-label>Tia Heinrich</span>
-    <a href="#" data-icon="settings"><span>Settings</span></a>
+    <span data-tm-caption data-tm-rail-label>Tia Heinrich</span>
+    <a href="#" data-tm-icon="settings"><span>Settings</span></a>
   </footer>
 </nav>
 
-<main data-layout="stack" data-gap="lg" data-pad="lg">
-  <div data-layout="row" data-gap="sm">
-    <button popovertarget="rail" data-show="narrow" data-icon="menu" data-variant="ghost" aria-label="Open menu" id="open-drawer"></button>
+<main data-tm-layout="stack" data-tm-gap="lg" data-tm-pad="lg">
+  <div data-tm-layout="row" data-tm-gap="sm">
+    <button popovertarget="rail" data-tm-show="narrow" data-tm-icon="menu" data-tm-variant="ghost" aria-label="Open menu" id="open-drawer"></button>
     <h1>Contacts</h1>
-    <input type="search" data-grow placeholder="Filter contacts" aria-label="Filter contacts">
-    <button popovertarget="books" data-variant="outline" data-icon="users" id="books-btn">Address books</button>
+    <input type="search" data-tm-grow placeholder="Filter contacts" aria-label="Filter contacts">
+    <button popovertarget="books" data-tm-variant="outline" data-tm-icon="users" id="books-btn">Address books</button>
   </div>
-  <div popover id="books" data-menu>
+  <div popover id="books" data-tm-menu>
     <label><input type="checkbox" checked> Personal</label>
     <label><input type="checkbox" checked> Work</label>
     <label><input type="checkbox"> Climbing club</label>
@@ -47,51 +47,51 @@
     <button>Manage address books</button>
   </div>
 
-  <section data-layout="stack" data-gap="sm">
-    <h2 data-caption>M</h2>
-    <div data-layout="grid" data-gap="md" style="--tm-min: 13rem">
-      <article data-layout="stack" data-gap="xs" data-align="center">
-        <span data-avatar data-size="lg" style="--tm-tone: oklch(0.6 0.15 150)">MO</span>
-        <a href="#mira" data-stretch><strong>Mira Okafor</strong></a>
+  <section data-tm-layout="stack" data-tm-gap="sm">
+    <h2 data-tm-caption>M</h2>
+    <div data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 13rem">
+      <article data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+        <span data-tm-avatar data-tm-size="lg" style="--tm-tone: oklch(0.6 0.15 150)">MO</span>
+        <a href="#mira" data-tm-stretch><strong>Mira Okafor</strong></a>
         <a href="mailto:mira@okafor.io">mira@okafor.io</a>
-        <small data-muted><span data-icon="map-pin"></span> Leipzig</small>
+        <small data-tm-muted><span data-tm-icon="map-pin"></span> Leipzig</small>
       </article>
     </div>
   </section>
 
-  <section data-layout="stack" data-gap="sm">
-    <h2 data-caption>P</h2>
-    <div data-layout="grid" data-gap="md" style="--tm-min: 13rem">
-      <article data-layout="stack" data-gap="xs" data-align="center">
-        <span data-avatar data-size="lg">PR</span>
-        <a href="#priya" data-stretch><strong>Priya Raman</strong></a>
+  <section data-tm-layout="stack" data-tm-gap="sm">
+    <h2 data-tm-caption>P</h2>
+    <div data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 13rem">
+      <article data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+        <span data-tm-avatar data-tm-size="lg">PR</span>
+        <a href="#priya" data-tm-stretch><strong>Priya Raman</strong></a>
         <a href="mailto:priya@raman.dev">priya@raman.dev</a>
-        <small data-muted>Work</small>
+        <small data-tm-muted>Work</small>
       </article>
-      <article data-layout="stack" data-gap="xs" data-align="center">
-        <span data-avatar data-size="lg" style="--tm-tone: oklch(0.68 0.16 55)">PS</span>
-        <a href="#paul" data-stretch><strong>Paul Schulz</strong></a>
+      <article data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+        <span data-tm-avatar data-tm-size="lg" style="--tm-tone: oklch(0.68 0.16 55)">PS</span>
+        <a href="#paul" data-tm-stretch><strong>Paul Schulz</strong></a>
         <a href="tel:+493012345">+49 30 12345</a>
-        <small data-muted>Personal</small>
+        <small data-tm-muted>Personal</small>
       </article>
     </div>
   </section>
 
   <dialog id="detail">
     <header><h2>Mira Okafor</h2><button commandfor="detail" command="close" aria-label="Close"></button></header>
-    <dl data-pairs><dt>Email</dt><dd>mira@okafor.io</dd><dt>Phone</dt><dd>+49 151 2345 6789</dd></dl>
-    <footer><button data-variant="secondary" data-icon="trash-2" data-tone="danger">Delete</button><button data-icon="pencil">Edit</button><button data-icon="share-2" data-variant="ghost" aria-label="Share"></button></footer>
+    <dl data-tm-pairs><dt>Email</dt><dd>mira@okafor.io</dd><dt>Phone</dt><dd>+49 151 2345 6789</dd></dl>
+    <footer><button data-tm-variant="secondary" data-tm-icon="trash-2" data-tm-tone="danger">Delete</button><button data-tm-icon="pencil">Edit</button><button data-tm-icon="share-2" data-tm-variant="ghost" aria-label="Share"></button></footer>
   </dialog>
-  <article data-layout="stack" data-gap="sm" style="max-inline-size: 28rem">
-    <header><h3>Mira Okafor</h3><button data-icon data-variant="ghost" aria-label="Close">×</button></header>
-    <dl data-pairs>
+  <article data-tm-layout="stack" data-tm-gap="sm" style="max-inline-size: 28rem">
+    <header><h3>Mira Okafor</h3><button data-tm-icon data-tm-variant="ghost" aria-label="Close">×</button></header>
+    <dl data-tm-pairs>
       <dt>Email</dt><dd>mira@okafor.io</dd>
       <div><dt>Phone</dt><dd>+49 151 2345 6789</dd></div>
       <dt>Address</dt><dd>Karl-Liebknecht-Str. 12, 04107 Leipzig</dd>
     </dl>
   </article>
 </main>
-<button data-fab data-icon="plus" aria-label="New contact"></button>
+<button data-tm-fab data-tm-icon="plus" aria-label="New contact"></button>
 
 <script>
   // Screenshot helpers only; the page itself needs no script. ?collapsed ?open ?menu

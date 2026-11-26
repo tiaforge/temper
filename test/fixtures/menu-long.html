@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="../../src/menu.css">
 </head>
 <body>
-<main data-pad="md">
+<main data-tm-pad="md">
   <!-- more items than fit (a sender filter): the menu scrolls, every row keeps its height -->
-  <div id="long" data-menu>
+  <div id="long" data-tm-menu>
     <button type="button">Clear all</button>
     <hr>
     <label><input type="checkbox"> sender0@example.org</label>
@@ -57,7 +57,7 @@
     </ul>
   </div>
   <!-- the same items without the cap: the heights they should have -->
-  <div id="free" data-menu style="max-block-size: none">
+  <div id="free" data-tm-menu style="max-block-size: none">
     <button type="button">Clear all</button>
     <hr>
     <label><input type="checkbox"> sender0@example.org</label>

@@ -11,7 +11,7 @@ export interface TemperIconsOptions {
   /** Every Lucide icon by name, only the used ones emitted (needs lucide-static installed). Default true. */
   lucide?: boolean;
   /**
-   * Icon names to emit although the markup does not show them, such as data-icon={item.icon} from a data array.
+   * Icon names to emit although the markup does not show them, such as data-tm-icon={item.icon} from a data array.
    * The plugin prints a notice with file and line for each such place.
    */
   include?: readonly string[];

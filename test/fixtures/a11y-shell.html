@@ -6,27 +6,27 @@
 <title>App shell: RTL, print</title>
 <link rel="stylesheet" href="../../src/all.css">
 </head>
-<body data-shell="fixed">
-  <nav id="rail" data-rail popover aria-label="Main">
+<body data-tm-shell="fixed">
+  <nav id="rail" data-tm-rail popover aria-label="Main">
     <header>
-      <span data-rail-label>App</span>
-      <input id="collapse" type="checkbox" data-rail-collapse aria-label="Collapse menu">
+      <span data-tm-rail-label>App</span>
+      <input id="collapse" type="checkbox" data-tm-rail-collapse aria-label="Collapse menu">
     </header>
-    <a href="#a" data-icon="mail" aria-current="page"><span>Mail</span></a>
-    <a href="#b" data-icon="users"><span>Contacts</span></a>
+    <a href="#a" data-tm-icon="mail" aria-current="page"><span>Mail</span></a>
+    <a href="#b" data-tm-icon="users"><span>Contacts</span></a>
   </nav>
-  <main id="main" data-layout="stack" data-gap="md" data-pad="md">
-    <div data-layout="row" data-gap="sm">
-      <button id="open" popovertarget="rail" data-show="narrow" data-icon="menu" data-variant="ghost" aria-label="Open menu"></button>
+  <main id="main" data-tm-layout="stack" data-tm-gap="md" data-tm-pad="md">
+    <div data-tm-layout="row" data-tm-gap="sm">
+      <button id="open" popovertarget="rail" data-tm-show="narrow" data-tm-icon="menu" data-tm-variant="ghost" aria-label="Open menu"></button>
       <h1>Mail</h1>
-      <button id="opener" type="button" popovertarget="menu" data-variant="outline">Sort</button>
-      <div popover id="menu" data-menu><button>Newest first</button><button>Oldest first</button></div>
+      <button id="opener" type="button" popovertarget="menu" data-tm-variant="outline">Sort</button>
+      <div popover id="menu" data-tm-menu><button>Newest first</button><button>Oldest first</button></div>
     </div>
     <article id="card">Card</article>
     <div id="tall" style="block-size: 3000px">Long content</div>
     <p id="end">The end</p>
   </main>
-  <button id="fab" data-fab data-icon="plus" aria-label="New" data-tooltip></button>
-  <div id="toasts" data-toasts role="status"><div id="toast" data-toast data-tone="success">Saved.</div></div>
+  <button id="fab" data-tm-fab data-tm-icon="plus" aria-label="New" data-tm-tooltip></button>
+  <div id="toasts" data-tm-toasts role="status"><div id="toast" data-tm-toast data-tm-tone="success">Saved.</div></div>
 </body>
 </html>

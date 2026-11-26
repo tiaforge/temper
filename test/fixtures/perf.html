@@ -13,27 +13,27 @@
 <link rel="stylesheet" href="../../src/icons.css">
 </head>
 <body>
-<main data-layout="stack" data-pad="md">
+<main data-tm-layout="stack" data-tm-pad="md">
   <!-- split: a <template> on either side must not count as the sidebar or the content -->
-  <div data-layout="split" id="split">
+  <div data-tm-layout="split" id="split">
     <template><p>row</p></template>
     <nav id="side">Sidebar</nav>
     <section id="middle">Middle</section>
     <section id="content">Content</section>
     <template><p>row</p></template>
   </div>
-  <div data-layout="split" id="split2"><nav id="side2">Sidebar</nav><section id="content2">Content</section></div>
+  <div data-tm-layout="split" id="split2"><nav id="side2">Sidebar</nav><section id="content2">Content</section></div>
   <!-- long containers of every common kind; filled below. One child added or removed must not restyle the others -->
   <ul id="ul"></ul>
   <div id="div"></div>
-  <ul data-list id="list"></ul>
+  <ul data-tm-list id="list"></ul>
   <table><tbody id="tbody"></tbody></table>
-  <div id="checks" data-layout="stack"></div>
+  <div id="checks" data-tm-layout="stack"></div>
   <div id="toasts"></div>
-  <div data-prose id="prose"></div>
+  <div data-tm-prose id="prose"></div>
   <!-- icons and reduced motion -->
-  <span id="mail" data-icon="mail"></span>
-  <span id="rocket" data-icon="rocket"></span>
+  <span id="mail" data-tm-icon="mail"></span>
+  <span id="rocket" data-tm-icon="rocket"></span>
   <details id="details"><summary>More</summary>Text</details>
 </main>
 <script>
@@ -44,7 +44,7 @@
   fill('tbody', i => `<tr><td><input type="checkbox" aria-label="Select"></td><td>Row ${i}</td></tr>`);
   fill('checks', i => `<label><input type="checkbox"> Option ${i}</label>`);
   fill('prose', i => i % 50 ? `<div><p>Paragraph ${i}</p><ul><li>one</li><li>two</li></ul></div>` : `<h2>Part ${i}</h2>`);
-  fill('toasts', i => `<div data-toast><span>Saved ${i}</span><button type="button">Undo</button></div>`);
+  fill('toasts', i => `<div data-tm-toast><span>Saved ${i}</span><button type="button">Undo</button></div>`);
 </script>
 </body>
 </html>

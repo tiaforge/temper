@@ -33,7 +33,7 @@ First consumer: caley (replacing Pico CSS). Second: tia.vision (Astro marketing/
    `aria-current`, `aria-pressed`, `aria-expanded`, `:user-invalid`, `[open]`, `:popover-open`.
 3. **Variants are enumerated `data-*` attributes, not classes.** Each attribute is one axis with a
    closed set of values:
-   - Values on one axis are mutually exclusive (`data-variant` can't be both outline and ghost).
+   - Values on one axis are mutually exclusive (`data-tm-variant` can't be both outline and ghost).
      Classes can't guarantee that (`.secondary.outline.contrast`).
    - Editors can autocomplete attribute values from `html-custom-data.json`. There is no standard
      way to do that for classes.
@@ -43,10 +43,10 @@ First consumer: caley (replacing Pico CSS). Second: tia.vision (Astro marketing/
 4. **No spacing utilities, and components never set an outer margin.** This is the one rule that
    stops the margin/padding mixups:
    > Components own their padding (set by density). Parents own the space between children
-   > (`data-gap`). Nothing has an outer margin.
+   > (`data-tm-gap`). Nothing has an outer margin.
 
-   Prose content (`data-prose`) is the only exception, where the rhythm comes from the text flow.
-5. **One size scale everywhere:** `xs sm md lg xl`, used the same way in `data-gap`, `data-size`,
+   Prose content (`data-tm-prose`) is the only exception, where the rhythm comes from the text flow.
+5. **One size scale everywhere:** `xs sm md lg xl`, used the same way in `data-tm-gap`, `data-tm-size`,
    `--tm-space-*`, `--tm-radius-*` and `--tm-text-*`. No numeric scales, because agents would
    read `4` as Tailwind's 1rem.
 6. **The vocabulary comes from one machine-readable source.** `vocab.json` generates:
@@ -86,7 +86,7 @@ CI enforces the budgets (`size-limit`).
 
 - `:root { color-scheme: light dark }`. Every token uses `light-dark()`, so the OS setting switches
   the theme with no JS.
-- `data-theme="light|dark"` overrides the theme on **any element**, not just `<html>`, because it
+- `data-tm-theme="light|dark"` overrides the theme on **any element**, not just `<html>`, because it
   only sets `color-scheme`. That makes it possible to have a dark hero on a light page (tia.vision),
   or to force an email-reader iframe to light (caley).
 - Recommend `<meta name="color-scheme" content="light dark">` to avoid a flash on load. An optional
@@ -98,7 +98,7 @@ CI enforces the budgets (`size-limit`).
   pressed and current items get a `Highlight` ring (their fills become the canvas color); focus stays an outline.
 - Right to left: logical properties throughout; the few values without a logical form (a translate, a scale, an
   inset shadow, a background position) take their sign from `--_x`, which is -1 under `:dir(rtl)`.
-- Print: the rail, FAB, toasts and tooltips are not printed; a fixed shell and `data-scroll` areas print in full;
+- Print: the rail, FAB, toasts and tooltips are not printed; a fixed shell and `data-tm-scroll` areas print in full;
   light scheme, no shadows. Each module owns its print rules.
 - Safe areas: with `viewport-fit=cover` the rail, drawer, FAB and toast region add `env(safe-area-inset-*)`.
 
@@ -121,7 +121,7 @@ CI enforces the budgets (`size-limit`).
   regular on another. 600 is Semibold with Segoe UI, SF Pro and Noto Sans, and Bold (700) where no 600 exists.
 - **One control height.** Button, input, select and icon-button are all `--tm-control-h`
   (comfortable 2.5rem, compact 2rem), so toolbars line up without extra work.
-- `data-density="compact|comfortable"` can go on any subtree and scales control padding and height.
+- `data-tm-density="compact|comfortable"` can go on any subtree and scales control padding and height.
   Caley sets `compact` on `<html>`. tia.vision keeps the default.
 - Focus: `outline: 2px solid var(--tm-accent); outline-offset: 2px` on `:focus-visible` only.
 - Motion: 150 ms ease-out. Dialogs and popovers animate in and out with `@starting-style` and
@@ -217,24 +217,24 @@ Any role can also be set directly with a literal color (brand colors). Caley's o
 
 | Attribute | Values | Applies to | Notes |
 |---|---|---|---|
-| `data-variant` | `secondary outline ghost link` (default = primary/solid) | button, `a[role=button]`, input[type=submit] | Same names as shadcn, which models have seen a lot. |
-| `data-tone` | `accent neutral danger success warning info` | button, badge, callout, text, progress | Sets `--tm-tone`. It works with every variant. A custom color can be set via `style="--tm-tone: …"` (calendar colors through sinter `data-sn-style`). |
-| `data-size` | `sm md lg` | button, input, select, badge | |
-| `data-icon` | boolean | button | Square, `--tm-control-h` wide. Requires an `aria-label` (the checker enforces this). Replaces icon-btn, close-btn and nav-btn. |
-| `data-layout` | `stack row grid split center` | any container | stack = vertical flow, row = horizontal wrapping cluster, grid = auto-fit columns (`--tm-min` sets the column minimum), split = sidebar + content, center = max-width container |
-| `data-gap` | `none xs sm md lg xl` | any `data-layout` | **The only spacing control.** |
-| `data-align` / `data-justify` | `start center end stretch` / `start center end between` | any `data-layout` | |
-| `data-density` | `compact comfortable` | any subtree | |
-| `data-theme` | `light dark` | any subtree | |
-| `data-badge` | boolean | span | Uses tone. Replaces attachment and type chips. |
-| `data-callout` | boolean | div, `[role=alert]`, `[role=status]` | Uses tone. Replaces form-error, pgp-error and similar. |
-| `data-muted` | boolean | any text | |
-| `data-truncate` | boolean | any | Single-line ellipsis. |
-| `data-lazy` | boolean | list container | Its rows far off screen skip layout and paint (`content-visibility: auto`); `--tm-lazy-h` is the row height guess. |
-| `data-sr-only` | boolean | any | Visible to screen readers only; shown while it has focus (skip links). |
-| `data-pairs` | boolean | `dl` | dt/dd shown as a label/value grid using subgrid. Replaces detail-row and compose-row. |
-| `data-sticky` | `top bottom` | page header, toolbar, save bar | Sticks to an edge of the nearest scroll container; opaque, a line toward the content, above the sticky table header. |
-| `data-join` | boolean | wrapper of buttons, fields, selects | One unit: shared borders, rounded only at the ends (toolbar groups, split button, pager, search + button). |
+| `data-tm-variant` | `secondary outline ghost link` (default = primary/solid) | button, `a[role=button]`, input[type=submit] | Same names as shadcn, which models have seen a lot. |
+| `data-tm-tone` | `accent neutral danger success warning info` | button, badge, callout, text, progress | Sets `--tm-tone`. It works with every variant. A custom color can be set via `style="--tm-tone: …"` (calendar colors through sinter `data-sn-style`). |
+| `data-tm-size` | `sm md lg` | button, input, select, badge | |
+| `data-tm-icon` | boolean | button | Square, `--tm-control-h` wide. Requires an `aria-label` (the checker enforces this). Replaces icon-btn, close-btn and nav-btn. |
+| `data-tm-layout` | `stack row grid split center` | any container | stack = vertical flow, row = horizontal wrapping cluster, grid = auto-fit columns (`--tm-min` sets the column minimum), split = sidebar + content, center = max-width container |
+| `data-tm-gap` | `none xs sm md lg xl` | any `data-tm-layout` | **The only spacing control.** |
+| `data-tm-align` / `data-tm-justify` | `start center end stretch` / `start center end between` | any `data-tm-layout` | |
+| `data-tm-density` | `compact comfortable` | any subtree | |
+| `data-tm-theme` | `light dark` | any subtree | |
+| `data-tm-badge` | boolean | span | Uses tone. Replaces attachment and type chips. |
+| `data-tm-callout` | boolean | div, `[role=alert]`, `[role=status]` | Uses tone. Replaces form-error, pgp-error and similar. |
+| `data-tm-muted` | boolean | any text | |
+| `data-tm-truncate` | boolean | any | Single-line ellipsis. |
+| `data-tm-lazy` | boolean | list container | Its rows far off screen skip layout and paint (`content-visibility: auto`); `--tm-lazy-h` is the row height guess. |
+| `data-tm-sr-only` | boolean | any | Visible to screen readers only; shown while it has focus (skip links). |
+| `data-tm-pairs` | boolean | `dl` | dt/dd shown as a label/value grid using subgrid. Replaces detail-row and compose-row. |
+| `data-tm-sticky` | `top bottom` | page header, toolbar, save bar | Sticks to an edge of the nearest scroll container; opaque, a line toward the content, above the sticky table header. |
+| `data-tm-join` | boolean | wrapper of buttons, fields, selects | One unit: shared borders, rounded only at the ends (toolbar groups, split button, pager, search + button). |
 
 That is about 15 attributes. The goal is that the whole core vocabulary plus its rules fit in an
 `llms.txt` of about 200 lines.
@@ -257,10 +257,10 @@ temper/menu.css       popover menus and dropdowns, anchor positioning, menu sepa
 temper/nav.css        tabs, segmented control, breadcrumbs, pagination
 temper/data.css       dense list rows (mail list), selection states, sticky headers, resize handle
 temper/feedback.css   toast stack, skeleton, empty state
-temper/forms.css      fields with icons, units and buttons (data-field), read-only, required marker, autofill,
+temper/forms.css      fields with icons, units and buttons (data-tm-field), read-only, required marker, autofill,
                          range, indeterminate progress
-temper/sheet.css      dialogs as sheets (data-sheet): side panels, bottom sheets
-temper/prose.css      long-form text (`data-prose`), fluid type: email reader, blog, tia.vision
+temper/sheet.css      dialogs as sheets (data-tm-sheet): side panels, bottom sheets
+temper/prose.css      long-form text (`data-tm-prose`), fluid type: email reader, blog, tia.vision
 temper/site.css       marketing: hero, section, feature grid, timeline, nav bar (tia.vision)
 temper/all.css        everything
 ```
@@ -295,10 +295,10 @@ meet only through web standards: ARIA attributes and plain custom properties.
 
 1. Map the Pico tokens caley uses to temper roles (`--pico-muted-color` → `--tm-text-muted`, …).
    A codemod can do most of this.
-2. Replace `.secondary/.outline/.contrast/.small` with `data-variant`/`data-tone`/`data-size`.
+2. Replace `.secondary/.outline/.contrast/.small` with `data-tm-variant`/`data-tm-tone`/`data-tm-size`.
 3. Delete the local reinventions listed in §0.
 4. Delete the `margin: 0` overrides. They should become unnecessary.
-5. Run `temper check` in CI. Then, page by page, move layouts to `data-layout` + `data-gap`.
+5. Run `temper check` in CI. Then, page by page, move layouts to `data-tm-layout` + `data-tm-gap`.
 
 Expected result: Pico (83 KB) plus a large share of the 2,900 lines of SCSS goes away.
 
@@ -306,12 +306,12 @@ Expected result: Pico (83 KB) plus a large share of the 2,900 lines of SCSS goes
 
 All 2026-11-07.
 
-1. Attributes are unprefixed (`data-variant`, `data-tone`, …). Tokens use the `--tm-*` prefix. Apps
+1. Attributes are unprefixed (`data-tm-variant`, `data-tm-tone`, …). Tokens use the `--tm-*` prefix. Apps
    must not use these attribute names for their own purposes; the checker flags it.
 2. Name `temper`, package `@tiaforge-ui/temper` (agreed in principle).
 3. Look: Graphite, accent "Vivid" (hue 255, chroma 0.19), black/white main buttons, badges as small
    rounded rectangles (`--tm-badge-radius`).
-4. `role="switch"` checkboxes and `dl[data-pairs]` are in core.
+4. `role="switch"` checkboxes and `dl[data-tm-pairs]` are in core.
 5. Progressive enhancements (customizable `<select>` and so on) are opt-in at build time (§1.5).
 6. temper and sinter stay decoupled (§4). A pending-row marker is deferred.
 
@@ -338,8 +338,8 @@ Lessons:
   `docs/llms.template.md`) and `html-custom-data.json`. `npm test` fails when they are stale or when
   vocab and CSS disagree.
 - `temper check [paths]` (`lib/check.js`): TM101 invalid value (suggests the right axis, e.g.
-  `data-variant="danger"` → `data-tone="danger"`), TM102 boolean with value, TM103 icon button
-  without label, TM104 misspelled attribute, TM201 unknown token, TM202 reserved `--tm-` prefix,
+  `data-tm-variant="danger"` → `data-tm-tone="danger"`), TM102 boolean with value, TM103 icon button
+  without label, TM104 a `data-tm-*` name temper does not have, or one of temper's names without the prefix (fixable), TM201 unknown token, TM202 reserved `--tm-` prefix,
   TM203 derived token set. Later: TM107 needs another attribute, TM108 wrong element, TM109 wrong
   parent or missing ancestor, TM110 module not imported, TM111 `false` renders the attribute
   (all driven by `tags`, `with`, `parent` and `inside` in vocab.json), TM112 deprecated name;
@@ -347,12 +347,12 @@ Lessons:
   in `style`), TM207 a space-scale value written out, TM208 restyled temper variant. Structure and accessibility (`structureRules`; they judge only what is
   certain, so an element holding a component, slot or rendered expression is skipped): TM113 `aria-label="TODO"`
   (the stub `--fix` writes where a label is missing; an error, so the build fails until it is replaced), TM114
-  dialog without a name, TM115 table without `<th>`, TM116 `data-tooltip` on something that cannot take focus,
+  dialog without a name, TM115 table without `<th>`, TM116 `data-tm-tooltip` on something that cannot take focus,
   and, in whole documents, TM117 skipped heading level, TM118 duplicate id, TM119 `popovertarget`, `commandfor`,
   `for`, `list` or `aria-*` pointing at a missing id (with "did you mean"), TM120 popover or dialog nothing opens;
-  TM121 two solid buttons side by side; TM122 a `<button>` in a `data-field` inside a wrapping `<label>` (its name
-  joins the field's name); TM123 a `data-tooltip` that never shows because the `::after` is taken (a text button
-  that opens a popover has the dropdown caret, `data-stretch` its overlay, a direct child of an `aria-sort` header
+  TM121 two solid buttons side by side; TM122 a `<button>` in a `data-tm-field` inside a wrapping `<label>` (its name
+  joins the field's name); TM123 a `data-tm-tooltip` that never shows because the `::after` is taken (a text button
+  that opens a popover has the dropdown caret, `data-tm-stretch` its overlay, a direct child of an `aria-sort` header
   the sort arrow). Computed values are reduced
   to the literals they can produce; `types/*.d.ts` (generated) types them for React, Vue, Astro,
   Svelte component props and sinter's `data-sn-attr`. No findings on caley's current frontend.
@@ -362,9 +362,9 @@ Missing, roughly in order:
 2. ~~Trim `llms.txt` (322 lines now; goal about 200).~~ Done: about 150 lines; the rest is in `llms-full.txt`.
 3. ~~Contrast validator (hue sweep, WCAG AA).~~ Done: `npm run contrast`, see §1.6.
 4. Modules: `app`, `menu`, `icons`, `feedback` (toasts, tooltips), `table` (data tables), `forms` (fields with
-   adornments via `data-field`, read-only, required marker, autofill, range, indeterminate progress) and `prose`
-   (`data-prose`: rhythm for long-form text, reading measure through `--tm-measure`, fluid h1/h2, blockquote,
-   figure, inline images, plain layout tables; 2026-11-23) and `sheet` (`data-sheet="end|start|bottom|narrow"`: a
+   adornments via `data-tm-field`, read-only, required marker, autofill, range, indeterminate progress) and `prose`
+   (`data-tm-prose`: rhythm for long-form text, reading measure through `--tm-measure`, fluid h1/h2, blockquote,
+   figure, inline images, plain layout tables; 2026-11-23) and `sheet` (`data-tm-sheet="end|start|bottom|narrow"`: a
    dialog as a side panel or bottom sheet; 2026-11-24) exist; `nav` ended up in core. Core dialogs lock the page
    scroll behind a modal (keeping the scrollbar's space) and keep header and footer in view in a tall dialog;
    popovers and menus fade in and out. Next: `site` (site

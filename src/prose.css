@@ -1,57 +1,57 @@
 /* temper prose: long-form text (rendered Markdown, CMS HTML, a mail body, a post). Requires core.css.
-   <article data-prose> <h1>…</h1> <p>…</p> <figure><img …><figcaption>…</figcaption></figure> … </article>
+   <article data-tm-prose> <h1>…</h1> <p>…</p> <figure><img …><figcaption>…</figcaption></figure> … </article>
    The one place with outer margins: every block gets a top margin from the text flow (none before the first,
    none after the last). Only top margins, so they collapse through plain wrappers (div, section: CMS and mail
    nest content at any depth) and never leak out. In tm.base, so a component's own margins win, and temper
    components inside keep their own spacing.
    Speed: selectors are written :where(a) > :where(b), never :where(a > b) (Chromium matches the split form far
-   faster, so a page without data-prose pays next to nothing), and there are no sibling (+) rules (they made
+   faster, so a page without data-tm-prose pays next to nothing), and there are no sibling (+) rules (they made
    inserting one block restyle every block after it). */
 
 @layer tm.reset, tm.base, tm.components, tm.layout; /* the order core.css declares, in case this file loads first */
 
 @layer tm.base {
-  /* the reading measure: --tm-measure (also what data-layout="center" on the same element uses) */
-  :where([data-prose]) { --tm-measure: 65ch; max-inline-size: var(--tm-measure); line-height: 1.65; overflow-wrap: break-word; }
-  :where([data-prose]) :where(p, h1, h2, h3, h4, h5, h6, ul, ol, dl, blockquote, figure, pre, table, video, details, [data-layout], [data-callout], [data-list], article, form),
-  :where([data-prose]) > :where(img) { margin-block-start: 1em; }
-  :where([data-prose]) :where(h1, h2, h3, h4, h5, h6) { margin-block-start: 1.5em; }
-  :where([data-prose]) :where(li), :where([data-prose]) :where(li) > :where(ul, ol) { margin-block-start: 0.25em; }
-  :where([data-prose]) :where(dl:not([data-pairs])) > :where(dt), :where([data-prose]) :where(figcaption) { margin-block-start: 0.5em; }
-  :where([data-prose]) :where(hr) { margin-block: 2em; }
+  /* the reading measure: --tm-measure (also what data-tm-layout="center" on the same element uses) */
+  :where([data-tm-prose]) { --tm-measure: 65ch; max-inline-size: var(--tm-measure); line-height: 1.65; overflow-wrap: break-word; }
+  :where([data-tm-prose]) :where(p, h1, h2, h3, h4, h5, h6, ul, ol, dl, blockquote, figure, pre, table, video, details, [data-tm-layout], [data-tm-callout], [data-tm-list], article, form),
+  :where([data-tm-prose]) > :where(img) { margin-block-start: 1em; }
+  :where([data-tm-prose]) :where(h1, h2, h3, h4, h5, h6) { margin-block-start: 1.5em; }
+  :where([data-tm-prose]) :where(li), :where([data-tm-prose]) :where(li) > :where(ul, ol) { margin-block-start: 0.25em; }
+  :where([data-tm-prose]) :where(dl:not([data-tm-pairs])) > :where(dt), :where([data-tm-prose]) :where(figcaption) { margin-block-start: 0.5em; }
+  :where([data-tm-prose]) :where(hr) { margin-block: 2em; }
   /* nothing above the first block (three wrappers deep) or a table cell's first block; none inside a component
      that lays out its own children */
-  :where([data-prose]) > :where(:first-child), :where([data-prose]) > :where(:first-child) > :where(:first-child),
-  :where([data-prose]) > :where(:first-child) > :where(:first-child) > :where(:first-child),
-  :where([data-prose]) :where(td, th) > :where(:first-child),
-  :where([data-prose]) :where([data-layout], [data-callout], [data-list], [data-pairs], [data-menu], article, form)
-    :where(p, h1, h2, h3, h4, h5, h6, ul, ol, dl, blockquote, figure, pre, table, video, details, [data-layout], [data-callout], [data-list], article, form, li, hr, dt, figcaption) { margin-block-start: 0; }
-  :where([data-prose]) :where(h1) { font-size: clamp(1.75em, 1.25em + 2vi, 2.5em); }
-  :where([data-prose]) :where(h2) { font-size: clamp(1.375em, 1.125em + 1vi, 1.75em); }
-  :where([data-prose]) :where(h3) { font-size: 1.25em; }
-  :where([data-prose]) :where(h4) { font-size: 1.0625em; }
-  :where([data-prose]) :where(blockquote) { padding-inline-start: 1em; border-inline-start: 3px solid var(--tm-border-strong); color: var(--tm-text-muted); }
-  :where([data-prose]) :where(figcaption) { font-size: var(--tm-text-sm); color: var(--tm-text-muted); }
-  :where([data-prose]) :where(dl:not([data-pairs])) > :where(dt) { font-weight: 600; }
-  :where([data-prose]) :where(dl:not([data-pairs])) > :where(dd) { padding-inline-start: 1.25em; }
+  :where([data-tm-prose]) > :where(:first-child), :where([data-tm-prose]) > :where(:first-child) > :where(:first-child),
+  :where([data-tm-prose]) > :where(:first-child) > :where(:first-child) > :where(:first-child),
+  :where([data-tm-prose]) :where(td, th) > :where(:first-child),
+  :where([data-tm-prose]) :where([data-tm-layout], [data-tm-callout], [data-tm-list], [data-tm-pairs], [data-tm-menu], article, form)
+    :where(p, h1, h2, h3, h4, h5, h6, ul, ol, dl, blockquote, figure, pre, table, video, details, [data-tm-layout], [data-tm-callout], [data-tm-list], article, form, li, hr, dt, figcaption) { margin-block-start: 0; }
+  :where([data-tm-prose]) :where(h1) { font-size: clamp(1.75em, 1.25em + 2vi, 2.5em); }
+  :where([data-tm-prose]) :where(h2) { font-size: clamp(1.375em, 1.125em + 1vi, 1.75em); }
+  :where([data-tm-prose]) :where(h3) { font-size: 1.25em; }
+  :where([data-tm-prose]) :where(h4) { font-size: 1.0625em; }
+  :where([data-tm-prose]) :where(blockquote) { padding-inline-start: 1em; border-inline-start: 3px solid var(--tm-border-strong); color: var(--tm-text-muted); }
+  :where([data-tm-prose]) :where(figcaption) { font-size: var(--tm-text-sm); color: var(--tm-text-muted); }
+  :where([data-tm-prose]) :where(dl:not([data-tm-pairs])) > :where(dt) { font-weight: 600; }
+  :where([data-tm-prose]) :where(dl:not([data-tm-pairs])) > :where(dd) { padding-inline-start: 1.25em; }
   /* images in running text (emoji, logos, badges) stay in the line; a standalone one is a block */
-  :where([data-prose]) :where(img) { display: inline; vertical-align: middle; }
-  :where([data-prose]) > :where(img), :where(figure) > :where(img) { display: block; }
+  :where([data-tm-prose]) :where(img) { display: inline; vertical-align: middle; }
+  :where([data-tm-prose]) > :where(img), :where(figure) > :where(img) { display: block; }
   @media print {
-    :where([data-prose]) :where(h1, h2, h3, h4, h5, h6) { break-after: avoid; }
-    :where([data-prose]) :where(figure, img, pre, blockquote, tr) { break-inside: avoid; }
+    :where([data-tm-prose]) :where(h1, h2, h3, h4, h5, h6) { break-after: avoid; }
+    :where([data-tm-prose]) :where(figure, img, pre, blockquote, tr) { break-inside: avoid; }
   }
 }
 
 @layer tm.components {
   /* a layout table (mail HTML: role="presentation", or no th) is not a data table: core's table look is undone */
-  :where([data-prose]) :where(table:is([role="presentation"], [role="none"], :not(:has(th)))),
-  :where([data-prose]) :where(table:is([role="presentation"], [role="none"], :not(:has(th)))) :where(tr, td, th) { all: revert-layer; }
+  :where([data-tm-prose]) :where(table:is([role="presentation"], [role="none"], :not(:has(th)))),
+  :where([data-tm-prose]) :where(table:is([role="presentation"], [role="none"], :not(:has(th)))) :where(tr, td, th) { all: revert-layer; }
   /* a post is not a card (core.css), and its header and footer are not toolbars */
-  :where(article[data-prose]) > :where(header, footer) { display: block; }
+  :where(article[data-tm-prose]) > :where(header, footer) { display: block; }
 }
 
 @layer tm.layout {
-  /* prose owns its flow: data-layout="center" on it only adds the centered column (its display would add gaps) */
-  :where([data-prose]:not(dialog, [popover])) { display: flow-root; }
+  /* prose owns its flow: data-tm-layout="center" on it only adds the centered column (its display would add gaps) */
+  :where([data-tm-prose]:not(dialog, [popover])) { display: flow-root; }
 }

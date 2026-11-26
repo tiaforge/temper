@@ -7,6 +7,18 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### Breaking: every attribute is `data-tm-*`
+
+- temper's attributes moved into their own namespace, as sinter's are `data-sn-*`: `data-variant` is
+  `data-tm-variant`, `data-layout` is `data-tm-layout`, and so on for all 51, values unchanged. Names such as
+  `data-theme`, `data-size`, `data-tooltip`, `data-menu` or `data-show` no longer claim attributes that other code
+  uses too, and a reader sees which attributes are temper's.
+- `temper check`: every `data-tm-*` name is temper's or an error (TM104, with the nearest name); any other `data-*`
+  name is the app's and never reported (no more typo guesses against temper's names). A temper name without the
+  prefix is an error that `temper check --fix` rewrites, so a project migrates with one command; its value is
+  still checked. The old names have no CSS: this is a rename, not a deprecation (there were no users to carry).
+- Scripts: `el.dataset.tmTone`, `setAttribute('data-tm-tone', …)`.
+
 ### Core
 
 - `data-layout="center"` sits on a whole pixel. `margin-inline: auto` split an odd remainder in two (a 2560px window

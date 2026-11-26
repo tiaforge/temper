@@ -1,12 +1,12 @@
 /* temper feedback: toasts and tooltips. Requires core.css. No JavaScript in the CSS; showing a toast is
    your code appending an element (recipe in llms.txt).
-   <div data-toasts role="status"></div>                       one region, at the end of <body>
-   <div data-toast data-tone="success">Saved. <button data-variant="link">Undo</button></div>   appended into it
-   <button data-icon="trash-2" aria-label="Delete" data-tooltip></button>   tooltip from aria-label */
+   <div data-tm-toasts role="status"></div>                       one region, at the end of <body>
+   <div data-tm-toast data-tm-tone="success">Saved. <button data-tm-variant="link">Undo</button></div>   appended into it
+   <button data-tm-icon="trash-2" aria-label="Delete" data-tm-tooltip></button>   tooltip from aria-label */
 
 @layer tm.components {
   /* toast region: bottom corner on wide screens, bottom center on phones; newest at the bottom */
-  :where([data-toasts]) {
+  :where([data-tm-toasts]) {
     position: fixed; inset: auto; z-index: 50;
     /* clear of a notch and the home indicator (pages with viewport-fit=cover) */
     inset-block-end: calc(var(--tm-space-md) + env(safe-area-inset-bottom)); inset-inline-end: calc(var(--tm-space-md) + env(safe-area-inset-right));
@@ -16,10 +16,10 @@
     pointer-events: none;
   }
   /* as popover="manual" it is in the top layer, above an open modal dialog (call showPopover() again after opening one) */
-  :where([data-toasts][popover]:not(:popover-open)) { display: none; }
-  @media (width < 48rem) { :where([data-toasts]) { inset-inline: var(--tm-space-sm); inline-size: auto; align-items: stretch; } }
+  :where([data-tm-toasts][popover]:not(:popover-open)) { display: none; }
+  @media (width < 48rem) { :where([data-tm-toasts]) { inset-inline: var(--tm-space-sm); inline-size: auto; align-items: stretch; } }
 
-  :where([data-toast]) {
+  :where([data-tm-toast]) {
     display: flex; align-items: center; gap: var(--tm-space-sm);
     max-inline-size: 100%; min-block-size: var(--tm-control-h);
     padding: var(--tm-space-sm); padding-inline-start: var(--tm-space-md);
@@ -29,22 +29,22 @@
     transition: opacity var(--tm-duration) var(--tm-ease), translate var(--tm-duration) var(--tm-ease),
       display var(--tm-duration) allow-discrete;
   }
-  :where([data-toast][data-tone]) { border-inline-start: 3px solid var(--tm-tone); border-start-start-radius: 0; border-end-start-radius: 0; color: var(--tm-text); } /* a straight bar */
-  :where([data-toast][data-tone]) > :where(:not([data-tone])) { --tm-tone: var(--tm-accent); } /* the tone colors the bar only */
-  :where([data-toast]) > :where(:first-child:not(button)) { flex: 1 1 auto; min-inline-size: 0; }
-  :where([data-toast]) :where(button) { flex-shrink: 0; }
+  :where([data-tm-toast][data-tm-tone]) { border-inline-start: 3px solid var(--tm-tone); border-start-start-radius: 0; border-end-start-radius: 0; color: var(--tm-text); } /* a straight bar */
+  :where([data-tm-toast][data-tm-tone]) > :where(:not([data-tm-tone])) { --tm-tone: var(--tm-accent); } /* the tone colors the bar only */
+  :where([data-tm-toast]) > :where(:first-child:not(button)) { flex: 1 1 auto; min-inline-size: 0; }
+  :where([data-tm-toast]) :where(button) { flex-shrink: 0; }
   /* appended: slides up; hidden (set before removing it): fades out */
-  @starting-style { :where([data-toast]) { opacity: 0; translate: 0 0.5rem; } }
-  :where([data-toast][hidden]) { opacity: 0; }
+  @starting-style { :where([data-tm-toast]) { opacity: 0; translate: 0 0.5rem; } }
+  :where([data-tm-toast][hidden]) { opacity: 0; }
 
-  /* tooltip: data-tooltip="text", or empty to show the element's aria-label (icon buttons). It is the ::after, so it
-     gives way where the ::after is already taken: the busy spinner, the data-stretch overlay, a sort arrow and the
+  /* tooltip: data-tm-tooltip="text", or empty to show the element's aria-label (icon buttons). It is the ::after, so it
+     gives way where the ::after is already taken: the busy spinner, the data-tm-stretch overlay, a sort arrow and the
      dropdown caret of a text button (the condition of the caret rule in menu.css; an icon button that opens a menu
      keeps its tooltip). Stated once; the rules below are nested in it, with their pseudo-classes in :where(). */
-  :where([data-tooltip]:not([aria-busy="true"], [data-stretch], [aria-sort] > *,
-      button:is([popovertarget]:not([popovertargetaction="hide"]), [commandfor]:is([command="toggle-popover"], [command="show-popover"])):not([data-icon=""], [data-icon]:empty))) {
+  :where([data-tm-tooltip]:not([aria-busy="true"], [data-tm-stretch], [aria-sort] > *,
+      button:is([popovertarget]:not([popovertargetaction="hide"]), [commandfor]:is([command="toggle-popover"], [command="show-popover"])):not([data-tm-icon=""], [data-tm-icon]:empty))) {
     &::after {
-      content: attr(data-tooltip);
+      content: attr(data-tm-tooltip);
       position: absolute; inset: auto auto calc(100% + 0.375rem) 50%; translate: -50% 0; z-index: 60;
       inline-size: max-content; max-inline-size: 16rem; padding: 0.25rem 0.5rem;
       border: 0; border-radius: var(--tm-radius-sm); background: var(--tm-text); color: var(--tm-bg);
@@ -53,7 +53,7 @@
       pointer-events: none; opacity: 0; visibility: hidden;
       transition: opacity var(--tm-duration) var(--tm-ease), visibility var(--tm-duration) allow-discrete;
     }
-    &:where([data-tooltip=""])::after { content: attr(aria-label); }
+    &:where([data-tm-tooltip=""])::after { content: attr(aria-label); }
     @media (hover: hover) {
       &:where(:hover)::after { opacity: 1; visibility: visible; transition-delay: 400ms; }
     }
@@ -67,24 +67,24 @@
         position: fixed; position-anchor: --tm-tooltip; inset: auto; translate: none; margin: 0.375rem;
         position-area: block-start; position-try-fallbacks: flip-block, flip-inline;
       }
-      :where([data-rail]) &::after { position-area: inline-end; }
+      :where([data-tm-rail]) &::after { position-area: inline-end; }
     }
     /* rail items show their label unless the rail is collapsed: no tooltip then */
     @media (width >= 48rem) {
-      :where([data-rail]:not([data-collapsed], :has([data-rail-collapse]:checked))) &::after { display: none; }
+      :where([data-tm-rail]:not([data-tm-collapsed], :has([data-tm-rail-collapse]:checked))) &::after { display: none; }
     }
-    @media (width < 48rem) { :where([data-rail]) &::after { display: none; } }
+    @media (width < 48rem) { :where([data-tm-rail]) &::after { display: none; } }
     @media print { &::after { display: none; } }
     @media (forced-colors: active) { &::after { border: 1px solid; } } /* its fill is the canvas color now */
   }
   @supports (anchor-scope: all) {
-    :where([data-tooltip]) { anchor-name: --tm-tooltip; anchor-scope: --tm-tooltip; }
+    :where([data-tm-tooltip]) { anchor-name: --tm-tooltip; anchor-scope: --tm-tooltip; }
   }
-  @media print { :where([data-toasts]) { display: none; } }
+  @media print { :where([data-tm-toasts]) { display: none; } }
 }
 
-/* Below every component, so a tooltip never moves a positioned element (the fixed FAB, a sticky header, data-stretch,
+/* Below every component, so a tooltip never moves a positioned element (the fixed FAB, a sticky header, data-tm-stretch,
    which must stay static): it only gives a static one a containing block for the tooltip. */
 @layer tm.base {
-  :where([data-tooltip]) { position: relative; }
+  :where([data-tm-tooltip]) { position: relative; }
 }

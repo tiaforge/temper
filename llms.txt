@@ -1,7 +1,7 @@
 # temper
 
 > CSS library for plain, semantic HTML. Elements look finished without classes. Variants are
-> `data-*` attributes with fixed values. Light and dark mode switch automatically.
+> `data-tm-*` attributes with fixed values. Light and dark mode switch automatically.
 
 This is the short version: enough for small edits. Before building whole pages or migrating, read
 `llms-full.txt` in the same folder: every attribute in detail, all tokens, and copy-paste recipes
@@ -15,9 +15,9 @@ import '@tiaforge-ui/temper/app.css';    // app shell, navigation rail, floating
 import '@tiaforge-ui/temper/menu.css';   // dropdown menus
 import '@tiaforge-ui/temper/feedback.css'; // toasts, tooltips
 import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selection, number columns
-import '@tiaforge-ui/temper/prose.css';  // data-prose: articles, Markdown, mail bodies
-import '@tiaforge-ui/temper/forms.css';  // data-field (icon, unit, button in a field), range, read-only, required *, loading bar
-import '@tiaforge-ui/temper/sheet.css';  // data-sheet: a dialog as a side panel or bottom sheet
+import '@tiaforge-ui/temper/prose.css';  // data-tm-prose: articles, Markdown, mail bodies
+import '@tiaforge-ui/temper/forms.css';  // data-tm-field (icon, unit, button in a field), range, read-only, required *, loading bar
+import '@tiaforge-ui/temper/sheet.css';  // data-tm-sheet: a dialog as a side panel or bottom sheet
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/temper/all.css';
@@ -45,19 +45,19 @@ export default { plugins: [temper()] };
 2. Use HTML and ARIA state, not attributes of your own: `disabled`, `aria-busy="true"` (spinner, shown after 200ms),
    `aria-invalid="true"` (error border), `aria-pressed="true"` (toggled), `aria-current`,
    `aria-selected="true"` (the selected `role="tab"`; see Tabs).
-3. Variants are the `data-*` attributes listed below, with exactly the listed values. Each attribute
-   is one independent axis: `data-variant` is the style, `data-tone` is the color, `data-size` is the
+3. Variants are the `data-tm-*` attributes listed below, with exactly the listed values. Each attribute
+   is one independent axis: `data-tm-variant` is the style, `data-tm-tone` is the color, `data-tm-size` is the
    size. Do not invent classes or values for these.
-4. **Spacing:** nothing has an outer margin (only `data-prose` text has). The parent owns all space: `data-gap` between its
-   children (needs `data-layout`), `data-pad` around them. Do not write `margin` or `padding` in
-   `style` attributes. To add space between two things, wrap them in a `data-layout` element.
-   `data-layout` overrides an element's own display, so `<label data-layout="row">` is a real row.
-   `data-grow` on one child makes it take the remaining space (search fields, inputs next to a button).
+4. **Spacing:** nothing has an outer margin (only `data-tm-prose` text has). The parent owns all space: `data-tm-gap` between its
+   children (needs `data-tm-layout`), `data-tm-pad` around them. Do not write `margin` or `padding` in
+   `style` attributes. To add space between two things, wrap them in a `data-tm-layout` element.
+   `data-tm-layout` overrides an element's own display, so `<label data-tm-layout="row">` is a real row.
+   `data-tm-grow` on one child makes it take the remaining space (search fields, inputs next to a button).
 5. Sizes always use the same words: `xs sm md lg xl`. There are no numeric scales.
 6. Your own CSS always wins over temper (temper lives in `@layer tm.*`). Never use `!important`.
    In your own CSS, use the tokens (`var(--tm-text-muted)`, `var(--tm-space-sm)`), never hard-coded colors.
-7. Use `class` only for your app's own components. `data-*` attributes from the list below belong to
-   temper; do not use those names for anything else.
+7. Use `class` only for your app's own components. `data-tm-*` is temper's: only the names below (others are
+   errors). Every other `data-*` name is yours. Always write the prefix (`--fix` adds a missing one).
 8. Navigations within the site cross-fade (view transitions). To turn that off, add
    `@view-transition { navigation: none; }` to your CSS; do not add your own `@view-transition` otherwise.
 9. Size and tune things with the documented custom properties in `style` (`style="--tm-min: 12rem"`,
@@ -77,57 +77,57 @@ export default { plugins: [temper()] };
 
 | Attribute | Values | What it does |
 |---|---|---|
-| `data-variant` | secondary, outline, ghost, link, item | Button style; leave it out for the solid main button. |
-| `data-tone` | accent, neutral, danger, success, warning, info | Color, independent of the style; for any other color use style="--tm-tone: …". |
-| `data-size` | sm, md, lg | Control size relative to the current density. |
-| `data-icon` | an icon name (see Icons), or none | Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label). |
-| `data-layout` | stack, row, grid, split, center | Lays out the element's children (overrides its own display). |
-| `data-cols` | 2, 3, 4, 5, 6, 7 | Exactly this many equal grid columns. |
-| `data-gap` | none, xs, sm, md, lg, xl | Space between the children of a data-layout element. |
-| `data-pad` | none, xs, sm, md, lg, xl | Padding inside the element, on all sides. |
-| `data-align` | start, center, end, stretch | Cross-axis alignment of children (align-items). |
-| `data-justify` | start, center, end, between | Main-axis distribution of children (justify-content). |
-| `data-self` | start, center, end, stretch | Aligns this one child (e.g. data-self="start" keeps a button in a stack from stretching). |
-| `data-wrap` | wrap, none | Whether a row wraps onto more lines. |
-| `data-grow` | (boolean) | This child takes the remaining space in its row or stack. |
-| `data-scroll` | (none), y, both | Scroll container: sideways by default, "y" vertical (panes), "both". |
-| `data-gutter` | (boolean) | Reserves the scrollbar space: no sideways shift. |
-| `data-density` | comfortable, compact | Control height and padding for everything inside. |
-| `data-theme` | light, dark | Forces light or dark mode. |
-| `data-badge` | (boolean) | Small status label (counts, tags, states). |
-| `data-callout` | (boolean) | Tinted message box. |
-| `data-muted` | (boolean) | Secondary text color. |
-| `data-truncate` | (boolean) | Single line, cut off with an ellipsis. |
-| `data-lazy` | (boolean) | On the container of a long list: its rows far off screen skip layout and paint. |
-| `data-clamp` | 2, 3 | Ellipsis after this many lines. |
-| `data-bar` | (boolean) | A colored bar on the start edge in the element's tone. |
-| `data-sr-only` | (boolean) | Hidden visually, still read by screen readers. |
-| `data-pairs` | (boolean) | Shows dt/dd pairs as a two-column label/value grid. |
-| `data-segmented` | (boolean) | Radio group drawn as a segmented control (labels with radios). |
-| `data-caption` | (boolean) | Small, muted label text (captions, group headings). |
-| `data-list` | (boolean) | One bordered box; its children are rows separated by lines. |
-| `data-divider` | (boolean) | A horizontal line with the element's text in the middle, e.g. |
-| `data-avatar` | (boolean) | Round avatar with initials, or an <img> child that fills it. |
-| `data-stretch` | (boolean) | Makes the whole card clickable through this element. |
-| `data-sticky` | top, bottom | Sticks to the top or bottom of the nearest scroll container (header, toolbar, save bar). |
-| `data-join` | (boolean) | Joins its children (buttons, fields) into one unit with shared borders. |
-| `data-shell` (app.css) | (none), fixed | App shell (rail + main); data-shell="fixed" fills the viewport and main scrolls inside. |
-| `data-rail` (app.css) | (boolean) | Navigation rail next to <main>; with popover it is a drawer on narrow screens. |
-| `data-collapsed` (app.css) | (boolean) | Icon-only rail, set in the markup (e.g. |
-| `data-rail-collapse` (app.css) | (boolean) | Collapse toggle drawn as a chevron icon button. |
-| `data-rail-label` (app.css) | (boolean) | Hidden while the rail is collapsed (e.g. |
-| `data-fab` (app.css) | (boolean) | Floating action button fixed in the bottom-right corner. |
-| `data-show` (app.css) | narrow, wide | Shows the element only on narrow (< 48rem) or wide screens, or panes (data-container). |
-| `data-container` (app.css) | (boolean) | A pane whose width data-show inside follows, not the screen's. |
-| `data-menu` (menu.css) | (boolean) | Menu of buttons, links and checkbox labels; as a [popover] it opens under its button. |
-| `data-combo` (menu.css) | (boolean) | Wraps a field and its suggestion list (data-menu, role="listbox"), which opens under it. |
-| `data-toasts` (feedback.css) | (boolean) | Toast region (one per page, role="status"); holds data-toast children. |
-| `data-toast` (feedback.css) | (boolean) | A toast inside data-toasts; data-tone colors its bar. |
-| `data-tooltip` (feedback.css) | any text, or none | Tooltip: the given text, or the aria-label when empty. |
-| `data-num` (table.css) | (boolean) | Number cell: right-aligned, tabular figures (on th and every td of the column). |
-| `data-prose` (prose.css) | (boolean) | Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. |
-| `data-field` (forms.css) | (boolean) | One field around an input and its icon, text (<span>€</span>) or end button. |
-| `data-sheet` (sheet.css) | end, start, bottom, narrow | Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. |
+| `data-tm-variant` | secondary, outline, ghost, link, item | Button style; leave it out for the solid main button. |
+| `data-tm-tone` | accent, neutral, danger, success, warning, info | Color, independent of the style; for any other color use style="--tm-tone: …". |
+| `data-tm-size` | sm, md, lg | Control size relative to the current density. |
+| `data-tm-icon` | an icon name (see Icons), or none | Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label). |
+| `data-tm-layout` | stack, row, grid, split, center | Lays out the element's children (overrides its own display). |
+| `data-tm-cols` | 2, 3, 4, 5, 6, 7 | Exactly this many equal grid columns. |
+| `data-tm-gap` | none, xs, sm, md, lg, xl | Space between the children of a data-tm-layout element. |
+| `data-tm-pad` | none, xs, sm, md, lg, xl | Padding inside the element, on all sides. |
+| `data-tm-align` | start, center, end, stretch | Cross-axis alignment of children (align-items). |
+| `data-tm-justify` | start, center, end, between | Main-axis distribution of children (justify-content). |
+| `data-tm-self` | start, center, end, stretch | Aligns this one child (e.g. data-tm-self="start" keeps a button in a stack from stretching). |
+| `data-tm-wrap` | wrap, none | Whether a row wraps onto more lines. |
+| `data-tm-grow` | (boolean) | This child takes the remaining space in its row or stack. |
+| `data-tm-scroll` | (none), y, both | Scroll container: sideways by default, "y" vertical (panes), "both". |
+| `data-tm-gutter` | (boolean) | Reserves the scrollbar space: no sideways shift. |
+| `data-tm-density` | comfortable, compact | Control height and padding for everything inside. |
+| `data-tm-theme` | light, dark | Forces light or dark mode. |
+| `data-tm-badge` | (boolean) | Small status label (counts, tags, states). |
+| `data-tm-callout` | (boolean) | Tinted message box. |
+| `data-tm-muted` | (boolean) | Secondary text color. |
+| `data-tm-truncate` | (boolean) | Single line, cut off with an ellipsis. |
+| `data-tm-lazy` | (boolean) | On the container of a long list: its rows far off screen skip layout and paint. |
+| `data-tm-clamp` | 2, 3 | Ellipsis after this many lines. |
+| `data-tm-bar` | (boolean) | A colored bar on the start edge in the element's tone. |
+| `data-tm-sr-only` | (boolean) | Hidden visually, still read by screen readers. |
+| `data-tm-pairs` | (boolean) | Shows dt/dd pairs as a two-column label/value grid. |
+| `data-tm-segmented` | (boolean) | Radio group drawn as a segmented control (labels with radios). |
+| `data-tm-caption` | (boolean) | Small, muted label text (captions, group headings). |
+| `data-tm-list` | (boolean) | One bordered box; its children are rows separated by lines. |
+| `data-tm-divider` | (boolean) | A horizontal line with the element's text in the middle, e.g. |
+| `data-tm-avatar` | (boolean) | Round avatar with initials, or an <img> child that fills it. |
+| `data-tm-stretch` | (boolean) | Makes the whole card clickable through this element. |
+| `data-tm-sticky` | top, bottom | Sticks to the top or bottom of the nearest scroll container (header, toolbar, save bar). |
+| `data-tm-join` | (boolean) | Joins its children (buttons, fields) into one unit with shared borders. |
+| `data-tm-shell` (app.css) | (none), fixed | App shell (rail + main); data-tm-shell="fixed" fills the viewport and main scrolls inside. |
+| `data-tm-rail` (app.css) | (boolean) | Navigation rail next to <main>; with popover it is a drawer on narrow screens. |
+| `data-tm-collapsed` (app.css) | (boolean) | Icon-only rail, set in the markup (e.g. |
+| `data-tm-rail-collapse` (app.css) | (boolean) | Collapse toggle drawn as a chevron icon button. |
+| `data-tm-rail-label` (app.css) | (boolean) | Hidden while the rail is collapsed (e.g. |
+| `data-tm-fab` (app.css) | (boolean) | Floating action button fixed in the bottom-right corner. |
+| `data-tm-show` (app.css) | narrow, wide | Shows the element only on narrow (< 48rem) or wide screens, or panes (data-tm-container). |
+| `data-tm-container` (app.css) | (boolean) | A pane whose width data-tm-show inside follows, not the screen's. |
+| `data-tm-menu` (menu.css) | (boolean) | Menu of buttons, links and checkbox labels; as a [popover] it opens under its button. |
+| `data-tm-combo` (menu.css) | (boolean) | Wraps a field and its suggestion list (data-tm-menu, role="listbox"), which opens under it. |
+| `data-tm-toasts` (feedback.css) | (boolean) | Toast region (one per page, role="status"); holds data-tm-toast children. |
+| `data-tm-toast` (feedback.css) | (boolean) | A toast inside data-tm-toasts; data-tm-tone colors its bar. |
+| `data-tm-tooltip` (feedback.css) | any text, or none | Tooltip: the given text, or the aria-label when empty. |
+| `data-tm-num` (table.css) | (boolean) | Number cell: right-aligned, tabular figures (on th and every td of the column). |
+| `data-tm-prose` (prose.css) | (boolean) | Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. |
+| `data-tm-field` (forms.css) | (boolean) | One field around an input and its icon, text (<span>€</span>) or end button. |
+| `data-tm-sheet` (sheet.css) | end, start, bottom, narrow | Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. |
 
 ## Tokens
 
@@ -143,10 +143,10 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 ## Icons
 
 ```html
-<span data-icon="mail"></span>                                        <!-- an icon, 1.125em, in the text color -->
-<button data-icon="pencil">Edit</button>                              <!-- icon before the text -->
-<button data-icon="x" data-variant="ghost" aria-label="Close"></button>  <!-- empty: square icon-only button, needs aria-label -->
-<a href="/mail/" data-icon="mail"><span>Mail</span></a>               <!-- rail items, links -->
+<span data-tm-icon="mail"></span>                                        <!-- an icon, 1.125em, in the text color -->
+<button data-tm-icon="pencil">Edit</button>                              <!-- icon before the text -->
+<button data-tm-icon="x" data-tm-variant="ghost" aria-label="Close"></button>  <!-- empty: square icon-only button, needs aria-label -->
+<a href="/mail/" data-tm-icon="mail"><span>Mail</span></a>               <!-- rail items, links -->
 ```
 
 Names are Lucide's (https://lucide.dev/icons). icons.css contains: mail, inbox, send, calendar, calendar-plus, clock, users, user, user-plus, search, bell, settings, log-out, log-in, menu, plus, minus, x, check, pencil, trash-2, share-2, copy, download, upload, paperclip, link, external-link, star, heart, filter, refresh-cw, ellipsis, ellipsis-vertical, chevron-down, chevron-up, chevron-left, chevron-right, arrow-left, arrow-right, house, info, circle-alert, triangle-alert, circle-check, eye, eye-off, lock, map-pin, phone, archive, folder, file, image, sun, moon. With the Vite plugin's `icons` option every Lucide name works, and only the icons you
@@ -158,16 +158,16 @@ Icons are one color (the text color); keep multicolor logos as `<img>`.
 
 | Don't | Do |
 |---|---|
-| `<button class="secondary">` | `<button data-variant="secondary">` |
-| `<button data-variant="danger">` | `<button data-tone="danger">` (tone is color, variant is style) |
-| `<button data-variant="primary">` | `<button>` (primary is the default) |
-| `<p class="error">` | `<p data-tone="danger">` or `<div data-callout data-tone="danger">` |
-| `style="margin-top: 1rem"` on a button or input | wrap the elements in `data-layout="stack" data-gap="md"` |
-| `style="padding: var(--tm-space-lg)"` | `data-pad="lg"` |
-| a custom class to turn a `label` into a flex row | `<label data-layout="row" data-justify="between">` |
-| `data-gap="4"` or `data-gap="16px"` | `data-gap="md"` |
-| `<button data-icon="x"></button>` | `<button data-icon="x" aria-label="Close"></button>` |
-| `<svg><path d="…"/></svg>` for a mail icon | `<span data-icon="mail"></span>` |
-| `data-badge="true"` | `data-badge` |
+| `<button class="secondary">` | `<button data-tm-variant="secondary">` |
+| `<button data-tm-variant="danger">` | `<button data-tm-tone="danger">` (tone is color, variant is style) |
+| `<button data-tm-variant="primary">` | `<button>` (primary is the default) |
+| `<p class="error">` | `<p data-tm-tone="danger">` or `<div data-tm-callout data-tm-tone="danger">` |
+| `style="margin-top: 1rem"` on a button or input | wrap the elements in `data-tm-layout="stack" data-tm-gap="md"` |
+| `style="padding: var(--tm-space-lg)"` | `data-tm-pad="lg"` |
+| a custom class to turn a `label` into a flex row | `<label data-tm-layout="row" data-tm-justify="between">` |
+| `data-tm-gap="4"` or `data-tm-gap="16px"` | `data-tm-gap="md"` |
+| `<button data-tm-icon="x"></button>` | `<button data-tm-icon="x" aria-label="Close"></button>` |
+| `<svg><path d="…"/></svg>` for a mail icon | `<span data-tm-icon="mail"></span>` |
+| `data-tm-badge="true"` | `data-tm-badge` |
 | `color: #666` in app CSS | `color: var(--tm-text-muted)` |
 | `!important` to beat temper | a plain selector; app CSS already wins |

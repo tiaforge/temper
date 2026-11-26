@@ -21,26 +21,26 @@ function run(dir, command) {
 }
 
 test('a build fails on errors and names file, line and fix', () => {
-  const { error } = run(project('<p>x</p>\n<button data-variant="danger">Delete</button>'), 'build');
+  const { error } = run(project('<p>x</p>\n<button data-tm-variant="danger">Delete</button>'), 'build');
   assert.match(error, /index\.html:2:\d+ error TM101/);
-  assert.match(error, /Did you mean data-tone="danger"\?/);
+  assert.match(error, /Did you mean data-tm-tone="danger"\?/);
 });
 
 test('the dev server only warns', () => {
-  const { error, warnings } = run(project('<button data-variant="danger">Delete</button>'), 'serve');
+  const { error, warnings } = run(project('<button data-tm-variant="danger">Delete</button>'), 'serve');
   assert.equal(error, undefined);
   assert.match(warnings[0], /TM101/);
 });
 
 test('a clean project is silent', () => {
-  const { error, warnings } = run(project('<button data-tone="danger">Delete</button>'), 'build');
+  const { error, warnings } = run(project('<button data-tm-tone="danger">Delete</button>'), 'build');
   assert.equal(error, undefined);
   assert.deepEqual(warnings, []);
 });
 
 test('icons: folder icons and used Lucide icons only, all Lucide names pass the checker', async () => {
   const { mkdirSync } = await import('node:fs');
-  const dir = project('<span data-icon="rocket"></span>\n<button data-icon="alarm-clock">Remind me</button>\n<span data-icon="mail"></span>');
+  const dir = project('<span data-tm-icon="rocket"></span>\n<button data-tm-icon="alarm-clock">Remind me</button>\n<span data-tm-icon="mail"></span>');
   mkdirSync(join(dir, 'icons'));
   writeFileSync(join(dir, 'icons', 'rocket.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 1h22v22H1z"/></svg>');
   writeFileSync(join(dir, 'icons', 'mail.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>');
@@ -49,9 +49,9 @@ test('icons: folder icons and used Lucide icons only, all Lucide names pass the 
   plugin.configResolved({ root: dir, command: 'build', logger: { warn: m => warnings.push(m) } });
   assert.equal(plugin.resolveId('virtual:temper-icons.css'), '/__temper-icons.css');
   const css = plugin.load('/__temper-icons.css');
-  assert.match(css, /\[data-icon="rocket"\]\) \{ --_icon: var\(--tm-icon-rocket, url\(/); // own icon
+  assert.match(css, /\[data-tm-icon="rocket"\]\) \{ --_icon: var\(--tm-icon-rocket, url\(/); // own icon
   assert.match(css, /var\(--tm-icon-mail, url\("data:image\/svg\+xml,[^"]*circle/); // own icon replaces the default (unlayered)
-  assert.match(css, /\[data-icon="alarm-clock"\]/);  // used Lucide icon, not in the default set
+  assert.match(css, /\[data-tm-icon="alarm-clock"\]/);  // used Lucide icon, not in the default set
   assert.doesNotMatch(css, /calendar/);            // unused: not emitted
   assert.doesNotMatch(css, /:root/);               // the image is in the rule, as the fallback of --tm-icon-<name>
   assert.match(css, /Lucide/);                      // license notice for the Lucide icons
@@ -73,9 +73,9 @@ function iconsPlugin(files, options = {}) {
 
 test('icons: every name an expression can produce is emitted', () => {
   const { css, build, warnings } = iconsPlugin({
-    'App.svelte': `<button data-icon={dark ? 'sunrise' : 'moon-star'} aria-label="Theme"></button>\n<span data-icon={done ? 'badge-check' : null}></span>`,
-    'List.tsx': `export const L = ({ open }) => <span data-icon={open ? "folder-open" : "folder-closed"} />;\n// <span data-icon="anchor"></span>`,
-    'a.vue': `<template><span :data-icon="ok ? 'thumbs-up' : 'thumbs-down'"></span></template>`,
+    'App.svelte': `<button data-tm-icon={dark ? 'sunrise' : 'moon-star'} aria-label="Theme"></button>\n<span data-tm-icon={done ? 'badge-check' : null}></span>`,
+    'List.tsx': `export const L = ({ open }) => <span data-tm-icon={open ? "folder-open" : "folder-closed"} />;\n// <span data-tm-icon="anchor"></span>`,
+    'a.vue': `<template><span :data-tm-icon="ok ? 'thumbs-up' : 'thumbs-down'"></span></template>`,
   });
   const out = css();
   for (const n of ['sunrise', 'moon-star', 'badge-check', 'folder-open', 'folder-closed', 'thumbs-up', 'thumbs-down']) assert.match(out, new RegExp(`--tm-icon-${n},`), n);
@@ -85,7 +85,7 @@ test('icons: every name an expression can produce is emitted', () => {
 });
 
 test('icons: names the source does not show get a notice with file and line, and icons.include emits them', () => {
-  const src = `<script>const items = [{ icon: 'rocket' }];</script>\n{#each items as item}\n  <span data-icon={item.icon}></span>\n{/each}\n<span data-icon={x ?? 'star'}></span>`;
+  const src = `<script>const items = [{ icon: 'rocket' }];</script>\n{#each items as item}\n  <span data-tm-icon={item.icon}></span>\n{/each}\n<span data-tm-icon={x ?? 'star'}></span>`;
   const plain = iconsPlugin({ 'App.svelte': src });
   assert.equal(plain.build(), undefined); // a notice, not a failure
   assert.equal(plain.warnings.length, 1);
@@ -102,7 +102,7 @@ test('icons: names the source does not show get a notice with file and line, and
   listed.build();
   assert.match(listed.warnings[0], /Make sure the plugin's icons\.include \(1 name\) lists every name/);
   // temper-ignore on the line (or the line before) silences the notice
-  const ignored = iconsPlugin({ 'App.svelte': src.replace('<span data-icon={item.icon}>', '<!-- temper-ignore -->\n  <span data-icon={item.icon}>').replace("{x ?? 'star'}", "{x ?? 'star'} data-x /* temper-ignore */") }, { include: ['rocket'] });
+  const ignored = iconsPlugin({ 'App.svelte': src.replace('<span data-tm-icon={item.icon}>', '<!-- temper-ignore -->\n  <span data-tm-icon={item.icon}>').replace("{x ?? 'star'}", "{x ?? 'star'} data-x /* temper-ignore */") }, { include: ['rocket'] });
   ignored.build();
   assert.deepEqual(ignored.warnings, []);
 });
@@ -114,13 +114,13 @@ test('icons: an include name that is not an icon is reported with a suggestion; 
 });
 
 test('icons: without Lucide on demand there is no notice (folder icons are all emitted)', () => {
-  const { warnings, build } = iconsPlugin({ 'a.svelte': '<span data-icon={item.icon}></span>' }, { lucide: false });
+  const { warnings, build } = iconsPlugin({ 'a.svelte': '<span data-tm-icon={item.icon}></span>' }, { lucide: false });
   build();
   assert.deepEqual(warnings, []);
 });
 
 test('icons: unknown names still fail with a suggestion', () => {
-  const dir = project('<span data-icon="alarm-clok"></span>');
+  const dir = project('<span data-tm-icon="alarm-clok"></span>');
   const plugin = temper({ icons: {} });
   plugin.configResolved({ root: dir, command: 'build', logger: { warn() {} } });
   let error;
@@ -166,14 +166,14 @@ test('the type declarations list every enhancement', async () => {
 
 test('prune: build only, keeps what the project uses', async () => {
   const { fileURLToPath } = await import('node:url');
-  const dir = project('<span data-badge data-tone="danger">x</span><div data-layout="stack" data-gap="sm"></div>');
+  const dir = project('<span data-tm-badge data-tm-tone="danger">x</span><div data-tm-layout="stack" data-tm-gap="sm"></div>');
   const plugin = temper({ prune: true });
   const info = [];
   plugin.configResolved({ root: dir, command: 'build', logger: { warn() {}, info: m => info.push(m) } });
   const id = fileURLToPath(new URL('../dist/core.css', import.meta.url));
-  const css = ':where([data-tone="danger"]){--a:1}:where([data-tone="success"]){--b:1}:where([data-gap="sm"]){--c:1}:where([data-gap="xl"]){--d:1}:where([data-badge]){--e:1}:where([data-avatar]){--f:1}';
+  const css = ':where([data-tm-tone="danger"]){--a:1}:where([data-tm-tone="success"]){--b:1}:where([data-tm-gap="sm"]){--c:1}:where([data-tm-gap="xl"]){--d:1}:where([data-tm-badge]){--e:1}:where([data-tm-avatar]){--f:1}';
   const out = plugin.transform.handler(css, id).code;
-  assert.equal(out, ':where([data-tone="danger"]){--a:1}:where([data-gap="sm"]){--c:1}:where([data-badge]){--e:1}');
+  assert.equal(out, ':where([data-tm-tone="danger"]){--a:1}:where([data-tm-gap="sm"]){--c:1}:where([data-tm-badge]){--e:1}');
   assert.match(info[0], /pruned core\.css/);
   // the dev server never prunes
   const dev = temper({ prune: true });
@@ -182,7 +182,7 @@ test('prune: build only, keeps what the project uses', async () => {
 });
 
 test('hot updates report the same diagnostics as the build: project icons count, missing modules are reported', () => {
-  const dir = project('<!doctype html><html><body data-shell>\n<button data-icon="rocket" aria-label="Launch"></button>\n<nav data-rail></nav>\n</body></html>');
+  const dir = project('<!doctype html><html><body data-tm-shell>\n<button data-tm-icon="rocket" aria-label="Launch"></button>\n<nav data-tm-rail></nav>\n</body></html>');
   writeFileSync(join(dir, 'app.css'), ':root { --tm-icon-rocket: url("data:image/svg+xml,x"); }');
   writeFileSync(join(dir, 'main.js'), "import '@tiaforge-ui/temper/core.css';");
   const plugin = temper();
@@ -340,7 +340,7 @@ test('a CSS @import of the icons and of temper gets enhancements, pruning and th
   const { readFileSync } = await import('node:fs');
   const { fileURLToPath } = await import('node:url');
   const { dirname, resolve } = await import('node:path');
-  const dir = project('<span data-icon="rocket"></span><span data-badge data-tone="danger">x</span>');
+  const dir = project('<span data-tm-icon="rocket"></span><span data-tm-badge data-tm-tone="danger">x</span>');
   mkdirSync(join(dir, 'icons'));
   writeFileSync(join(dir, 'icons', 'rocket.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 1h22v22H1z"/></svg>');
   const core = fileURLToPath(new URL('../dist/core.css', import.meta.url));
@@ -358,11 +358,11 @@ test('a CSS @import of the icons and of temper gets enhancements, pruning and th
   assert.match(out, /@import '\.\/other\.css';/);  // not temper's: untouched
   const written = readFileSync(coreTo, 'utf8');
   assert.ok(written.length < readFileSync(core, 'utf8').length, 'pruned');
-  assert.match(written, /data-tone=danger/);
-  assert.doesNotMatch(written, /data-tone=success/);
+  assert.match(written, /data-tm-tone=danger/);
+  assert.doesNotMatch(written, /data-tm-tone=success/);
   assert.match(written, /appearance:\s*base-select/); // the enhancement
   assert.match(info.join('\n'), /pruned core\.css/);
-  assert.match(readFileSync(iconsTo, 'utf8'), /data-icon="rocket"/);
+  assert.match(readFileSync(iconsTo, 'utf8'), /data-tm-icon="rocket"/);
 });
 
 test('a CSS @import of temper stays as it is when there is nothing to add or drop, and in Sass it gets a warning', async () => {
@@ -383,13 +383,13 @@ test('a CSS @import of temper stays as it is when there is nothing to add or dro
   assert.match(warnings[0], /site\.scss imports temper's CSS with prune or enhance on/);
 });
 
-test('build: a data-icon in the built pages without an icon rule in the built CSS is reported', async () => {
+test('build: a data-tm-icon in the built pages without an icon rule in the built CSS is reported', async () => {
   const { missingIcons } = await import('../lib/vite.js');
-  const page = '<!doctype html>\n<p>\n<span data-icon="server"></span><span data-icon="mail"></span>\n<i data-icon=server></i><a data-icon="inline">x</a><button data-icon aria-label="x"></button></p>';
+  const page = '<!doctype html>\n<p>\n<span data-tm-icon="server"></span><span data-tm-icon="mail"></span>\n<i data-tm-icon=server></i><a data-tm-icon="inline">x</a><button data-tm-icon aria-label="x"></button></p>';
   const bundle = {
-    'index.html': { type: 'asset', fileName: 'index.html', source: page + '<style>:where([data-icon="inline"]){--_icon:none}</style>' },
-    'assets/site.css': { type: 'asset', fileName: 'assets/site.css', source: new TextEncoder().encode(':where([data-icon=mail]){--_icon:url(x)}') },
-    'assets/main.js': { type: 'chunk', fileName: 'assets/main.js', code: 'data-icon="nope"' },
+    'index.html': { type: 'asset', fileName: 'index.html', source: page + '<style>:where([data-tm-icon="inline"]){--_icon:none}</style>' },
+    'assets/site.css': { type: 'asset', fileName: 'assets/site.css', source: new TextEncoder().encode(':where([data-tm-icon=mail]){--_icon:url(x)}') },
+    'assets/main.js': { type: 'chunk', fileName: 'assets/main.js', code: 'data-tm-icon="nope"' },
   };
   assert.deepEqual(missingIcons(bundle), [{ file: 'index.html', line: 3, name: 'server', count: 2 }]);
   assert.deepEqual(missingIcons({ 'index.html': bundle['index.html'], 'x.css': { type: 'asset', fileName: 'x.css', source: 'p{}' } }).map(m => m.name), ['server', 'mail']); // the page's own <style> counts
@@ -401,14 +401,14 @@ test('build: a data-icon in the built pages without an icon rule in the built CS
   const plugin = temper();
   plugin.configResolved({ root: dir, command: 'build', logger: { warn: m => warnings.push(m) } });
   plugin.generateBundle.handler.call({ error: m => { throw new Error(m); } }, { dir: join(dir, 'dist') }, bundle);
-  assert.match(warnings[0], /dist\/index\.html:3 data-icon="server" \(and 1 more on this page\)/);
+  assert.match(warnings[0], /dist\/index\.html:3 data-tm-icon="server" \(and 1 more on this page\)/);
   const strict = temper({ warningsFail: true });
   strict.configResolved({ root: dir, command: 'build', logger: { warn() {} } });
   assert.throws(() => strict.generateBundle.handler.call({ error: m => { throw new Error(m); } }, { dir: join(dir, 'dist') }, bundle), /no icon in the built CSS/);
 });
 
 test('icons.strokeWidth thins the Lucide icons the plugin emits, not the folder icons; a bad value fails early', () => {
-  const dir = project('<span data-icon="rocket"></span><span data-icon="mail"></span><span data-icon="alarm-clock"></span>');
+  const dir = project('<span data-tm-icon="rocket"></span><span data-tm-icon="mail"></span><span data-tm-icon="alarm-clock"></span>');
   mkdirSync(join(dir, 'icons'));
   writeFileSync(join(dir, 'icons', 'rocket.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"><path d="M1 1h22"/></svg>');
   const emit = opts => {
@@ -416,7 +416,7 @@ test('icons.strokeWidth thins the Lucide icons the plugin emits, not the folder 
     plugin.configResolved({ root: dir, command: 'build', logger: { warn() {} } });
     return plugin.load('/__temper-icons.css');
   };
-  const rule = (css, name) => new RegExp(`\\[data-icon="${name}"\\][^\\n]*`).exec(css)[0];
+  const rule = (css, name) => new RegExp(`\\[data-tm-icon="${name}"\\][^\\n]*`).exec(css)[0];
   const thin = emit({ strokeWidth: 1.5 }), plain = emit({});
   for (const name of ['mail', 'alarm-clock']) { // a default-set name and one only Lucide has
     assert.match(rule(thin, name), /stroke-width='1\.5'/, name);
@@ -430,7 +430,7 @@ test('icons.strokeWidth thins the Lucide icons the plugin emits, not the folder 
 
 test('icons: virtual:temper-icons.css is also a real file, written when the config resolves and aliased for every resolver', async () => {
   const { readFileSync } = await import('node:fs');
-  const dir = project('<span data-icon="rocket"></span>');
+  const dir = project('<span data-tm-icon="rocket"></span>');
   mkdirSync(join(dir, 'icons'));
   writeFileSync(join(dir, 'icons', 'rocket.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 1h22"/></svg>');
   const plugin = temper({ icons: { dir: 'icons', lucide: false } });
@@ -438,7 +438,7 @@ test('icons: virtual:temper-icons.css is also a real file, written when the conf
   assert.equal(alias.replacement, join(dir, 'cache', 'temper', 'icons.css'));
   assert.ok(alias.find.test('virtual:temper-icons.css') && !alias.find.test('virtual:temper-icons.css.map'));
   plugin.configResolved({ root: dir, command: 'build', cacheDir: join(dir, 'elsewhere'), logger: { warn() {} } });
-  assert.match(readFileSync(alias.replacement, 'utf8'), /data-icon="rocket"/); // the alias's file, not the cacheDir Vite reports
+  assert.match(readFileSync(alias.replacement, 'utf8'), /data-tm-icon="rocket"/); // the alias's file, not the cacheDir Vite reports
   // without the icons option there is nothing to alias
   assert.equal(temper().config({ root: dir }), undefined);
 });

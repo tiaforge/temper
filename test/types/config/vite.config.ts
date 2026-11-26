@@ -14,10 +14,10 @@ const plugins: TemperPlugin[] = [temper(), temper(options), temper({ enhance: 'a
 export default { plugins };
 
 const ctx: CheckContext = { icons: new Set(['rocket']), modules: null };
-const found: Diagnostic[] = [...check(['src'], { icons: ['rocket'] }), ...checkMarkup('<b data-tone="x">', 'a.html', ctx), ...checkStyles('.x{}')];
+const found: Diagnostic[] = [...check(['src'], { icons: ['rocket'] }), ...checkMarkup('<b data-tm-tone="x">', 'a.html', ctx), ...checkStyles('.x{}')];
 const first = found[0];
 const where: string = `${first.file}:${first.line}:${first.col} ${first.severity === 'error' ? 'E' : 'W'} ${first.code}`;
-const fixed: string = applyFixes('<b data-tone="x">', found).text;
+const fixed: string = applyFixes('<b data-tm-tone="x">', found).text;
 const guess: string | undefined = closest('stak', ['stack', 'row']);
 console.log(where, fixed, guess);
 

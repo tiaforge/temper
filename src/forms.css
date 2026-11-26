@@ -1,12 +1,12 @@
 /* temper forms: more form pieces. Requires core.css.
-   <div data-field><span data-icon="search"></span><input type="search" aria-label="Search"></div>
-   data-field is one field drawn around an input and its adornments: an icon or text before or after it ("€", "kg"),
+   <div data-tm-field><span data-tm-icon="search"></span><input type="search" aria-label="Search"></div>
+   data-tm-field is one field drawn around an input and its adornments: an icon or text before or after it ("€", "kg"),
    a button at the end. Also: read-only fields, a required marker, autofill colors, range sliders and an
    indeterminate progress bar. */
 
 @layer tm.components {
   /* field with adornments: the wrapper is the field (border, height, states), the input inside is bare */
-  :where([data-field]) {
+  :where([data-tm-field]) {
     display: flex; align-items: center; gap: 0.5em;
     block-size: calc(var(--tm-control-h) * var(--_size, 1));
     padding-inline: var(--tm-control-px);
@@ -15,44 +15,44 @@
     font-size: var(--_font, var(--tm-control-font)); white-space: nowrap;
     transition: border-color var(--tm-duration) var(--tm-ease), box-shadow var(--tm-duration) var(--tm-ease);
   }
-  :where([data-field]) > :where(input) {
+  :where([data-tm-field]) > :where(input) {
     flex: 1; min-inline-size: 0; padding: 0;
     border: 0; background-color: #0000; color: var(--tm-text); outline: 0;
   }
-  :where([data-field]) > :where(input):focus-visible { box-shadow: none; } /* the field shows the focus */
+  :where([data-tm-field]) > :where(input):focus-visible { box-shadow: none; } /* the field shows the focus */
   /* a button sits inside the border, as far from the end as from the top and bottom */
-  :where([data-field]) > :where(button) {
+  :where([data-tm-field]) > :where(button) {
     min-block-size: 0; block-size: calc(100% - 2 * var(--tm-space-xs)); inline-size: auto; aspect-ratio: 1;
     margin-inline-end: calc(var(--tm-space-xs) - var(--tm-control-px)); border-radius: var(--tm-radius-sm);
   }
-  :where(label:has(> [data-field])) { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.375rem; align-content: start; }
+  :where(label:has(> [data-tm-field])) { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.375rem; align-content: start; }
   /* states of the input show on the whole field; in this order, so an invalid field keeps its border on hover */
-  :where([data-field]:hover) { border-color: color-mix(in oklab, var(--tm-border-strong), var(--tm-text) 18%); }
+  :where([data-tm-field]:hover) { border-color: color-mix(in oklab, var(--tm-border-strong), var(--tm-text) 18%); }
   /* read-only: still focusable and selectable, but filled like a surface, not a place to type (no hover; focus shows) */
-  :where(:is(input, textarea)[readonly], [data-field]:has(> input[readonly])) { background-color: var(--tm-fill); border-color: var(--tm-border); }
-  :where([data-field]:has(input:focus-visible)) {
+  :where(:is(input, textarea)[readonly], [data-tm-field]:has(> input[readonly])) { background-color: var(--tm-fill); border-color: var(--tm-border); }
+  :where([data-tm-field]:has(input:focus-visible)) {
     border-color: var(--tm-accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--tm-accent) 25%, #0000);
     outline: 2px solid #0000; /* forced colors show it */
   }
-  :where([data-field]:has(:user-invalid, [aria-invalid="true"])) { border-color: var(--tm-danger); --tm-accent: var(--tm-danger); }
-  :where([data-field]:has(input:disabled)) { border-color: var(--tm-field-border); opacity: 0.5; cursor: not-allowed; }
-  :where([data-field]:has(input:disabled)) :disabled { opacity: 1; } /* dimmed once, with the field */
+  :where([data-tm-field]:has(:user-invalid, [aria-invalid="true"])) { border-color: var(--tm-danger); --tm-accent: var(--tm-danger); }
+  :where([data-tm-field]:has(input:disabled)) { border-color: var(--tm-field-border); opacity: 0.5; cursor: not-allowed; }
+  :where([data-tm-field]:has(input:disabled)) :disabled { opacity: 1; } /* dimmed once, with the field */
 
 
   /* required: a marker after the label text, from the required attribute. Not color alone (an asterisk), and not
      read out (its alternative text is empty: the field already says "required"). The label text comes first. Off:
      label::after { content: none } in your CSS. */
-  :where(label:has(> [required]:not([type="radio"]), > [data-field] > [required]))::after { content: "*" / ""; grid-area: 1 / 2; color: var(--tm-danger); }
+  :where(label:has(> [required]:not([type="radio"]), > [data-tm-field] > [required]))::after { content: "*" / ""; grid-area: 1 / 2; color: var(--tm-danger); }
   /* in a stacked label it shares the first row with the text; the field and the hint span both columns */
-  :where(label:has(> [required]:not([type="checkbox"], [type="radio"]), > [data-field] > [required])) { grid-template-columns: auto 1fr; }
-  :where(label:has(> [required]:not([type="checkbox"], [type="radio"]), > [data-field] > [required])) > :where(input, select, textarea, [data-field], small) { grid-column: 1 / -1; }
-  /* a <label for> just before its field (a data-field with a button, or a plain field): the mark follows the text, a gap apart */
-  :where(label[for]:has(+ [required]:not([type="radio"]), + [data-field] > [required]))::after { content: "*" / ""; margin-inline-start: 0.375rem; color: var(--tm-danger); }
+  :where(label:has(> [required]:not([type="checkbox"], [type="radio"]), > [data-tm-field] > [required])) { grid-template-columns: auto 1fr; }
+  :where(label:has(> [required]:not([type="checkbox"], [type="radio"]), > [data-tm-field] > [required])) > :where(input, select, textarea, [data-tm-field], small) { grid-column: 1 / -1; }
+  /* a <label for> just before its field (a data-tm-field with a button, or a plain field): the mark follows the text, a gap apart */
+  :where(label[for]:has(+ [required]:not([type="radio"]), + [data-tm-field] > [required]))::after { content: "*" / ""; margin-inline-start: 0.375rem; color: var(--tm-danger); }
 
   /* autofill: a soft accent tint instead of the browser's own color (which ignores the theme and dark mode) */
-  :where(input:autofill, [data-field]:has(input:autofill)) { --_af: color-mix(in oklab, var(--tm-accent) 12%, var(--tm-field)); background-color: var(--_af); }
+  :where(input:autofill, [data-tm-field]:has(input:autofill)) { --_af: color-mix(in oklab, var(--tm-accent) 12%, var(--tm-field)); background-color: var(--_af); }
   :where(input):autofill { box-shadow: inset 0 0 0 99rem var(--_af); -webkit-text-fill-color: var(--tm-text); } /* over the browser's !important color */
-  :where(input:not([data-field] > *)):autofill:focus-visible { box-shadow: inset 0 0 0 99rem var(--_af), 0 0 0 3px color-mix(in oklab, var(--tm-accent) 25%, #0000); }
+  :where(input:not([data-tm-field] > *)):autofill:focus-visible { box-shadow: inset 0 0 0 99rem var(--_af), 0 0 0 3px color-mix(in oklab, var(--tm-accent) 25%, #0000); }
 
   /* range: a track filled up to the thumb. Chrome and Safari draw both parts of the track from the thumb's
      border-image (clipped by the input); Firefox has a progress part */

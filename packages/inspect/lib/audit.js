@@ -106,7 +106,7 @@ export function install(opts) {
         if (c < min) add(c < 3 ? 'error' : 'warning', 'contrast', el, `text contrast ${c.toFixed(2)}:1, needs ${min}:1 (${hex(fg)} on ${hex(bg)})`);
       }
       const clipsX = ['hidden', 'clip'].includes(s.overflowX);
-      const visuallyHidden = s.clipPath !== 'none' || R(el).width <= 1 || el.closest('[data-sr-only]');
+      const visuallyHidden = s.clipPath !== 'none' || R(el).width <= 1 || el.closest('[data-tm-sr-only]');
       if (clipsX && !visuallyHidden && el.scrollWidth > el.clientWidth + 1 && s.textOverflow !== 'ellipsis')
         add('warning', 'clipped', el, 'text is cut off without an ellipsis');
     }

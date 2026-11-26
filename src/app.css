@@ -1,20 +1,20 @@
 /* temper app: application shell with a navigation rail, mobile drawer, floating action button.
    Requires core.css. No JavaScript needed:
-   - collapse (icon-only rail): a checkbox with data-rail-collapse inside the rail, or data-collapsed on the rail
+   - collapse (icon-only rail): a checkbox with data-tm-rail-collapse inside the rail, or data-tm-collapsed on the rail
    - mobile drawer (< 48rem): give the rail the popover attribute and open it with a popovertarget button;
      the browser provides the backdrop, Esc and click-outside. */
 
 @layer tm.components {
   /* shell: rail + main area side by side. The document scrolls; the rail sticks. Flex, not grid, so
      other children (script, template or framework elements such as <sn-resource>) take no space. */
-  :where([data-shell]) { display: flex; min-block-size: 100dvh; }
-  :where([data-shell]) > :where(main) { flex: 1 1 0; min-inline-size: 0; }
+  :where([data-tm-shell]) { display: flex; min-block-size: 100dvh; }
+  :where([data-tm-shell]) > :where(main) { flex: 1 1 0; min-inline-size: 0; }
   /* fixed: the shell fills the viewport and main scrolls inside it (mail-style multi-pane apps) */
-  :where([data-shell="fixed"]) { block-size: 100dvh; min-block-size: 0; overflow: hidden; }
-  :where([data-shell="fixed"]) > :where(main) { min-block-size: 0; overflow: auto; }
+  :where([data-tm-shell="fixed"]) { block-size: 100dvh; min-block-size: 0; overflow: hidden; }
+  :where([data-tm-shell="fixed"]) > :where(main) { min-block-size: 0; overflow: auto; }
 
   /* rail */
-  :where([data-rail]) {
+  :where([data-tm-rail]) {
     --_w: var(--tm-rail-width, 15rem);
     position: sticky; inset-block-start: 0;
     display: flex; flex-direction: column; gap: 2px;
@@ -28,112 +28,112 @@
     transition: inline-size var(--tm-duration) var(--tm-ease), translate var(--tm-duration) var(--tm-ease),
       display var(--tm-duration) allow-discrete, overlay var(--tm-duration) allow-discrete;
   }
-  :where([data-rail]) > :where(header) {
+  :where([data-tm-rail]) > :where(header) {
     display: flex; align-items: center; justify-content: space-between; gap: var(--tm-space-xs);
     min-block-size: var(--tm-control-h); padding-block-end: var(--tm-space-sm); font-weight: 600;
   }
-  :where([data-rail]) > :where(footer) {
+  :where([data-tm-rail]) > :where(footer) {
     display: flex; flex-direction: column; gap: 2px;
     margin-block-start: auto; padding-block-start: var(--tm-space-sm); border-block-start: 1px solid var(--tm-border);
   }
   /* text in the header and footer (brand, user name) lines up with the item icons */
-  :where([data-rail]) > :where(header, footer) > :where(:not(a, button, input, ul, ol, nav)) { padding-inline: calc((var(--tm-control-h) - 1.125rem) / 2); }
-  :where([data-rail]) :where(ul) { display: flex; flex-direction: column; gap: 2px; padding: 0; list-style: none; }
+  :where([data-tm-rail]) > :where(header, footer) > :where(:not(a, button, input, ul, ol, nav)) { padding-inline: calc((var(--tm-control-h) - 1.125rem) / 2); }
+  :where([data-tm-rail]) :where(ul) { display: flex; flex-direction: column; gap: 2px; padding: 0; list-style: none; }
 
   /* rail items: links and buttons look like quiet nav entries; aria-current marks the active one */
-  :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
+  :where([data-tm-rail]) :where(a, button):not([data-tm-variant], :is([data-tm-icon=""], [data-tm-icon]:empty)) {
     --_bg: #0000; --_fg: var(--tm-text);
     justify-content: start; gap: var(--tm-space-sm);
     inline-size: 100%; block-size: var(--tm-control-h); padding-inline: calc((var(--tm-control-h) - 1.125rem) / 2);
     position: relative; border-radius: var(--tm-radius); font-size: var(--tm-control-font); font-weight: 400; text-decoration: none; white-space: nowrap;
   }
-  :where([data-rail]) :where(a):not([data-variant], :is([data-icon=""], [data-icon]:empty)) {
+  :where([data-tm-rail]) :where(a):not([data-tm-variant], :is([data-tm-icon=""], [data-tm-icon]:empty)) {
     display: flex; align-items: center; color: var(--_fg); background: var(--_bg);
     transition: background-color var(--tm-duration) var(--tm-ease);
   }
-  :where([data-rail]) :where(a, button):not([data-variant], :is([data-icon=""], [data-icon]:empty)):hover { background: var(--tm-fill); }
+  :where([data-tm-rail]) :where(a, button):not([data-tm-variant], :is([data-tm-icon=""], [data-tm-icon]:empty)):hover { background: var(--tm-fill); }
   /* the current page, and a pressed toggle (notifications on/off); both beat the item rule's (0,2,0) :not() */
-  :where([data-rail]) :where(a, button):is([aria-current]:not([aria-current="false"]), [aria-pressed="true"]:not([aria-pressed="false"])) {
+  :where([data-tm-rail]) :where(a, button):is([aria-current]:not([aria-current="false"]), [aria-pressed="true"]:not([aria-pressed="false"])) {
     --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent);
     background: var(--_bg); color: var(--_fg);
   }
-  :where([data-rail]) :where(a, button)[aria-current]:not([aria-current="false"]) { font-weight: 600; }
-  :where([data-rail]) :where(a, button) > :where(span) { overflow: hidden; text-overflow: ellipsis; min-inline-size: 0; }
-  :where([data-rail]) :where(a, button) > :where([data-badge]) { margin-inline-start: auto; flex-shrink: 0; }
-  :where([data-rail]) :where(svg) { inline-size: 1.125rem; block-size: 1.125rem; flex-shrink: 0; }
+  :where([data-tm-rail]) :where(a, button)[aria-current]:not([aria-current="false"]) { font-weight: 600; }
+  :where([data-tm-rail]) :where(a, button) > :where(span) { overflow: hidden; text-overflow: ellipsis; min-inline-size: 0; }
+  :where([data-tm-rail]) :where(a, button) > :where([data-tm-badge]) { margin-inline-start: auto; flex-shrink: 0; }
+  :where([data-tm-rail]) :where(svg) { inline-size: 1.125rem; block-size: 1.125rem; flex-shrink: 0; }
 
   /* collapse toggle: a checkbox drawn as an icon button with a chevron */
-  [data-rail-collapse] {
+  [data-tm-rail-collapse] {
     appearance: none; display: inline-grid; place-content: center; flex-shrink: 0;
     inline-size: var(--tm-control-h); block-size: var(--tm-control-h);
     border: 0; border-radius: var(--tm-radius); background: #0000; color: var(--tm-text-muted); cursor: pointer;
   }
-  [data-rail-collapse]:hover { background: var(--tm-fill); color: var(--tm-text); }
-  [data-rail-collapse]:checked { background: #0000; }
-  [data-rail-collapse]::before {
+  [data-tm-rail-collapse]:hover { background: var(--tm-fill); color: var(--tm-text); }
+  [data-tm-rail-collapse]:checked { background: #0000; }
+  [data-tm-rail-collapse]::before {
     content: ""; inline-size: 1.125rem; block-size: 1.125rem; border: 0; rotate: 0deg; scale: var(--_x) 1; translate: 0; /* mirrored in RTL */
     background: currentColor; forced-color-adjust: preserve-parent-color;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m11 17-5-5 5-5M18 17l-5-5 5-5'/%3E%3C/svg%3E") center / contain no-repeat;
     transition: rotate var(--tm-duration) var(--tm-ease);
   }
-  [data-rail-collapse]:checked::before { rotate: 180deg; }
+  [data-tm-rail-collapse]:checked::before { rotate: 180deg; }
 
-  /* collapsed (wide screens): icons only; text spans and data-rail-label elements disappear */
+  /* collapsed (wide screens): icons only; text spans and data-tm-rail-label elements disappear */
   @media (width >= 48rem) {
-    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) {
+    :where([data-tm-rail]:is([data-tm-collapsed], :has([data-tm-rail-collapse]:checked))) {
       --_w: var(--tm-rail-width-collapsed, calc(var(--tm-control-h) + 2 * var(--tm-space-sm) + 1px));
     }
-    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button) > :where(span:not([data-badge])),
-    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where([data-rail-label]) { display: none; }
-    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) > :where(header) { flex-direction: column; justify-content: center; gap: var(--tm-space-xs); }
+    :where([data-tm-rail]:is([data-tm-collapsed], :has([data-tm-rail-collapse]:checked))) :where(a, button) > :where(span:not([data-tm-badge])),
+    :where([data-tm-rail]:is([data-tm-collapsed], :has([data-tm-rail-collapse]:checked))) :where([data-tm-rail-label]) { display: none; }
+    :where([data-tm-rail]:is([data-tm-collapsed], :has([data-tm-rail-collapse]:checked))) > :where(header) { flex-direction: column; justify-content: center; gap: var(--tm-space-xs); }
     /* a count badge shrinks to a dot on the icon */
-    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button):has(> [data-badge]) { position: relative; }
-    :where([data-rail]:is([data-collapsed], :has([data-rail-collapse]:checked))) :where(a, button) > :where([data-badge]) {
+    :where([data-tm-rail]:is([data-tm-collapsed], :has([data-tm-rail-collapse]:checked))) :where(a, button):has(> [data-tm-badge]) { position: relative; }
+    :where([data-tm-rail]:is([data-tm-collapsed], :has([data-tm-rail-collapse]:checked))) :where(a, button) > :where([data-tm-badge]) {
       position: absolute; inset-block-start: 0.3rem; inset-inline-end: 0.3rem;
       inline-size: 0.5rem; block-size: 0.5rem; padding: 0; font-size: 0; background: var(--tm-tone);
     }
   }
 
   /* floating action button */
-  :where([data-fab]) {
+  :where([data-tm-fab]) {
     position: fixed; z-index: 10;
     inset-block-end: calc(var(--tm-space-lg) + env(safe-area-inset-bottom)); inset-inline-end: calc(var(--tm-space-lg) + env(safe-area-inset-right));
     inline-size: calc(var(--tm-control-h) * 1.4); block-size: calc(var(--tm-control-h) * 1.4); padding: 0;
     border-radius: 50%; box-shadow: var(--tm-shadow-lg), 0 2px 8px oklch(0 0 0 / 0.15);
     font-size: 1.5rem; font-weight: 400;
   }
-  :where([data-fab]) :where(svg) { inline-size: 1.5rem; block-size: 1.5rem; }
+  :where([data-tm-fab]) :where(svg) { inline-size: 1.5rem; block-size: 1.5rem; }
 
   /* narrow screens: a rail with the popover attribute becomes a drawer, opened by a popovertarget button */
   @media (width < 48rem) {
-    :where([data-rail][popover]) {
+    :where([data-tm-rail][popover]) {
       --_w: min(var(--tm-rail-width, 15rem), 85vw);
       position: fixed; inset-block: 0; inset-inline-start: 0; inset-inline-end: auto;
       box-shadow: var(--tm-shadow-lg); translate: calc(var(--_x) * -100%) 0; /* off the start edge, either direction */
     }
-    :where([data-rail][popover]:not(:popover-open)) { display: none; }
-    :where([data-rail][popover]:popover-open) { translate: 0 0; }
-    :where([data-rail][popover])::backdrop { background: oklch(0.2 0.02 var(--tm-neutral-hue) / 0.45); }
-    [data-rail][popover] [data-rail-collapse] { display: none; }
+    :where([data-tm-rail][popover]:not(:popover-open)) { display: none; }
+    :where([data-tm-rail][popover]:popover-open) { translate: 0 0; }
+    :where([data-tm-rail][popover])::backdrop { background: oklch(0.2 0.02 var(--tm-neutral-hue) / 0.45); }
+    [data-tm-rail][popover] [data-tm-rail-collapse] { display: none; }
   }
-  @starting-style { :where([data-rail][popover]:popover-open) { translate: calc(var(--_x) * -100%) 0; } }
+  @starting-style { :where([data-tm-rail][popover]:popover-open) { translate: calc(var(--_x) * -100%) 0; } }
 
   /* print the page, not the app around it: no rail or FAB, and a fixed shell grows with its content (it would print
      one screen) */
   @media print {
-    :where([data-rail], [data-fab]) { display: none; }
-    :where([data-shell="fixed"], [data-shell="fixed"] > main) { block-size: auto; overflow: visible; }
+    :where([data-tm-rail], [data-tm-fab]) { display: none; }
+    :where([data-tm-shell="fixed"], [data-tm-shell="fixed"] > main) { block-size: auto; overflow: visible; }
   }
 }
 
 @layer tm.layout {
-  /* data-container: a pane (mail list, reader, detail panel) whose width data-show inside follows instead of the screen's;
+  /* data-tm-container: a pane (mail list, reader, detail panel) whose width data-tm-show inside follows instead of the screen's;
      the nearest one wins. Named, so containers of the app's own CSS do not count. Inline-size containment: the pane's
-     width must come from its parent (a block, a data-grow or split child, main), not from its content. */
-  :where([data-container]) { container: tm / inline-size; }
-  /* show an element only on narrow (< 48rem) or wide screens, or in a narrow or wide data-container */
-  @media (width < 48rem) { [data-show="wide"]:not([data-container] *) { display: none; } }
-  @media (width >= 48rem) { [data-show="narrow"]:not([data-container] *) { display: none; } }
-  @container tm (width < 48rem) { [data-show="wide"] { display: none; } }
-  @container tm (width >= 48rem) { [data-show="narrow"] { display: none; } }
+     width must come from its parent (a block, a data-tm-grow or split child, main), not from its content. */
+  :where([data-tm-container]) { container: tm / inline-size; }
+  /* show an element only on narrow (< 48rem) or wide screens, or in a narrow or wide data-tm-container */
+  @media (width < 48rem) { [data-tm-show="wide"]:not([data-tm-container] *) { display: none; } }
+  @media (width >= 48rem) { [data-tm-show="narrow"]:not([data-tm-container] *) { display: none; } }
+  @container tm (width < 48rem) { [data-tm-show="wide"] { display: none; } }
+  @container tm (width >= 48rem) { [data-tm-show="narrow"] { display: none; } }
 }
