@@ -9,7 +9,7 @@ const v = (major, minor = 0) => (major << 16) | (minor << 8);
 // Baseline 2024: the first versions with light-dark(). Nothing newer gets lowered or prefixed. iOS Safari is listed
 // apart: only it reads -webkit-text-size-adjust (desktop Safari has no text-size-adjust), which was dropped without it.
 const targets = { chrome: v(123), firefox: v(120), safari: v(17, 5), ios_saf: v(17, 5) };
-const budgets = { 'core.css': 6960, 'all.css': 14700, 'icons.css': 2850, 'expressive.css': 2100 }; // brotli bytes, about 2 % above the current size (set 2026-11-24 after two minimization passes; core.css raised 2026-11-25 for whole-pixel centering; all.css raised and expressive.css set 2026-11-26 for the expressive module, which is opt-in): a small fix fits, growth is a decision; modules default to 1.5 KB
+const budgets = { 'core.css': 6960, 'all.css': 15300, 'icons.css': 2850, 'expressive.css': 2100 }; // brotli bytes, about 2 % above the current size (set 2026-11-24 after two minimization passes; core.css raised 2026-11-25 for whole-pixel centering; all.css raised and expressive.css set 2026-11-26 for the expressive module, which is opt-in; all.css raised again 2026-11-26 for drag.css and the sinter-alloy requests T2–T6): a small fix fits, growth is a decision; modules default to 1.5 KB
 const moduleBudget = 1.5 * 1024;
 
 mkdirSync(root + 'dist/enhance', { recursive: true });
