@@ -102,6 +102,17 @@
         <button data-tm-handle="quiet" aria-label="Move Archive" aria-pressed="false" data-tm-size="sm"></button><span data-tm-grow>Archive <small data-tm-muted>quiet handle: hover the row</small></span>
       </li>
     </ul>
+    <ul role="list" aria-label="Cards" data-tm-layout="stack" data-tm-gap="sm">
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs" data-tm-drop="before" style="border: 1px solid var(--tm-border); border-radius: var(--tm-radius)">
+        <button data-tm-handle aria-label="Move Write the spec" data-tm-size="sm"></button><span>Write the spec <small data-tm-muted>drop line before it</small></span>
+      </li>
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs" data-tm-lifted style="border: 1px solid var(--tm-border); border-radius: var(--tm-radius)">
+        <button data-tm-handle aria-label="Move Review" aria-pressed="true" data-tm-size="sm"></button><span>Review <small data-tm-muted>lifted</small></span>
+      </li>
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs" data-tm-drop="inside" style="border: 1px solid var(--tm-border); border-radius: var(--tm-radius)">
+        <span data-tm-icon="folder"></span><span>Archive <small data-tm-muted>drop inside</small></span>
+      </li>
+    </ul>
   </section>
 
   <section data-tm-layout="stack" data-tm-gap="md">

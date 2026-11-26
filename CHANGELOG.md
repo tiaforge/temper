@@ -61,6 +61,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   draws another. Without a variant it is quiet (no fill, muted). `data-tm-handle="quiet"` hides it until its row
   (the handle's parent) is under the pointer or has focus, on devices that can hover; touch screens always show it.
   `temper check` wants an `aria-label` on it (TM103).
+- Moving states (T2): `data-tm-lifted` on the row or card being moved (raised surface, the text colour, a large
+  shadow, above its neighbours) and `data-tm-drop="before|after|inside"` on where it will land: a 2px accent line
+  centred on the element's start or end edge (its inline edges in a `data-tm-layout="row"`), or an outline inside it.
+  Drawn with a border on `::after` and an outline (forced colours keep both), no outer margin: nothing moves.
 
 ### Core
 

@@ -708,6 +708,29 @@
       ]
     },
     {
+      "name": "data-tm-lifted",
+      "description": "temper (drag.css). On: the row or card being moved (li, article, tr). The row or card that is picked up: raised above its neighbours with the raised surface, the text color and a large shadow. Set it while it moves (and aria-pressed=\"true\" on its data-tm-handle); following the pointer (a translate) is your script's.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-tm-drop",
+      "description": "temper (drag.css). On: a row, card or drop target while something is dragged over it. Where the dragged row or card will land, drawn without moving anything: a 2px accent line centred on the element's edge, or an outline inside it. In a data-tm-layout=\"row\" the lines are on its inline edges. The line is the element's ::after (it is made position: relative), so not on a busy button or a data-tm-stretch card link. Set it on one element at a time from your script and remove it on drop or cancel.",
+      "values": [
+        {
+          "name": "before",
+          "description": "A line on its start edge (top; inline start in a row)."
+        },
+        {
+          "name": "after",
+          "description": "A line on its end edge (bottom; inline end in a row)."
+        },
+        {
+          "name": "inside",
+          "description": "An outline inside it: dropped into it (a folder, a board's empty column)."
+        }
+      ]
+    },
+    {
       "name": "data-tm-surface",
       "description": "temper (expressive.css). On: any container: body, main, header, section, article, aside, dialog, nav, div. The element's background as a material. Text on it keeps temper's colours and WCAG AA in light and dark mode for any --tm-hue/--tm-chroma. Under prefers-contrast: more and forced colours every surface is temper's plain surface; under prefers-reduced-transparency glass is opaque.",
       "values": [

@@ -130,6 +130,8 @@ export default { plugins: [temper()] };
 | `data-tm-field` (forms.css) | (boolean) | One field around an input and its icon, text (<span>€</span>) or end button. |
 | `data-tm-sheet` (sheet.css) | end, start, bottom, narrow | Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. |
 | `data-tm-handle` (drag.css) | (none), quiet | Drag handle button (grip, grab cursor); "quiet" shows on hover only. |
+| `data-tm-lifted` (drag.css) | (boolean) | The row or card being moved: raised surface and shadow. |
+| `data-tm-drop` (drag.css) | before, after, inside | Drop place while dragging: a line before or after the element, or an outline inside it. |
 | `data-tm-surface` (expressive.css) | glass, gradient, mesh, wash | Background as a material: glass, gradient, mesh, or a wash at the top. |
 | `data-tm-grain` (expressive.css) | (boolean) | Faint film grain over the background. |
 | `data-tm-elevation` (expressive.css) | raised, floating | Brand-tinted shadow: raised or floating. |

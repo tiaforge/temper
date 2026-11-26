@@ -502,6 +502,10 @@ cursor, pressed look). `data-tm-handle="quiet"` hides it until its row (the hand
 has focus, on devices that can hover. temper draws the states; the pointer, the keys and the announcements are your
 script's.
 
+While a row moves: `data-tm-lifted` on it (raised surface, shadow) and `data-tm-drop="before"` or `"after"` on the
+row it will land next to (a 2px accent line on that edge; on the inline edges in a `data-tm-layout="row"`), or
+`data-tm-drop="inside"` on a target it drops into (an outline: a folder, an empty column). Nothing moves for them.
+
 ### Expressive: surfaces, display type, hero and bento (expressive.css)
 
 ```html

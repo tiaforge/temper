@@ -1,4 +1,5 @@
-// drag.css in a real browser (fixtures/drag.html, served over HTTP from the repository root): drag handles, and the
+// drag.css in a real browser (fixtures/drag.html, served over HTTP from the repository root): drag handles, lifted
+// rows and drop places, and the
 // checker's vocabulary for them. The browser tests are skipped without Chrome/Chromium.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -93,6 +94,35 @@ test('quiet handle: hidden until its row is hovered or has focus, where a pointe
   });
 });
 
+test('a lifted row is raised; a drop place is a line centred on an edge (inline edges in a row) or an outline, and moves nothing', { skip }, async () => {
+  await withPage({}, async page => {
+    const r = await page.evaluate(`(() => {
+      const line = id => { const s = cs(id, '::after'), b = box(id), p = $(id).getBoundingClientRect();
+        // the pseudo-element's box from its insets: top/bottom (or left/right) against the element
+        return { top: s.top, bottom: s.bottom, left: s.left, right: s.right, bt: s.borderTopWidth, bl: s.borderLeftWidth, pos: cs(id).position }; };
+      const raised = document.createElement('span'); $('c-2').append(raised); raised.style.color = 'var(--tm-surface-raised)';
+      const surface = getComputedStyle(raised).color; raised.remove();
+      return {
+        lifted: { bg: cs('c-2').backgroundColor, surface, shadow: cs('c-2').boxShadow, z: cs('c-2').zIndex },
+        before: line('c-1'), after: line('c-3'), inside: [cs('c-4').outlineStyle, cs('c-4').outlineWidth, cs('c-4').outlineOffset],
+        colBefore: line('col-1'), colAfter: line('col-2'),
+        gaps: [box('c-1').y, box('c-2').y, box('c-3').y, box('c-4').y],
+      };
+    })()`);
+    assert.equal(r.lifted.bg, r.lifted.surface);
+    assert.notEqual(r.lifted.shadow, 'none');
+    assert.equal(r.lifted.z, '1');
+    assert.deepEqual([r.before.top, r.before.bt, r.before.pos], ['-1px', '2px', 'relative'], 'a 2px line centred on the top edge');
+    assert.deepEqual([r.after.bottom, r.after.bt], ['-1px', '2px'], 'and on the bottom edge');
+    assert.deepEqual(r.inside, ['solid', '2px', '-2px']);
+    assert.deepEqual([r.colBefore.left, r.colBefore.bl, r.colBefore.bt], ['-1px', '2px', '0px'], 'in a row: on the inline start edge');
+    assert.deepEqual([r.colAfter.right, r.colAfter.bl], ['-1px', '2px']);
+    // no margins: the rows keep their places (stack gap sm = 8px between rows of equal height)
+    const steps = r.gaps.slice(1).map((y, i) => y - r.gaps[i]);
+    assert.ok(steps.every(s => s === steps[0]), `rows moved: ${steps}`);
+  });
+});
+
 test('checker: data-tm-handle is a button with a label, quiet or empty, and needs drag.css', () => {
   const codes = (html, ctx = { modules: new Set(['core', 'drag']) }) => checkMarkup(html, 'x.html', ctx).map(d => d.code);
   assert.deepEqual(codes('<button data-tm-handle aria-label="Move Inbox"></button><button data-tm-handle="quiet" aria-label="Move Sent"></button>'), []);
@@ -100,4 +130,11 @@ test('checker: data-tm-handle is a button with a label, quiet or empty, and need
   assert.deepEqual(codes('<button data-tm-handle="loud" aria-label="Move"></button>'), ['TM101']);
   assert.deepEqual(codes('<div data-tm-handle aria-label="Move"></div>'), ['TM108']);
   assert.deepEqual(codes('<button data-tm-handle aria-label="Move"></button>', { modules: new Set(['core']) }), ['TM110']);
+});
+
+test('checker: data-tm-lifted is boolean, data-tm-drop takes before, after or inside', () => {
+  const codes = (html, ctx = { modules: new Set(['core', 'drag']) }) => checkMarkup(html, 'x.html', ctx).map(d => d.code);
+  assert.deepEqual(codes('<li data-tm-lifted>A</li><li data-tm-drop="before">B</li><li data-tm-drop="inside">C</li>'), []);
+  assert.deepEqual(codes('<li data-tm-lifted="true">A</li>'), ['TM102']);
+  assert.deepEqual(codes('<li data-tm-drop="above">A</li>'), ['TM101']);
 });
