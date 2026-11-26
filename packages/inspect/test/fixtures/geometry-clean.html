@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Geometry: clean</title>
+<!-- Correct UI that looks like what the geometry checks look for: none of overlap, spill, squeezed, distorted or
+     upscaled may fire here, at 1280 or at 390. Plain CSS, no temper. -->
+<style>
+  body { margin: 0; padding: 64px 16px 16px; font: 16px/1.5 sans-serif; color: #222; background: #fff; }
+  section { margin-bottom: 32px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .card { position: relative; border: 1px solid #999; border-radius: 8px; padding: 16px; background: #fafafa; max-width: 320px; }
+  /* covered, not overlapping: a fixed opaque bar over the first heading, a badge over avatar initials, an open menu over text */
+  header.bar { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: #fff; box-shadow: 0 1px 4px #0003; z-index: 10; display: flex; align-items: center; padding: 0 16px; }
+  #under-bar { margin-top: -52px; }
+  .avatar { position: relative; display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #cde; font-weight: 600; }
+  .avatar-wrap { position: relative; display: inline-block; }
+  .count { position: absolute; top: 4px; right: -4px; min-width: 20px; height: 20px; border-radius: 10px; background: #c00; color: #fff; font-size: 12px; line-height: 20px; text-align: center; }
+  .menu-wrap { position: relative; }
+  .menu { position: absolute; top: 30px; left: 0; background: #fff; border: 1px solid #999; padding: 4px 8px; z-index: 2; box-shadow: 0 4px 12px #0003; }
+  .below-fold { position: relative; margin-top: 1200px; }
+  .below-fold .sheet { position: absolute; top: 0; left: 0; width: 260px; background: #fff; border: 1px solid #999; }
+  /* tight but fine line-heights, a display heading, adjacent inline runs, a watermark, clipped and hidden text */
+  h1.display { font-size: 48px; line-height: 0.9; margin: 0; max-width: 300px; }
+  .tight { line-height: 1; max-width: 200px; }
+  .squeeze { letter-spacing: -0.5px; }
+  .watermark-wrap { position: relative; }
+  .watermark { position: absolute; top: -10px; left: 0; font-size: 64px; opacity: 0.08; pointer-events: none; }
+  .clip { height: 24px; overflow: hidden; max-width: 160px; }
+  .ghost { position: absolute; top: 0; left: 0; }
+  .scroller { overflow-x: auto; white-space: nowrap; max-width: 200px; }
+  /* spilling on purpose: badges and close buttons positioned out, an avatar pulled up, a bleeding image, a transformed tab */
+  .card .badge { position: absolute; top: -10px; right: -10px; background: #06c; color: #fff; padding: 0 6px; border-radius: 8px; }
+  .card .pulled { display: block; margin-top: -36px; width: 40px; height: 40px; border-radius: 50%; background: #ace; }
+  .card .bleed { display: block; margin: 0 -24px; height: 40px; background: #ddd; }
+  .card .tab { display: inline-block; transform: translateY(-30px); background: #eee; }
+  .card .nudged { position: relative; top: -28px; display: block; }
+  .chip { display: inline-block; height: 18px; line-height: 14px; font-size: 16px; padding: 0 6px; border: 1px solid #999; border-radius: 9px; }
+  .btn { height: 32px; padding: 0 12px; border: 1px solid #333; background: #eee; font: inherit; line-height: 1; }
+  .full { box-sizing: border-box; width: 100%; }
+  .floats { display: flow-root; border: 1px solid #999; }
+  .floats span { float: left; width: 80px; height: 60px; background: #eee; }
+  .rows li { border-bottom: 1px solid #ccc; }
+  /* narrow by design */
+  .rail { display: flex; flex-direction: column; width: 56px; gap: 8px; text-align: center; font-size: 12px; }
+  .row { display: flex; gap: 8px; align-items: center; }
+  .row .grow { flex: 1; min-width: 0; }
+  .vertical { writing-mode: vertical-rl; height: 200px; }
+  table { border-collapse: collapse; } td, th { border: 1px solid #ccc; padding: 4px; }
+  th.narrow { width: 40px; }
+  .hyph { width: 110px; hyphens: auto; }
+  .side { display: grid; grid-template-columns: 120px 1fr; gap: 16px; }
+  .pixel { image-rendering: pixelated; }
+  img { display: block; }
+</style></head>
+<body>
+<header class="bar"><strong>Brand</strong></header>
+<section><h2 id="under-bar">Heading under the fixed bar</h2></section>
+
+<section id="covered">
+  <span class="avatar-wrap"><span class="avatar">MO</span><span class="count">12</span></span>
+  <div class="menu-wrap"><button>Options</button><div class="menu">Rename<br>Delete</div><p>Text under the open menu, covered by it</p></div>
+</section>
+
+<section id="type">
+  <h1 class="display">A display heading set tight</h1>
+  <p class="tight">A paragraph with line-height 1 that wraps onto a few lines of text here</p>
+  <p class="squeeze"><b>Bold</b><i>Italic</i><code>code</code><span>next</span><a href="#">link</a> and some text.</p>
+  <div class="watermark-wrap"><span class="watermark" aria-hidden="true">DRAFT</span><p>Text over a faint watermark</p></div>
+  <div class="clip">One visible line<br>Hidden second line<br>Hidden third</div><p style="margin:0">Right after the clipped box</p>
+  <div style="position: relative"><span class="ghost" style="opacity: 0">Invisible ghost text</span><span class="ghost" style="visibility: hidden">Hidden text here</span><span class="ghost" style="color: transparent">Transparent text</span><p style="margin: 0">Visible text at the same place</p></div>
+  <button><span class="sr-only">Screen reader text over the label</span>Visible label</button>
+  <div class="scroller"><span>First item</span> <span>Second item</span> <span>Third item</span> <span>Fourth item</span> <span>Fifth item</span></div>
+  <p><ruby>漢<rt>kan</rt>字<rt>ji</rt></ruby> ruby text</p>
+  <p>Table:</p>
+  <table><tr><th class="narrow">Number of users</th><th>Name</th><th>Amount</th></tr><tr><td>1</td><td>Ada</td><td>12.00</td></tr></table>
+</section>
+
+<section id="spill">
+  <div class="card"><span class="badge">New</span><p>A card with a badge in its corner</p><button class="full">Full-width button</button></div>
+  <div class="card" style="margin-top: 48px"><span class="pulled"></span><p>A card with an avatar pulled up out of it</p><span class="bleed"></span></div>
+  <div class="card" style="margin-top: 48px"><span class="tab">Tab</span><span class="nudged">Nudged up</span><p>Moved on purpose</p><p class="sr-only">Hidden text that is long enough to stick out of the card if it counted</p></div>
+  <div class="card"><div style="overflow-x: auto"><table><tr><td>A</td><td>wide</td><td>table</td><td>in</td><td>a</td><td>scroll</td><td>container</td><td>that</td><td>scrolls</td><td>sideways</td><td>nicely</td></tr></table></div></div>
+  <p>Chips: <span class="chip">Tight</span> <span class="chip">Chip</span></p>
+  <button class="btn">Button</button>
+  <fieldset><legend>Legend on the border</legend><input class="full" aria-label="Field"></fieldset>
+  <div class="floats"><span></span><span></span></div>
+  <ul class="rows"><li>Row one</li><li>Row two</li></ul>
+  <div class="card"><p><i>An italic line ending in f</i></p></div>
+  <details style="border: 1px solid #999; padding: 0 8px"><summary>Closed details</summary><p>Hidden content</p><p>More hidden content</p></details>
+</section>
+
+<section id="narrow">
+  <nav class="rail"><a href="#">Home</a><a href="#">Inbox</a><a href="#">Settings</a></nav>
+  <div class="row"><span class="avatar">M</span><span class="grow">Mira Okafor, a long name that fits fine and truncates nowhere</span><button>Edit</button></div>
+  <p class="vertical">Chapter one of the book, set vertically</p>
+  <p>One<br>Two<br>Three<br>Four</p>
+  <p style="white-space: pre-line; width: 60px">Roses
+are
+red, violets
+are blue</p>
+  <p class="hyph" lang="en">Internationalization and localization matter</p>
+  <div class="side"><p>A short description of the product in a narrow column</p><p>The main column with the rest of the content.</p></div>
+  <p style="width: 120px">state-of-the-art and well-known</p>
+</section>
+
+<section id="images">
+  <img alt="icon" style="width: 16px; height: 16px" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='15'%3E%3Crect width='16' height='15'/%3E%3C/svg%3E">
+  <img alt="cover" style="width: 120px; height: 120px; object-fit: cover" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAIAAAA7N+mxAAABZElEQVR4nAXBIQGAMBBA0QuAnFgAxCQBLgByggCISQKc/GJyggATkwS4AAQgAAEIwnsiwiREYRYWQYVV2IRdOAQTqnAKXbgEF27hEV7hE0QCUyAG5sAS0MAa2AJ74AhYoAbOQA9cAQ/cgSfwBr6ASGJKxMScWBKaWBNbYk8cCUvUxJnoiSvhiTvxJN7ElxBRJiUqs7IoqqzKpuzKoZhSlVPpyqW4ciuP8iqfIpKZMjEzZ5aMZtbMltkzR8YyNXNmeubKeObOPJk382VEClMhFubCUtDCWtgKe+EoWKEWzkIvXAUv3IWn8Ba+gogxGdGYjcVQYzU2YzcOw4xqnEY3LsON23iM1/gMkcbUiI25sTS0sTa2xt44GtaojbPRG1fDG3fjabyNryEymAZxMA+WgQ7WwTbYB8fABnVwDvrgGvjgHjyDd/ANRJzJic7sLI46q7M5u3M45lTndLpzOe7czuO8zuf8rnADcCMlkwMAAAAASUVORK5CYII=" class="pixel">
+  <img alt="natural" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAIAAAA7N+mxAAABZElEQVR4nAXBIQGAMBBA0QuAnFgAxCQBLgByggCISQKc/GJyggATkwS4AAQgAAEIwnsiwiREYRYWQYVV2IRdOAQTqnAKXbgEF27hEV7hE0QCUyAG5sAS0MAa2AJ74AhYoAbOQA9cAQ/cgSfwBr6ASGJKxMScWBKaWBNbYk8cCUvUxJnoiSvhiTvxJN7ElxBRJiUqs7IoqqzKpuzKoZhSlVPpyqW4ciuP8iqfIpKZMjEzZ5aMZtbMltkzR8YyNXNmeubKeObOPJk382VEClMhFubCUtDCWtgKe+EoWKEWzkIvXAUv3IWn8Ba+gogxGdGYjcVQYzU2YzcOw4xqnEY3LsON23iM1/gMkcbUiI25sTS0sTa2xt44GtaojbPRG1fDG3fjabyNryEymAZxMA+WgQ7WwTbYB8fABnVwDvrgGvjgHjyDd/ANRJzJic7sLI46q7M5u3M45lTndLpzOe7czuO8zuf8rnADcCMlkwMAAAAASUVORK5CYII=">
+  <img alt="logo" style="width: 200px; height: 60px" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50'%3E%3Crect width='100' height='50' fill='teal'/%3E%3C/svg%3E">
+  <img alt="spacer" width="20" height="20" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">
+  <img alt="missing" width="80" height="40" src="nonexistent.png">
+</section>
+
+<section id="more">
+  <div style="display: flex; flex-direction: column; width: 80px">Name<b>Dana</b>Role<i>Owner</i>Team<b>Ops</b></div>
+  <p style="width: 60px" lang="ja">日本語のテキストは文字の間で折り返されます</p>
+  <img alt="placeholder" style="width: 200px; height: 100px; filter: blur(8px)" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAIAAAA7N+mxAAABZElEQVR4nAXBIQGAMBBA0QuAnFgAxCQBLgByggCISQKc/GJyggATkwS4AAQgAAEIwnsiwiREYRYWQYVV2IRdOAQTqnAKXbgEF27hEV7hE0QCUyAG5sAS0MAa2AJ74AhYoAbOQA9cAQ/cgSfwBr6ASGJKxMScWBKaWBNbYk8cCUvUxJnoiSvhiTvxJN7ElxBRJiUqs7IoqqzKpuzKoZhSlVPpyqW4ciuP8iqfIpKZMjEzZ5aMZtbMltkzR8YyNXNmeubKeObOPJk382VEClMhFubCUtDCWtgKe+EoWKEWzkIvXAUv3IWn8Ba+gogxGdGYjcVQYzU2YzcOw4xqnEY3LsON23iM1/gMkcbUiI25sTS0sTa2xt44GtaojbPRG1fDG3fjabyNryEymAZxMA+WgQ7WwTbYB8fABnVwDvrgGvjgHjyDd/ANRJzJic7sLI46q7M5u3M45lTndLpzOe7czuO8zuf8rnADcCMlkwMAAAAASUVORK5CYII=">
+  <button commandfor="dlg" command="show-modal">Open dialog</button>
+  <dialog id="dlg" style="position: fixed; max-width: 300px; padding: 24px"><button commandfor="dlg" command="close" aria-label="Close" style="position: absolute; top: 8px; right: 8px">×</button>
+    <h2 style="margin: 0 24px 8px 0">A dialog with a close button in its corner</h2><div class="card"><span class="badge">3</span><p>Card in a dialog</p></div></dialog>
+</section>
+
+<section class="below-fold"><p>Paragraph text far below the fold, under a sheet</p><div class="sheet">An opaque sheet over the paragraph</div></section>
+</body></html>

@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Geometry: broken</title>
+<!-- Every geometry check fires here, at 1280 and at 390: overlapping text, content poking out of its box, squeezed
+     text, a distorted and an upscaled image. Plain CSS, no temper. -->
+<style>
+  body { margin: 0; padding: 16px; font: 16px/1.5 sans-serif; color: #222; background: #fff; }
+  section { margin-bottom: 32px; }
+  /* overlap: a fixed height the text outgrew, an absolute label without reserved space, a line-height far below 1 */
+  #fixed .title { height: 24px; width: 220px; }
+  #abs { position: relative; }
+  #abs .tag { position: absolute; top: 0; left: 0; }
+  #tight { line-height: 0.5; width: 200px; }
+  /* spill: a long URL in a bordered card, a child wider than its bordered parent, a fixed-height button */
+  .card { border: 1px solid #999; border-radius: 8px; width: 180px; padding: 0; }
+  #wide .card div { width: 260px; height: 20px; background: #dde; }
+  #btn button { height: 28px; width: 70px; font: inherit; border: 1px solid #333; background: #eee; }
+  /* squeezed: a flex item shrunk next to one that does not shrink; words broken mid-word; an item with no width */
+  .row { display: flex; width: 340px; gap: 8px; }
+  .row .fixed { flex-shrink: 0; white-space: nowrap; }
+  #anywhere p { overflow-wrap: anywhere; min-width: 0; }
+  #zero .row span { flex: 0 1 0; min-width: 0; }
+  img { display: block; }
+</style></head>
+<body>
+<section id="fixed"><div class="title">A title that grew longer than its box</div><p id="below" style="margin: 0">Text right below it</p></section>
+<section id="abs"><span class="tag">Overlapping label</span><p id="under">Paragraph text under the label</p></section>
+<section><p id="tight">These lines are painted on top of each other</p></section>
+
+<section id="url"><div class="card"><p>See https://example.com/a/really/long/address/that/does/not/break</p></div></section>
+<section id="wide"><div class="card"><div></div></div></section>
+<section id="btn"><button>Save changes</button></section>
+
+<section id="flex"><div class="row"><p id="desc">Shows every open invoice with its due date</p><span class="fixed">A very long label that will not shrink, really</span></div></section>
+<section id="anywhere"><div class="row"><p id="word">Internationalization</p><span class="fixed">A very long label that will not shrink at all</span></div></section>
+<section id="zero"><div class="row"><span id="gone">Nobody sees this</span><span class="fixed">Rest</span></div></section>
+
+<section id="images">
+  <img id="stretched" alt="stretched" width="100" height="100" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAIAAAA7N+mxAAABZElEQVR4nAXBIQGAMBBA0QuAnFgAxCQBLgByggCISQKc/GJyggATkwS4AAQgAAEIwnsiwiREYRYWQYVV2IRdOAQTqnAKXbgEF27hEV7hE0QCUyAG5sAS0MAa2AJ74AhYoAbOQA9cAQ/cgSfwBr6ASGJKxMScWBKaWBNbYk8cCUvUxJnoiSvhiTvxJN7ElxBRJiUqs7IoqqzKpuzKoZhSlVPpyqW4ciuP8iqfIpKZMjEzZ5aMZtbMltkzR8YyNXNmeubKeObOPJk382VEClMhFubCUtDCWtgKe+EoWKEWzkIvXAUv3IWn8Ba+gogxGdGYjcVQYzU2YzcOw4xqnEY3LsON23iM1/gMkcbUiI25sTS0sTa2xt44GtaojbPRG1fDG3fjabyNryEymAZxMA+WgQ7WwTbYB8fABnVwDvrgGvjgHjyDd/ANRJzJic7sLI46q7M5u3M45lTndLpzOe7czuO8zuf8rnADcCMlkwMAAAAASUVORK5CYII=">
+  <img id="blurry" alt="blurry" width="200" height="100" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAIAAAA7N+mxAAABZElEQVR4nAXBIQGAMBBA0QuAnFgAxCQBLgByggCISQKc/GJyggATkwS4AAQgAAEIwnsiwiREYRYWQYVV2IRdOAQTqnAKXbgEF27hEV7hE0QCUyAG5sAS0MAa2AJ74AhYoAbOQA9cAQ/cgSfwBr6ASGJKxMScWBKaWBNbYk8cCUvUxJnoiSvhiTvxJN7ElxBRJiUqs7IoqqzKpuzKoZhSlVPpyqW4ciuP8iqfIpKZMjEzZ5aMZtbMltkzR8YyNXNmeubKeObOPJk382VEClMhFubCUtDCWtgKe+EoWKEWzkIvXAUv3IWn8Ba+gogxGdGYjcVQYzU2YzcOw4xqnEY3LsON23iM1/gMkcbUiI25sTS0sTa2xt44GtaojbPRG1fDG3fjabyNryEymAZxMA+WgQ7WwTbYB8fABnVwDvrgGvjgHjyDd/ANRJzJic7sLI46q7M5u3M45lTndLpzOe7czuO8zuf8rnADcCMlkwMAAAAASUVORK5CYII=">
+  <img id="svgstretch" alt="logo" style="width: 120px; height: 120px" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50'%3E%3Crect width='100' height='50' fill='teal'/%3E%3C/svg%3E">
+</section>
+</body></html>
