@@ -47,7 +47,7 @@
     --tm-tone: var(--tm-accent);
 
     /* scales */
-    --tm-space-none: 0;
+    --tm-space-none: 0px; /* with a unit, so it works in max() and min() (a unitless 0 there is invalid) */
     --tm-space-xs: 0.25rem;
     --tm-space-sm: 0.5rem;
     --tm-space-md: 1rem;
@@ -245,7 +245,7 @@
   }
   /* data-tm-layout must not reveal a closed dialog or popover. */
   [data-tm-layout]:is(dialog:not([open]), [popover]:not(:popover-open)) { display: none; }
-  :where([data-tm-gap="none"]) { --_gap: 0; }
+  :where([data-tm-gap="none"]) { --_gap: 0px; }
   :where([data-tm-gap="xs"]) { --_gap: var(--tm-space-xs); }
   :where([data-tm-gap="sm"]) { --_gap: var(--tm-space-sm); }
   :where([data-tm-gap="md"]) { --_gap: var(--tm-space-md); }
@@ -285,7 +285,7 @@
   :where(dialog[data-tm-layout="stack"]) > :where([data-tm-grow]),
   :where(dialog) > :where([data-tm-layout="stack"]:has(> header, > footer)) > :where([data-tm-grow]) { flex-basis: auto; }
   :where([data-tm-pad]) { padding: var(--_pad); }
-  :where([data-tm-pad="none"]) { --_pad: 0; }
+  :where([data-tm-pad="none"]) { --_pad: 0px; } /* 0px, not 0: center takes max(md, --_pad), which a unitless 0 makes invalid (its width limit was lost) */
   :where([data-tm-pad="xs"]) { --_pad: var(--tm-space-xs); }
   :where([data-tm-pad="sm"]) { --_pad: var(--tm-space-sm); }
   :where([data-tm-pad="md"]) { --_pad: var(--tm-space-md); }

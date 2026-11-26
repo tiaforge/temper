@@ -198,7 +198,8 @@
     padding-block: clamp(var(--tm-space-xl), 5vw, calc(var(--tm-space-xl) * 2.5));
     padding-inline: var(--tm-space-md);
   }
-  :where([data-tm-hero]) > :where(p) { max-inline-size: 36rem; font-size: var(--tm-text-lg); }
+  /* a hero's plain paragraph is a lead; one with data-tm-display keeps its display size */
+  :where([data-tm-hero]) > :where(p:not([data-tm-display])) { max-inline-size: 36rem; font-size: var(--tm-text-lg); }
 
   /* bento: temper's grid (columns at least --tm-min wide) with rows, dense filling and spans */
   :where([data-tm-bento]) {
