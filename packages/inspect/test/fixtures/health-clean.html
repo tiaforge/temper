@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Look-alikes</title>
+<!-- Patterns that resemble the problems in health-broken.html and are fine: none of the runtime or document checks may
+     fire here. -->
+<style>
+  @font-face { font-family: Unused; src: url(health-missing.woff2) format("woff2"); } /* never used: never loaded */
+  @keyframes spin { to { rotate: 1turn; } }
+  .spinner::after { content: ""; display: inline-block; inline-size: 1em; block-size: 1em; animation: spin 1s linear infinite; }
+</style></head>
+<body>
+<main>
+  <h1 id="top-heading">Look-alikes</h1>
+  <!-- same-page links that need no target: "#", "#top", hash-router paths, an old-style named anchor -->
+  <ul><li><a href="#">Nothing</a><li><a href="#top">Top</a><li><a href="#/contacts">Contacts route</a><li><a href="#!/books">Books route</a>
+    <li><a href="#section">Section</a><li><a href="#old">Old anchor</a><li><a href="#caf%C3%A9">Café</a></ul>
+  <section id="section"><h2>Section</h2><a name="old"></a><p id="café">Encoded id</p></section>
+
+  <!-- images: none, an SVG without intrinsic size, a lazy one far below that is never loaded -->
+  <img alt="">
+  <img alt="Logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle r='5'/%3E%3C/svg%3E" width="20" height="20">
+  <div style="block-size: 6000px"></div>
+  <img alt="Far below" loading="lazy" src="health-missing.png" width="20" height="20">
+
+  <!-- references that resolve -->
+  <label for="name">Name</label><input id="name" list="names" aria-describedby="name-hint"><datalist id="names"><option>Mira</option></datalist>
+  <p id="name-hint">Your full name.</p>
+  <button aria-labelledby="save-label"><span id="save-label">Save</span></button>
+  <button aria-controls="menu" popovertarget="menu" type="button">Menu</button><div popover id="menu">Menu items</div>
+  <template><p id="name">a template's ids are not in the document</p></template>
+
+  <!-- forms: typed buttons next to one submit button, a dialog form whose buttons each close it -->
+  <form action="javascript:void 0"><input aria-label="Query"><button type="button" commandfor="help" command="show-modal">Help</button>
+    <button type="button" popovertarget="menu">Menu</button><button>Search</button></form>
+  <dialog id="help"><form method="dialog"><p>Help text that is long enough to count.</p><button>Cancel</button><button>OK</button></form></dialog>
+
+  <!-- busy indicators spin by design; a short fade-in ends before the check -->
+  <button class="spinner" aria-busy="true">Saving</button>
+  <p id="fade">Fading in</p>
+</main>
+<script>
+  document.getElementById('fade').animate([{ opacity: 0 }, { opacity: 1 }], 600);
+  console.log('just a log'); console.warn('just a warning');
+  try { null.x; } catch {}
+  const c = new AbortController(); fetch('api/slow', { signal: c.signal }).catch(() => {}); c.abort();
+  // a dev server's HMR socket that does not connect
+  try { new WebSocket(location.origin.replace(/^http/, 'ws') + '/hmr'); } catch {}
+</script>
+</body></html>

@@ -15,7 +15,7 @@ import { findBrowser, launch } from '../lib/cdp.js';
 let browser = null;
 try { browser = findBrowser(); } catch {}
 const skip = !browser && 'no Chrome/Chromium found';
-const PAGE = '<!doctype html><html lang="en"><title>t</title><main><h1>Hello</h1><p>Some text.</p></main></html>';
+const PAGE = '<!doctype html><html lang="en"><meta name="viewport" content="width=device-width"><title>t</title><main><h1>Hello</h1><p>Some text.</p></main></html>';
 
 async function serve(onRequest = () => {}) {
   let hits = 0;

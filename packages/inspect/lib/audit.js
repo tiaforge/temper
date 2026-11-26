@@ -64,7 +64,147 @@ export function install(opts) {
 
   // ── document checks: once per page, in the 'page' state (doctype, viewport, ids, references, images, fonts) ──
   // add(severity, code, element | selector text | null, message)
-  function checkDocument(add) {}
+  // Settling: a check during a transition describes a moment of it (half-faded text fails contrast, a sliding panel
+  // sticks out). Finite animations get up to 2s to end; the ones still running after that are reported below.
+  prepares.push(async () => {
+    const finite = document.getAnimations().filter(a => a.playState === 'running' && Number.isFinite(a.effect?.getComputedTiming().endTime));
+    if (finite.length) await Promise.race([Promise.all(finite.map(a => a.finished.catch(() => {}))), sleep(2000)]);
+  });
+  const LOAD_SHIFT_WINDOW = 3000; // ms after the load event that still count as loading (the dev client checks long after)
+  function checkDocument(add) {
+    const root = document.documentElement;
+    // the document as a whole
+    if (document.compatMode === 'BackCompat')
+      add('error', 'doctype', null, 'the page renders in quirks mode (no <!doctype html> as its first line), so sizes, line heights and tables lay out unlike in any other page; add <!doctype html>');
+    const vp = [...document.querySelectorAll('meta[name="viewport" i]')].at(-1);
+    const vpv = Object.fromEntries((vp?.content ?? '').toLowerCase().split(/[,;]/).map(p => p.split('=').map(s => s.trim())).filter(([k]) => k));
+    // initial-scale alone also sets the layout width to the device width
+    if (vpv.width !== 'device-width' && !vpv['initial-scale'])
+      add('error', 'viewport', vp ?? null, `${vp ? 'the viewport meta tag has no width=device-width' : 'no <meta name="viewport" content="width=device-width, initial-scale=1">'}: a phone lays the page out about 980px wide and scales it down, so text is tiny and the narrow layout never shows. temper-inspect's narrow pass does not emulate that, so its 390px results do not describe a phone for this page`);
+    if (vp && (/^(no|0)$/.test(vpv['user-scalable'] ?? '') || parseFloat(vpv['maximum-scale']) < 2))
+      add('warning', 'zoom', vp, `the viewport meta tag stops zooming (${['user-scalable', 'maximum-scale'].filter(k => k in vpv).map(k => `${k}=${vpv[k]}`).join(', ')}), so people who need larger text cannot pinch to zoom; remove it`);
+    if (!root.getAttribute('lang')?.trim()) add('warning', 'lang', 'html', 'the <html> element has no lang attribute, so screen readers guess the language (and its pronunciation) and hyphenation does not work; add e.g. lang="en"');
+    if (!document.title.trim()) add('warning', 'title', null, 'the page has no <title> (or an empty one): tabs, bookmarks, history and screen readers show the URL instead');
+
+    // images whose source did not load (not yet loaded ones, lazy ones below the fold, are not complete)
+    for (const img of document.images) {
+      if (!img.complete || img.naturalWidth > 0 || !(img.currentSrc || img.getAttribute('src'))) continue;
+      const src = img.currentSrc || img.src, shown = src.startsWith(location.origin + '/') ? src.slice(location.origin.length) : src;
+      add('error', 'image', img, `its image did not load (${src.startsWith('data:') ? 'a data: URL that does not decode' : shown.length > 100 ? shown.slice(0, 100) + '…' : shown}), so it shows as a broken image`);
+      findings.at(-1).resource = src; // the CLI reports the failed request too; this lets it drop that duplicate
+    }
+
+    // web fonts that failed (unused ones stay 'unloaded'; the browser falls back silently)
+    for (const f of document.fonts ?? []) if (f.status === 'error')
+      add('warning', 'font', `@font-face "${f.family.replace(/^["']|["']$/g, '')}"${f.weight !== 'normal' ? ` ${f.weight}` : ''}${f.style !== 'normal' ? ` ${f.style}` : ''}`,
+        'this web font failed to load (missing file, wrong URL or format), so text set in it falls back to another font');
+
+    // ids and the attributes that refer to them. Light DOM only: ids inside a shadow root are its own.
+    const byId = new Map();
+    for (const el of document.querySelectorAll('[id]')) if (el.id) byId.has(el.id) ? byId.get(el.id).push(el) : byId.set(el.id, [el]);
+    const named = new Set([...document.querySelectorAll('a[name]')].map(a => a.name)); // old-style anchors are link targets too
+    const referenced = new Map(); // id -> how it is referred to, for the duplicate check
+    const ids = v => v.trim().split(/\s+/).filter(Boolean);
+    // [selector, attribute, severity when it points at nothing]: error where the reference does nothing at all, warning where
+    // frameworks often render the target only while it is shown (aria-controls of a closed menu)
+    const REFS = [['label[for]', 'for', 'error'], ['[commandfor]', 'commandfor', 'error'], ['[popovertarget]', 'popovertarget', 'error'],
+      ['[aria-labelledby]', 'aria-labelledby', 'error'], ['input[list]', 'list', 'error'],
+      [':is(button, fieldset, input, object, output, select, textarea)[form]', 'form', 'error'],
+      ['[aria-describedby]', 'aria-describedby', 'warning'], ['[aria-controls]', 'aria-controls', 'warning'], ['[aria-owns]', 'aria-owns', 'warning'],
+      ['[aria-activedescendant]', 'aria-activedescendant', 'warning'], ['[aria-details]', 'aria-details', 'warning'],
+      ['[aria-errormessage]', 'aria-errormessage', 'warning'], [':is(td, th)[headers]', 'headers', 'warning']];
+    const NAMES_FROM_CONTENT = 'a[href], button, summary, legend, caption, td, th, h1, h2, h3, h4, h5, h6, [role=button], [role=link], [role=tab], [role=menuitem], [role=option], [role=cell], [role=heading], [role=switch], [role=checkbox], [role=radio], [role=tooltip], [role=treeitem]';
+    const COMMANDS = { 'show-modal': 'dialog', close: 'dialog', 'request-close': 'dialog', 'toggle-popover': 'popover', 'show-popover': 'popover', 'hide-popover': 'popover' };
+    for (const [selector, attr, severity] of REFS) for (const el of document.querySelectorAll(selector)) {
+      const want = ids(el.getAttribute(attr));
+      for (const id of want) if (!referenced.has(id)) referenced.set(id, `${el.localName}[${attr}]`);
+      const missing = want.filter(id => !byId.has(id));
+      const target = want.length === 1 && !missing.length ? byId.get(want[0])[0] : null;
+      if (missing.length) {
+        let sev = severity;
+        // aria-labelledby: the name is lost only when no id resolves and nothing else names the element
+        if (attr === 'aria-labelledby' && (missing.length < want.length || el.getAttribute('aria-label')?.trim() || el.title || el.labels?.length
+          || (el.matches(NAMES_FROM_CONTENT) && el.textContent.trim()))) sev = 'warning';
+        const what = missing.map(id => `"${id}"`).join(', ');
+        add(sev, 'ref', el, `${attr}="${el.getAttribute(attr).trim().slice(0, 60)}" points at no element (no id ${what})${
+          { for: ', so the label is not attached to any field', commandfor: ', so the button does nothing', popovertarget: ', so the button opens nothing',
+            'aria-labelledby': sev === 'error' ? ', so it has no accessible name' : '', list: ', so the field has no suggestions', form: ', so the control belongs to no form' }[attr] ?? ''}`);
+      } else if (target) {
+        // the element exists but cannot be what the attribute needs
+        const command = attr === 'commandfor' ? COMMANDS[el.getAttribute('command')] : null;
+        const wrong = attr === 'for' && el.localName === 'label' && !el.control ? 'which is not a field a label can name'
+          : attr === 'popovertarget' && !target.hasAttribute('popover') ? 'which has no popover attribute, so the button opens nothing'
+          : command === 'dialog' && target.localName !== 'dialog' ? `which is not a <dialog>, so command="${el.getAttribute('command')}" does nothing`
+          : command === 'popover' && !target.hasAttribute('popover') ? `which has no popover attribute, so command="${el.getAttribute('command')}" does nothing`
+          : attr === 'list' && target.localName !== 'datalist' ? 'which is not a <datalist>, so the field has no suggestions'
+          : attr === 'form' && target.localName !== 'form' ? 'which is not a <form>, so the control belongs to no form' : '';
+        if (wrong) add('error', 'ref', el, `${attr}="${want[0]}" points at ${sel(target).split(' "')[0]}, ${wrong}`);
+      }
+    }
+    // same-page links; not "#", "#top" (the browser scrolls up), hash-router paths (#/route, #!/route) or text fragments
+    for (const a of document.querySelectorAll('a[href^="#"]')) {
+      let id = a.getAttribute('href').slice(1);
+      try { id = decodeURIComponent(id); } catch {}
+      if (!id || id.toLowerCase() === 'top' || /[/!=&?]|^:~:/.test(id)) continue;
+      if (!referenced.has(id)) referenced.set(id, 'a[href]');
+      if (!byId.has(id) && !named.has(id)) add('warning', 'ref', a, `links to #${id}, but no element has that id, so the link goes nowhere`);
+    }
+    for (const [id, els] of byId) {
+      if (els.length < 2) continue;
+      const by = referenced.get(id);
+      add(by ? 'error' : 'warning', 'id', els[0], `id "${id}" is on ${els.length} elements (${els.slice(0, 4).map(e => e.localName).join(', ')}${els.length > 4 ? ', …' : ''})${
+        by ? `, and ${by} refers to it: it only reaches the first one` : '; ids must be unique, references to it reach only the first one'}`);
+    }
+
+    // buttons in forms: a <button> without type is a submit button, and a submit button ignores popovertarget
+    for (const b of document.querySelectorAll('button[popovertarget]')) if (b.type === 'submit' && b.form)
+      add('error', 'submit', b, `${b.hasAttribute('type') ? 'has type="submit"' : 'has no type'}, so inside ${sel(b.form).split(' "')[0]} it submits the form instead of opening #${b.getAttribute('popovertarget')}; add type="button"`);
+    // Chrome: "Buttons associated with forms that include command or commandfor attributes are ambiguous, and require a
+    // type=button attribute. No action will be taken." Such a button neither submits nor runs its command.
+    for (const b of document.querySelectorAll('button[commandfor]:not([type])')) if (b.form)
+      add('error', 'submit', b, `has commandfor but no type, so inside ${sel(b.form).split(' "')[0]} the browser treats it as ambiguous and a click does nothing; add type="button"`);
+    for (const form of document.forms) {
+      if (form.method === 'dialog') continue; // each button closes the dialog: fine
+      const typeless = [...form.elements].filter(b => b.localName === 'button' && b.type === 'submit' && !b.hasAttribute('type') && !b.hasAttribute('popovertarget'));
+      if (typeless.length >= 2) add('info', 'submit', form, `has ${typeless.length} buttons without a type, and each one submits it (${typeless.slice(0, 4).map(b => `"${(b.innerText.trim() || b.getAttribute('aria-label') || '…').slice(0, 30)}"`).join(', ')}${typeless.length > 4 ? ', …' : ''}); give the ones that should not submit type="button"`);
+    }
+
+    // layout shift while loading: summed over the shifts not caused by input. The dev client checks long after load, so
+    // only shifts up to a few seconds after the load event count.
+    if (PerformanceObserver.supportedEntryTypes?.includes('layout-shift')) try {
+      const o = new PerformanceObserver(() => {});
+      o.observe({ type: 'layout-shift', buffered: true });
+      const loaded = performance.getEntriesByType('navigation')[0]?.loadEventEnd || performance.now();
+      const shifts = o.takeRecords().filter(e => !e.hadRecentInput && e.startTime <= loaded + LOAD_SHIFT_WINDOW);
+      o.disconnect();
+      const score = shifts.reduce((s, e) => s + e.value, 0);
+      if (score >= 0.01) {
+        const moved = new Map(); // element -> px moved in total
+        for (const e of shifts) for (const s of e.sources ?? []) {
+          const el = s.node?.nodeType === 1 ? s.node : s.node?.parentElement;
+          if (!el?.isConnected) continue;
+          const px = Math.max(Math.abs(s.currentRect.top - s.previousRect.top), Math.abs(s.currentRect.left - s.previousRect.left));
+          moved.set(el, (moved.get(el) ?? 0) + px);
+        }
+        const top = [...moved].sort((a, b) => b[1] - a[1]).slice(0, 3);
+        add(score > 0.1 ? 'warning' : 'info', 'shift', top[0]?.[0] ?? null, `the layout shifted while the page loaded (cumulative layout shift ${score.toFixed(2)}${score > 0.1 ? ', above 0.1' : ''})${
+          top.length ? `: ${top.map(([el, px]) => `${sel(el).split(' "')[0]} moved ${Math.round(px)}px`).join(', ')}` : ''}; reserve the space of what arrives late (image sizes, min-height, font metrics)`);
+      }
+    } catch {} // no layout-shift entries outside Chromium
+
+    // still moving when checked (infinite animations; finite ones had their time in prepare()). Busy indicators spin by
+    // design (temper's pulse under reduced motion): not a state to wait for.
+    const moving = new Map();
+    for (const a of document.getAnimations()) {
+      const el = a.effect?.target;
+      if (a.playState !== 'running' || !(a.timeline instanceof DocumentTimeline) || !el?.isConnected || !el.checkVisibility()) continue;
+      if (el.closest('[aria-busy="true"], progress, [role=progressbar]')) continue;
+      const name = a.animationName ?? (a.transitionProperty ? `transition of ${a.transitionProperty}` : a.id || 'animation');
+      moving.has(el) ? moving.get(el).push(name) : moving.set(el, [name]);
+    }
+    for (const [el, names] of moving)
+      add('info', 'settle', el, `is still animating when checked (${[...new Set(names)].join(', ')}), so findings and screenshots show one moment of it`);
+  }
 
   // ── visibility ──
   let scope = document.body; // a modal dialog limits checks to itself
@@ -129,7 +269,10 @@ export function install(opts) {
     for (const el of els.filter(e => e.matches(INTERACTIVE))) {
       const r = R(el);
       const isField = el.matches('input, select, textarea');
-      const name = el.getAttribute('aria-label') || el.getAttribute('aria-labelledby') || el.getAttribute('title')
+      // aria-labelledby names the element only with the text of elements it points at (a dangling id or an empty one: none)
+      const name = el.getAttribute('aria-label')?.trim() || (el.getAttribute('aria-labelledby') ?? '').split(/\s+/).filter(Boolean)
+        .map(id => { const t = el.getRootNode().getElementById?.(id) ?? document.getElementById(id); return t ? (t.getAttribute('aria-label') ?? '').trim() || t.textContent.trim() : ''; }).join('')
+        || el.getAttribute('title')
         || (isField ? (el.labels?.length ? 'label' : '') : (el.innerText.trim() || el.querySelector('img[alt]:not([alt=""]), svg title')?.textContent || el.querySelector('img[alt]')?.alt));
       if (!name && !(isField && ['submit', 'reset', 'button'].includes(el.type) && el.value)) {
         if (isField && el.placeholder) add('warning', 'label', el, 'has only a placeholder, no label');

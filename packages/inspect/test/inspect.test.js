@@ -95,7 +95,7 @@ test('--cookie and --header reach pages behind a login', { skip: !browser && 'no
     seen.push({ url: req.url, cookie: req.headers.cookie ?? '', token: req.headers['x-token'] ?? '' });
     const ok = /(^|; )session=abc 123($|;)/.test(req.headers.cookie ?? '') && req.headers['x-token'] === 't1';
     res.setHeader('content-type', 'text/html');
-    res.end(`<!doctype html><html lang="en"><title>t</title><main><h1>Private</h1>${ok ? '' : '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">'}</main></html>`);
+    res.end(`<!doctype html><html lang="en"><meta name="viewport" content="width=device-width"><title>t</title><main><h1>Private</h1>${ok ? '' : '<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">'}</main></html>`);
   });
   await new Promise(r => srv.listen(0, '127.0.0.1', r));
   const url = `http://127.0.0.1:${srv.address().port}/private`;
