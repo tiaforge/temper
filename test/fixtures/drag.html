@@ -24,6 +24,20 @@
   </ul>
   <div data-tm-layout="row" data-tm-gap="sm" id="cols">
     <section id="col-1" data-tm-drop="before">Column</section><section id="col-2" data-tm-drop="after">Column</section>
+    <!-- dropped into: an outline only; its own ::after (a menu caret, a spinner) is left alone -->
+    <button type="button" id="col-3" data-tm-drop="inside">Folder</button>
+  </div>
+  <!-- window splitters between panes; tabindex="-1" is not in the tab order, so not a splitter temper draws -->
+  <div data-tm-layout="row" data-tm-wrap="none" data-tm-gap="none" style="block-size: 120px">
+    <div style="inline-size: 200px">Folders</div>
+    <div role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize folders" aria-valuenow="200" id="sep-v"></div>
+    <div data-tm-grow>Messages</div>
+  </div>
+  <div data-tm-layout="stack" data-tm-gap="none" style="block-size: 200px">
+    <div style="block-size: 80px">Top</div>
+    <div role="separator" tabindex="0" aria-label="Resize top" aria-valuenow="80" id="sep-h"></div>
+    <div role="separator" tabindex="-1" id="sep-off"></div>
+    <div data-tm-grow>Bottom</div>
   </div>
 </main>
 </body>

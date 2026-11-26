@@ -244,7 +244,7 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 | `sheet.css` | 0.6 KB | dialogs as sheets (`data-tm-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
 | `expressive.css` | 2.0 KB | opt-in voice: glass, gradient and mesh surfaces, grain, brand-tinted elevation and halo, display type and font pairings, hero and bento layouts, seeded gradients (`data-tm-surface`, `data-tm-display`, `data-tm-bento`, …) |
 | `drag.css` | 0.8 KB | dragging and resizing: drag handles (`data-tm-handle`, grip, grab cursor, quiet until hover), the lifted row (`data-tm-lifted`), drop lines and targets (`data-tm-drop`) |
-| `all.css` | 14.6 KB | everything |
+| `all.css` | 14.7 KB | everything |
 | `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 <!-- /sizes -->
 

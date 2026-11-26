@@ -118,6 +118,10 @@ test('avatar initials: the capitals sit in the middle of the circle, in any font
         return { id, off: baseline - cap / 2 - (box.top + box.height / 2), baseline, text };
       });
     })()`);
+    // text too long for the circle is clipped to it (overflow: clip keeps the inline baseline, unlike hidden)
+    const long = await page.evaluate(`(() => { const a = document.getElementById('av-long'), r = a.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.right + 3, r.top + r.height / 2); return { overflow: getComputedStyle(a).overflow, wider: a.scrollWidth > r.width, outside: hit === a }; })()`);
+    assert.deepEqual(long, { overflow: 'clip', wider: true, outside: false });
     if (!r) return; // no text-box: the line box is centred, as before
     for (const a of r) {
       assert.ok(Math.abs(a.off) <= 0.5, `${a.id}: the capitals' middle is ${a.off.toFixed(2)}px from the circle's`);
@@ -172,13 +176,20 @@ test('data-tm-plain: a calendar grid has none of the data-table look; a data tab
       const clear = /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/.test(bg);
       assert.equal(!clear, filled, `${t} on hover: ${bg}`);
     }
-    // a selected row of a plain table (selection styles of table.css, 0,2,0 while hovered) has no fill either
+    // a selected row of a plain table (table.css's selection rules, specificity 0,4,1 through :is()) has no fill either
     const c = await page.evaluate(`(() => { const r = document.getElementById('cal-tr').getBoundingClientRect(); return [r.x + 5, r.y + r.height / 2]; })()`);
     await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: c[0], y: c[1] });
     await new Promise(res => setTimeout(res, 300));
-    const sel = await page.evaluate(`(() => { const tr = document.getElementById('cal-tr'); tr.setAttribute('aria-selected', 'true'); return [getComputedStyle(tr).backgroundColor, tr.matches(':hover')]; })()`);
+    // read once the row's background transition has run (read at once, it still shows the start: no fill)
+    await page.evaluate(`document.getElementById('cal-tr').setAttribute('aria-selected', 'true')`);
+    await new Promise(res => setTimeout(res, 300));
+    const sel = await page.evaluate(`(() => { const tr = document.getElementById('cal-tr'); return [getComputedStyle(tr).backgroundColor, tr.matches(':hover')]; })()`);
     assert.ok(sel[1], 'hovered');
-    assert.match(sel[0], /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/, `selected plain row: ${sel}`);
+    assert.match(sel[0], /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/, `selected plain row, hovered: ${sel}`);
+    await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
+    await new Promise(res => setTimeout(res, 300));
+    const still = await page.evaluate(`getComputedStyle(document.getElementById('cal-tr')).backgroundColor`);
+    assert.match(still, /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/, `selected plain row: ${still}`);
     // the day buttons keep their own styles (a ghost button, the pressed fill)
     const day = await page.evaluate(`(() => { const d = getComputedStyle(document.getElementById('cal-day')); return [d.cursor, d.borderRadius, d.minHeight]; })()`);
     assert.deepEqual(day.slice(0, 2), ['pointer', '8px']);

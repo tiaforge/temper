@@ -17,9 +17,9 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 
 /**
  * Opens fixtures/drag.html. hover: true applies drag.css's (hover: hover) rules, as on a device with a mouse
- * (headless Chrome reports hover: none, and CDP cannot emulate hover).
+ * (headless Chrome reports hover: none, and CDP cannot emulate hover). media: emulated features ({ 'forced-colors': 'active' }).
  */
-async function withPage({ width = 800, hover = false } = {}, fn) {
+async function withPage({ width = 800, hover = false, media = {} } = {}, fn) {
   const srv = createServer(async (req, res) => {
     try {
       const body = await readFile(join(root, decodeURIComponent(req.url.split('?')[0])));
@@ -32,7 +32,8 @@ async function withPage({ width = 800, hover = false } = {}, fn) {
   try {
     const page = await b.newPage();
     await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/drag.html`, { width, height: 700, scheme: 'light', settle: 100 });
-    await page.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+    await page.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' },
+      ...Object.entries(media).map(([name, value]) => ({ name, value }))] });
     await page.evaluate(`(() => {
       if (${hover}) {
         const sheet = [...document.styleSheets].find(s => s.href?.endsWith('/drag.css'));
@@ -120,6 +121,40 @@ test('a lifted row is raised; a drop place is a line centred on an edge (inline 
     // no margins: the rows keep their places (stack gap sm = 8px between rows of equal height)
     const steps = r.gaps.slice(1).map((y, i) => y - r.gaps[i]);
     assert.ok(steps.every(s => s === steps[0]), `rows moved: ${steps}`);
+  });
+});
+
+test('a drop inside is an outline only; forced colors give a lifted row a ring', { skip }, async () => {
+  await withPage({}, async page => {
+    // in a row, the inline-edge line rules are for before and after: a dropped-into child's own ::after is untouched
+    assert.deepEqual(await page.evaluate(`[cs('col-3', '::after').borderInlineStartWidth, cs('col-3').outlineStyle]`), ['0px', 'solid']);
+  });
+  await withPage({ media: { 'forced-colors': 'active' } }, async page => {
+    const r = await page.evaluate(`[cs('c-2').outlineStyle, cs('c-2').outlineWidth, cs('c-2').outlineColor, cs('c-1').outlineStyle]`);
+    assert.deepEqual(r.slice(0, 2), ['solid', '2px'], 'the lifted row has a ring');
+    assert.equal(r[3], 'none', 'others do not');
+  });
+});
+
+test('window splitter: a 1px line with a 9px hit area, accent and wider on hover and focus; the cursor by orientation', { skip }, async () => {
+  await withPage({}, async page => {
+    const r = await page.evaluate(`(() => {
+      const v = box('sep-v'), h = box('sep-h');
+      const hits = [-4, 0, 4, 6].map(d => document.elementFromPoint(v.x + d, v.y + v.h / 2)?.id ?? '');
+      return { v: [v.w, cs('sep-v').cursor, cs('sep-v').touchAction, cs('sep-v').borderInlineStartWidth],
+        h: [h.h, cs('sep-h').cursor, cs('sep-h').borderTopWidth], hits, off: [cs('sep-off').cursor, cs('sep-off').borderTopWidth] };
+    })()`);
+    assert.deepEqual(r.v, [1, 'col-resize', 'none', '1px']);
+    assert.deepEqual(r.h, [1, 'row-resize', '1px']);
+    assert.deepEqual(r.hits, ['sep-v', 'sep-v', 'sep-v', ''], 'the hit area reaches 4px each side');
+    assert.deepEqual(r.off, ['auto', '0px'], 'tabindex="-1" is not drawn as a splitter');
+    // with transitions off: the reduced-motion rule gives every property a 1ms transition, which a page that draws no
+    // frames never finishes
+    const rest = await page.evaluate(`$('sep-v').style.transition = 'none'; cs('sep-v').borderInlineStartColor`);
+    await page.evaluate(`$('sep-v').focus({ focusVisible: true })`);
+    const f = await page.evaluate(`[cs('sep-v').borderInlineStartColor, cs('sep-v').outlineWidth, cs('sep-v').outlineStyle]`);
+    assert.notEqual(f[0], rest, 'accent on focus');
+    assert.deepEqual(f.slice(1), ['1px', 'solid'], '3px wide with the outline');
   });
 });
 
