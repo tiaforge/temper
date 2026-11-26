@@ -76,7 +76,8 @@
       radial-gradient(70% 95% at 100% 0%, var(--tm-tint-3), transparent 75%),
       radial-gradient(90% 85% at 55% 110%, var(--tm-tint-2), transparent 75%);
   }
-  /* wash: the mesh's colour at the top of a page or pane only, fading out within the first screenful, with no box, so
+  /* wash: the mesh's colour at the top of a page or pane only, fading out within the first screenful (18rem; a fixed size,
+     since Chromium refuses min() with a percentage in a gradient's size), with no box, so
      a working view keeps a plain background. It stays at the top of the pane (attachment scroll, painted under the
      scrollbar gutter too: no seam at the edge) */
   :where([data-tm-surface="wash"]) {
@@ -154,7 +155,7 @@
 
 /* ───────────── type ───────────── */
 @layer tm.components {
-  :where([data-tm-display], [data-tm-figure]) {
+  :where([data-tm-display]) {
     font-family: var(--tm-font-display);
     font-weight: var(--tm-display-weight);
     letter-spacing: var(--tm-display-tracking);
@@ -165,8 +166,11 @@
   :where([data-tm-display="hero"]) { font-size: clamp(2.75rem, 1.4rem + 5.2vw, 5.5rem); line-height: 0.98; }
   :where([data-tm-display="xl"]) { font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem); }
   :where([data-tm-display="lg"]) { font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem); }
+  /* a big number is data, not a display moment: the UI face, semibold, tabular */
   :where([data-tm-figure]) {
     font-size: clamp(2rem, 1.5rem + 1.8vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums lining-nums;
     line-height: 1;
   }

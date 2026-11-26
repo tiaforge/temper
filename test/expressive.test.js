@@ -140,6 +140,13 @@ test('expressive: bento spans from a 32rem grid, one cell below; the hero pads u
   });
 });
 
+test('expressive: every surface paints (a value the browser refuses drops the whole background silently)', { skip }, async () => {
+  await withPage(async page => {
+    const bg = await page.evaluate(`['mesh', 'wash', 'gradient'].map(id => getComputedStyle(document.getElementById(id)).backgroundImage)`);
+    for (const [i, v] of bg.entries()) assert.match(v, /gradient/, ['mesh', 'wash', 'gradient'][i]);
+  });
+});
+
 test('expressive: every colour comes from --tm-hue (or is white or black with alpha)', () => {
   const css = readFileSync(join(root, 'src/expressive.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   assert.doesNotMatch(css, /\b(rgb|rgba|hsl|hsla)\(/);

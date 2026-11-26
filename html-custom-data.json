@@ -715,7 +715,7 @@
         },
         {
           "name": "wash",
-          "description": "The mesh's colour at the top only, fading out within the first screenful, with no box. On <main> or a pane of a working view: colour at the top, a plain background where people work."
+          "description": "The mesh's colour at the top only, fading out within the first screenful (18rem), with no box of its own. On <main> or a pane of a working view: colour at the top, a plain background where people work."
         }
       ]
     },
@@ -773,7 +773,7 @@
     },
     {
       "name": "data-tm-figure",
-      "description": "temper (expressive.css). On: data, strong, span, p. A big number for stat tiles: display font, tabular figures, tight line. Pair it with a data-tm-caption label.",
+      "description": "temper (expressive.css). On: data, strong, span, p. A big number for stat tiles: the UI face, semibold, tabular figures, tight line (data, not a display moment). Pair it with a data-tm-caption label.",
       "valueSet": "v"
     },
     {

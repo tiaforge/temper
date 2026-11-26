@@ -375,7 +375,7 @@ On: any container: body, main, header, section, article, aside, dialog, nav, div
 - `glass`: Translucent raised surface with a backdrop blur and a hairline highlight. Over a temper surface or the page background.
 - `gradient`: A soft diagonal wash between two tints of the brand hue.
 - `mesh`: Three soft light blobs around the brand hue over the page background: page backgrounds, mastheads, heroes.
-- `wash`: The mesh's colour at the top only, fading out within the first screenful, with no box. On <main> or a pane of a working view: colour at the top, a plain background where people work.
+- `wash`: The mesh's colour at the top only, fading out within the first screenful (18rem), with no box of its own. On <main> or a pane of a working view: colour at the top, a plain background where people work.
 
 ### `data-tm-grain` (boolean, no value)
 
@@ -408,7 +408,7 @@ On: text with data-tm-display or data-tm-figure. Text painted with a gradient of
 
 ### `data-tm-figure` (boolean, no value)
 
-On: data, strong, span, p. A big number for stat tiles: display font, tabular figures, tight line. Pair it with a data-tm-caption label. Needs `expressive.css`.
+On: data, strong, span, p. A big number for stat tiles: the UI face, semibold, tabular figures, tight line (data, not a display moment). Pair it with a data-tm-caption label. Needs `expressive.css`.
 
 ### `data-tm-hero` (boolean, no value)
 

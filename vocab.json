@@ -621,7 +621,7 @@
         "glass": "Translucent raised surface with a backdrop blur and a hairline highlight. Over a temper surface or the page background.",
         "gradient": "A soft diagonal wash between two tints of the brand hue.",
         "mesh": "Three soft light blobs around the brand hue over the page background: page backgrounds, mastheads, heroes.",
-        "wash": "The mesh's colour at the top only, fading out within the first screenful, with no box. On <main> or a pane of a working view: colour at the top, a plain background where people work."
+        "wash": "The mesh's colour at the top only, fading out within the first screenful (18rem), with no box of its own. On <main> or a pane of a working view: colour at the top, a plain background where people work."
       },
       "short": "Background as a material: glass, gradient, mesh, or a wash at the top."
     },
@@ -683,7 +683,7 @@
       "module": "expressive",
       "boolean": true,
       "on": "data, strong, span, p",
-      "description": "A big number for stat tiles: display font, tabular figures, tight line. Pair it with a data-tm-caption label.",
+      "description": "A big number for stat tiles: the UI face, semibold, tabular figures, tight line (data, not a display moment). Pair it with a data-tm-caption label.",
       "short": "A big number (stat tiles)."
     },
     "data-tm-hero": {
