@@ -73,6 +73,13 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   edges, visible at 100% scaling. The start margin is now rounded down and the end takes the rest; browsers without
   `round()` (before Chrome 125) keep `auto`. The `core.css` budget is 6960 B brotli (was 6800) for it.
 
+- `data-tm-avatar` initials sit in the middle of the circle. Centring the line box left capitals off centre by the
+  font's ascent minus descent minus cap height, halved: 1px high in a 2.5rem avatar with DejaVu Sans or FreeSans
+  (measured in Chromium; Inter was exact). Where `text-box` is supported (Chromium 133+, Safari 18.2+) the line is
+  trimmed to the cap height and the baseline, so the capitals are centred in any font (within 0.5px in every font
+  measured); elsewhere (Firefox) the line box stays centred, as before. The avatar no longer clips with
+  `overflow: hidden` (an inline-block with it sits on its bottom edge): its photo is rounded itself.
+
 ### Vite plugin
 
 - `inspect`: the dev page also gets temper-inspect's new document, stylesheet and geometry checks (the client waits

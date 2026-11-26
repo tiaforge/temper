@@ -1,6 +1,6 @@
 // The default look's details (fixtures/look.html in a real browser, skipped without Chrome/Chromium) and the build
 // output: pseudo-element rules that match, the md size, straight tone bars, scrollbars, sticky table headers, font
-// weights, and properties the build targets must keep.
+// weights, avatar initials in the middle, and properties the build targets must keep.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
@@ -78,6 +78,50 @@ test('placeholder, selection, md size, tone bars, scrollbars and sticky headers'
     assert.equal(r.thPage, r.page);
     assert.equal(r.thCard, r.card);
     assert.notEqual(r.page, r.card, 'light mode: the page is off-white, the card white');
+  } finally {
+    await b.close();
+    srv.close();
+  }
+});
+
+test('avatar initials: the capitals sit in the middle of the circle, in any font; inline, the initials keep the text baseline', { skip }, async () => {
+  const srv = createServer(async (req, res) => {
+    try {
+      const body = await readFile(join(root, decodeURIComponent(req.url.split('?')[0])));
+      res.setHeader('content-type', extname(req.url) === '.css' ? 'text/css' : 'text/html');
+      res.end(body);
+    } catch { res.statusCode = 404; res.end(); }
+  });
+  await new Promise(r => srv.listen(0, '127.0.0.1', r));
+  const b = await launch(browser);
+  try {
+    const page = await b.newPage();
+    await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/look.html`, { width: 800, height: 700, scheme: 'light', settle: 100 });
+    const r = await page.evaluate(`(() => {
+      if (!CSS.supports('text-box: trim-both cap alphabetic')) return null;
+      const ctx = document.createElement('canvas').getContext('2d');
+      return ['av-1', 'av-2', 'av-3'].map(id => {
+        const av = document.getElementById(id), s = getComputedStyle(av);
+        // a zero-size inline-block sits on the baseline; the cap height is the font's, measured on an H
+        const mark = av.appendChild(document.createElement('span'));
+        mark.style.cssText = 'display: inline-block; inline-size: 0; block-size: 0';
+        const baseline = mark.getBoundingClientRect().bottom;
+        mark.remove();
+        ctx.font = s.fontWeight + ' ' + s.fontSize + ' ' + s.fontFamily;
+        const cap = ctx.measureText('H').actualBoundingBoxAscent, box = av.getBoundingClientRect();
+        // the paragraph's text baseline next to the avatar
+        const p = av.parentElement.appendChild(document.createElement('span'));
+        p.style.cssText = 'display: inline-block; inline-size: 0; block-size: 0';
+        const text = p.getBoundingClientRect().bottom;
+        p.remove();
+        return { id, off: baseline - cap / 2 - (box.top + box.height / 2), baseline, text };
+      });
+    })()`);
+    if (!r) return; // no text-box: the line box is centred, as before
+    for (const a of r) {
+      assert.ok(Math.abs(a.off) <= 0.5, `${a.id}: the capitals' middle is ${a.off.toFixed(2)}px from the circle's`);
+      assert.ok(Math.abs(a.baseline - a.text) <= 0.5, `${a.id}: initials on ${a.baseline}, the text's baseline ${a.text}`);
+    }
   } finally {
     await b.close();
     srv.close();

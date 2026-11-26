@@ -791,15 +791,22 @@
   :where([data-tm-divider])::before, :where([data-tm-divider])::after { content: ""; flex: 1; border-block-start: 1px solid var(--tm-border); }
   :where([aria-current="date"]:not(a, button)) { color: var(--tm-accent); font-weight: 600; }
 
-  /* avatar: initials or a photo in a circle, colored by tone */
+  /* avatar: initials or a photo in a circle, colored by tone. Centring the line box leaves capitals off centre by the
+     font's (ascent - descent - cap height) / 2: 1px high at 2.5rem in DejaVu Sans. Where text-box is supported the line
+     is trimmed to the cap height and the alphabetic baseline, so the capitals sit in the middle in any font; it needs a
+     block container (text in a grid is an anonymous item, which a trim cannot reach), centred with align-content. Not
+     overflow: hidden, which would put an inline-block's baseline at its bottom edge: the photo is rounded itself */
   :where([data-tm-avatar]) {
     --_av: calc(var(--tm-avatar-size, 2.5rem) * var(--_size, 1));
     display: inline-grid; place-items: center; flex-shrink: 0;
-    inline-size: var(--_av); block-size: var(--_av); border-radius: 50%; overflow: hidden;
+    inline-size: var(--_av); block-size: var(--_av); border-radius: 50%;
     background: var(--tm-tone-soft); color: var(--tm-tone-ink);
     font-size: calc(var(--_av) * 0.4); font-weight: 600; line-height: 1; user-select: none;
   }
-  :where([data-tm-avatar]) > :where(img) { inline-size: 100%; block-size: 100%; object-fit: cover; }
+  @supports (text-box: trim-both cap alphabetic) {
+    :where([data-tm-avatar]) { display: inline-block; align-content: center; text-align: center; text-box: trim-both cap alphabetic; }
+  }
+  :where([data-tm-avatar]) > :where(img) { inline-size: 100%; block-size: 100%; border-radius: inherit; object-fit: cover; }
 
   /* clickable card: [data-tm-stretch] on the card's main link or button makes the whole card clickable */
   :where(article:has([data-tm-stretch])) { position: relative; transition: border-color var(--tm-duration) var(--tm-ease); }
