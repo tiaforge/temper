@@ -181,6 +181,21 @@ test('prune: build only, keeps what the project uses', async () => {
   assert.equal(dev.transform.handler(css, id), undefined);
 });
 
+test('prune: true also scans the plugin\'s paths, such as a component library in node_modules', async () => {
+  const { fileURLToPath } = await import('node:url');
+  const dir = project('<span data-tm-badge>x</span>');
+  const lib = join(dir, 'node_modules/lib/components');
+  mkdirSync(lib, { recursive: true });
+  writeFileSync(join(lib, 'list.html'), '<li data-tm-handle>drag</li>');
+  const id = fileURLToPath(new URL('../dist/core.css', import.meta.url));
+  const css = ':where([data-tm-badge]){--e:1}:where([data-tm-handle]){cursor:grab}:where([data-tm-avatar]){--f:1}';
+  for (const prune of [true, { paths: ['.'] }]) {
+    const plugin = temper({ paths: [dir, lib], prune });
+    plugin.configResolved({ root: dir, command: 'build', logger: { warn() {}, info() {} } });
+    assert.equal(plugin.transform.handler(css, id).code, ':where([data-tm-badge]){--e:1}:where([data-tm-handle]){cursor:grab}');
+  }
+});
+
 test('hot updates report the same diagnostics as the build: project icons count, missing modules are reported', () => {
   const dir = project('<!doctype html><html><body data-tm-shell>\n<button data-tm-icon="rocket" aria-label="Launch"></button>\n<nav data-tm-rail></nav>\n</body></html>');
   writeFileSync(join(dir, 'app.css'), ':root { --tm-icon-rocket: url("data:image/svg+xml,x"); }');

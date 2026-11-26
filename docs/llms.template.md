@@ -45,7 +45,7 @@ export default { plugins: [temper()] };
 // smaller builds: temper({ prune: true }) drops rules for attributes and values the project never uses
 <!-- full -->
 // markup from a package (a component library) is not scanned unless named: with lib = 'node_modules/<pkg>/<components dir>',
-// temper({ paths: ['src', lib], prune: { paths: ['src', lib] } }) checks it, emits its icons and keeps its attributes
+// temper({ paths: ['src', lib], prune: true }) checks it, emits its icons and keeps its attributes (prune scans paths too)
 <!-- /full -->
 // without the plugin: import '@tiaforge-ui/temper/enhance/customizable-select.css' after core.css
 ```

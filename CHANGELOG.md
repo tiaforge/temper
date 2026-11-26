@@ -7,6 +7,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ## Unreleased
 
+### Fixed
+
+- Vite plugin: `prune` now also scans every entry of `paths`, not only the Vite root (or `prune.paths`). A component
+  library named in `paths` (a folder in node_modules) lost the rules for attributes only its markup uses: with
+  sinter-alloy, `[data-tm-handle]` lost `touch-action: none` and touch drags broke on phones.
+
 ### Breaking: every attribute is `data-tm-*`
 
 - temper's attributes moved into their own namespace, as sinter's are `data-sn-*`: `data-variant` is
