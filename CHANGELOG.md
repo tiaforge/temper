@@ -68,6 +68,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   page's images `sizes="auto, 100vw"`. The icon CSS is now a real file, written when the config resolves, and
   `resolve.alias` points the virtual name at it.
 
+### Agent eval in the repository
+
+- `scripts/agent-eval/`: the ten tasks, the grader (headless Chrome, light and dark, 82 checks), a reference
+  solution and the pages of the 0.5 runs. Re-run with the `data-tm-*` names: 20 / 20 tasks with and without
+  `temper check`.
+
 ## 0.4.1 (2026-11-25)
 
 ### Core

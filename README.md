@@ -2,7 +2,7 @@
 
 CSS for plain, semantic HTML with a checked vocabulary, designed so coding agents get it right the first time.
 
-**Compact** core · **20 / 20** agent tasks correct, against 11 for Pico and 10 for daisyUI ·
+**Compact** core · **20 / 20** agent tasks correct ·
 **4,750 → 210** lines of app CSS in a real migration · **no** JS, build step or dependencies
 
 <picture>
@@ -170,25 +170,27 @@ A `data-tm-sr-only` skip link shows while it has focus.
 
 These are the things we measured instead of assuming.
 
-**Agent eval, same tasks, three libraries.** Ten UI tasks from a real calendar/mail app (event form,
-delete confirmation, outline danger button, invalid field, toolbar, status badges, settings
-switches, dark mode, brand color, exact spacing). An agent wrote each one with only the library's
-docs as context, two runs per library. A grader then measured the result in headless Chrome at
-1024×768, in light and dark mode: colors, contrast, alignment, sizes, gaps, accessible names.
+**Agent eval.** Ten UI tasks from a real calendar/mail app (event form, delete confirmation, outline danger
+button, invalid field, toolbar, status badges, settings switches, dark mode, brand color, exact spacing). A fresh
+agent wrote each page with only temper's `llms.txt` and `llms-full.txt` as context; a grader then measured the
+result in headless Chrome at 1024×768, in light and dark mode: colors, contrast, hue, alignment, sizes, gaps,
+accessible names (82 checks per run). Re-run for 0.5, with the `data-tm-*` names:
 
-| Library | Tasks fully correct | Checks passed | Classes used |
-|---|---|---|---|
-| **temper** | **20 / 20** | **142 / 142** | 3 |
-| temper, without running the checker | 20 / 20 | 142 / 142 | 2 |
-| Pico CSS | 11 / 20 | 131 / 142 | 58 |
-| daisyUI | 10 / 20 | 130 / 142 | 243 |
+| Runs (2 each) | Tasks fully correct | Checks passed | Classes used | Own CSS |
+|---|---|---|---|---|
+| **temper, with `temper check`** | **20 / 20** | **164 / 164** | 0 | two tokens on `:root` (brand task) |
+| temper, without the checker | 20 / 20 | 164 / 164 | 0 | the same |
 
-The misses for the others were things a reader won't spot in code review: button text below WCAG
-contrast in dark mode, an "outline danger" button that came out blue because there was no way to
-combine those two, badges with unreadable text, an icon button that wasn't square. The row without
-the checker shows that the vocabulary itself carries most of the weight; the checker is the safety
-net. (It's a small sample: 10 tasks × 2 runs. The harness and task list are not in this repository, so take these as
-reported numbers, not something you can rerun from here.)
+Three of the four runs first missed one check: they set Start and End side by side, as temper's form recipe
+does, and the grader wanted one column. The check now asks that each row of fields start at one x (a ragged form
+still fails), which is what it was meant to test. The checker found nothing to fix in either run with it, so here
+the vocabulary carries the result and the checker is the safety net.
+
+The harness, the agents' pages and a reference solution are in [`scripts/agent-eval/`](scripts/agent-eval/), so
+the numbers can be rerun. An earlier version of the same tasks (with the unprefixed names; that harness was not
+kept) also compared Pico CSS (11 / 20) and daisyUI (10 / 20); their misses were things a reader won't spot in code
+review: button text below WCAG contrast in dark mode, an "outline danger" button that came out blue, badges with
+unreadable text, an icon button that wasn't square. It's a small sample: 10 tasks × 2 runs.
 
 **A real migration.** caley, a calendar, mail and contacts app, was moved from Pico CSS to temper
 page by page: contacts, mail, calendar, search, settings and login, including the Svelte components
