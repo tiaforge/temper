@@ -604,6 +604,10 @@ The header sticks while the page scrolls. Put `data-tm-num` on every cell of a n
 `data-tm-layout` on a `td` (it stops being a cell); wrap the cell content instead. No rows: one
 `<tr><td colspan="5" data-tm-muted>No invoices yet.</td></tr>`.
 
+A table that is a grid of controls, not data (a month calendar: `<table role="grid" data-tm-plain>` with a button
+in each cell), takes `data-tm-plain`: no row lines, cell padding, row hover, full width or sticky header; style its
+cells yourself. A data table with buttons in its rows keeps its look: no `data-tm-plain` there.
+
 ### Fields with an icon, a unit or a button (forms.css)
 
 ```html

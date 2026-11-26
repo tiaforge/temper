@@ -113,6 +113,14 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   down; full width on phones, clear of the notch. For a command palette, which could not be placed near the top
   without an outer margin (TM206).
 
+### Table
+
+- `data-tm-plain` on a `<table>` (requested by sinter-alloy, T8): a grid of controls such as a month calendar
+  (`role="grid"`, a button in each cell) drops temper's data-table look, core's (row lines, cell padding, row hover,
+  full width) and table.css's (sticky header, selected rows), with `all: revert-layer` as prose.css does for layout
+  tables; the buttons in it keep their own styles. Data tables keep their look, also with buttons in their rows. In
+  `table.css`, after its own rules (core.css has no room); without table.css a table keeps core's look.
+
 ### Menu
 
 - Documented (T7): a `[popover][data-tm-menu]` opened from a script with `showPopover({ source: button })`, without

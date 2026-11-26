@@ -355,6 +355,10 @@ Value: any text, or none.
 
 On: th and td of a number column. A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left. Needs `table.css`.
 
+### `data-tm-plain` (boolean, no value)
+
+On: table. A table that is a grid of controls, not a data table: a month calendar (role="grid", a button in each cell), a keypad. It drops temper's data-table look (row lines, cell padding, row hover, full width, the sticky header, selected rows), so the table and its cells start from the browser's defaults and the controls inside keep their own styles. Data tables keep their look even with buttons in their rows (actions, a sortable header): leave it off there. Needs `table.css`.
+
 ### `data-tm-prose` (boolean, no value)
 
 On: the container of long-form text: an article body, rendered Markdown or CMS HTML, a mail body (a div, article, section or main; not a dialog, popover or table cell). Long-form text with a vertical rhythm: paragraphs, headings (more space above than below), lists, blockquote, figure and figcaption, hr, pre, tables, images, dl and details get space between them, at any depth (content nested in div and section wrappers too), with none before the first block or after the last. The one place with outer margins: write the HTML as it comes, without data-tm-gap. Text is capped at a reading measure (--tm-measure, 65ch here; style="--tm-measure: none" for the full width, e.g. a mail body with wide tables) and h1 and h2 scale with the viewport. temper components inside (data-tm-layout, data-tm-callout, data-tm-list, a card, a form, a menu) keep their own spacing. Images in running text stay in the line (emoji, signature logos); layout tables (role="presentation" or no th, as in mail) lose the data-table look. On an article it is a post, not a card. With data-tm-layout="center" on the same element it is a centered reading column; other layouts do not combine with it. Needs `prose.css`.
@@ -1062,6 +1066,10 @@ after the dialog opens (the top layer stacks in opening order).
 The header sticks while the page scrolls. Put `data-tm-num` on every cell of a number column. Never put
 `data-tm-layout` on a `td` (it stops being a cell); wrap the cell content instead. No rows: one
 `<tr><td colspan="5" data-tm-muted>No invoices yet.</td></tr>`.
+
+A table that is a grid of controls, not data (a month calendar: `<table role="grid" data-tm-plain>` with a button
+in each cell), takes `data-tm-plain`: no row lines, cell padding, row hover, full width or sticky header; style its
+cells yourself. A data table with buttons in its rows keeps its look: no `data-tm-plain` there.
 
 ### Fields with an icon, a unit or a button (forms.css)
 

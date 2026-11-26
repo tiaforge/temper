@@ -10,6 +10,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bundle } from 'lightningcss';
 import { launch, findBrowser } from '../packages/inspect/lib/cdp.js';
+import { checkMarkup } from '../lib/check.js';
 
 let browser = null;
 try { browser = findBrowser(); } catch {}
@@ -126,4 +127,71 @@ test('avatar initials: the capitals sit in the middle of the circle, in any font
     await b.close();
     srv.close();
   }
+});
+
+test('data-tm-plain: a calendar grid has none of the data-table look; a data table with buttons keeps it', { skip }, async () => {
+  const srv = createServer(async (req, res) => {
+    try {
+      const body = await readFile(join(root, decodeURIComponent(req.url.split('?')[0])));
+      res.setHeader('content-type', extname(req.url) === '.css' ? 'text/css' : 'text/html');
+      res.end(body);
+    } catch { res.statusCode = 404; res.end(); }
+  });
+  await new Promise(r => srv.listen(0, '127.0.0.1', r));
+  const b = await launch(browser);
+  try {
+    const page = await b.newPage();
+    await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/look.html`, { width: 800, height: 700, scheme: 'light', settle: 100 });
+    const look = () => page.evaluate(`(() => {
+      const cs = id => getComputedStyle(document.getElementById(id));
+      const parent = document.getElementById('cal').parentElement.getBoundingClientRect().width;
+      return ['cal', 'data'].map(t => ({
+        width: document.getElementById(t).getBoundingClientRect().width, parent,
+        line: cs(t + '-td').borderBottomWidth, pad: cs(t + '-td').paddingLeft, sticky: cs(t + '-th').position,
+        hover: cs(t + '-tr').backgroundColor, collapse: cs(t).borderCollapse,
+        button: [cs(t === 'cal' ? 'cal-day' : 'data-td').cursor],
+      }));
+    })()`);
+    const [cal, data] = await look();
+    // the calendar: the browser's own table, no lines, no padding, not full width, the header does not stick
+    assert.equal(cal.line, '0px');
+    assert.equal(cal.pad, '1px', 'the browser default cell padding');
+    assert.equal(cal.sticky, 'static');
+    assert.equal(cal.collapse, 'separate');
+    assert.ok(cal.width < cal.parent / 2, `the calendar is as wide as its days: ${cal.width}`);
+    // the data table keeps its look although its row holds a button
+    assert.equal(data.line, '1px');
+    assert.notEqual(data.pad, '1px');
+    assert.equal(data.sticky, 'sticky');
+    // row hover: the data table's row gets a fill, the calendar's does not
+    for (const [t, filled] of [['cal-tr', false], ['data-tr', true]]) {
+      const r = await page.evaluate(`(() => { const r = document.getElementById('${t}').getBoundingClientRect(); return [r.x + 5, r.y + r.height / 2]; })()`);
+      await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: r[0], y: r[1] });
+      await new Promise(res => setTimeout(res, 300));
+      const bg = await page.evaluate(`getComputedStyle(document.getElementById('${t}')).backgroundColor`);
+      const clear = /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/.test(bg);
+      assert.equal(!clear, filled, `${t} on hover: ${bg}`);
+    }
+    // a selected row of a plain table (selection styles of table.css, 0,2,0 while hovered) has no fill either
+    const c = await page.evaluate(`(() => { const r = document.getElementById('cal-tr').getBoundingClientRect(); return [r.x + 5, r.y + r.height / 2]; })()`);
+    await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: c[0], y: c[1] });
+    await new Promise(res => setTimeout(res, 300));
+    const sel = await page.evaluate(`(() => { const tr = document.getElementById('cal-tr'); tr.setAttribute('aria-selected', 'true'); return [getComputedStyle(tr).backgroundColor, tr.matches(':hover')]; })()`);
+    assert.ok(sel[1], 'hovered');
+    assert.match(sel[0], /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/, `selected plain row: ${sel}`);
+    // the day buttons keep their own styles (a ghost button, the pressed fill)
+    const day = await page.evaluate(`(() => { const d = getComputedStyle(document.getElementById('cal-day')); return [d.cursor, d.borderRadius, d.minHeight]; })()`);
+    assert.deepEqual(day.slice(0, 2), ['pointer', '8px']);
+  } finally {
+    await b.close();
+    srv.close();
+  }
+});
+
+test('checker: data-tm-plain is a boolean on a table, in table.css', () => {
+  const codes = (html, modules = new Set(['core', 'table'])) => checkMarkup(html, 'x.html', { modules }).map(d => d.code);
+  assert.deepEqual(codes('<table data-tm-plain role="grid" aria-label="May"><tr><th>Mo</th></tr></table>'), []);
+  assert.deepEqual(codes('<table data-tm-plain="true"><tr><th>Mo</th></tr></table>'), ['TM102']);
+  assert.deepEqual(codes('<div data-tm-plain></div>'), ['TM108']);
+  assert.deepEqual(codes('<table data-tm-plain><tr><th>Mo</th></tr></table>', new Set(['core'])), ['TM110']);
 });

@@ -166,6 +166,8 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-tm-tooltip'?: string | Empty | null | Removes;
   /** Number cell: right-aligned, tabular figures (on th and every td of the column). Needs table.css. */
   'data-tm-num'?: true | '' | null | Removes;
+  /** A grid of controls (month calendar), not a data table: no row lines, padding, hover or sticky header. Needs table.css. */
+  'data-tm-plain'?: true | '' | null | Removes;
   /** Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. Needs prose.css. */
   'data-tm-prose'?: true | '' | null | Removes;
   /** One field around an input and its icon, text (<span>€</span>) or end button. Needs forms.css. */

@@ -126,6 +126,7 @@ export default { plugins: [temper()] };
 | `data-tm-toast` (feedback.css) | (boolean) | A toast inside data-tm-toasts; data-tm-tone colors its bar. |
 | `data-tm-tooltip` (feedback.css) | any text, or none | Tooltip: the given text, or the aria-label when empty. |
 | `data-tm-num` (table.css) | (boolean) | Number cell: right-aligned, tabular figures (on th and every td of the column). |
+| `data-tm-plain` (table.css) | (boolean) | A grid of controls (month calendar), not a data table: no row lines, padding, hover or sticky header. |
 | `data-tm-prose` (prose.css) | (boolean) | Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. |
 | `data-tm-field` (forms.css) | (boolean) | One field around an input and its icon, text (<span>€</span>) or end button. |
 | `data-tm-sheet` (sheet.css) | end, start, bottom, top, narrow | Dialog as a sheet sliding in from an edge: side panel (end, start) bottom or top sheet. |

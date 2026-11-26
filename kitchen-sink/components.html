@@ -88,6 +88,21 @@
   </section>
 
   <!-- ───────── Form controls ───────── -->
+  <!-- a grid of controls, not a data table -->
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2>Calendar grid <small data-tm-muted>table.css, data-tm-plain</small></h2>
+    <table data-tm-plain role="grid" aria-label="November 2026" data-tm-self="start" style="border-spacing: 2px">
+      <thead><tr><th scope="col" abbr="Monday">Mo</th><th scope="col" abbr="Tuesday">Tu</th><th scope="col" abbr="Wednesday">We</th><th scope="col" abbr="Thursday">Th</th><th scope="col" abbr="Friday">Fr</th></tr></thead>
+      <tbody><tr>
+        <td role="gridcell" aria-selected="false"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-label="November 23">23</button></td>
+        <td role="gridcell" aria-selected="false"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-label="November 24">24</button></td>
+        <td role="gridcell" aria-selected="true"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-pressed="true" aria-label="November 25">25</button></td>
+        <td role="gridcell" aria-selected="false"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-current="date" aria-label="November 26">26</button></td>
+        <td role="gridcell" aria-selected="false"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-label="November 27">27</button></td>
+      </tr></tbody>
+    </table>
+  </section>
+
   <!-- ───────── Drag ───────── -->
   <section data-tm-layout="stack" data-tm-gap="md">
     <h2>Sortable list <small data-tm-muted>drag.css</small></h2>

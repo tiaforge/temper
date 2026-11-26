@@ -575,6 +575,16 @@
       "description": "A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
       "short": "Number cell: right-aligned, tabular figures (on th and every td of the column)."
     },
+    "data-tm-plain": {
+      "module": "table",
+      "boolean": true,
+      "on": "table",
+      "tags": [
+        "table"
+      ],
+      "description": "A table that is a grid of controls, not a data table: a month calendar (role=\"grid\", a button in each cell), a keypad. It drops temper's data-table look (row lines, cell padding, row hover, full width, the sticky header, selected rows), so the table and its cells start from the browser's defaults and the controls inside keep their own styles. Data tables keep their look even with buttons in their rows (actions, a sortable header): leave it off there.",
+      "short": "A grid of controls (month calendar), not a data table: no row lines, padding, hover or sticky header."
+    },
     "data-tm-prose": {
       "module": "prose",
       "boolean": true,
