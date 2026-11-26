@@ -62,6 +62,11 @@ The page's own CSS (not stylesheets from other origins or `node_modules`):
 Not reported as dropped declarations: vendor prefixes, declarations inside `@supports`, and a rejected
 declaration next to an accepted one for the same property (a fallback pair).
 
+A dev server such as Vite serves CSS transformed (imports inlined, a preprocessor's output), so a line in what
+the browser received is not a line of your file. For such a page the declaration is looked up in the file
+under the directory the command runs in; run it from the project's root to get `(src/app.css:12)`. Without a
+unique match the finding names the file alone. `--json` carries the declaration as `decl` (file, prop, value).
+
 `exception`, `console` and `request` come from the DevTools side and exist only in this command. All other
 checks also run in the Vite plugin's `inspect` option, in your own browser tab.
 

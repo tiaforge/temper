@@ -233,9 +233,12 @@ export function install(opts) {
     const dir = location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '');
     const label = u => { try { const x = new URL(u); return decodeURIComponent(x.href.startsWith(dir) ? x.pathname.slice(new URL(dir).pathname.length) : x.pathname); } catch { return u; } };
     const read = async href => ext[href] ?? (local(href) ? fetch(href, { cache: 'force-cache' }).then(r => r.ok ? r.text() : null, () => null) : null);
-    async function take(text, { file, base, own, serialized = false, line = 1 }) {
+    // A dev server (Vite) serves CSS transformed: imports inlined above it, a preprocessor's output. A line in that text
+    // is not a line of the file, so none is given; the Vite plugin finds the declaration in the source (finding.decl).
+    const devServer = !!document.querySelector('script[src*="/@vite/client"]');
+    async function take(text, { file, base, own, serialized = false, line = 1, transformed = devServer }) {
       const tree = treeOf(text);
-      out.push({ file, own, text, tree, serialized, base, line });
+      out.push({ file, own, text, tree, serialized, base, line, transformed });
       for (const n of tree) {
         if (n.t !== 'at' || n.name !== 'import') continue;
         const m = n.pre.match(/^\s*(?:url\(\s*)?(["']?)([^"')\s]+)\1/i);
@@ -245,7 +248,7 @@ export function install(opts) {
         seen.add(href);
         const t = await read(href);
         if (t == null) { unreadable = true; continue; }
-        await take(t, { file: label(href), base: href, own: own && local(href) && !href.includes('/node_modules/') });
+        await take(t, { file: label(href), base: href, own: own && local(href) && !href.includes('/node_modules/'), transformed });
       }
     }
     // the line of each inline <style> in the page's HTML: from the CLI over the protocol, or from the page's own text
@@ -273,7 +276,7 @@ export function install(opts) {
         try { text = [...sheet.cssRules].map(r => r.cssText).join('\n'); serialized = true; }
         catch { unreadable = true; continue; } // another origin without CORS, or file:// from the page
       }
-      await take(text, { file, base: href ?? document.baseURI, own, serialized, line });
+      await take(text, { file, base: href ?? document.baseURI, own, serialized, line, transformed: devServer || !!node?.hasAttribute?.('data-vite-dev-id') });
     }
     sheets = out;
   });
@@ -472,7 +475,9 @@ export function install(opts) {
 
   const clip = (s, max) => s.length > max ? s.slice(0, max - 1) + '…' : s;
   const ruleText = (sel, prop, value) => `${clip(sel, 80)} { ${prop}: ${clip(value.replace(/\s+/g, ' '), 60)} }`;
-  const where = (sheet, line) => sheet.serialized ? `(${sheet.file})` : `(${sheet.file}:${sheet.line + line - 1})`;
+  const where = (sheet, line) => sheet.serialized || sheet.transformed ? `(${sheet.file})` : `(${sheet.file}:${sheet.line + line - 1})`;
+  // a finding about a declaration in a stylesheet also says which one as data (--json; the Vite plugin looks its line up)
+  const from = (sheet, d) => { findings.at(-1).decl = { file: sheet.file, prop: d.prop, value: d.value }; };
   // grouping at-rules: their declarations and rules belong to the rule around them, as if the at-rule were not there
   const GROUPS = new Set(['media', 'layer', 'container', 'scope', 'starting-style', 'document', 'supports']);
 
@@ -524,7 +529,7 @@ export function install(opts) {
       walk(sheet.tree, { sel: null, supports: false, cond: 'on' }, (decls, ctx) => {
         if (ctx.supports) return; // written for browsers that pass the @supports test (or that fail it)
         for (const { d, why } of droppedIn(decls))
-          add(certain(why) ? 'error' : 'warning', 'css', ruleText(ctx.sel, d.prop, d.value), `is not valid CSS, so the browser ignores it: ${why} ${where(sheet, d.line)}`);
+        { add(certain(why) ? 'error' : 'warning', 'css', ruleText(ctx.sel, d.prop, d.value), `is not valid CSS, so the browser ignores it: ${why} ${where(sheet, d.line)}`); from(sheet, d); }
       });
     }
     for (const el of document.querySelectorAll('[style]')) {
@@ -626,6 +631,7 @@ export function install(opts) {
           // the suggestion, which costs the most (a library with a big palette has hundreds of these).
           if (t?.els.length) add('warning', 'var', ruleText(ctx.sel, d.prop, d.value), `${undefinedText(d.prop, chain, defined)} ${where(sheet, d.line)}`);
           else add('info', 'var', ruleText(ctx.sel, d.prop, d.value), `${undefinedText(d.prop, chain, null)} (no element on this page matches the rule) ${where(sheet, d.line)}`);
+          from(sheet, d);
         }
         continue;
       }
@@ -746,8 +752,10 @@ export function install(opts) {
       if (Math.max(...tops) - Math.min(...tops) > h * 0.75) add('info', 'wrapped', el, `row wrapped onto ${lines} lines`);
     }
 
-    if (!current) { checkDocument(add); checkStyles(add); }
-    checkGeometry(add, els);
+    // One group failing on an unusual page must not cost the report of the others.
+    const group = (name, fn) => { try { fn(); } catch (e) { add('warning', 'internal', null, `temper-inspect's ${name} checks failed on this page and were skipped (${String(e?.message ?? e).slice(0, 160)}); the other checks ran. Please report it`); } };
+    if (!current) { group('document', () => checkDocument(add)); group('stylesheet', () => checkStyles(add)); }
+    group('geometry', () => checkGeometry(add, els));
   }
 
   function checkOverlay(state, el) {

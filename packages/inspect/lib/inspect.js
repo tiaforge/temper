@@ -1,5 +1,5 @@
-import { writeFileSync, mkdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { join, dirname, isAbsolute, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from './cdp.js';
 import { install } from './audit.js';
@@ -91,7 +91,7 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
         for (let attempt = 0; ; attempt++) {
           try {
             const result = await step(page, url, width, scheme);
-            for (const f of result.found) {
+            for (const f of result.found.map(f => locateDecl(f, url))) {
               // a finding about no element (an exception, a console error, the document) is told apart by its message
               const key = [url, f.state, f.severity, f.code, f.selector, f.selector ? '' : f.message].join('\u0000');
               const entry = merged.get(key) ?? { url, ...f, where: [] };
@@ -118,6 +118,30 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
     await b.close();
   }
   return { findings: [...merged.values()], sheets, shots: shotFiles };
+}
+
+/**
+ * The source line of a stylesheet finding that has none. A dev server (Vite) serves CSS transformed (imports inlined
+ * above it, a preprocessor's output), so the audit gives such a finding the file without a line, and its declaration
+ * as `decl`. Here the declaration is searched in the file under `root` (the directory the command runs in, normally
+ * the project's): found once, the message ends with `(file:line)`; otherwise the finding stays as it is.
+ * (temper's Vite plugin does the same for its dev-page report, lib/vite.js locateDecl.)
+ */
+export function locateDecl(f, url, root = process.cwd()) {
+  if (!f.decl || !f.message.endsWith(` (${f.decl.file})`)) return f;
+  const { file, prop, value } = f.decl;
+  let dir = '';
+  try { dir = dirname(new URL(url).pathname + 'x'); } catch {}
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`(^|[\\s;{])${esc(prop)}\\s*:\\s*${value.trim().split(/\s+/).map(esc).join('\\s+')}`);
+  for (const path of isAbsolute(file) && file.startsWith(root + sep) ? [file] : [join(root, dir, file), join(root, file)]) {
+    let lines;
+    try { lines = readFileSync(path, 'utf8').split('\n'); } catch { continue; }
+    const at = lines.flatMap((l, i) => re.test(l) ? [i + 1] : []);
+    if (at.length !== 1) return f;
+    return { ...f, message: `${f.message.slice(0, -file.length - 3)} (${relative(root, path).split(sep).join('/')}:${at[0]})` };
+  }
+  return f;
 }
 
 /**

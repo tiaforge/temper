@@ -6,11 +6,11 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { inspect, format } from '../lib/inspect.js';
+import { inspect, format, locateDecl } from '../lib/inspect.js';
 import { findBrowser, launch } from '../lib/cdp.js';
 import { install } from '../lib/audit.js';
 
@@ -98,7 +98,7 @@ test('dropped declarations and undefined custom properties: each kind reported o
       'error css .icon { background: url(data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2… } | is not valid CSS, so the browser ignores it: a url() without quotes cannot hold quotes, spaces or parentheses: put the URL in double quotes, url("…") (styles-broken.css:27)',
       'error css .imported { paddin: 1rem } | is not valid CSS, so the browser ignores it: unknown property, did you mean `padding`? (styles-broken-imported.css:2)',
       'error css .page { gap: 1rm } | is not valid CSS, so the browser ignores it: `rm` is not a unit, did you mean `1rem`? (styles-broken.html:5)',
-      'error css .dev { colour: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (/app/src/Card.css:2)',
+      'error css .dev { colour: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (/app/src/Card.css)',
       'error css p "Inline" | has inline style the browser ignores, it is not valid CSS: `align-item: center` (unknown property, did you mean `align-items`?); `margin: 10` (a number needs a unit here: `margin: 10px` would be valid)',
       'warning var :root { --a: var(--tm-nope) } | --tm-nope is not defined anywhere, so --a has no value either (styles-broken.css:4)',
       'warning var .token { color: var(--tm-color-primary) } | --tm-color-primary is not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration); did you mean --tm-primary? (styles-broken.css:22)',
@@ -148,4 +148,24 @@ test('without prepare() (an older dev client) the stylesheet checks are skipped,
     rmSync(tmp, { recursive: true, force: true });
     srv.close();
   }
+});
+
+test('a stylesheet finding from a dev server gets its line from the source file', () => {
+  // Vite serves CSS transformed, so the audit names the file without a line and sends the declaration
+  const root = mkdtempSync(join(tmpdir(), 'temper-inspect-decl-'));
+  try {
+    mkdirSync(join(root, 'src'));
+    writeFileSync(join(root, 'src/app.css'), "@import 'temper';\n.card { display: flex;\n  align-item:   center; }\n.a { margin: 10 }\n.b { margin: 10 }\n");
+    const f = (file, prop, value, message = `is not valid CSS (${file})`) => ({ code: 'css', selector: '.x', message, decl: { file, prop, value } });
+    const at = (...a) => locateDecl(f(...a), 'http://localhost:5173/', root).message;
+    assert.equal(at('src/app.css', 'align-item', 'center'), 'is not valid CSS (src/app.css:3)');
+    assert.equal(locateDecl(f('app.css', 'align-item', 'center'), 'http://localhost:5173/src/page.html', root).message, 'is not valid CSS (src/app.css:3)');
+    assert.equal(at(join(root, 'src/app.css'), 'align-item', 'center'), 'is not valid CSS (src/app.css:3)'); // a <style> Vite injected
+    // found twice, not found, no such file: as it was
+    assert.equal(at('src/app.css', 'margin', '10'), 'is not valid CSS (src/app.css)');
+    assert.equal(at('src/app.css', 'colr', 'red'), 'is not valid CSS (src/app.css)');
+    assert.equal(at('src/gone.css', 'colr', 'red'), 'is not valid CSS (src/gone.css)');
+    // a finding that has its line (a static server) is not looked up
+    assert.equal(at('src/app.css', 'align-item', 'center', 'is not valid CSS (src/app.css:824)'), 'is not valid CSS (src/app.css:824)');
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });

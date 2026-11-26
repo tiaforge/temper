@@ -71,7 +71,9 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 ### Vite plugin
 
 - `inspect`: the dev page also gets temper-inspect's new document, stylesheet and geometry checks (the client waits
-  for `prepare()`; an older temper-inspect has none and works as before).
+  for `prepare()`; an older temper-inspect has none and works as before). A stylesheet finding names its source
+  line (`src/app.css:2 error css: …`): the dev server serves CSS with its imports inlined, so the plugin looks the
+  declaration up in the file. Tried against a Vite 8 dev server.
 - `@import 'virtual:temper-icons.css'` from CSS also works for tools that compile project CSS through Vite's
   `preprocessCSS`, past the plugin's rewrite: sinter, reading image sizes, failed with ENOENT (SN527) and gave the
   page's images `sizes="auto, 100vw"`. The icon CSS is now a real file, written when the config resolves, and
@@ -107,6 +109,12 @@ All but the three that need DevTools also run in the Vite plugin's `inspect` opt
 - `__tsi.prepare()` (new) runs what the checks wait for: stylesheet and SVG sources, animations ending. `check()`
   stays synchronous; without `prepare()` the checks that depend on it are skipped. A finding can be about selector
   text or about no element (`selector` is then empty); `request` and `image` findings carry `resource`, the URL.
+- For a page from a dev server (Vite), which serves CSS transformed, a stylesheet finding gets its line from the
+  source file under the working directory instead of a line of the served text (`src/app.css:824` for a file of
+  four lines). Findings carry the declaration as `decl`.
+- The audit's own requests (it fetches stylesheet and SVG sources) are not reported as the page's.
+- A group of checks that fails on an unusual page is skipped and reported (`internal`, a warning); the other
+  groups still report.
 - Found on temper's own kitchen sink: buttons in a narrow table that broke letter by letter (fixed, see Core), three
   links to ids that do not exist (`app.html`) and a rule with an undefined `--c` that no page uses (`demo.css`); the
   last two are open.
