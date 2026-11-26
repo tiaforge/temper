@@ -33,6 +33,8 @@ export default { plugins: [temper()] };
 // while migrating step by step, check only the migrated parts: temper({ paths: ['src/contacts', 'contacts'] })
 // opt-in enhancements (newer CSS, fine to leave off): temper({ enhance: ['customizable-select'] }) or enhance: 'all'
 // smaller builds: temper({ prune: true }) drops rules for attributes and values the project never uses
+// markup from a package (a component library) is not scanned unless named: with lib = 'node_modules/<pkg>/<components dir>',
+// temper({ paths: ['src', lib], prune: { paths: ['src', lib] } }) checks it, emits its icons and keeps its attributes
 // without the plugin: import '@tiaforge-ui/temper/enhance/customizable-select.css' after core.css
 ```
 

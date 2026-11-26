@@ -23,7 +23,10 @@ export interface TemperIconsOptions {
 }
 
 export interface TemperPruneOptions {
-  /** The sources to scan for used attributes and values, relative to the Vite root. Default: the whole root. */
+  /**
+   * The sources to scan for used attributes and values, relative to the Vite root. Default: the whole root, without
+   * node_modules: list a component library's markup folder here too, or its attributes are pruned.
+   */
   paths?: readonly string[];
 }
 
@@ -37,7 +40,11 @@ export interface TemperInspectOptions {
 }
 
 export interface TemperOptions {
-  /** What to check, relative to the working directory or absolute. Default: the Vite root. */
+  /**
+   * What to check and scan for icons, relative to the working directory or absolute. Default: the Vite root, without
+   * node_modules. Markup shipped in a package (a component library's components) is included by naming its folder:
+   * ['src', 'node_modules/<package>/<components folder>'].
+   */
   paths?: readonly string[];
   /** Fail the build on warnings too. Default false. */
   warningsFail?: boolean;
