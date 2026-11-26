@@ -25,7 +25,8 @@ export interface TemperIconsOptions {
 export interface TemperPruneOptions {
   /**
    * The sources to scan for used attributes and values, relative to the Vite root. Default: the whole root, without
-   * node_modules: list a component library's markup folder here too, or its attributes are pruned.
+   * node_modules. Every entry of the plugin's `paths` is scanned as well (a component library's markup folder in
+   * node_modules, say), so its attributes are kept.
    */
   paths?: readonly string[];
 }
@@ -52,7 +53,10 @@ export interface TemperOptions {
   icons?: TemperIconsOptions;
   /** Opt-in enhancements appended to core.css and all.css: a list of ids, one id, or 'all'. */
   enhance?: readonly TemperEnhancement[] | TemperEnhancement | 'all' | false | null;
-  /** In builds, drop temper rules for data-* attributes and values the project never uses. Default false. */
+  /**
+   * In builds, drop temper rules for data-* attributes and values the project never uses. Default false. Scans the
+   * Vite root (or prune.paths) plus every entry of `paths`.
+   */
   prune?: boolean | TemperPruneOptions;
   /** In dev, run the temper-inspect audit in the served page (needs @tiaforge-ui/temper-inspect). Default false. */
   inspect?: boolean | TemperInspectOptions;

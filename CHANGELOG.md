@@ -142,11 +142,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Vite plugin
 
-- Documented: markup shipped in a package (a sinter component library's components) is checked, scanned for
-  icons and kept by `prune` once its folder is named in `paths` and `prune.paths`, next to your own sources:
-  `temper({ paths: ['src', lib], prune: { paths: ['src', lib] } })`. Without it, node_modules is never scanned, so
-  the library's icons were not emitted (caley's empty `grip-vertical` handles) and `prune` would drop its attributes.
-  The plugin does not read sinter's configuration (temper knows nothing of sinter).
+- Markup shipped in a package (a sinter component library's components) is checked, scanned for icons and kept by
+  `prune` once its folder is named in `paths`, next to your own sources: `temper({ paths: ['src', lib], prune: true })`.
+  `prune` scans every entry of `paths` as well as the Vite root (or `prune.paths`). Without it, node_modules is never
+  scanned, so the library's icons were not emitted (caley's empty `grip-vertical` handles) and `prune` dropped the
+  rules only its markup uses (sinter-alloy's handles lost `touch-action: none`, so touch drags broke on phones). The
+  plugin does not read sinter's configuration (temper knows nothing of sinter).
 
 - `inspect`: the dev page also gets temper-inspect's new document, stylesheet and geometry checks (the client waits
   for `prepare()`; an older temper-inspect has none and works as before). A stylesheet finding names its source
