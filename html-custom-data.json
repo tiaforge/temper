@@ -251,7 +251,7 @@
     },
     {
       "name": "data-tm-layout",
-      "description": "temper. On: any container. Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-tm-gap, space around them from data-tm-pad; children never get margins.",
+      "description": "temper. On: any container. Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-tm-gap, space around them from data-tm-pad; children never get margins. On ul and ol it removes the bullets and the start padding; add role=\"list\", since WebKit drops the list role of a list without bullets.",
       "values": [
         {
           "name": "stack",

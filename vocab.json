@@ -122,7 +122,7 @@
     "data-tm-layout": {
       "module": "core",
       "on": "any container",
-      "description": "Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-tm-gap, space around them from data-tm-pad; children never get margins.",
+      "description": "Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-tm-gap, space around them from data-tm-pad; children never get margins. On ul and ol it removes the bullets and the start padding; add role=\"list\", since WebKit drops the list role of a list without bullets.",
       "values": {
         "stack": "Vertical column.",
         "row": "Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-tm-wrap.",

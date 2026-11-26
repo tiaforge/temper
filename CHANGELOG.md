@@ -68,6 +68,9 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Core
 
+- A `ul` or `ol` with `data-tm-layout` has no bullets and no start padding (T3): its items are rows or tiles. Add
+  `role="list"`, since WebKit drops the list role of a list without bullets.
+
 - `data-tm-layout="center"` with `data-tm-pad="none"` keeps its width. The padding token was a unitless `0`, and
   center takes `max(var(--tm-space-md), <padding>)`, which a unitless 0 makes invalid, so the width limit was dropped
   and the column ran full width. `--tm-space-none`, `data-tm-pad="none"` and `data-tm-gap="none"` are `0px` now.

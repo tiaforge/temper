@@ -120,6 +120,8 @@
   :where(img, video, canvas) { block-size: auto; }
   :where(input, button, select, textarea) { font: inherit; color: inherit; letter-spacing: inherit; }
   :where(ul, ol) { padding-inline-start: 1.25em; }
+  /* a list laid out by data-tm-layout is rows or tiles, not bullets (WebKit then drops its list role: add role="list") */
+  :where(ul[data-tm-layout], ol[data-tm-layout]) { list-style: none; padding-inline-start: 0; }
   :where([hidden]:not([hidden="until-found"])) { display: none !important; }
   @media (prefers-reduced-motion: reduce) {
     *, ::before, ::after, ::backdrop { animation-duration: 1ms !important; transition-duration: 1ms !important; } /* not :where(): no pseudo-elements in it; ::backdrop: dialog and drawer backdrops */
