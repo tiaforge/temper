@@ -343,9 +343,11 @@ export function install(opts) {
         const vb = svg.getAttribute('viewBox')?.trim().split(/[\s,]+/).map(Number);
         const ok = vb?.length === 4 && vb[2] > 0 && vb[3] > 0;
         // With a viewBox, the drawing keeps its shape inside any box (preserveAspectRatio meet) unless it says none.
-        // Without one, an <img> stretches it to the box.
+        // Without one, an <img> stretches it to the box when it has a width and a height (the browser takes those as
+        // its viewBox), and draws it unscaled when it has neither (measured in Chrome): then nothing is stretched.
+        const sized = ['width', 'height'].every(a => parseFloat(svg.getAttribute(a)) > 0 && !/%$/.test(svg.getAttribute(a).trim()));
         svgShape.set(u, svg.localName !== 'svg' ? null : ok ? { stretches: /^\s*none/.test(svg.getAttribute('preserveAspectRatio') ?? ''), ratio: vb[2] / vb[3] }
-          : { stretches: true, ratio: null });
+          : { stretches: sized, ratio: null });
       } catch { svgShape.set(u, null); }
     }));
   });
