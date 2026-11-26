@@ -40,7 +40,7 @@ async function withPage(fn, { fixture = 'perf.html', motion = 'reduce' } = {}) {
 
 // A positional pseudo-class (:nth-child, :last-child, ...) or a sibling combinator in the subject compound of a rule
 // with nothing else to filter on is tried on every element, which marks every parent: then one child added anywhere
-// restyles all its siblings (data-layout="split" did this: a 3,000-row list, 13-17 ms per append instead of 0.3).
+// restyles all its siblings (data-tm-layout="split" did this: a 3,000-row list, 13-17 ms per append instead of 0.3).
 // Each container holds 300 children; one change should restyle a handful of elements, not hundreds.
 test('adding or removing one child restyles only a few elements, in any container', { skip }, async () => {
   await withPage(async page => {
@@ -49,7 +49,7 @@ test('adding or removing one child restyles only a few elements, in any containe
       prepend: id => `(() => { const c = document.getElementById('${id}'); c.prepend(c.lastElementChild.cloneNode(true)); return document.body.offsetHeight; })()`,
       remove: id => `(() => { document.getElementById('${id}').firstElementChild.remove(); return document.body.offsetHeight; })()`,
     };
-    // data-list draws a line above every row after the first with a ~ combinator (so a leading <template> gets none):
+    // data-tm-list draws a line above every row after the first with a ~ combinator (so a leading <template> gets none):
     // prepending to one or removing its first row restyles that list's rows, by design (data-lists are short); appending does not
     const cases = [...['ul', 'div', 'tbody', 'checks', 'toasts', 'prose'].flatMap(id => Object.keys(ops).map(op => [id, op])), ['list', 'append']];
     const counts = {};
@@ -61,7 +61,7 @@ test('adding or removing one child restyles only a few elements, in any containe
   });
 });
 
-test('data-layout="split": the first child is the sidebar and the last the content, <template> children skipped', { skip }, async () => {
+test('data-tm-layout="split": the first child is the sidebar and the last the content, <template> children skipped', { skip }, async () => {
   await withPage(async page => {
     const flex = await page.evaluate(`['side', 'middle', 'content', 'side2', 'content2'].map(id => {
       const s = getComputedStyle(document.getElementById(id));
@@ -79,16 +79,16 @@ test('data-layout="split": the first child is the sidebar and the last the conte
   });
 });
 
-// icons.css writes each image once, as the fallback of --tm-icon-<name> in the [data-icon] rule; the property stays an input
+// icons.css writes each image once, as the fallback of --tm-icon-<name> in the [data-tm-icon] rule; the property stays an input
 test('icons: --tm-icon-<name> replaces a default icon or adds one; an unlayered rule (the Vite plugin) replaces a default', { skip }, async () => {
   await withPage(async page => {
     const icon = id => `getComputedStyle(document.getElementById('${id}')).maskImage`;
     const r = await page.evaluate(`(() => {
       const before = [${icon('mail')}, ${icon('rocket')}];
       const style = document.head.appendChild(document.createElement('style'));
-      style.textContent = ':root { --tm-icon-mail: url("data:image/svg+xml,mine"); --tm-icon-rocket: url("data:image/svg+xml,rocket"); } [data-icon="rocket"] { --_icon: var(--tm-icon-rocket); }';
+      style.textContent = ':root { --tm-icon-mail: url("data:image/svg+xml,mine"); --tm-icon-rocket: url("data:image/svg+xml,rocket"); } [data-tm-icon="rocket"] { --_icon: var(--tm-icon-rocket); }';
       const own = [${icon('mail')}, ${icon('rocket')}];
-      style.textContent = ':where([data-icon="mail"]) { --_icon: var(--tm-icon-mail, url("data:image/svg+xml,folder")); }';
+      style.textContent = ':where([data-tm-icon="mail"]) { --_icon: var(--tm-icon-mail, url("data:image/svg+xml,folder")); }';
       const folder = ${icon('mail')};
       return { before, own, folder };
     })()`);

@@ -2,7 +2,7 @@
 <body>
 <!-- A page that scrolls, with dialogs whose content just fits a 390px screen: while a modal dialog is open, temper
      reserves the page's scrollbar gutter, which the inspector's hidden scrollbars must not turn into 15px less room -->
-<main data-layout="stack" data-pad="md">
+<main data-tm-layout="stack" data-tm-pad="md">
   <h1>Long page</h1>
   <button commandfor="edit" command="show-modal">Edit</button>
   <button commandfor="actions" command="show-modal">Actions</button>
@@ -13,8 +13,8 @@
   <pre style="inline-size: 320px; overflow: visible">320px wide: fits a 390px dialog</pre>
   <footer><button commandfor="edit" command="close">OK</button></footer>
 </dialog>
-<dialog id="actions" data-sheet="bottom" aria-label="Actions">
+<dialog id="actions" data-tm-sheet="bottom" aria-label="Actions">
   <!-- fixed widths, so the row fits or wraps by the room alone, not by the machine's font: 3 x 104px + 2 gaps of 8px = 328px -->
-  <div data-layout="row" data-gap="sm" data-justify="end"><button style="inline-size: 104px">File</button><button style="inline-size: 104px">Move</button><button style="inline-size: 104px" data-variant="outline">Drop</button></div>
+  <div data-tm-layout="row" data-tm-gap="sm" data-tm-justify="end"><button style="inline-size: 104px">File</button><button style="inline-size: 104px">Move</button><button style="inline-size: 104px" data-tm-variant="outline">Drop</button></div>
 </dialog>
 </body></html>

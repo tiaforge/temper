@@ -18,27 +18,27 @@ screenshot follows your GitHub theme: switch between light and dark to see the o
 **Write HTML. It already looks finished.**
 
 ```html
-<form data-layout="stack" data-gap="md">
+<form data-tm-layout="stack" data-tm-gap="md">
   <label>Email
     <input type="email" aria-invalid="true">
-    <small data-tone="danger">Enter a full address, like name@example.com.</small>
+    <small data-tm-tone="danger">Enter a full address, like name@example.com.</small>
   </label>
-  <div data-layout="row" data-gap="sm" data-justify="end">
-    <button type="button" data-variant="outline" data-tone="danger">Discard</button>
+  <div data-tm-layout="row" data-tm-gap="sm" data-tm-justify="end">
+    <button type="button" data-tm-variant="outline" data-tm-tone="danger">Discard</button>
     <button>Save</button>
   </div>
 </form>
 ```
 
-No classes, no margins. Style (`data-variant`) and color (`data-tone`) are separate axes, so an
+No classes, no margins. Style (`data-tm-variant`) and color (`data-tm-tone`) are separate axes, so an
 outline danger button is just both. `aria-invalid` is the error state *and* the error styling.
 
 **A typo fails the build, and the error tells you the fix.**
 
 ```text
 $ npx temper check src
-page.html:4:13 error TM101 data-variant="danger" is not valid. Did you mean data-tone="danger"? (allowed: secondary, outline, ghost, link, item)
-page.html:7:3 error TM103 <button data-icon="x"> has no visible text. Add aria-label.
+page.html:4:13 error TM101 data-tm-variant="danger" is not valid. Did you mean data-tm-tone="danger"? (allowed: secondary, outline, ghost, link, item)
+page.html:7:3 error TM103 <button data-tm-icon="x"> has no visible text. Add aria-label.
 
 2 error(s), 0 warning(s); 1 fixable with --fix
 ```
@@ -49,12 +49,12 @@ Vue and JSX it follows expressions: `failed ? 'danger' : 'sucess'` is an error.
 **A modal dialog, no JavaScript.**
 
 ```html
-<button commandfor="confirm" command="show-modal" data-tone="danger">Delete…</button>
+<button commandfor="confirm" command="show-modal" data-tm-tone="danger">Delete…</button>
 <dialog id="confirm">
   <h2>Delete “Team retro”?</h2>
   <footer>
-    <button commandfor="confirm" command="close" data-variant="ghost">Keep</button>
-    <button data-tone="danger">Delete event</button>
+    <button commandfor="confirm" command="close" data-tm-variant="ghost">Keep</button>
+    <button data-tm-tone="danger">Delete event</button>
   </footer>
 </dialog>
 ```
@@ -75,7 +75,7 @@ at WCAG AA contrast in both modes.
 **A dark section on a light page is one attribute.**
 
 ```html
-<section data-theme="dark" data-pad="xl">…</section>
+<section data-tm-theme="dark" data-tm-pad="xl">…</section>
 ```
 
 **Your CSS always wins.** Everything lives in `@layer tm.*` behind `:where()`, so `.card { padding: 2rem }`
@@ -124,28 +124,28 @@ three-pane layout and the message list use a few lines of demo CSS):
 **1. The vocabulary is closed and enforced.** Each attribute is one axis with a fixed list of
 values, so the checker can do more than catch typos:
 
-- **Placement:** `data-pairs` only on a `dl`, `data-rail` only as a direct child of `[data-shell]`,
-  `data-cols` only with `data-layout="grid"`, and `data-rail` needs `app.css` imported somewhere.
+- **Placement:** `data-tm-pairs` only on a `dl`, `data-tm-rail` only as a direct child of `[data-tm-shell]`,
+  `data-tm-cols` only with `data-tm-layout="grid"`, and `data-tm-rail` needs `app.css` imported somewhere.
 - **Expressions:** in Svelte, Vue and JSX it works out every value an expression can produce, and
-  flags `cond && 'danger'`, which renders `data-tone="false"`.
+  flags `cond && 'danger'`, which renders `data-tm-tone="false"`.
 - **Types:** `@tiaforge-ui/temper/react`, `/vue`, `/astro`, `/svelte` and `/sinter` let tsc
-  reject things like `data-collapsed={collapsed}`, where `false` would render `data-collapsed="false"`.
+  reject things like `data-tm-collapsed={collapsed}`, where `false` would render `data-tm-collapsed="false"`.
 - **Safe fixes and renames:** `--fix` only applies fixes that can't go wrong (a value moved to its
   axis, a typo with one close match, a value dropped from a boolean). Deprecated names keep working
   until the next major version, with a warning that `--fix` resolves.
 - **Accessibility:** buttons without a name and fields without a label (a placeholder doesn't count).
 - **Your own CSS**, as warnings, so it doesn't grow back after a migration: `!important`, fixed
   colors that ignore dark mode, outer margins, spacing that equals a scale step (`16px` →
-  `var(--tm-space-md)`, fixable), rules that restyle `[data-variant]` instead of setting tokens, and
+  `var(--tm-space-md)`, fixable), rules that restyle `[data-tm-variant]` instead of setting tokens, and
   `margin`/`padding` in `style`. A `temper-ignore` comment silences one line.
 
 It reads HTML, Svelte, Astro, Vue and JSX, plus `--tm-*` tokens in CSS. With classes none of this is
 possible: nothing knows that `.secondary.outline.contrast` is a contradiction.
 
-**2. Nothing has an outer margin.** The parent owns all space: `data-gap` between children,
-`data-pad` inside, one scale `xs sm md lg xl` everywhere. This removes the most common failure we saw
+**2. Nothing has an outer margin.** The parent owns all space: `data-tm-gap` between children,
+`data-tm-pad` inside, one scale `xs sm md lg xl` everywhere. This removes the most common failure we saw
 with other libraries: agents stacking margin overrides against built-in margins. The one exception is
-long-form text you don't write yourself (rendered Markdown, CMS HTML, a mail body): `data-prose`
+long-form text you don't write yourself (rendered Markdown, CMS HTML, a mail body): `data-tm-prose`
 (`prose.css`) spaces its paragraphs, headings, lists and figures from the text flow.
 
 **3. State is HTML and ARIA.** `disabled`, `aria-invalid`, `aria-busy` (spinner, blocks input),
@@ -154,7 +154,7 @@ markup is the styling, so it doesn't get left out.
 
 **4. Modern HTML works as-is.** Dialog invokers, `[popover]` with light dismiss, `role="switch"`
 checkboxes, `details`, `dl` as label/value pairs, enter and exit animations with `@starting-style`,
-`data-sheet` side panels and bottom sheets that slide in from their edge.
+`data-tm-sheet` side panels and bottom sheets that slide in from their edge.
 No JS components to wire up.
 
 **5. Dark mode is designed, not inverted.** Colors are declared once with `light-dark()` at fixed
@@ -164,7 +164,7 @@ OKLCH lightness; raised surfaces get lighter and accents less saturated in the d
 **6. Right to left, high contrast and print work.** `dir="rtl"` mirrors the layout and every
 component (logical properties throughout). In Windows high contrast (forced colors) icons, switches and
 selected items stay visible. A printed page leaves out the app chrome and prints scroll areas in full.
-A `data-sr-only` skip link shows while it has focus.
+A `data-tm-sr-only` skip link shows while it has focus.
 
 ## Does it work as expected?
 
@@ -226,21 +226,22 @@ image with the changed pixels in red. Baselines depend on fonts and the Chrome v
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
 <!-- sizes -->
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.8 KB, `icons.css` 2.8 KB, `all.css` 12.6 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 98 % of its budget, `icons.css` 97 % and `all.css` 99 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.8 KB, `icons.css` 2.8 KB, `expressive.css` 2.1 KB, `all.css` 14.4 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 98 % of its budget, `icons.css` 97 %, `expressive.css` 98 % and `all.css` 98 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
 | `core.css` | 6.7 KB | tokens, reset, type, layout (incl. sticky bars), buttons (incl. joined groups), forms (incl. meter, color, multi-row select), dialog (scroll lock, header and footer stay in view), popover, details, table, card (incl. edge-to-edge media), badge, callout, avatar |
-| `app.css` | 1.5 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button, panes that adapt to their own width (`data-container`) |
+| `app.css` | 1.5 KB | app shell, navigation rail (collapsible, drawer on phones), floating action button, panes that adapt to their own width (`data-tm-container`) |
 | `menu.css` | 1.0 KB | dropdown menus (group labels, shortcut hints) |
 | `feedback.css` | 1.0 KB | toasts, tooltips (anchor-positioned, never clipped by a scroll container) |
 | `table.css` | 0.8 KB | data tables: sortable headers (`aria-sort`), row selection, number columns, sticky header |
-| `icons.css` | 2.7 KB | 56 default [Lucide](https://lucide.dev) icons via `data-icon` |
+| `icons.css` | 2.7 KB | 56 default [Lucide](https://lucide.dev) icons via `data-tm-icon` |
 | `pico-compat.css` | 0.4 KB | opt-in, while migrating from Pico: maps its `--pico-*` variables to temper tokens |
-| `forms.css` | 1.1 KB | fields with an icon, unit or button (`data-field`), read-only and required marks, autofill tint, range slider, indeterminate progress |
-| `prose.css` | 0.6 KB | long-form text (`data-prose`): rhythm between blocks, reading measure, fluid headings, inline images in text, plain layout tables, blockquote, figure |
-| `sheet.css` | 0.6 KB | dialogs as sheets (`data-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
-| `all.css` | 12.6 KB | everything |
+| `forms.css` | 1.1 KB | fields with an icon, unit or button (`data-tm-field`), read-only and required marks, autofill tint, range slider, indeterminate progress |
+| `prose.css` | 0.6 KB | long-form text (`data-tm-prose`): rhythm between blocks, reading measure, fluid headings, inline images in text, plain layout tables, blockquote, figure |
+| `sheet.css` | 0.6 KB | dialogs as sheets (`data-tm-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
+| `expressive.css` | 2.0 KB | opt-in voice: glass, gradient and mesh surfaces, grain, brand-tinted elevation and halo, display type and font pairings, hero and bento layouts, seeded gradients (`data-tm-surface`, `data-tm-display`, `data-tm-bento`, …) |
+| `all.css` | 14.1 KB | everything |
 | `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 <!-- /sizes -->
 
@@ -278,6 +279,7 @@ import '@tiaforge-ui/temper/table.css';  // data tables
 import '@tiaforge-ui/temper/prose.css';  // long-form text: articles, rendered Markdown, mail bodies
 import '@tiaforge-ui/temper/forms.css';  // fields with icons, units and buttons; range, read-only, required
 import '@tiaforge-ui/temper/sheet.css';  // dialogs as side panels and bottom sheets
+import '@tiaforge-ui/temper/expressive.css'; // surfaces, display type, hero and bento, seeded colour
 import '@tiaforge-ui/temper/icons.css';  // the default icon set
 // or everything: import '@tiaforge-ui/temper/all.css';
 ```
@@ -321,13 +323,13 @@ what such an `@import` should get into Vite's cache folder (`node_modules/.vite/
 image sizes) find it too. Sass, Less and Stylus resolve their own imports, which the plugin cannot reach: it warns, and
 temper is then imported from JS or a plain `.css` file.
 
-A build also checks its own output: every `data-icon` value in the built pages needs an icon rule in the built
+A build also checks its own output: every `data-tm-icon` value in the built pages needs an icon rule in the built
 CSS, or the plugin warns with page and line (`warningsFail` makes that fail the build). That catches names the
 source does not show, such as a value bound from a JSON file whose SVG was deleted or misspelled.
 
 `prune` scans every source file under the Vite root (or `prune: { paths }`) and only drops a rule
-when an attribute or value it requires appears nowhere. Values it can't resolve (`data-icon={icon}`)
-keep every value of that attribute, and `data-*` names in scripts (`el.dataset.tone = …`) keep the
+when an attribute or value it requires appears nowhere. Values it can't resolve (`data-tm-icon={icon}`)
+keep every value of that attribute, and `data-*` names in scripts (`el.dataset.tmTone = …`) keep the
 whole attribute. Gains depend on how much is computed: about 8% of `all.css` for caley, where icons
 and tones are mostly computed. `npm run visual:prune` checks that pruning changes nothing visible in
 the kitchen sink.
@@ -344,8 +346,8 @@ off). It audits what is on the page now; it does not resize the window or open d
 
 Icons from the plugin need `lucide-static` installed (optional peer dependency). The plugin emits the
 icons your markup names: static ones and every literal an expression can produce
-(`data-icon={dark ? 'sunrise' : 'moon-star'}` emits both). A name it can't see, like
-`data-icon={item.icon}` from a data array, would render blank, so the plugin prints a notice with the file
+(`data-tm-icon={dark ? 'sunrise' : 'moon-star'}` emits both). A name it can't see, like
+`data-tm-icon={item.icon}` from a data array, would render blank, so the plugin prints a notice with the file
 and line instead (it doesn't fail the build). List such names in `icons: { include: ['rocket', 'star'] }`,
 then mark the line with a `temper-ignore` comment to silence the notice. `temper check --lucide` prints the
 same notice.

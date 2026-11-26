@@ -2,16 +2,16 @@
   "$comment": "Single source of truth for temper's vocabulary. Generates llms.txt and html-custom-data.json (npm run gen) and drives temper check. A test keeps it in sync with src/*.css. Context rules for temper check: tags (the elements it works on; tagsFor overrides per value; notTags: elements it breaks), with (attributes it needs on the same element; null = any value), parent (what its parent must match), inside (an ancestor it needs), loose (parent/inside are warnings, and only for plain parents without class or style).",
   "version": 1,
   "attributes": {
-    "data-variant": {
+    "data-tm-variant": {
       "module": "core",
       "on": "button, a[role=button], input[type=submit|button|reset]",
-      "description": "Button style. Leave it out for the default solid main button (black in light mode, white in dark mode). Combine with data-tone for color.",
+      "description": "Button style. Leave it out for the default solid main button (black in light mode, white in dark mode). Combine with data-tm-tone for color.",
       "values": {
         "secondary": "Tinted fill, no border. Second most important action.",
         "outline": "Transparent with a border.",
         "ghost": "Transparent, fill on hover. Toolbars, icon buttons, Cancel.",
         "link": "Looks like a link, keeps button semantics.",
-        "item": "Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background. data-size=\"sm\" makes a compact row (event chips)."
+        "item": "Full-width, multi-line list entry (message list, search results). Selected (aria-current, aria-selected or aria-pressed) gets a soft accent background. data-tm-size=\"sm\" makes a compact row (event chips)."
       },
       "short": "Button style; leave it out for the solid main button.",
       "tags": [
@@ -30,10 +30,10 @@
         ]
       }
     },
-    "data-tone": {
+    "data-tm-tone": {
       "module": "core",
-      "on": "button, [data-badge], [data-callout], progress, any text element",
-      "description": "Color role. Independent of data-variant. On text it sets the text color. For a custom color use style=\"--tm-tone: <color>\" instead.",
+      "on": "button, [data-tm-badge], [data-tm-callout], progress, any text element",
+      "description": "Color role. Independent of data-tm-variant. On text it sets the text color. For a custom color use style=\"--tm-tone: <color>\" instead.",
       "values": {
         "accent": "The accent color (blue by default).",
         "neutral": "Grey. Default for secondary/outline/ghost buttons and badges.",
@@ -44,9 +44,9 @@
       },
       "short": "Color, independent of the style; for any other color use style=\"--tm-tone: …\"."
     },
-    "data-size": {
+    "data-tm-size": {
       "module": "core",
-      "on": "button (also icon buttons), input, select, [data-avatar], a [data-join] group",
+      "on": "button (also icon buttons), input, select, [data-tm-avatar], a [data-tm-join] group",
       "description": "Control size relative to the current density.",
       "values": {
         "sm": "0.8× height, smaller text.",
@@ -54,11 +54,11 @@
         "lg": "1.2× height, larger text."
       }
     },
-    "data-icon": {
+    "data-tm-icon": {
       "module": "core",
       "allowEmpty": true,
       "on": "button, a, or any element (span) for a standalone icon",
-      "description": "An icon by name (Lucide names). <span data-icon=\"mail\"></span> is an icon; <button data-icon=\"plus\">New</button> puts it before the text; an empty <button data-icon=\"plus\" aria-label=\"New contact\"></button> is a square icon-only button and needs an aria-label. Without a value (<button data-icon aria-label=\"…\"><svg>…</svg></button>) it makes a square icon button around your own svg. The default set needs icons.css (or all.css); the Vite plugin makes every Lucide icon and your own SVG folder available.",
+      "description": "An icon by name (Lucide names). <span data-tm-icon=\"mail\"></span> is an icon; <button data-tm-icon=\"plus\">New</button> puts it before the text; an empty <button data-tm-icon=\"plus\" aria-label=\"New contact\"></button> is a square icon-only button and needs an aria-label. Without a value (<button data-tm-icon aria-label=\"…\"><svg>…</svg></button>) it makes a square icon button around your own svg. The default set needs icons.css (or all.css); the Vite plugin makes every Lucide icon and your own SVG folder available.",
       "values": {
         "mail": "",
         "inbox": "",
@@ -119,13 +119,13 @@
       },
       "short": "Icon by Lucide name; an empty button with it is a square icon-only button (needs aria-label)."
     },
-    "data-layout": {
+    "data-tm-layout": {
       "module": "core",
       "on": "any container",
-      "description": "Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-gap, space around them from data-pad; children never get margins.",
+      "description": "Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-tm-gap, space around them from data-tm-pad; children never get margins.",
       "values": {
         "stack": "Vertical column.",
-        "row": "Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-wrap.",
+        "row": "Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-tm-wrap.",
         "grid": "Responsive columns, each at least --tm-min wide (default 16rem). A few items keep their column width instead of stretching across the row.",
         "split": "Sidebar + content. First child is the sidebar (--tm-split, default 16rem); wraps on narrow screens.",
         "center": "Horizontally centered column with side padding. Its content is at most --tm-measure wide (default 72rem); the padding comes on top."
@@ -140,10 +140,10 @@
         "tfoot"
       ]
     },
-    "data-cols": {
+    "data-tm-cols": {
       "module": "core",
-      "on": "[data-layout=grid]",
-      "description": "Exactly this many equal columns instead of responsive ones (week and month grids, a 7-day picker). Columns never wrap; use data-show to swap in another layout on phones.",
+      "on": "[data-tm-layout=grid]",
+      "description": "Exactly this many equal columns instead of responsive ones (week and month grids, a 7-day picker). Columns never wrap; use data-tm-show to swap in another layout on phones.",
       "short": "Exactly this many equal grid columns.",
       "values": {
         "2": "",
@@ -154,15 +154,15 @@
         "7": ""
       },
       "with": {
-        "data-layout": [
+        "data-tm-layout": [
           "grid"
         ]
       }
     },
-    "data-gap": {
+    "data-tm-gap": {
       "module": "core",
-      "on": "[data-layout]",
-      "description": "Space between the children of a data-layout element. Default md. Together with data-pad, the only spacing controls in temper.",
+      "on": "[data-tm-layout]",
+      "description": "Space between the children of a data-tm-layout element. Default md. Together with data-tm-pad, the only spacing controls in temper.",
       "values": {
         "none": "0",
         "xs": "0.25rem",
@@ -172,13 +172,13 @@
         "xl": "2.5rem"
       },
       "with": {
-        "data-layout": null
+        "data-tm-layout": null
       }
     },
-    "data-pad": {
+    "data-tm-pad": {
       "module": "core",
       "on": "any container: page wrappers, sections, panels, rows",
-      "description": "Padding inside the element, on all sides. Use it instead of padding in style attributes. On data-layout=\"center\" the side padding never drops below md. Overrides a component's own padding (e.g. data-pad=\"sm\" on an article).",
+      "description": "Padding inside the element, on all sides. Use it instead of padding in style attributes. On data-tm-layout=\"center\" the side padding never drops below md. Overrides a component's own padding (e.g. data-tm-pad=\"sm\" on an article).",
       "values": {
         "none": "0",
         "xs": "0.25rem",
@@ -188,10 +188,10 @@
         "xl": "2.5rem"
       }
     },
-    "data-align": {
+    "data-tm-align": {
       "module": "core",
-      "on": "[data-layout], button",
-      "description": "Cross-axis alignment of children (align-items). A button is a flex row already, so it works there without data-layout.",
+      "on": "[data-tm-layout], button",
+      "description": "Cross-axis alignment of children (align-items). A button is a flex row already, so it works there without data-tm-layout.",
       "values": {
         "start": "",
         "center": "",
@@ -199,14 +199,17 @@
         "stretch": ""
       },
       "with": {
-        "data-layout": null
+        "data-tm-layout": null
       },
-      "withExcept": ["button", "a[role=button]"]
+      "withExcept": [
+        "button",
+        "a[role=button]"
+      ]
     },
-    "data-justify": {
+    "data-tm-justify": {
       "module": "core",
-      "on": "[data-layout], button",
-      "description": "Main-axis distribution of children (justify-content). A button is a flex row already, so it works there without data-layout; it also aligns a label that wraps (data-justify=\"start\" on a \"From: …\" toggle).",
+      "on": "[data-tm-layout], button",
+      "description": "Main-axis distribution of children (justify-content). A button is a flex row already, so it works there without data-tm-layout; it also aligns a label that wraps (data-tm-justify=\"start\" on a \"From: …\" toggle).",
       "values": {
         "start": "",
         "center": "",
@@ -214,15 +217,18 @@
         "between": "Space between the children."
       },
       "with": {
-        "data-layout": null
+        "data-tm-layout": null
       },
-      "withExcept": ["button", "a[role=button]"]
+      "withExcept": [
+        "button",
+        "a[role=button]"
+      ]
     },
-    "data-self": {
+    "data-tm-self": {
       "module": "core",
-      "on": "a child of data-layout (stack, row, grid)",
-      "description": "Aligns this one child across the layout, overriding data-align. Typical: an \"Add\" button in a stack that should not stretch to full width (data-self=\"start\").",
-      "short": "Aligns this one child (e.g. data-self=\"start\" keeps a button in a stack from stretching).",
+      "on": "a child of data-tm-layout (stack, row, grid)",
+      "description": "Aligns this one child across the layout, overriding data-tm-align. Typical: an \"Add\" button in a stack that should not stretch to full width (data-tm-self=\"start\").",
+      "short": "Aligns this one child (e.g. data-tm-self=\"start\" keeps a button in a stack from stretching).",
       "values": {
         "start": "",
         "center": "",
@@ -230,12 +236,12 @@
         "stretch": ""
       },
       "parent": [
-        "[data-layout]",
+        "[data-tm-layout]",
         "header",
         "footer",
-        "[data-list]",
-        "[data-menu]",
-        "[data-shell]",
+        "[data-tm-list]",
+        "[data-tm-menu]",
+        "[data-tm-shell]",
         "[role=tablist]",
         "summary",
         "button",
@@ -244,62 +250,62 @@
       ],
       "loose": true
     },
-    "data-wrap": {
+    "data-tm-wrap": {
       "module": "core",
-      "on": "[data-layout=row]",
+      "on": "[data-tm-layout=row]",
       "description": "Whether a row wraps onto more lines. Rows wrap by default.",
       "values": {
         "wrap": "Default for rows.",
         "none": "Keep everything on one line (nav items, icon + label)."
       },
       "with": {
-        "data-layout": [
+        "data-tm-layout": [
           "row",
           "split"
         ]
       }
     },
-    "data-grow": {
+    "data-tm-grow": {
       "module": "core",
       "boolean": true,
-      "on": "a child of data-layout=row or stack",
-      "description": "This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --tm-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
+      "on": "a child of data-tm-layout=row or stack",
+      "description": "This child takes the remaining space in its row or stack (and may shrink below its content in a column, e.g. a scrolling pane). Typical: the search field in a toolbar (<input type=\"search\" data-tm-grow>), the input in an input + button row, the title that pushes actions to the right. It starts at --tm-grow-basis (default 8rem): with less room the row wraps and it gets its own line.",
       "parent": [
-        "[data-layout]",
+        "[data-tm-layout]",
         "header",
         "footer",
-        "[data-list]",
-        "[data-menu]",
-        "[data-shell]",
+        "[data-tm-list]",
+        "[data-tm-menu]",
+        "[data-tm-shell]",
         "[role=tablist]",
         "summary",
         "button",
         "label",
         "dialog",
-        "[data-join]"
+        "[data-tm-join]"
       ],
       "loose": true,
       "short": "This child takes the remaining space in its row or stack."
     },
-    "data-scroll": {
+    "data-tm-scroll": {
       "module": "core",
       "allowEmpty": true,
       "on": "a wrapper around wide or tall content (table, code, list pane)",
-      "description": "Scroll container. Without a value it scrolls sideways when the content is wider than the screen, instead of making the whole page scroll (wrap wide tables in it). data-scroll=\"y\" scrolls vertically inside a fixed-height area (panes in a data-shell=\"fixed\" app, message lists).",
+      "description": "Scroll container. Without a value it scrolls sideways when the content is wider than the screen, instead of making the whole page scroll (wrap wide tables in it). data-tm-scroll=\"y\" scrolls vertically inside a fixed-height area (panes in a data-tm-shell=\"fixed\" app, message lists).",
       "short": "Scroll container: sideways by default, \"y\" vertical (panes), \"both\".",
       "values": {
         "y": "Vertical scrolling (panes, long lists).",
         "both": "Both directions."
       }
     },
-    "data-gutter": {
+    "data-tm-gutter": {
       "module": "core",
       "boolean": true,
-      "on": "the element that scrolls: <main> of a data-shell=\"fixed\" page whose main scrolls, a data-scroll=\"y\" pane, or <html> when the document scrolls",
+      "on": "the element that scrolls: <main> of a data-tm-shell=\"fixed\" page whose main scrolls, a data-tm-scroll=\"y\" pane, or <html> when the document scrolls",
       "description": "Reserves the scrollbar's space on this scroll container (scrollbar-gutter: stable), so the content does not shift sideways when it starts or stops overflowing: a tab, a filter or loaded data that makes it taller or shorter than the screen. Only classic scrollbars take space (Chrome and Edge on Linux and Windows); with overlay scrollbars nothing changes. Put it only on an element that scrolls: the space stays reserved when nothing overflows, so on a <main> that only holds panes (which scroll themselves) it leaves an empty strip at the edge.",
       "short": "Reserves the scrollbar space: no sideways shift."
     },
-    "data-density": {
+    "data-tm-density": {
       "module": "core",
       "on": "html or any subtree",
       "description": "Control height and padding for everything inside.",
@@ -308,7 +314,7 @@
         "compact": "2rem controls, smaller text. For dense apps."
       }
     },
-    "data-theme": {
+    "data-tm-theme": {
       "module": "core",
       "on": "html or any subtree",
       "description": "Forces light or dark mode. Leave it out to follow the operating system.",
@@ -317,59 +323,59 @@
         "dark": "Always dark."
       }
     },
-    "data-badge": {
+    "data-tm-badge": {
       "module": "core",
       "boolean": true,
       "on": "span",
-      "description": "Small status label (counts, tags, states). Color with data-tone or style=\"--tm-tone: …\"."
+      "description": "Small status label (counts, tags, states). Color with data-tm-tone or style=\"--tm-tone: …\"."
     },
-    "data-callout": {
+    "data-tm-callout": {
       "module": "core",
       "boolean": true,
       "on": "div, [role=alert], [role=status]",
-      "description": "Tinted message box. Put the title in <strong>. Color with data-tone (default info)."
+      "description": "Tinted message box. Put the title in <strong>. Color with data-tm-tone (default info)."
     },
-    "data-muted": {
+    "data-tm-muted": {
       "module": "core",
       "boolean": true,
       "on": "any text element",
       "description": "Secondary text color."
     },
-    "data-truncate": {
+    "data-tm-truncate": {
       "module": "core",
       "boolean": true,
       "on": "any element",
       "description": "Single line, cut off with an ellipsis."
     },
-    "data-lazy": {
+    "data-tm-lazy": {
       "module": "core",
       "boolean": true,
       "on": "container of a long list",
       "description": "On the container of a long list: its rows far off screen skip layout and paint. Set --tm-lazy-h to the row height."
     },
-    "data-clamp": {
+    "data-tm-clamp": {
       "module": "core",
       "on": "any text element",
-      "description": "Cuts text off after this many lines with an ellipsis (data-truncate is the one-line version).",
+      "description": "Cuts text off after this many lines with an ellipsis (data-tm-truncate is the one-line version).",
       "values": {
         "2": "",
         "3": ""
       },
       "short": "Ellipsis after this many lines."
     },
-    "data-bar": {
+    "data-tm-bar": {
       "module": "core",
       "boolean": true,
-      "on": "any element, usually a data-variant=\"item\" row or a card",
-      "description": "A colored bar on the start edge in the element's tone. Event chips: <button data-variant=\"item\" data-size=\"sm\" data-bar style=\"--tm-tone: #4CAF50\">."
+      "on": "any element, usually a data-tm-variant=\"item\" row or a card",
+      "description": "A colored bar on the start edge in the element's tone. Event chips: <button data-tm-variant=\"item\" data-tm-size=\"sm\" data-tm-bar style=\"--tm-tone: #4CAF50\">."
     },
-    "data-sr-only": {
+    "data-tm-sr-only": {
       "module": "core",
       "boolean": true,
       "on": "any element",
-      "description": "Hidden visually, still read by screen readers. Shown again while it or an element inside it has focus, so it also makes a skip link (<a href=\"#main\" data-sr-only>Skip to content</a>)."
+      "description": "Hidden visually, still read by screen readers. Shown again while it or an element inside it has focus, so it also makes a skip link (<a href=\"#main\" data-tm-sr-only>Skip to content</a>)."
     },
-    "data-pairs": {
+    "data-tm-pairs": {
       "module": "core",
       "boolean": true,
       "on": "dl",
@@ -378,44 +384,44 @@
         "dl"
       ]
     },
-    "data-segmented": {
+    "data-tm-segmented": {
       "module": "core",
       "boolean": true,
       "on": "div[role=radiogroup] of <label><input type=\"radio\">text</label>",
-      "description": "Segmented control: a radio group drawn as a track with the checked option as a raised chip (week/month, list/grid). The radios stay in place, invisible, over their labels, so arrow keys, screen readers and taps work as on any radio group. data-size=\"sm\" makes it as tall as a small button. Give the group an aria-label.",
+      "description": "Segmented control: a radio group drawn as a track with the checked option as a raised chip (week/month, list/grid). The radios stay in place, invisible, over their labels, so arrow keys, screen readers and taps work as on any radio group. data-tm-size=\"sm\" makes it as tall as a small button. Give the group an aria-label.",
       "short": "Radio group drawn as a segmented control (labels with radios)."
     },
-    "data-caption": {
+    "data-tm-caption": {
       "module": "core",
       "boolean": true,
       "on": "any text element",
-      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index, the label of a group of items in a data-menu.",
+      "description": "Small, semibold, muted label text: captions above values, group headings like a letter in an index, the label of a group of items in a data-tm-menu.",
       "short": "Small, muted label text (captions, group headings)."
     },
-    "data-list": {
+    "data-tm-list": {
       "module": "core",
       "boolean": true,
       "on": "ul, ol or any container of rows",
-      "description": "One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-pad on a child overrides it); give a child data-layout=\"row\" data-justify=\"between\" for label + action rows. Card styling of article children is removed, so <article role=\"listitem\"> rows need no extra attributes. A leading <template> child does not count as the first row.",
+      "description": "One bordered box whose children are rows separated by lines: settings lists, keys, devices. Each child gets padding (data-tm-pad on a child overrides it); give a child data-tm-layout=\"row\" data-tm-justify=\"between\" for label + action rows. Card styling of article children is removed, so <article role=\"listitem\"> rows need no extra attributes. A leading <template> child does not count as the first row.",
       "short": "One bordered box; its children are rows separated by lines."
     },
-    "data-divider": {
+    "data-tm-divider": {
       "module": "core",
       "boolean": true,
       "on": "any text element",
-      "description": "A horizontal line with the element's text in the middle, e.g. <p data-divider>or</p> between two sign-in options. Empty, it is a plain line."
+      "description": "A horizontal line with the element's text in the middle, e.g. <p data-tm-divider>or</p> between two sign-in options. Empty, it is a plain line."
     },
-    "data-avatar": {
+    "data-tm-avatar": {
       "module": "core",
       "boolean": true,
       "on": "span, div",
-      "description": "Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-size or style=\"--tm-avatar-size: 4rem\"."
+      "description": "Round avatar with initials, or an <img> child that fills it. Colored by tone (default accent); size with data-tm-size or style=\"--tm-avatar-size: 4rem\"."
     },
-    "data-stretch": {
+    "data-tm-stretch": {
       "module": "core",
       "boolean": true,
       "on": "the main link or button inside an article",
-      "description": "Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-variant=\"link\" button. temper keeps the element position: static and unmoved when pressed (the overlay is placed against the card); do not give it position, transform or filter yourself. While aria-busy=\"true\" the card is not clickable and the spinner shows on the button.",
+      "description": "Makes the whole card clickable through this element. Other links and buttons in the card stay clickable. Use it on the card's title link, or on a data-tm-variant=\"link\" button. temper keeps the element position: static and unmoved when pressed (the overlay is placed against the card); do not give it position, transform or filter yourself. While aria-busy=\"true\" the card is not clickable and the spinner shows on the button.",
       "tags": [
         "a",
         "button"
@@ -424,141 +430,141 @@
         "article"
       ]
     },
-    "data-sticky": {
+    "data-tm-sticky": {
       "module": "core",
       "on": "a page header, a toolbar above a list, a save bar after a long form",
-      "description": "Keeps the element at the top or bottom edge of the nearest scroll container while it scrolls: the page, the <main> of a data-shell=\"fixed\" app, a data-scroll=\"y\" pane. It gets the background of the surface it sits on (the page, a card, a dialog) and a line toward the content, and stays above a sticky table header. It sticks only while its parent is in view, so put it in the long element itself (main, the pane, the form), not in a wrapper of its own or inside a sideways data-scroll. Not sticky in print.",
+      "description": "Keeps the element at the top or bottom edge of the nearest scroll container while it scrolls: the page, the <main> of a data-tm-shell=\"fixed\" app, a data-tm-scroll=\"y\" pane. It gets the background of the surface it sits on (the page, a card, a dialog) and a line toward the content, and stays above a sticky table header. It sticks only while its parent is in view, so put it in the long element itself (main, the pane, the form), not in a wrapper of its own or inside a sideways data-tm-scroll. Not sticky in print.",
       "short": "Sticks to the top or bottom of the nearest scroll container (header, toolbar, save bar).",
       "values": {
         "top": "Sticks to the top edge, with a line below it.",
         "bottom": "Sticks to the bottom edge, with a line above it; clear of the home indicator on phones."
       }
     },
-    "data-join": {
+    "data-tm-join": {
       "module": "core",
       "boolean": true,
-      "on": "a div around buttons, inputs, selects or a data-field",
-      "description": "Joins its children into one unit: shared borders, rounded only at the outer ends. Toolbar groups, a split button (the action plus a data-icon=\"chevron-down\" button that opens its menu), a pager, a search field with its button. Works with every data-variant, data-size (on the group or on each child) and density; a focused child shows its whole ring. Give a group of related actions role=\"group\" and an aria-label, and put a pager in a <nav aria-label=\"Pages\">. Do not add data-layout (its gap would split the group); data-grow works on the group and on a field inside it.",
+      "on": "a div around buttons, inputs, selects or a data-tm-field",
+      "description": "Joins its children into one unit: shared borders, rounded only at the outer ends. Toolbar groups, a split button (the action plus a data-tm-icon=\"chevron-down\" button that opens its menu), a pager, a search field with its button. Works with every data-tm-variant, data-tm-size (on the group or on each child) and density; a focused child shows its whole ring. Give a group of related actions role=\"group\" and an aria-label, and put a pager in a <nav aria-label=\"Pages\">. Do not add data-tm-layout (its gap would split the group); data-tm-grow works on the group and on a field inside it.",
       "short": "Joins its children (buttons, fields) into one unit with shared borders."
     },
-    "data-shell": {
+    "data-tm-shell": {
       "module": "app",
       "allowEmpty": true,
       "on": "body or the outermost app wrapper",
-      "description": "App shell: a navigation rail ([data-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps: <main data-layout=\"split\" data-wrap=\"none\"> with data-scroll=\"y\" panes, so each pane is as tall as the screen and scrolls by itself (without data-wrap=\"none\" the panes grow to their content and the whole <main> scrolls); on phones show one pane with data-show. On a fixed-shell page whose <main> itself scrolls (a settings page), add data-gutter to <main>, so its content does not shift when the scrollbar comes and goes.",
-      "short": "App shell (rail + main); data-shell=\"fixed\" fills the viewport and main scrolls inside.",
+      "description": "App shell: a navigation rail ([data-tm-rail]) next to <main>. On narrow screens (< 48rem) the rail becomes a drawer. Without a value the document scrolls; with data-tm-shell=\"fixed\" the shell fills the viewport and <main> scrolls inside it, for multi-pane apps: <main data-tm-layout=\"split\" data-tm-wrap=\"none\"> with data-tm-scroll=\"y\" panes, so each pane is as tall as the screen and scrolls by itself (without data-tm-wrap=\"none\" the panes grow to their content and the whole <main> scrolls); on phones show one pane with data-tm-show. On a fixed-shell page whose <main> itself scrolls (a settings page), add data-tm-gutter to <main>, so its content does not shift when the scrollbar comes and goes.",
+      "short": "App shell (rail + main); data-tm-shell=\"fixed\" fills the viewport and main scrolls inside.",
       "values": {
         "fixed": "Fills the viewport; main scrolls inside it."
       }
     },
-    "data-rail": {
+    "data-tm-rail": {
       "module": "app",
       "boolean": true,
-      "on": "nav inside [data-shell]",
-      "description": "Navigation rail. It must be a direct child of [data-shell]. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
+      "on": "nav inside [data-tm-shell]",
+      "description": "Navigation rail. It must be a direct child of [data-tm-shell]. Children: optional <header> (brand, collapse toggle), links/buttons or a <ul> of them, optional <footer> pinned to the bottom. Items need no attributes; mark the active one with aria-current=\"page\" (CSS cannot detect the current page). Put item text in a <span> so it can hide when collapsed. Add the popover attribute and an id to get a drawer on narrow screens (< 48rem), opened by <button popovertarget=\"…\" data-tm-show=\"narrow\">; without popover the rail stays visible on narrow screens.",
       "short": "Navigation rail next to <main>; with popover it is a drawer on narrow screens.",
       "parent": [
-        "[data-shell]"
+        "[data-tm-shell]"
       ]
     },
-    "data-collapsed": {
+    "data-tm-collapsed": {
       "module": "app",
       "boolean": true,
-      "on": "[data-rail]",
-      "description": "Icon-only rail, set in the markup (e.g. rendered by the server from a saved preference). For a toggle the user can click, use a data-rail-collapse checkbox instead.",
+      "on": "[data-tm-rail]",
+      "description": "Icon-only rail, set in the markup (e.g. rendered by the server from a saved preference). For a toggle the user can click, use a data-tm-rail-collapse checkbox instead.",
       "with": {
-        "data-rail": null
+        "data-tm-rail": null
       }
     },
-    "data-rail-collapse": {
+    "data-tm-rail-collapse": {
       "module": "app",
       "boolean": true,
-      "on": "input type=\"checkbox\" inside [data-rail] (usually in its header)",
+      "on": "input type=\"checkbox\" inside [data-tm-rail] (usually in its header)",
       "description": "Collapse toggle drawn as a chevron icon button. Checked = icon-only rail. Needs an aria-label. CSS cannot remember it across page loads: render checked from a saved preference, or save it with a few lines of script.",
       "tags": [
         "input[type=checkbox]"
       ],
       "inside": [
-        "[data-rail]"
+        "[data-tm-rail]"
       ]
     },
-    "data-rail-label": {
+    "data-tm-rail-label": {
       "module": "app",
       "boolean": true,
-      "on": "any element inside [data-rail]",
+      "on": "any element inside [data-tm-rail]",
       "description": "Hidden while the rail is collapsed (e.g. the user name in the rail footer).",
       "inside": [
-        "[data-rail]"
+        "[data-tm-rail]"
       ]
     },
-    "data-fab": {
+    "data-tm-fab": {
       "module": "app",
       "boolean": true,
       "on": "button",
-      "description": "Floating action button fixed in the bottom-right corner. Combine with data-icon and an aria-label. In RTL it sits bottom-left; on pages with viewport-fit=cover it keeps clear of the notch and home indicator.",
+      "description": "Floating action button fixed in the bottom-right corner. Combine with data-tm-icon and an aria-label. In RTL it sits bottom-left; on pages with viewport-fit=cover it keeps clear of the notch and home indicator.",
       "tags": [
         "button",
         "a[role=button]"
       ]
     },
-    "data-show": {
+    "data-tm-show": {
       "module": "app",
       "on": "any element",
-      "description": "Shows the element only on narrow (< 48rem) or wide screens. Inside a data-container it follows the width of the nearest one instead (a pane of a multi-pane app).",
+      "description": "Shows the element only on narrow (< 48rem) or wide screens. Inside a data-tm-container it follows the width of the nearest one instead (a pane of a multi-pane app).",
       "values": {
-        "narrow": "Only below 48rem (e.g. the button that opens the drawer; keep that one outside any data-container).",
+        "narrow": "Only below 48rem (e.g. the button that opens the drawer; keep that one outside any data-tm-container).",
         "wide": "Only from 48rem."
       },
-      "short": "Shows the element only on narrow (< 48rem) or wide screens, or panes (data-container)."
+      "short": "Shows the element only on narrow (< 48rem) or wide screens, or panes (data-tm-container)."
     },
-    "data-container": {
+    "data-tm-container": {
       "module": "app",
       "boolean": true,
-      "on": "a pane: main, a data-scroll pane, a data-grow or data-layout=\"split\" child",
-      "description": "Makes the element a container: data-show inside it follows its width instead of the screen's (the nearest one wins), so a pane adapts while the window is wide: the reader of a mail app, a detail panel next to a table. Its width must come from its parent (a block, main, a data-grow or split child), not from its content; on an element that shrinks to its content (a row child without data-grow, an inline element) it collapses. Keep the button that opens the rail drawer outside it: the drawer follows the screen.",
-      "short": "A pane whose width data-show inside follows, not the screen's."
+      "on": "a pane: main, a data-tm-scroll pane, a data-tm-grow or data-tm-layout=\"split\" child",
+      "description": "Makes the element a container: data-tm-show inside it follows its width instead of the screen's (the nearest one wins), so a pane adapts while the window is wide: the reader of a mail app, a detail panel next to a table. Its width must come from its parent (a block, main, a data-tm-grow or split child), not from its content; on an element that shrinks to its content (a row child without data-tm-grow, an inline element) it collapses. Keep the button that opens the rail drawer outside it: the drawer follows the screen.",
+      "short": "A pane whose width data-tm-show inside follows, not the screen's."
     },
-    "data-menu": {
+    "data-tm-menu": {
       "module": "menu",
       "boolean": true,
       "on": "[popover] (dropdown) or any container (static menu)",
-      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-menu is centered in the viewport); it fades in and out.",
+      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-tm-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-tm-menu is centered in the viewport); it fades in and out.",
       "short": "Menu of buttons, links and checkbox labels; as a [popover] it opens under its button."
     },
-    "data-combo": {
+    "data-tm-combo": {
       "module": "menu",
       "boolean": true,
       "on": "a wrapper around an input and its suggestion list",
-      "description": "Combobox: the data-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
-      "short": "Wraps a field and its suggestion list (data-menu, role=\"listbox\"), which opens under it."
+      "description": "Combobox: the data-tm-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
+      "short": "Wraps a field and its suggestion list (data-tm-menu, role=\"listbox\"), which opens under it."
     },
-    "data-toasts": {
+    "data-tm-toasts": {
       "module": "feedback",
       "boolean": true,
       "on": "one div per page, at the end of <body> (role=\"status\"; popover=\"manual\" to show above modal dialogs)",
-      "description": "Toast region: fixed to the bottom corner (bottom center on phones), stacks its [data-toast] children with the newest at the bottom. Give it role=\"status\" so screen readers announce new toasts. Optionally popover=\"manual\": it then sits in the top layer above an open modal dialog (call showPopover() on it again after opening a dialog).",
-      "short": "Toast region (one per page, role=\"status\"); holds data-toast children."
+      "description": "Toast region: fixed to the bottom corner (bottom center on phones), stacks its [data-tm-toast] children with the newest at the bottom. Give it role=\"status\" so screen readers announce new toasts. Optionally popover=\"manual\": it then sits in the top layer above an open modal dialog (call showPopover() on it again after opening a dialog).",
+      "short": "Toast region (one per page, role=\"status\"); holds data-tm-toast children."
     },
-    "data-toast": {
+    "data-tm-toast": {
       "module": "feedback",
       "boolean": true,
-      "on": "a div inside [data-toasts]",
+      "on": "a div inside [data-tm-toasts]",
       "inside": [
-        "[data-toasts]"
+        "[data-tm-toasts]"
       ],
-      "description": "A toast: a short message with optional actions (data-variant=\"link\" or \"ghost\" buttons, data-size=\"sm\") and a close button (data-icon=\"x\" with aria-label). data-tone adds a colored bar. Your code appends it to [data-toasts] (it slides in) and removes it after a few seconds; set hidden first to fade it out. Use role=\"alert\" on the toast for errors.",
-      "short": "A toast inside data-toasts; data-tone colors its bar."
+      "description": "A toast: a short message with optional actions (data-tm-variant=\"link\" or \"ghost\" buttons, data-tm-size=\"sm\") and a close button (data-tm-icon=\"x\" with aria-label). data-tm-tone adds a colored bar. Your code appends it to [data-tm-toasts] (it slides in) and removes it after a few seconds; set hidden first to fade it out. Use role=\"alert\" on the toast for errors.",
+      "short": "A toast inside data-tm-toasts; data-tm-tone colors its bar."
     },
-    "data-tooltip": {
+    "data-tm-tooltip": {
       "module": "feedback",
       "allowEmpty": true,
       "freeText": true,
       "values": {},
       "on": "buttons, links and any focusable element",
-      "description": "Tooltip shown on hover (after a short delay) and keyboard focus. data-tooltip=\"text\" shows the text; data-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tooltip). The text in data-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-rail it opens to the side and only shows while the rail is collapsed. It draws in the element's ::after, so it gives way where that is taken: a busy button (the spinner), data-stretch (the overlay), a sort button in a table header (the arrow) and a text button that opens a menu (the caret). An icon button that opens a menu keeps its tooltip, hidden while the menu is open (aria-expanded=\"true\").",
+      "description": "Tooltip shown on hover (after a short delay) and keyboard focus. data-tm-tooltip=\"text\" shows the text; data-tm-tooltip without a value shows the element’s aria-label, so an icon button keeps one label (aria-label=\"Delete\" data-tm-tooltip). The text in data-tm-tooltip=\"…\" is visual only; screen readers do not get it, so do not put anything there that is not also in the label or visible. In a data-tm-rail it opens to the side and only shows while the rail is collapsed. It draws in the element's ::after, so it gives way where that is taken: a busy button (the spinner), data-tm-stretch (the overlay), a sort button in a table header (the arrow) and a text button that opens a menu (the caret). An icon button that opens a menu keeps its tooltip, hidden while the menu is open (aria-expanded=\"true\").",
       "short": "Tooltip: the given text, or the aria-label when empty."
     },
-    "data-num": {
+    "data-tm-num": {
       "module": "table",
       "boolean": true,
       "on": "th and td of a number column",
@@ -569,7 +575,7 @@
       "description": "A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
       "short": "Number cell: right-aligned, tabular figures (on th and every td of the column)."
     },
-    "data-prose": {
+    "data-tm-prose": {
       "module": "prose",
       "boolean": true,
       "on": "the container of long-form text: an article body, rendered Markdown or CMS HTML, a mail body (a div, article, section or main; not a dialog, popover or table cell)",
@@ -578,10 +584,10 @@
         "th",
         "tr"
       ],
-      "description": "Long-form text with a vertical rhythm: paragraphs, headings (more space above than below), lists, blockquote, figure and figcaption, hr, pre, tables, images, dl and details get space between them, at any depth (content nested in div and section wrappers too), with none before the first block or after the last. The one place with outer margins: write the HTML as it comes, without data-gap. Text is capped at a reading measure (--tm-measure, 65ch here; style=\"--tm-measure: none\" for the full width, e.g. a mail body with wide tables) and h1 and h2 scale with the viewport. temper components inside (data-layout, data-callout, data-list, a card, a form, a menu) keep their own spacing. Images in running text stay in the line (emoji, signature logos); layout tables (role=\"presentation\" or no th, as in mail) lose the data-table look. On an article it is a post, not a card. With data-layout=\"center\" on the same element it is a centered reading column; other layouts do not combine with it.",
+      "description": "Long-form text with a vertical rhythm: paragraphs, headings (more space above than below), lists, blockquote, figure and figcaption, hr, pre, tables, images, dl and details get space between them, at any depth (content nested in div and section wrappers too), with none before the first block or after the last. The one place with outer margins: write the HTML as it comes, without data-tm-gap. Text is capped at a reading measure (--tm-measure, 65ch here; style=\"--tm-measure: none\" for the full width, e.g. a mail body with wide tables) and h1 and h2 scale with the viewport. temper components inside (data-tm-layout, data-tm-callout, data-tm-list, a card, a form, a menu) keep their own spacing. Images in running text stay in the line (emoji, signature logos); layout tables (role=\"presentation\" or no th, as in mail) lose the data-table look. On an article it is a post, not a card. With data-tm-layout=\"center\" on the same element it is a centered reading column; other layouts do not combine with it.",
       "short": "Long-form text (Markdown, CMS, mail): spacing between blocks, reading width."
     },
-    "data-field": {
+    "data-tm-field": {
       "module": "forms",
       "boolean": true,
       "on": "a div (a span inside a <label>) around one input and its adornments",
@@ -589,10 +595,10 @@
         "div",
         "span"
       ],
-      "description": "One field drawn around an input and its adornments: an icon (<span data-icon=\"search\"></span>) or text (<span>€</span>, <span>kg</span>) before or after the input, and a button at the end (data-variant=\"ghost\" data-icon=\"eye\" aria-label=\"Show password\"). As tall as a plain field at every data-size and density (data-size goes on the wrapper); focus, hover, invalid (aria-invalid or :user-invalid on the input), read-only and disabled show on the whole field, and data-grow works on it in a row. Inside a <label> use <span data-field>. With a button in it, give the input <label for> and an id instead of wrapping it in the label, or the button's name becomes part of the field's name.",
+      "description": "One field drawn around an input and its adornments: an icon (<span data-tm-icon=\"search\"></span>) or text (<span>€</span>, <span>kg</span>) before or after the input, and a button at the end (data-tm-variant=\"ghost\" data-tm-icon=\"eye\" aria-label=\"Show password\"). As tall as a plain field at every data-tm-size and density (data-tm-size goes on the wrapper); focus, hover, invalid (aria-invalid or :user-invalid on the input), read-only and disabled show on the whole field, and data-tm-grow works on it in a row. Inside a <label> use <span data-tm-field>. With a button in it, give the input <label for> and an id instead of wrapping it in the label, or the button's name becomes part of the field's name.",
       "short": "One field around an input and its icon, text (<span>€</span>) or end button."
     },
-    "data-sheet": {
+    "data-tm-sheet": {
       "module": "sheet",
       "on": "dialog",
       "tags": [
@@ -606,6 +612,144 @@
         "bottom": "Along the bottom edge, as tall as its content: actions, a short form. Full width on phones.",
         "narrow": "A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem."
       }
+    },
+    "data-tm-surface": {
+      "module": "expressive",
+      "on": "any container: body, main, header, section, article, aside, dialog, nav, div",
+      "description": "The element's background as a material. Text on it keeps temper's colours and WCAG AA in light and dark mode for any --tm-hue/--tm-chroma. Under prefers-contrast: more and forced colours every surface is temper's plain surface; under prefers-reduced-transparency glass is opaque.",
+      "values": {
+        "glass": "Translucent raised surface with a backdrop blur and a hairline highlight. Over a temper surface or the page background.",
+        "gradient": "A soft diagonal wash between two tints of the brand hue.",
+        "mesh": "Three soft light blobs around the brand hue over the page background: page backgrounds, mastheads, heroes.",
+        "wash": "The mesh's colour at the top only, fading out within the first screenful (18rem), with no box of its own. On <main> or a pane of a working view: colour at the top, a plain background where people work."
+      },
+      "short": "Background as a material: glass, gradient, mesh, or a wash at the top."
+    },
+    "data-tm-grain": {
+      "module": "expressive",
+      "boolean": true,
+      "on": "any element, usually one with data-tm-surface",
+      "description": "A faint film-grain texture over the element's background (an inline SVG noise image: needs img-src data: in the CSP). Off under prefers-contrast: more.",
+      "short": "Faint film grain over the background."
+    },
+    "data-tm-elevation": {
+      "module": "expressive",
+      "on": "article, section, aside, dialog, div, img",
+      "description": "Shadows tinted with the brand hue instead of grey. A raised card that holds a data-tm-stretch control lifts a little on hover (not with reduced motion).",
+      "values": {
+        "raised": "Resting card: a contact shadow and a soft ambient one.",
+        "floating": "Dialogs, popovers, a hero's card: a deep, wide shadow."
+      },
+      "short": "Brand-tinted shadow: raised or floating."
+    },
+    "data-tm-halo": {
+      "module": "expressive",
+      "boolean": true,
+      "on": "any element with a box: an avatar, an icon tile, a main button, a card",
+      "description": "A soft glow of the accent around the element. Decorative only: no meaning depends on it.",
+      "short": "Soft accent glow around the element."
+    },
+    "data-tm-display": {
+      "module": "expressive",
+      "on": "h1, h2, h3, p, span, strong",
+      "description": "Display type: the display font (--tm-font-display, set by data-tm-pairing), fluid size, tight tracking, balanced lines.",
+      "values": {
+        "hero": "The one headline of a landing or sign-in page (2.75–5.5rem).",
+        "xl": "A page title (2.25–3.5rem).",
+        "lg": "A section title or a big letter (1.75–2.5rem)."
+      },
+      "tags": [
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "p",
+        "span",
+        "strong",
+        "a"
+      ],
+      "short": "Display type: hero, xl, lg."
+    },
+    "data-tm-ink": {
+      "module": "expressive",
+      "on": "text with data-tm-display or data-tm-figure",
+      "description": "Text painted with a gradient of the brand hue. Both ends keep AA against temper's backgrounds and temper's surfaces; solid text colour under prefers-contrast: more and forced colours.",
+      "values": {
+        "gradient": "Brand gradient from hue − 30° to hue + 40°."
+      },
+      "short": "Gradient text (gradient)."
+    },
+    "data-tm-figure": {
+      "module": "expressive",
+      "boolean": true,
+      "on": "data, strong, span, p",
+      "description": "A big number for stat tiles: the UI face, semibold, tabular figures, tight line (data, not a display moment). Pair it with a data-tm-caption label.",
+      "short": "A big number (stat tiles)."
+    },
+    "data-tm-hero": {
+      "module": "expressive",
+      "boolean": true,
+      "on": "header, section, main, div",
+      "description": "A hero column: centered, balanced text, generous block padding that grows with the screen. Its children are stacked with a gap; give it a surface for colour.",
+      "short": "Centered hero column with generous padding."
+    },
+    "data-tm-bento": {
+      "module": "expressive",
+      "boolean": true,
+      "on": "an element with data-tm-layout=\"grid\"",
+      "description": "Turns temper's grid into a bento box: rows at least --tm-bento-row tall (default 7rem), gaps filled densely, children sized with data-tm-span. Spans apply from a 32rem wide grid up; below, every tile is one cell.",
+      "with": {
+        "data-tm-layout": [
+          "grid"
+        ]
+      },
+      "short": "Bento grid (with data-tm-layout=\"grid\"); tiles take data-tm-span."
+    },
+    "data-tm-span": {
+      "module": "expressive",
+      "on": "a child of a data-tm-bento grid",
+      "description": "How many cells a bento tile takes (from a 32rem wide grid up).",
+      "values": {
+        "wide": "Two columns.",
+        "tall": "Two rows.",
+        "large": "Two columns and two rows.",
+        "full": "The whole row."
+      },
+      "parent": [
+        "[data-tm-bento]"
+      ],
+      "loose": true,
+      "short": "Bento tile size: wide, tall, large, full."
+    },
+    "data-tm-pairing": {
+      "module": "expressive",
+      "on": "html, body (or any container)",
+      "description": "A font pairing: the display face for data-tm-display and data-tm-figure, with its weight and tracking; body text stays --tm-font-sans. The faces are self-hosted through Fontsource packages, which the app installs and imports (sinter bundles them and can preload them). Without the package the display falls back to a matching system face.",
+      "values": {
+        "editorial": "Fraunces (a soft serif) for display: import '@fontsource-variable/fraunces'.",
+        "grotesk": "Bricolage Grotesque for display: import '@fontsource-variable/bricolage-grotesque'."
+      },
+      "short": "Display font pairing: editorial, grotesk."
+    },
+    "data-tm-seed": {
+      "module": "expressive",
+      "on": "[data-tm-avatar] (temper), or any small tile",
+      "description": "A gradient fill and ink from one of twelve hues around the brand hue (−50° to +50°), so things with the same seed look alike and neighbours differ. Choose it from a name (a hash of the name modulo 12) so a person keeps their colour everywhere.",
+      "values": {
+        "0": "",
+        "1": "",
+        "2": "",
+        "3": "",
+        "4": "",
+        "5": "",
+        "6": "",
+        "7": "",
+        "8": "",
+        "9": "",
+        "10": "",
+        "11": ""
+      },
+      "short": "Seeded gradient fill, 0–11."
     }
   },
   "tokens": {
@@ -668,27 +812,27 @@
     "--tm-min": {
       "kind": "input",
       "optional": true,
-      "description": "Minimum column width for data-layout=\"grid\". Default 16rem."
+      "description": "Minimum column width for data-tm-layout=\"grid\". Default 16rem."
     },
     "--tm-split": {
       "kind": "input",
       "optional": true,
-      "description": "Sidebar width for data-layout=\"split\". Default 16rem."
+      "description": "Sidebar width for data-tm-layout=\"split\". Default 16rem."
     },
     "--tm-measure": {
       "kind": "input",
       "optional": true,
-      "description": "Content width: the max width of data-layout=\"center\" (default 72rem) and the reading measure of data-prose (default 65ch)."
+      "description": "Content width: the max width of data-tm-layout=\"center\" (default 72rem) and the reading measure of data-tm-prose (default 65ch)."
     },
     "--tm-lazy-h": {
       "kind": "input",
       "optional": true,
-      "description": "Row height guess for data-lazy, until a row has been shown. Default 3rem."
+      "description": "Row height guess for data-tm-lazy, until a row has been shown. Default 3rem."
     },
     "--tm-dialog-width": {
       "kind": "input",
       "optional": true,
-      "description": "Dialog width, also of a data-sheet panel. Default 30rem."
+      "description": "Dialog width, also of a data-tm-sheet panel. Default 30rem."
     },
     "--tm-bg": {
       "kind": "color",
@@ -842,27 +986,27 @@
     "--tm-control-h": {
       "kind": "density",
       "derived": true,
-      "description": "Height of buttons and inputs, set by data-density."
+      "description": "Height of buttons and inputs, set by data-tm-density."
     },
     "--tm-control-px": {
       "kind": "density",
       "derived": true,
-      "description": "Horizontal padding of controls, set by data-density."
+      "description": "Horizontal padding of controls, set by data-tm-density."
     },
     "--tm-control-font": {
       "kind": "density",
       "derived": true,
-      "description": "Font size of controls, set by data-density."
+      "description": "Font size of controls, set by data-tm-density."
     },
     "--tm-avatar-size": {
       "kind": "input",
       "optional": true,
-      "description": "Avatar diameter. Default 2.5rem (scaled by data-size)."
+      "description": "Avatar diameter. Default 2.5rem (scaled by data-tm-size)."
     },
     "--tm-rail-width": {
       "kind": "input",
       "optional": true,
-      "description": "Width of [data-rail]. Default 15rem."
+      "description": "Width of [data-tm-rail]. Default 15rem."
     },
     "--tm-rail-width-collapsed": {
       "kind": "input",
@@ -872,13 +1016,76 @@
     "--tm-grow-basis": {
       "kind": "input",
       "optional": true,
-      "description": "Width a data-grow child needs before its row wraps. Default 8rem."
+      "description": "Width a data-tm-grow child needs before its row wraps. Default 8rem."
     },
     "--tm-icon-<name>": {
       "kind": "input",
       "optional": true,
       "pattern": true,
-      "description": "The icon image for data-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-icon=\"rocket\"] { --_icon: var(--tm-icon-rocket); }. An input only: temper does not declare it (the default image is the fallback in the [data-icon] rule), so var(--tm-icon-mail) in your CSS is empty unless you set it; draw a default icon with data-icon instead."
+      "description": "The icon image for data-tm-icon=\"<name>\", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-tm-icon=\"rocket\"] { --_icon: var(--tm-icon-rocket); }. An input only: temper does not declare it (the default image is the fallback in the [data-tm-icon] rule), so var(--tm-icon-mail) in your CSS is empty unless you set it; draw a default icon with data-tm-icon instead."
+    },
+    "--tm-font-display": {
+      "kind": "input",
+      "description": "The display face (data-tm-display, data-tm-figure). Default: --tm-font-sans; data-tm-pairing sets it (expressive.css)."
+    },
+    "--tm-display-weight": {
+      "kind": "input",
+      "description": "Display weight. Default 700. (expressive.css)"
+    },
+    "--tm-display-tracking": {
+      "kind": "input",
+      "description": "Display letter spacing. Default -0.035em. (expressive.css)"
+    },
+    "--tm-glass-blur": {
+      "kind": "input",
+      "description": "Glass backdrop blur. Default 18px. (expressive.css)"
+    },
+    "--tm-bento-row": {
+      "kind": "input",
+      "description": "Bento row height. Default 7rem. (expressive.css)"
+    },
+    "--tm-tint-1": {
+      "kind": "color",
+      "derived": true,
+      "description": "Surface tint at hue − 20°. (expressive.css)"
+    },
+    "--tm-tint-2": {
+      "kind": "color",
+      "derived": true,
+      "description": "Surface tint at the brand hue. (expressive.css)"
+    },
+    "--tm-tint-3": {
+      "kind": "color",
+      "derived": true,
+      "description": "Surface tint at hue + 20°. (expressive.css)"
+    },
+    "--tm-glass": {
+      "kind": "color",
+      "derived": true,
+      "description": "The glass fill (translucent raised surface). (expressive.css)"
+    },
+    "--tm-ink-1": {
+      "kind": "color",
+      "derived": true,
+      "description": "Gradient ink, start. (expressive.css)"
+    },
+    "--tm-ink-2": {
+      "kind": "color",
+      "derived": true,
+      "description": "Gradient ink, end. (expressive.css)"
+    },
+    "--tm-glow": {
+      "kind": "color",
+      "derived": true,
+      "description": "The halo's colour. (expressive.css)"
+    },
+    "--tm-shadow-raised": {
+      "kind": "shadow",
+      "description": "data-tm-elevation=\"raised\". (expressive.css)"
+    },
+    "--tm-shadow-floating": {
+      "kind": "shadow",
+      "description": "data-tm-elevation=\"floating\". (expressive.css)"
     }
   },
   "deprecated": {

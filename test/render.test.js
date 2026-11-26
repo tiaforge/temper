@@ -58,15 +58,15 @@ test('buttons, items and menus lay out as documented', { skip: !browser && 'no C
   const wide = await withPage(1280, page => page.evaluate(probe));
   const narrow = await withPage(390, page => page.evaluate(probe));
   for (const r of [wide, narrow]) {
-    // data-justify="start" puts the label's first line at the start (only the padding before it), not centered
-    assert.ok(r.justifyText < 20, `data-justify="start" button text starts at ${r.justifyText}px`);
-    // an item that is a data-layout stack keeps its children at the start edge
+    // data-tm-justify="start" puts the label's first line at the start (only the padding before it), not centered
+    assert.ok(r.justifyText < 20, `data-tm-justify="start" button text starts at ${r.justifyText}px`);
+    // an item that is a data-tm-layout stack keeps its children at the start edge
     assert.ok(r.stackChild < 20, `item stack child starts at ${r.stackChild}px`);
     // a busy item stays interactive; a busy plain button does not take clicks
     assert.equal(r.itemBusy, 'auto');
     assert.equal(r.busy, 'none');
     assert.ok(r.menu.open);
-    // an item row in a data-list keeps its colored bar (the list's row reset used to remove it)
+    // an item row in a data-tm-list keeps its colored bar (the list's row reset used to remove it)
     assert.equal(r.listBar, '3px rgb(255, 152, 0)');
     // a pressed toggle in the rail gets a background; an unpressed one stays transparent
     assert.equal(r.railOff, 'rgba(0, 0, 0, 0)');
@@ -104,7 +104,7 @@ test('a stretch card is clickable anywhere, its other links on their own', { ski
         if (target === 'stretch-button' && commands) assert.ok(r.open, 'the commandfor dialog did not open');
       }
     }
-    // the stretch element's own text (data-truncate: overflow hidden does not clip the overlay, which the corners show)
+    // the stretch element's own text (data-tm-truncate: overflow hidden does not clip the overlay, which the corners show)
     const b = await rect('stretch-button');
     assert.deepEqual((await press(page, b.x + b.w / 2, b.y + b.h / 2)).clicks, ['stretch-button']);
     // links and buttons inside the card are above the overlay
@@ -135,19 +135,19 @@ test('a menu with more items than fit scrolls, and no item shrinks', { skip: !br
 
 test('no browser tap highlight: every element inherits a transparent one', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   await withPage(390, async page => {
-    const colors = await page.evaluate(`[...new Set([...document.querySelectorAll('html, button, a, label, [data-menu] *')].map(e => getComputedStyle(e).webkitTapHighlightColor))]`);
+    const colors = await page.evaluate(`[...new Set([...document.querySelectorAll('html, button, a, label, [data-tm-menu] *')].map(e => getComputedStyle(e).webkitTapHighlightColor))]`);
     assert.deepEqual(colors, ['rgba(0, 0, 0, 0)']);
   });
 });
 
-test('data-lazy on a container makes its rows skip off-screen work', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+test('data-tm-lazy on a container makes its rows skip off-screen work', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   await withPage(1280, async page => {
     const r = await page.evaluate(`(() => { const l = document.getElementById('lazy'); return [getComputedStyle(l).contentVisibility, getComputedStyle(l.firstElementChild).contentVisibility]; })()`);
     assert.deepEqual(r, ['visible', 'auto']);
   });
 });
 
-test('data-gutter reserves the scrollbar gutter, only where it is set', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+test('data-tm-gutter reserves the scrollbar gutter, only where it is set', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   await withPage(1280, async page => {
     const r = await page.evaluate(`['gutter', 'no-gutter'].map(id => getComputedStyle(document.getElementById(id)).scrollbarGutter)`);
     assert.deepEqual(r, ['stable', 'auto']);

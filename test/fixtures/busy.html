@@ -7,11 +7,11 @@
 <link rel="stylesheet" href="../../src/core.css">
 </head>
 <body>
-<main data-layout="stack" data-pad="md">
+<main data-tm-layout="stack" data-tm-pad="md">
   <!-- what sinter does: aria-busy on the element of an action while its request runs -->
   <button id="save" type="button">Save</button>
-  <button id="item" type="button" data-variant="item">Inbox</button>
-  <form id="form" data-layout="stack"><label>Name <input></label></form>
+  <button id="item" type="button" data-tm-variant="item">Inbox</button>
+  <form id="form" data-tm-layout="stack"><label>Name <input></label></form>
   <!-- the resource pattern: <p data-sn-show="$meta.x.loading" aria-busy="true">Loading…</p> -->
   <p id="loading" aria-busy="true" hidden>Loading…</p>
 </main>

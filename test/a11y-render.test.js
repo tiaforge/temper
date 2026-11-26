@@ -132,9 +132,9 @@ test('hover keeps the invalid border and leaves disabled controls alone', { skip
 test('checkbox and radio marks contrast with their fill in every tone, light and dark, also when invalid', { skip }, async () => {
   await withPage('a11y.html', {}, async page => {
     const rows = await page.evaluate(`[...document.querySelectorAll('#marks input')].map(i => {
-      const box = i.closest('[data-callout]'), mark = cs(i, '::before');
+      const box = i.closest('[data-tm-callout]'), mark = cs(i, '::before');
       const ink = i.type == 'radio' ? mark.borderTopColor : i.indeterminate ? mark.borderBottomColor : mark.borderRightColor;
-      return { where: (box.dataset.tone || 'default') + ' ' + box.dataset.theme + ' ' + i.type + (i.ariaInvalid ? ' invalid' : '') + (i.indeterminate ? ' mixed' : ''),
+      return { where: (box.dataset.tmTone || 'default') + ' ' + box.dataset.tmTheme + ' ' + i.type + (i.ariaInvalid ? ' invalid' : '') + (i.indeterminate ? ' mixed' : ''),
         ratio: contrast(ink, cs(i).backgroundColor), ink };
     })`);
     assert.equal(rows.length, 56);
@@ -146,7 +146,7 @@ test('checkbox and radio marks contrast with their fill in every tone, light and
   });
 });
 
-test('a focused data-sr-only element (a skip link) is visible', { skip }, async () => {
+test('a focused data-tm-sr-only element (a skip link) is visible', { skip }, async () => {
   await withPage('a11y.html', {}, async page => {
     assert.deepEqual(await page.evaluate(`[box('skip').w, box('skip').h]`), [1, 1]);
     await page.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
@@ -286,7 +286,7 @@ test('reduced motion: dialog and drawer backdrops do not fade', { skip }, async 
 
 // Lists are often rendered from a leading <template> (sinter, frameworks): :first-child would draw a line above the
 // first row there. The ~ rule costs a restyle of the list's rows on prepend, which short data-lists can afford.
-test('a data-list whose first child is a <template> has no line above its first row', { skip }, async () => {
+test('a data-tm-list whose first child is a <template> has no line above its first row', { skip }, async () => {
   await withPage('a11y.html', {}, async page => {
     assert.deepEqual(await page.evaluate(`[cs('row1').borderTopWidth, cs('row2').borderTopWidth]`), ['0px', '1px']);
   });

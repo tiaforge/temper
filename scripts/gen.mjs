@@ -12,7 +12,7 @@ const firstSentence = t => (t.match(/^.*?[.!?](?=\s|$)/) ?? [t])[0];
 /** One table row per attribute: name, values, first sentence of the description. */
 function compactAttributes(vocab) {
   const rows = Object.entries(vocab.attributes).map(([name, a]) => {
-    const values = name === 'data-icon' ? 'an icon name (see Icons), or none' : a.freeText ? 'any text, or none'
+    const values = name === 'data-tm-icon' ? 'an icon name (see Icons), or none' : a.freeText ? 'any text, or none'
       : a.boolean ? '(boolean)' : (a.allowEmpty ? '(none), ' : '') + Object.keys(a.values).join(', ');
     const mod = a.module && a.module !== 'core' ? ` (${a.module}.css)` : '';
     return `| \`${name}\`${mod} | ${values} | ${a.short ?? firstSentence(a.description)} |`;
@@ -34,7 +34,7 @@ export function renderLlms(vocab, template, { full = true } = {}) {
   template = template
     .replace(new RegExp(`<!-- ${drop} -->[\\s\\S]*?<!-- /${drop} -->\\n?`, 'g'), '')
     .replace(new RegExp(`<!-- /?${keep} -->\\n?`, 'g'), '');
-  const iconNames = Object.keys(vocab.attributes['data-icon'].values).join(', ');
+  const iconNames = Object.keys(vocab.attributes['data-tm-icon'].values).join(', ');
   if (!full) return template.replace('{{attributes}}', compactAttributes(vocab)).replace('{{tokens}}', compactTokens(vocab)).replace('{{iconNames}}', iconNames);
   const attrs = Object.entries(vocab.attributes).map(([name, a]) => {
     const mod = a.module && a.module !== 'core' ? ` Needs \`${a.module}.css\`.` : '';
@@ -77,10 +77,10 @@ export function renderCustomData(vocab) {
  */
 export function renderAttributeTypes(vocab) {
   const q = v => `'${v.replace(/'/g, "\\'")}'`;
-  const icons = Object.keys(vocab.attributes['data-icon'].values);
+  const icons = Object.keys(vocab.attributes['data-tm-icon'].values);
   const props = Object.entries(vocab.attributes).map(([name, a]) => {
     let type;
-    if (name === 'data-icon') type = `TemperIcon | (string & {}) | '' | Empty`;
+    if (name === 'data-tm-icon') type = `TemperIcon | (string & {}) | '' | Empty`;
     else if (a.freeText) type = `string | Empty`;
     else if (a.boolean) type = `true | ''`;
     else {
@@ -172,7 +172,7 @@ export {};
 };
 
 const lucide = lucideIconsDir();
-const defaultIcons = Object.keys(vocab.attributes['data-icon'].values).map(name => {
+const defaultIcons = Object.keys(vocab.attributes['data-tm-icon'].values).map(name => {
   const icon = lucideIcon(lucide, name);
   if (!icon) throw new Error(`Lucide has no icon named ${name}`);
   return icon;

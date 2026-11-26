@@ -32,7 +32,7 @@
     :where(select:open)::picker-icon { rotate: 180deg; }
     :where(select:not([multiple], [size]):open) { border-color: var(--tm-accent); }
 
-    /* the list: same surface as [data-menu] */
+    /* the list: same surface as [data-tm-menu] */
     :where(select:not([multiple], [size]))::picker(select) {
       max-block-size: min(24rem, 80dvh);
       margin-block: var(--tm-space-xs);

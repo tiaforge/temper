@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en" data-tm-pairing="editorial">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>temper expressive</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/expressive.css">
+  <link rel="stylesheet" href="../src/icons.css">
+  <!-- the editorial pairing's face; an app self-hosts it (@fontsource-variable/fraunces) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&display=swap">
+  <script>
+    // ?t=light|dark, ?hue=<0–359>: the whole page follows --tm-hue
+    { const q = new URLSearchParams(location.search);
+      if (q.get('t')) document.documentElement.dataset.tmTheme = q.get('t');
+      if (q.get('hue')) document.documentElement.style.setProperty('--tm-hue', q.get('hue')); }
+  </script>
+</head>
+<!-- The reference for expressive.css. It teaches restraint: one bold place per screen (a display sentence or a
+     title), colour as a wash at the top rather than a box, plain working parts. Two worked examples first, then the
+     parts, each with the rule for when to use it. Fraunces is loaded from Google Fonts here; an app self-hosts it. -->
+<body data-tm-surface="wash">
+<main data-tm-layout="center" data-tm-gap="xl" data-tm-pad="lg">
+  <header data-tm-layout="stack" data-tm-gap="xs">
+    <h1 data-tm-display="lg">Expressive</h1>
+    <p data-tm-muted>An opt-in voice on top of core. Two worked examples, then the parts. Try <code>?hue=150</code> or <code>?t=dark</code>.</p>
+  </header>
+
+  <!-- Example 1: a front door (sign-in, a landing page): the brand as in the app, one display sentence, one button -->
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2 data-tm-caption>Front door: sign-in</h2>
+    <article data-tm-surface="wash" data-tm-layout="stack" data-tm-gap="xl" data-tm-pad="xl">
+      <div data-tm-hero data-tm-pad="none" data-tm-layout="stack" data-tm-gap="xl" data-tm-align="center">
+        <div data-tm-layout="stack" data-tm-gap="lg" data-tm-align="center">
+          <div data-tm-layout="row" data-tm-gap="sm" data-tm-wrap="none" data-tm-justify="center">
+            <span data-tm-icon="calendar" data-tm-tone="accent" aria-hidden="true"></span>
+            <strong>Northwind</strong>
+          </div>
+          <p data-tm-display="xl">Your team's calendar, in one place.</p>
+        </div>
+        <div data-tm-layout="center" data-tm-pad="none" style="--tm-measure: 20rem">
+          <button type="button" data-tm-size="lg">Sign in</button>
+        </div>
+      </div>
+      <ul data-tm-layout="grid" data-tm-gap="lg" style="--tm-min: 10.5rem">
+        <li data-tm-layout="stack" data-tm-gap="xs">
+          <div data-tm-layout="row" data-tm-gap="sm" data-tm-wrap="none"><span data-tm-icon="calendar" data-tm-tone="accent" aria-hidden="true"></span><strong>Calendars</strong></div>
+          <small data-tm-muted>Week and month, shared with the team.</small>
+        </li>
+        <li data-tm-layout="stack" data-tm-gap="xs">
+          <div data-tm-layout="row" data-tm-gap="sm" data-tm-wrap="none"><span data-tm-icon="users" data-tm-tone="accent" aria-hidden="true"></span><strong>People</strong></div>
+          <small data-tm-muted>Everyone's contact details, searchable.</small>
+        </li>
+        <li data-tm-layout="stack" data-tm-gap="xs">
+          <div data-tm-layout="row" data-tm-gap="sm" data-tm-wrap="none"><span data-tm-icon="bell" data-tm-tone="accent" aria-hidden="true"></span><strong>Reminders</strong></div>
+          <small data-tm-muted>On every device, before it starts.</small>
+        </li>
+        <li data-tm-layout="stack" data-tm-gap="xs">
+          <div data-tm-layout="row" data-tm-gap="sm" data-tm-wrap="none"><span data-tm-icon="lock" data-tm-tone="accent" aria-hidden="true"></span><strong>Private</strong></div>
+          <small data-tm-muted>On your own server, nowhere else.</small>
+        </li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- Example 2: a working view: a wash at the top, the title the one display moment, plain cards -->
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2 data-tm-caption>Working view: contacts</h2>
+    <article data-tm-surface="wash" data-tm-layout="stack" data-tm-gap="md" data-tm-pad="lg">
+      <div data-tm-layout="stack" data-tm-gap="xs">
+        <h3 data-tm-display="lg">Contacts</h3>
+        <p data-tm-muted><small>People <strong>1,284</strong> · Organizations <strong>96</strong></small></p>
+      </div>
+      <div data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 11rem">
+        <article data-tm-elevation="raised" data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+          <span data-tm-avatar data-tm-size="lg" data-tm-seed="2" aria-hidden="true">AL</span>
+          <button type="button" data-tm-stretch data-tm-variant="link"><strong>Ada Lovelace</strong></button>
+          <small data-tm-muted>Analytical Engines</small>
+        </article>
+        <article data-tm-elevation="raised" data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+          <span data-tm-avatar data-tm-size="lg" data-tm-seed="7" aria-hidden="true">GH</span>
+          <button type="button" data-tm-stretch data-tm-variant="link"><strong>Grace Hopper</strong></button>
+          <small data-tm-muted>Navy</small>
+        </article>
+        <article data-tm-elevation="raised" data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+          <span data-tm-avatar data-tm-size="lg" data-tm-seed="10" aria-hidden="true">AT</span>
+          <button type="button" data-tm-stretch data-tm-variant="link"><strong>Alan Turing</strong></button>
+          <small data-tm-muted>Bletchley Park</small>
+        </article>
+      </div>
+    </article>
+  </section>
+
+  <!-- The parts, each with its rule -->
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2 data-tm-caption>The parts, and when to use them</h2>
+    <div data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 14rem">
+      <div data-tm-layout="stack" data-tm-gap="sm">
+        <div data-tm-surface="wash" data-tm-pad="xl" aria-hidden="true"></div>
+        <strong>wash</strong>
+        <small data-tm-muted>Working views and front doors: colour at the top that fades within 18rem, plain where people work (this page's top and both examples).</small>
+      </div>
+      <div data-tm-layout="stack" data-tm-gap="sm">
+        <div data-tm-surface="mesh" data-tm-pad="xl" aria-hidden="true"></div>
+        <strong>mesh</strong>
+        <small data-tm-muted>A whole surface of colour: a marketing section or an empty state, rarely more than one per page.</small>
+      </div>
+      <div data-tm-layout="stack" data-tm-gap="sm">
+        <div data-tm-surface="mesh" data-tm-pad="md" aria-hidden="true"><div data-tm-surface="glass" data-tm-pad="lg"></div></div>
+        <strong>glass</strong>
+        <small data-tm-muted>Over colour or imagery only (on a plain page it is just a grey card).</small>
+      </div>
+      <div data-tm-layout="stack" data-tm-gap="sm">
+        <div data-tm-surface="gradient" data-tm-pad="xl" aria-hidden="true"></div>
+        <strong>gradient</strong>
+        <small data-tm-muted>Small accents: a banner, a highlighted tile. Not a slab behind content.</small>
+      </div>
+      <div data-tm-layout="stack" data-tm-gap="sm">
+        <p data-tm-display="lg" data-tm-ink="gradient">Gradient ink</p>
+        <strong>data-tm-ink</strong>
+        <small data-tm-muted>Sparingly: one short word at display size, if at all. Solid text reads as more confident.</small>
+      </div>
+      <div data-tm-layout="stack" data-tm-gap="sm">
+        <div data-tm-layout="row" data-tm-gap="md" data-tm-pad="sm">
+          <article data-tm-elevation="raised" data-tm-pad="sm"><small>raised</small></article>
+          <article data-tm-elevation="floating" data-tm-pad="sm"><small>floating</small></article>
+          <button type="button" data-tm-halo>Halo</button>
+        </div>
+        <strong>elevation, halo</strong>
+        <small data-tm-muted>Raised for cards people open, floating for dialogs; a halo on at most one main action.</small>
+      </div>
+    </div>
+
+    <div data-tm-layout="stack" data-tm-gap="sm">
+      <div data-tm-layout="row" data-tm-gap="sm">
+        <span data-tm-avatar data-tm-seed="0" aria-hidden="true">0</span><span data-tm-avatar data-tm-seed="1" aria-hidden="true">1</span><span data-tm-avatar data-tm-seed="2" aria-hidden="true">2</span>
+        <span data-tm-avatar data-tm-seed="3" aria-hidden="true">3</span><span data-tm-avatar data-tm-seed="4" aria-hidden="true">4</span><span data-tm-avatar data-tm-seed="5" aria-hidden="true">5</span>
+        <span data-tm-avatar data-tm-seed="6" aria-hidden="true">6</span><span data-tm-avatar data-tm-seed="7" aria-hidden="true">7</span><span data-tm-avatar data-tm-seed="8" aria-hidden="true">8</span>
+        <span data-tm-avatar data-tm-seed="9" aria-hidden="true">9</span><span data-tm-avatar data-tm-seed="10" aria-hidden="true">10</span><span data-tm-avatar data-tm-seed="11" aria-hidden="true">11</span>
+      </div>
+      <strong>data-tm-seed</strong>
+      <small data-tm-muted>Twelve fills within ±50° of the brand hue: pick one from a hash of a name, so a person keeps their colour.</small>
+    </div>
+
+    <div data-tm-layout="stack" data-tm-gap="sm">
+      <dl data-tm-layout="grid" data-tm-bento data-tm-gap="md" style="--tm-min: 9rem; --tm-bento-row: 6rem">
+        <div data-tm-elevation="raised" data-tm-span="wide" data-tm-layout="stack" data-tm-gap="xs" data-tm-pad="md">
+          <dt data-tm-caption>People</dt><dd data-tm-figure>1,284</dd>
+        </div>
+        <div data-tm-elevation="raised" data-tm-layout="stack" data-tm-gap="xs" data-tm-pad="md">
+          <dt data-tm-caption>Organizations</dt><dd data-tm-figure>96</dd>
+        </div>
+        <div data-tm-elevation="raised" data-tm-layout="stack" data-tm-gap="xs" data-tm-pad="md">
+          <dt data-tm-caption>Shared</dt><dd data-tm-figure>12</dd>
+        </div>
+      </dl>
+      <strong>data-tm-bento, data-tm-figure</strong>
+      <small data-tm-muted>Only where the numbers are the point of the page (a report, an overview); not as decoration on a list.</small>
+    </div>
+  </section>
+</main>
+</body>
+</html>

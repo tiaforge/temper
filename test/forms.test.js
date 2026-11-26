@@ -1,4 +1,4 @@
-// forms.css in a real browser (fixtures/forms.html, served over HTTP from the repository root): data-field (heights,
+// forms.css in a real browser (fixtures/forms.html, served over HTTP from the repository root): data-tm-field (heights,
 // states, RTL), read-only, the required marker, autofill, range and indeterminate progress, forced colors, reduced
 // motion and restyle cost; and the checker's vocabulary for it. The browser tests are skipped without Chrome/Chromium.
 import { test } from 'node:test';
@@ -77,7 +77,7 @@ const hover = async (page, id) => {
   await new Promise(r => setTimeout(r, 30));
 };
 
-test('data-field is exactly as tall as a plain field, at both densities and every size, in a label and a row', { skip }, async () => {
+test('data-tm-field is exactly as tall as a plain field, at both densities and every size, in a label and a row', { skip }, async () => {
   await withPage({}, async page => {
     const h = await page.evaluate(`['h', 'hc', 'hs', 'hl'].map(k => [box(k + '-plain').h, box(k + '-field').h])`);
     assert.deepEqual(h, [[40, 40], [32, 32], [32, 32], [48, 48]]);
@@ -87,8 +87,8 @@ test('data-field is exactly as tall as a plain field, at both densities and ever
       labelW: box('l-field').w, fieldW: box('lf').w,
       button: box('hl-button'), field: box('hl-field'),
     })`);
-    assert.ok(r.grow > r.row - 100, `data-grow does not stretch the field in a row: ${r.grow} of ${r.row}`);
-    assert.equal(r.label, 'grid', 'a label around a data-field stacks');
+    assert.ok(r.grow > r.row - 100, `data-tm-grow does not stretch the field in a row: ${r.grow} of ${r.row}`);
+    assert.equal(r.label, 'grid', 'a label around a data-tm-field stacks');
     assert.equal(r.fieldW, r.labelW, 'the field fills its label');
     // the button sits inside the border, as far from the end as from the top and bottom
     const top = r.button.y - r.field.y, end = r.field.x + r.field.w - (r.button.x + r.button.w);
@@ -97,7 +97,7 @@ test('data-field is exactly as tall as a plain field, at both densities and ever
   });
 });
 
-test('data-field shows focus, hover, invalid and disabled on the whole field', { skip }, async () => {
+test('data-tm-field shows focus, hover, invalid and disabled on the whole field', { skip }, async () => {
   await withPage({}, async page => {
     const border = id => color(page, `cs('${id}').borderTopColor`);
     const accent = await color(page, `cs('probe-accent').color`), danger = await color(page, `cs('probe-danger').color`);
@@ -134,14 +134,14 @@ test('data-field shows focus, hover, invalid and disabled on the whole field', {
   });
 });
 
-test('data-field in RTL: the end button is on the left', { skip }, async () => {
+test('data-tm-field in RTL: the end button is on the left', { skip }, async () => {
   await withPage({ dir: 'rtl' }, async page => {
     const r = await page.evaluate(`({ button: box('hl-button'), field: box('hl-field') })`);
     assert.ok(r.button.x - r.field.x < 10, `the button is not at the start of the field: ${JSON.stringify(r)}`);
   });
 });
 
-test('data-field in forced colors: focus shows as an outline', { skip }, async () => {
+test('data-tm-field in forced colors: focus shows as an outline', { skip }, async () => {
   await withPage({ media: { 'forced-colors': 'active' } }, async page => {
     await page.evaluate(`$('s-focus-input').focus()`);
     const r = await page.evaluate(`({ style: cs('s-focus').outlineStyle, width: cs('s-focus').outlineWidth, rest: cs('s-hover').outlineStyle })`);
@@ -153,7 +153,7 @@ test('read-only fields look read-only, and stay focusable and selectable', { ski
   await withPage({}, async page => {
     const fill = await color(page, `cs('probe-fill').color`);
     assert.ok(near(await color(page, `cs('ro').backgroundColor`), fill, 3), 'a readonly input is filled');
-    assert.ok(near(await color(page, `cs('s-readonly').backgroundColor`), fill, 3), 'a data-field with a readonly input is filled');
+    assert.ok(near(await color(page, `cs('s-readonly').backgroundColor`), fill, 3), 'a data-tm-field with a readonly input is filled');
     assert.ok(!near(await color(page, `cs('rw').backgroundColor`), fill, 3), 'an editable input is not');
     const r = await page.evaluate(`(() => { const i = $('ro'); i.focus(); i.setSelectionRange(0, 4);
       return { focused: document.activeElement === i, selected: i.selectionEnd - i.selectionStart, userSelect: cs(i).userSelect }; })()`);
@@ -279,7 +279,7 @@ test('selects in forced colors: the native arrow, and checked options in the sys
   }
 });
 
-// The :has() rules of data-field must not make ordinary pages slower (see perf.test.js for how this is measured).
+// The :has() rules of data-tm-field must not make ordinary pages slower (see perf.test.js for how this is measured).
 test('a page with forms.css: adding a row, focusing or disabling a plain field restyles a few elements', { skip }, async () => {
   await withPage({}, async page => {
     const restyled = expression => restyledBy(page, expression);
@@ -295,14 +295,14 @@ test('a page with forms.css: adding a row, focusing or disabling a plain field r
   });
 });
 
-test('checker: data-field is a boolean on a div or span, and needs forms.css', () => {
+test('checker: data-tm-field is a boolean on a div or span, and needs forms.css', () => {
   const codes = (m, o) => checkMarkup(m, 'a.html', o).map(d => d.code);
-  assert.deepEqual(codes('<div data-field><span data-icon="search"></span><input type="search" aria-label="Search"></div>', { modules: new Set(['core', 'forms']) }), []);
-  assert.deepEqual(codes('<label>Amount <span data-field><input><span>€</span></span></label>'), []);
-  assert.deepEqual(codes('<div data-field><input aria-label="q"></div>', { modules: new Set(['core']) }), ['TM110']);
-  assert.match(checkMarkup('<div data-field><input aria-label="q"></div>', 'a.html', { modules: new Set(['core']) })[0].message, /import '@tiaforge-ui\/temper\/forms\.css'/);
-  assert.deepEqual(codes('<p data-field>x</p>'), ['TM108']);
-  assert.deepEqual(codes('<div data-field="true"><input aria-label="q"></div>'), ['TM102']);
+  assert.deepEqual(codes('<div data-tm-field><span data-tm-icon="search"></span><input type="search" aria-label="Search"></div>', { modules: new Set(['core', 'forms']) }), []);
+  assert.deepEqual(codes('<label>Amount <span data-tm-field><input><span>€</span></span></label>'), []);
+  assert.deepEqual(codes('<div data-tm-field><input aria-label="q"></div>', { modules: new Set(['core']) }), ['TM110']);
+  assert.match(checkMarkup('<div data-tm-field><input aria-label="q"></div>', 'a.html', { modules: new Set(['core']) })[0].message, /import '@tiaforge-ui\/temper\/forms\.css'/);
+  assert.deepEqual(codes('<p data-tm-field>x</p>'), ['TM108']);
+  assert.deepEqual(codes('<div data-tm-field="true"><input aria-label="q"></div>'), ['TM102']);
   const page = fileURLToPath(new URL('../kitchen-sink/forms.html', import.meta.url));
   assert.deepEqual(check([page]).filter(d => d.severity === 'error'), []);
 });

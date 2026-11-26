@@ -9,33 +9,33 @@
 <link rel="stylesheet" href="../../src/app.css">
 </head>
 <body>
-<main data-layout="stack" data-pad="md">
-  <!-- data-justify on a button aligns its wrapped label text too -->
-  <button id="justify" type="button" data-variant="ghost" data-justify="start" style="inline-size: 16rem">From: Priya Raman and two more people in a label that wraps</button>
+<main data-tm-layout="stack" data-tm-pad="md">
+  <!-- data-tm-justify on a button aligns its wrapped label text too -->
+  <button id="justify" type="button" data-tm-variant="ghost" data-tm-justify="start" style="inline-size: 16rem">From: Priya Raman and two more people in a label that wraps</button>
   <!-- an item laid out as a stack keeps its children at the start edge -->
-  <button id="item-stack" type="button" data-variant="item" data-layout="stack" data-gap="xs"><strong>Subject</strong><span>Preview</span></button>
+  <button id="item-stack" type="button" data-tm-variant="item" data-tm-layout="stack" data-tm-gap="xs"><strong>Subject</strong><span>Preview</span></button>
   <!-- a busy item (a syncing mailbox) stays clickable and a drop target -->
-  <button id="item-busy" type="button" data-variant="item" aria-busy="true">Inbox</button>
+  <button id="item-busy" type="button" data-tm-variant="item" aria-busy="true">Inbox</button>
   <button id="busy" type="button" aria-busy="true">Save</button>
   <!-- a menu wider than the room next to its button keeps a gap to the screen edge -->
-  <div data-layout="row" data-gap="sm">
-    <button type="button" data-variant="ghost" aria-label="Previous">‹</button>
-    <button id="open" type="button" popovertarget="menu" data-variant="outline">November 2026</button>
+  <div data-tm-layout="row" data-tm-gap="sm">
+    <button type="button" data-tm-variant="ghost" aria-label="Previous">‹</button>
+    <button id="open" type="button" popovertarget="menu" data-tm-variant="outline">November 2026</button>
   </div>
-  <!-- an item row in a data-list keeps its colored bar -->
-  <div data-list><button id="list-bar" type="button" data-variant="item" data-bar style="--tm-tone: rgb(255, 152, 0)">Soccer</button></div>
+  <!-- an item row in a data-tm-list keeps its colored bar -->
+  <div data-tm-list><button id="list-bar" type="button" data-tm-variant="item" data-tm-bar style="--tm-tone: rgb(255, 152, 0)">Soccer</button></div>
   <!-- a pressed toggle in the rail looks pressed -->
-  <nav data-rail aria-label="Main"><a id="icon-rail" href="#" data-icon="mail"><span>Mail</span></a><button id="rail-off" type="button" data-icon="bell" aria-pressed="false"><span>Off</span></button><button id="rail-on" type="button" data-icon="bell" aria-pressed="true"><span>On</span></button></nav>
+  <nav data-tm-rail aria-label="Main"><a id="icon-rail" href="#" data-tm-icon="mail"><span>Mail</span></a><button id="rail-off" type="button" data-tm-icon="bell" aria-pressed="false"><span>Off</span></button><button id="rail-on" type="button" data-tm-icon="bell" aria-pressed="true"><span>On</span></button></nav>
   <!-- a link with an icon and text keeps a space between them; where a layout has a gap, the icon adds none -->
-  <p><a id="icon-link" href="#" data-icon="arrow-left">All tasks</a> <a id="icon-only" href="#" data-icon="arrow-left" aria-label="Back"></a></p>
-  <a id="icon-row" href="#" data-icon="arrow-left" data-layout="row" data-gap="xs">All tasks</a>
-  <div data-menu><a id="icon-menu" href="#" data-icon="mail">Mail</a></div>
+  <p><a id="icon-link" href="#" data-tm-icon="arrow-left">All tasks</a> <a id="icon-only" href="#" data-tm-icon="arrow-left" aria-label="Back"></a></p>
+  <a id="icon-row" href="#" data-tm-icon="arrow-left" data-tm-layout="row" data-tm-gap="xs">All tasks</a>
+  <div data-tm-menu><a id="icon-menu" href="#" data-tm-icon="mail">Mail</a></div>
   <!-- an image with width and height in a narrower column keeps its ratio (400 × 200 in 120 px: 120 × 60) -->
   <div style="inline-size: 120px"><img id="ratio" alt="" width="400" height="200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'/%3E"></div>
-  <div popover id="menu" data-menu><div style="inline-size: 20rem; block-size: 4rem"></div></div>
+  <div popover id="menu" data-tm-menu><div style="inline-size: 20rem; block-size: 4rem"></div></div>
 </main>
-  <div id="lazy" data-lazy><p>row</p><p>row</p></div>
-  <div id="gutter" data-scroll="y" data-gutter style="block-size: 4rem"><p>row</p></div>
-  <div id="no-gutter" data-scroll="y" style="block-size: 4rem"><p>row</p></div>
+  <div id="lazy" data-tm-lazy><p>row</p><p>row</p></div>
+  <div id="gutter" data-tm-scroll="y" data-tm-gutter style="block-size: 4rem"><p>row</p></div>
+  <div id="no-gutter" data-tm-scroll="y" style="block-size: 4rem"><p>row</p></div>
 </body>
 </html>

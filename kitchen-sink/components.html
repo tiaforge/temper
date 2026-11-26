@@ -12,30 +12,30 @@
   <script>
     // ?t=light|dark, ?tip (focus the first tooltip button, for screenshots)
     { const q = new URLSearchParams(location.search);
-      if (q.get('t')) document.documentElement.dataset.theme = q.get('t'); }
+      if (q.get('t')) document.documentElement.dataset.tmTheme = q.get('t'); }
   </script>
 </head>
 <body>
-<main data-layout="center" data-gap="xl" data-pad="xl">
+<main data-tm-layout="center" data-tm-gap="xl" data-tm-pad="xl">
   <h1>Components</h1>
 
   <!-- ───────── Feedback ───────── -->
-  <section data-layout="stack" data-gap="md">
-    <h2>Toasts and tooltips <small data-muted>feedback.css</small></h2>
-    <div data-layout="row" data-gap="sm">
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2>Toasts and tooltips <small data-tm-muted>feedback.css</small></h2>
+    <div data-tm-layout="row" data-tm-gap="sm">
       <button id="show-toast">Show a toast</button>
-      <button data-variant="outline" id="show-error" data-tone="danger">Show an error</button>
-      <button data-variant="ghost" data-icon="pencil" aria-label="Edit" data-tooltip id="tip"></button>
-      <button data-variant="ghost" data-icon="trash-2" aria-label="Delete" data-tooltip></button>
-      <button data-variant="ghost" data-icon="share-2" aria-label="Share" data-tooltip="Share with your team"></button>
-      <span data-badge data-tone="warning" tabindex="0" data-tooltip="Synced 3 hours ago">Stale</span>
+      <button data-tm-variant="outline" id="show-error" data-tm-tone="danger">Show an error</button>
+      <button data-tm-variant="ghost" data-tm-icon="pencil" aria-label="Edit" data-tm-tooltip id="tip"></button>
+      <button data-tm-variant="ghost" data-tm-icon="trash-2" aria-label="Delete" data-tm-tooltip></button>
+      <button data-tm-variant="ghost" data-tm-icon="share-2" aria-label="Share" data-tm-tooltip="Share with your team"></button>
+      <span data-tm-badge data-tm-tone="warning" tabindex="0" data-tm-tooltip="Synced 3 hours ago">Stale</span>
     </div>
   </section>
 
   <!-- ───────── Data table ───────── -->
-  <section data-layout="stack" data-gap="md">
-    <h2>Data table <small data-muted>table.css</small></h2>
-    <div data-scroll>
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2>Data table <small data-tm-muted>table.css</small></h2>
+    <div data-tm-scroll>
       <table>
         <caption>Invoices</caption>
         <thead><tr>
@@ -43,53 +43,53 @@
           <th aria-sort="ascending"><button>Customer</button></th>
           <th aria-sort="none"><button>Status</button></th>
           <th>Issued</th>
-          <th data-num aria-sort="none"><button>Amount</button></th>
-          <th><span data-sr-only>Actions</span></th>
+          <th data-tm-num aria-sort="none"><button>Amount</button></th>
+          <th><span data-tm-sr-only>Actions</span></th>
         </tr></thead>
         <tbody>
           <tr>
             <td><input type="checkbox" aria-label="Select Acme" checked></td>
             <th scope="row">Acme Corp</th>
-            <td><span data-badge data-tone="success">Paid</span></td>
+            <td><span data-tm-badge data-tm-tone="success">Paid</span></td>
             <td><time datetime="2026-10-02">Oct 2, 2026</time></td>
-            <td data-num>1,204.50</td>
-            <td><div data-layout="row" data-gap="xs" data-justify="end">
-              <button data-variant="ghost" data-size="sm" data-icon="pencil" aria-label="Edit Acme"></button>
-              <button data-variant="ghost" data-size="sm" data-icon="trash-2" aria-label="Delete Acme"></button>
+            <td data-tm-num>1,204.50</td>
+            <td><div data-tm-layout="row" data-tm-gap="xs" data-tm-justify="end">
+              <button data-tm-variant="ghost" data-tm-size="sm" data-tm-icon="pencil" aria-label="Edit Acme"></button>
+              <button data-tm-variant="ghost" data-tm-size="sm" data-tm-icon="trash-2" aria-label="Delete Acme"></button>
             </div></td>
           </tr>
           <tr>
             <td><input type="checkbox" aria-label="Select Globex"></td>
             <th scope="row">Globex</th>
-            <td><span data-badge data-tone="warning">Due</span></td>
+            <td><span data-tm-badge data-tm-tone="warning">Due</span></td>
             <td><time datetime="2026-10-14">Oct 14, 2026</time></td>
-            <td data-num>86.00</td>
-            <td><div data-layout="row" data-gap="xs" data-justify="end">
-              <button data-variant="ghost" data-size="sm" data-icon="pencil" aria-label="Edit Globex"></button>
-              <button data-variant="ghost" data-size="sm" data-icon="trash-2" aria-label="Delete Globex"></button>
+            <td data-tm-num>86.00</td>
+            <td><div data-tm-layout="row" data-tm-gap="xs" data-tm-justify="end">
+              <button data-tm-variant="ghost" data-tm-size="sm" data-tm-icon="pencil" aria-label="Edit Globex"></button>
+              <button data-tm-variant="ghost" data-tm-size="sm" data-tm-icon="trash-2" aria-label="Delete Globex"></button>
             </div></td>
           </tr>
           <tr aria-selected="true">
             <td><input type="checkbox" aria-label="Select Initech"></td>
             <th scope="row">Initech</th>
-            <td><span data-badge data-tone="danger">Overdue</span></td>
+            <td><span data-tm-badge data-tm-tone="danger">Overdue</span></td>
             <td><time datetime="2026-09-01">Sep 1, 2026</time></td>
-            <td data-num>12,950.00</td>
-            <td><div data-layout="row" data-gap="xs" data-justify="end">
-              <button data-variant="ghost" data-size="sm" data-icon="pencil" aria-label="Edit Initech"></button>
-              <button data-variant="ghost" data-size="sm" data-icon="trash-2" aria-label="Delete Initech"></button>
+            <td data-tm-num>12,950.00</td>
+            <td><div data-tm-layout="row" data-tm-gap="xs" data-tm-justify="end">
+              <button data-tm-variant="ghost" data-tm-size="sm" data-tm-icon="pencil" aria-label="Edit Initech"></button>
+              <button data-tm-variant="ghost" data-tm-size="sm" data-tm-icon="trash-2" aria-label="Delete Initech"></button>
             </div></td>
           </tr>
         </tbody>
-        <tfoot><tr><td></td><th scope="row" colspan="3">Total</th><td data-num>14,240.50</td><td></td></tr></tfoot>
+        <tfoot><tr><td></td><th scope="row" colspan="3">Total</th><td data-tm-num>14,240.50</td><td></td></tr></tfoot>
       </table>
     </div>
   </section>
 
   <!-- ───────── Form controls ───────── -->
-  <section data-layout="stack" data-gap="md">
+  <section data-tm-layout="stack" data-tm-gap="md">
     <h2>Form controls</h2>
-    <form data-layout="grid" data-gap="md" style="--tm-min: 14rem">
+    <form data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 14rem">
       <label>Volume <input type="range" value="60"></label>
       <label>Disabled range <input type="range" value="30" disabled></label>
       <label>Color <input type="color" value="#2f6fde"></label>
@@ -112,22 +112,22 @@
   </section>
 </main>
 
-<div data-toasts role="status">
-  <div data-toast data-tone="success"><span>Contact saved.</span> <button data-variant="link" data-size="sm">Undo</button></div>
-  <div data-toast><span>3 messages moved to Archive.</span>
-    <button data-variant="ghost" data-size="sm" data-icon="x" aria-label="Dismiss"></button></div>
-  <div data-toast data-tone="danger" role="alert"><span>Could not reach the server. Your changes are kept and will be sent when you are back online.</span>
-    <button data-variant="ghost" data-size="sm">Retry</button></div>
+<div data-tm-toasts role="status">
+  <div data-tm-toast data-tm-tone="success"><span>Contact saved.</span> <button data-tm-variant="link" data-tm-size="sm">Undo</button></div>
+  <div data-tm-toast><span>3 messages moved to Archive.</span>
+    <button data-tm-variant="ghost" data-tm-size="sm" data-tm-icon="x" aria-label="Dismiss"></button></div>
+  <div data-tm-toast data-tm-tone="danger" role="alert"><span>Could not reach the server. Your changes are kept and will be sent when you are back online.</span>
+    <button data-tm-variant="ghost" data-tm-size="sm">Retry</button></div>
 </div>
 
 <script>
 {
-  const region = document.querySelector('[data-toasts]');
+  const region = document.querySelector('[data-tm-toasts]');
   // The whole toast recipe: append, remove after a while (hidden first, so it fades out).
   function toast(text, tone) {
     const t = document.createElement('div');
-    t.dataset.toast = '';
-    if (tone) { t.dataset.tone = tone; if (tone === 'danger') t.role = 'alert'; }
+    t.dataset.tmToast = '';
+    if (tone) { t.dataset.tmTone = tone; if (tone === 'danger') t.role = 'alert'; }
     t.textContent = text;
     region.append(t);
     setTimeout(() => { t.hidden = true; setTimeout(() => t.remove(), 300); }, 5000);

@@ -11,66 +11,66 @@
   <script>
     // ?t=light|dark, ?dir=rtl
     { const q = new URLSearchParams(location.search);
-      if (q.get('t')) document.documentElement.dataset.theme = q.get('t');
+      if (q.get('t')) document.documentElement.dataset.tmTheme = q.get('t');
       if (q.get('dir')) document.documentElement.dir = q.get('dir'); }
   </script>
 </head>
 <body>
-<main data-layout="center" data-gap="xl" data-pad="xl">
-  <h1>Forms <small data-muted>forms.css</small></h1>
+<main data-tm-layout="center" data-tm-gap="xl" data-tm-pad="xl">
+  <h1>Forms <small data-tm-muted>forms.css</small></h1>
 
-  <section data-layout="stack" data-gap="md">
+  <section data-tm-layout="stack" data-tm-gap="md">
     <h2>Fields with adornments</h2>
-    <div data-layout="grid" data-gap="md" style="--tm-min: 15rem">
+    <div data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 15rem">
       <label>Search
-        <span data-field><span data-icon="search"></span><input type="search" placeholder="Search mail"></span>
+        <span data-tm-field><span data-tm-icon="search"></span><input type="search" placeholder="Search mail"></span>
       </label>
       <label>Amount
-        <span data-field><span>€</span><input inputmode="decimal" value="1,204.50" required><span>EUR</span></span>
+        <span data-tm-field><span>€</span><input inputmode="decimal" value="1,204.50" required><span>EUR</span></span>
         <small>Before tax.</small>
       </label>
       <label>Weight
-        <span data-field><input inputmode="decimal" value="72"><span>kg</span></span>
+        <span data-tm-field><input inputmode="decimal" value="72"><span>kg</span></span>
       </label>
       <label>Website
-        <span data-field><span>https://</span><input value="tiaforge" aria-invalid="true"><span>.example.com</span></span>
-        <small data-tone="danger">This name is taken.</small>
+        <span data-tm-field><span>https://</span><input value="tiaforge" aria-invalid="true"><span>.example.com</span></span>
+        <small data-tm-tone="danger">This name is taken.</small>
       </label>
-      <div data-layout="stack" data-gap="xs">
+      <div data-tm-layout="stack" data-tm-gap="xs">
         <label for="api-key">API key</label>
-        <div data-field><input id="api-key" value="tm_live_8f2c41" readonly><button type="button" data-variant="ghost" data-icon="copy" aria-label="Copy"></button></div>
+        <div data-tm-field><input id="api-key" value="tm_live_8f2c41" readonly><button type="button" data-tm-variant="ghost" data-tm-icon="copy" aria-label="Copy"></button></div>
       </div>
-      <div data-layout="stack" data-gap="xs">
+      <div data-tm-layout="stack" data-tm-gap="xs">
         <label for="locked">Disabled</label>
-        <div data-field><span data-icon="lock"></span><input id="locked" value="Locked" disabled><button type="button" data-variant="ghost" data-icon="x" aria-label="Clear" disabled></button></div>
+        <div data-tm-field><span data-tm-icon="lock"></span><input id="locked" value="Locked" disabled><button type="button" data-tm-variant="ghost" data-tm-icon="x" aria-label="Clear" disabled></button></div>
       </div>
     </div>
-    <div data-layout="stack" data-gap="xs">
+    <div data-tm-layout="stack" data-tm-gap="xs">
       <label for="pw">Password</label>
-      <div data-field>
+      <div data-tm-field>
         <input type="password" id="pw" value="hunter22" required>
-        <button type="button" data-variant="ghost" data-icon="eye" aria-label="Show password"></button>
+        <button type="button" data-tm-variant="ghost" data-tm-icon="eye" aria-label="Show password"></button>
       </div>
     </div>
-    <div data-layout="row" data-gap="sm">
-      <div data-field data-grow><span data-icon="search"></span><input type="search" aria-label="Filter contacts" placeholder="Filter"></div>
+    <div data-tm-layout="row" data-tm-gap="sm">
+      <div data-tm-field data-tm-grow><span data-tm-icon="search"></span><input type="search" aria-label="Filter contacts" placeholder="Filter"></div>
       <input aria-label="Plain field, same height" placeholder="Plain field">
       <button>Search</button>
     </div>
-    <div data-layout="row" data-gap="sm" data-density="compact">
-      <div data-field data-grow><span data-icon="search"></span><input type="search" aria-label="Compact filter" placeholder="Compact"></div>
+    <div data-tm-layout="row" data-tm-gap="sm" data-tm-density="compact">
+      <div data-tm-field data-tm-grow><span data-tm-icon="search"></span><input type="search" aria-label="Compact filter" placeholder="Compact"></div>
       <input aria-label="Compact plain field" placeholder="Plain field">
-      <button data-variant="outline">Search</button>
+      <button data-tm-variant="outline">Search</button>
     </div>
-    <div data-layout="row" data-gap="sm">
-      <div data-field data-size="sm"><span>$</span><input aria-label="Small amount" value="12"></div>
-      <div data-field data-size="lg" data-grow><span data-icon="search"></span><input type="search" aria-label="Large search" placeholder="Large"><button type="button" data-variant="ghost" data-icon="x" aria-label="Clear search"></button></div>
+    <div data-tm-layout="row" data-tm-gap="sm">
+      <div data-tm-field data-tm-size="sm"><span>$</span><input aria-label="Small amount" value="12"></div>
+      <div data-tm-field data-tm-size="lg" data-tm-grow><span data-tm-icon="search"></span><input type="search" aria-label="Large search" placeholder="Large"><button type="button" data-tm-variant="ghost" data-tm-icon="x" aria-label="Clear search"></button></div>
     </div>
   </section>
 
-  <section data-layout="stack" data-gap="md">
+  <section data-tm-layout="stack" data-tm-gap="md">
     <h2>Read-only and required</h2>
-    <div data-layout="grid" data-gap="md" style="--tm-min: 15rem">
+    <div data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 15rem">
       <label>Account ID <input value="acct_29f1" readonly></label>
       <label>Name <input autocomplete="name" required></label>
       <label>Notes <textarea readonly>Imported from the old system.</textarea></label>
@@ -79,9 +79,9 @@
     <label><input type="checkbox" required> I accept the terms</label>
   </section>
 
-  <section data-layout="stack" data-gap="md">
+  <section data-tm-layout="stack" data-tm-gap="md">
     <h2>Range and progress</h2>
-    <div data-layout="grid" data-gap="md" style="--tm-min: 15rem">
+    <div data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 15rem">
       <label>Volume <input type="range" value="60"></label>
       <label>Disabled <input type="range" value="30" disabled></label>
       <label>Uploading <progress value="40" max="100">40 %</progress></label>

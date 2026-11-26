@@ -33,7 +33,7 @@ test('iOS Safari gets -webkit-text-size-adjust (the build targets must include i
 test('font weights are only 400, 600 and 700 (static system fonts have no in-between weights)', () => {
   for (const file of sources) {
     for (const [, w] of readFileSync(join(root, 'src', file), 'utf8').matchAll(/font-weight:\s*([^;}]+)/g)) {
-      assert.ok(/^(400|600|700|var\(--tm-heading-weight\))$/.test(w.trim()), `${file}: font-weight ${w}`);
+      assert.ok(/^(400|600|700|var\(--tm-(heading|display)-weight\))$/.test(w.trim()), `${file}: font-weight ${w}`); // --tm-display-weight: 600 or 700 by pairing
     }
   }
 });
@@ -68,7 +68,7 @@ test('placeholder, selection, md size, tone bars, scrollbars and sticky headers'
     // ::placeholder and ::selection used to be in :where(), where they matched nothing
     assert.equal(r.placeholder, r.muted);
     assert.notEqual(r.selection, 'rgba(0, 0, 0, 0)');
-    // data-size="md" inside a sm container: md height and the control font, not the small one
+    // data-tm-size="md" inside a sm container: md height and the control font, not the small one
     assert.equal(r.sm, '13px');
     assert.equal(r.md, '15px', `md button font ${r.md}, control font ${r.control}`);
     // tone bars are straight: square start corners on an item button and a toast

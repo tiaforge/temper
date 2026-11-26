@@ -1,5 +1,5 @@
 // Layout pieces for applications, in a real browser (fixtures/layout-extra.html, served over HTTP from the repository
-// root): data-container (data-show follows the nearest pane), data-sticky, data-join and card media; their restyle cost;
+// root): data-tm-container (data-tm-show follows the nearest pane), data-tm-sticky, data-tm-join and card media; their restyle cost;
 // and the checker's vocabulary for them. The browser tests are skipped without Chrome/Chromium.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -52,9 +52,9 @@ async function withPage({ width = 1280, dir, scheme = 'light', media = {}, file 
 
 const SHOW = ['vp-narrow', 'vp-wide', 'cn-narrow', 'cn-wide', 'cw-narrow', 'cw-wide', 'nest-narrow', 'nest-wide', 'self', 'own-narrow', 'own-wide'];
 
-test('data-show follows the nearest data-container, and the screen outside one (also inside an app\'s own container)', { skip }, async () => {
+test('data-tm-show follows the nearest data-tm-container, and the screen outside one (also inside an app\'s own container)', { skip }, async () => {
   const state = page => page.evaluate(`Object.fromEntries(${JSON.stringify(SHOW)}.map(id => [id, shown(id)]))`);
-  // wide screen: the 20rem panes are narrow, the 60rem pane wide; the container's own data-show follows the screen
+  // wide screen: the 20rem panes are narrow, the 60rem pane wide; the container's own data-tm-show follows the screen
   assert.deepEqual(await withPage({ width: 1280 }, state), {
     'vp-narrow': false, 'vp-wide': true, 'cn-narrow': true, 'cn-wide': false, 'cw-narrow': false, 'cw-wide': true,
     'nest-narrow': true, 'nest-wide': false, self: false, 'own-narrow': false, 'own-wide': true,
@@ -66,7 +66,7 @@ test('data-show follows the nearest data-container, and the screen outside one (
   });
 });
 
-test('data-container keeps fixed and absolute children placed against the viewport and their usual ancestor', { skip }, async () => {
+test('data-tm-container keeps fixed and absolute children placed against the viewport and their usual ancestor', { skip }, async () => {
   await withPage({}, async page => {
     const r = await page.evaluate(`(() => {
       const f = Object.assign(document.createElement('div'), { style: 'position: fixed; inset: 0 auto auto 0; inline-size: 1px; block-size: 1px' });
@@ -79,7 +79,7 @@ test('data-container keeps fixed and absolute children placed against the viewpo
 });
 
 for (const scheme of ['light', 'dark']) {
-  test(`data-sticky (${scheme}): the bar paints the surface it sits on: the page, a card, a details`, { skip }, async () => {
+  test(`data-tm-sticky (${scheme}): the bar paints the surface it sits on: the page, a card, a details`, { skip }, async () => {
     await withPage({ scheme }, async page => {
       const r = await page.evaluate(`[cs('bar-top').backgroundColor, getComputedStyle(document.documentElement).backgroundColor,
         cs('bar-card').backgroundColor, cs('bar-card-host').backgroundColor, cs('bar-details').backgroundColor, cs('bar-details-host').backgroundColor]`);
@@ -91,10 +91,10 @@ for (const scheme of ['light', 'dark']) {
   });
 }
 
-// The recipe's markup (llms-full.txt, "Panes that adapt to their own width"): in a data-shell="fixed" app, panes in a
-// data-wrap="none" split are as tall as the screen and each scrolls by itself; with the default wrapping they grow to
+// The recipe's markup (llms-full.txt, "Panes that adapt to their own width"): in a data-tm-shell="fixed" app, panes in a
+// data-tm-wrap="none" split are as tall as the screen and each scrolls by itself; with the default wrapping they grow to
 // their content and the whole main scrolls (which the docs warn about).
-test('split panes in a fixed shell: with data-wrap="none" each pane scrolls by itself; on phones one pane shows', { skip }, async () => {
+test('split panes in a fixed shell: with data-tm-wrap="none" each pane scrolls by itself; on phones one pane shows', { skip }, async () => {
   const state = `(() => {
     const s = id => ({ h: Math.round(box(id).h), scrolls: $(id).scrollHeight > $(id).clientHeight + 1 });
     return { viewport: innerHeight, main: s('main'), list: s('list'), reader: shown('reader') ? s('reader') : null, listW: box('list').w, menu: shown('menu') };
@@ -104,8 +104,8 @@ test('split panes in a fixed shell: with data-wrap="none" each pane scrolls by i
     assert.deepEqual(r, { viewport: 800, main: { h: 800, scrolls: false }, list: { h: 800, scrolls: true }, reader: { h: 800, scrolls: true }, listW: r.listW, menu: false });
     // scrolling one pane leaves the other where it is
     assert.deepEqual(await page.evaluate(`($('list').scrollTop = 500, [$('list').scrollTop, $('reader').scrollTop, $('main').scrollTop])`), [500, 0, 0]);
-    // without data-wrap="none": the panes are as tall as their content and main scrolls as a whole
-    const wrapped = await page.evaluate(`($('main').removeAttribute('data-wrap'), ${state})`);
+    // without data-tm-wrap="none": the panes are as tall as their content and main scrolls as a whole
+    const wrapped = await page.evaluate(`($('main').removeAttribute('data-tm-wrap'), ${state})`);
     assert.ok(wrapped.main.scrolls && !wrapped.list.scrolls && wrapped.reader.h > 5000, JSON.stringify(wrapped));
   });
   // phones: the reader is hidden, the list takes the width and still scrolls by itself, the menu button shows
@@ -115,13 +115,13 @@ test('split panes in a fixed shell: with data-wrap="none" each pane scrolls by i
   });
 });
 
-test('data-sticky: bars stay at the pane edges, opaque, above the sticky table header; static in print', { skip }, async () => {
+test('data-tm-sticky: bars stay at the pane edges, opaque, above the sticky table header; static in print', { skip }, async () => {
   await withPage({}, async page => {
     const r = await page.evaluate(`(() => {
       $('pane').scrollTop = 200;
       const pane = box('pane'), top = box('bar-top'), bottom = box('bar-bottom'), th = box('th');
       const hit = document.elementFromPoint(th.x + 4, th.y + th.h / 2);
-      return { top: top.y - pane.y, bottom: pane.b - bottom.b, thUnder: th.y < top.b, hit: hit.closest('[data-sticky]')?.id,
+      return { top: top.y - pane.y, bottom: pane.b - bottom.b, thUnder: th.y < top.b, hit: hit.closest('[data-tm-sticky]')?.id,
         bg: cs('bar-top').backgroundColor, page: getComputedStyle(document.documentElement).backgroundColor,
         z: cs('bar-top').zIndex, lineTop: cs('bar-top').borderBottomWidth, lineBottom: cs('bar-bottom').borderTopWidth,
         safe: cs('bar-bottom').borderBottomWidth };
@@ -147,14 +147,14 @@ test('data-sticky: bars stay at the pane edges, opaque, above the sticky table h
 const radii = id => `(() => { const s = cs('${id}'); return [s.borderTopLeftRadius, s.borderTopRightRadius, s.borderBottomRightRadius, s.borderBottomLeftRadius].join(' '); })()`;
 
 for (const dir of ['ltr', 'rtl']) {
-  test(`data-join (${dir}): one unit with shared borders, rounded only at the outer ends`, { skip }, async () => {
+  test(`data-tm-join (${dir}): one unit with shared borders, rounded only at the outer ends`, { skip }, async () => {
     await withPage({ dir }, async page => {
       const r = await page.evaluate(`({ o1: ${radii('o1')}, o2: ${radii('o2')}, o3: ${radii('o3')}, field: ${radii('c-field')}, button: ${radii('c-button')},
         boxes: ['o1', 'o2', 'o3'].map(box), r: cs('o1').borderTopLeftRadius === '0px' ? 0 : 1 })`);
       const R = '8px';
       const [start, end] = dir === 'ltr' ? [`${R} 0px 0px ${R}`, `0px ${R} ${R} 0px`] : [`0px ${R} ${R} 0px`, `${R} 0px 0px ${R}`];
       assert.deepEqual([r.o1, r.o2, r.o3], [start, '0px 0px 0px 0px', end]);
-      assert.deepEqual([r.field, r.button], [start, end], 'a data-field (forms.css) joins too');
+      assert.deepEqual([r.field, r.button], [start, end], 'a data-tm-field (forms.css) joins too');
       const [a, b, c] = r.boxes;
       if (dir === 'ltr') assert.deepEqual([b.x - a.r, c.x - b.r], [-1, -1], 'neighbors share their 1px border');
       else assert.deepEqual([a.x - b.r, b.x - c.r], [-1, -1], 'neighbors share their 1px border, mirrored');
@@ -162,7 +162,7 @@ for (const dir of ['ltr', 'rtl']) {
   });
 }
 
-test('data-join: same height for every child at each data-size and in compact density; data-grow; separators', { skip }, async () => {
+test('data-tm-join: same height for every child at each data-tm-size and in compact density; data-tm-grow; separators', { skip }, async () => {
   await withPage({}, async page => {
     const r = await page.evaluate(`({
       sm: [box('sm-input').h, box('sm-button').h], lg: [box('lg-select').h, box('lg-button').h], compact: [box('c-field').h, box('c-button').h],
@@ -174,14 +174,14 @@ test('data-join: same height for every child at each data-size and in compact de
     assert.deepEqual(r.lg, [48, 48]);
     assert.deepEqual(r.compact, [32, 32]);
     assert.equal(r.plain, 40);
-    assert.deepEqual(r.grow, [true, true], 'data-grow on the group and on its field');
+    assert.deepEqual(r.grow, [true, true], 'data-tm-grow on the group and on its field');
     assert.notEqual(r.solidLine, r.solidEdge, 'a visible line between two solid buttons');
     assert.doesNotMatch(r.secondaryLine, /rgba\(0, 0, 0, 0\)/, 'and between two secondary ones');
     assert.equal(r.outline[0], r.outline[1], 'outline buttons keep one border color on the shared edge');
   });
 });
 
-test('data-join: a focused child comes to the front, so its ring is not covered by the next one', { skip }, async () => {
+test('data-tm-join: a focused child comes to the front, so its ring is not covered by the next one', { skip }, async () => {
   await withPage({}, async page => {
     await page.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 }); // keyboard modality
     const r = await page.evaluate(`(() => {
@@ -206,7 +206,7 @@ test('card media: a first-child img, picture or video runs edge to edge under th
       };
     })()`);
     assert.deepEqual(r.img, [1, 1, 1], 'inside the 1px border, from edge to edge');
-    assert.deepEqual(r.pad, [1, 1, 1], 'also with data-pad on the card');
+    assert.deepEqual(r.pad, [1, 1, 1], 'also with data-tm-pad on the card');
     assert.deepEqual([r.pic, r.picImg], [[1, 1, 1], [1, 1, 1]]);
     assert.equal(r.cardRadius, '12px');
     assert.deepEqual([r.radius, r.picRadius], ['11px 11px 0px 0px', '11px 11px 0px 0px']);
@@ -234,27 +234,27 @@ test('adding or removing one child of a joined group, a container or a card rest
 test('checker: accepts the new vocabulary, rejects misuse', () => {
   const codes = (m, o) => checkMarkup(m, 'a.html', o).map(d => d.code);
   const all = { modules: new Set(['core', 'app', 'forms']) };
-  assert.deepEqual(codes('<header data-sticky="top"></header><footer data-sticky="bottom"></footer>', all), []);
-  assert.deepEqual(codes('<div data-join role="group" aria-label="View"><button>Day</button><button data-variant="secondary">Week</button></div>', all), []);
-  assert.deepEqual(codes('<div data-layout="row"><form data-join data-grow><input data-grow aria-label="q"><button>Go</button></form></div>', all), []);
-  assert.deepEqual(codes('<section data-container><button data-show="narrow" data-icon="x" aria-label="Close"></button></section>', all), []);
-  assert.deepEqual(codes('<div data-sticky="up"></div>', all), ['TM101']);
-  assert.match(checkMarkup('<div data-sticky="up"></div>', 'a.html', all)[0].message, /top, bottom/);
-  assert.deepEqual(codes('<div data-sticky></div>', all), ['TM101']);
-  assert.deepEqual(codes('<div data-join="true"><button>A</button></div>', all), ['TM102']);
-  assert.deepEqual(codes('<section data-container="pane"></section>', all), ['TM102']);
-  assert.deepEqual(codes('<section data-container></section>', { modules: new Set(['core']) }), ['TM110']);
-  assert.deepEqual(codes('<div data-join><button>A</button></div>', { modules: new Set(['core']) }), [], 'data-join and data-sticky are core');
+  assert.deepEqual(codes('<header data-tm-sticky="top"></header><footer data-tm-sticky="bottom"></footer>', all), []);
+  assert.deepEqual(codes('<div data-tm-join role="group" aria-label="View"><button>Day</button><button data-tm-variant="secondary">Week</button></div>', all), []);
+  assert.deepEqual(codes('<div data-tm-layout="row"><form data-tm-join data-tm-grow><input data-tm-grow aria-label="q"><button>Go</button></form></div>', all), []);
+  assert.deepEqual(codes('<section data-tm-container><button data-tm-show="narrow" data-tm-icon="x" aria-label="Close"></button></section>', all), []);
+  assert.deepEqual(codes('<div data-tm-sticky="up"></div>', all), ['TM101']);
+  assert.match(checkMarkup('<div data-tm-sticky="up"></div>', 'a.html', all)[0].message, /top, bottom/);
+  assert.deepEqual(codes('<div data-tm-sticky></div>', all), ['TM101']);
+  assert.deepEqual(codes('<div data-tm-join="true"><button>A</button></div>', all), ['TM102']);
+  assert.deepEqual(codes('<section data-tm-container="pane"></section>', all), ['TM102']);
+  assert.deepEqual(codes('<section data-tm-container></section>', { modules: new Set(['core']) }), ['TM110']);
+  assert.deepEqual(codes('<div data-tm-join><button>A</button></div>', { modules: new Set(['core']) }), [], 'data-tm-join and data-tm-sticky are core');
 });
 
-test('data-layout="center" sits on a whole pixel at odd widths, and still fills a narrower parent', { skip }, async () => {
+test('data-tm-layout="center" sits on a whole pixel at odd widths, and still fills a narrower parent', { skip }, async () => {
   for (const dir of ['ltr', 'rtl']) {
     const r = await withPage({ width: 1280, dir }, page => page.evaluate(`(() => {
       const out = [];
       for (const [width, pad] of [[1301, ''], [1000, ''], [999, 'xl'], [500, ''], [633, 'lg']]) {
         const wrap = document.createElement('div');
         wrap.style.cssText = 'inline-size: ' + width + 'px';
-        wrap.innerHTML = '<div data-layout="center" ' + (pad ? 'data-pad="' + pad + '" ' : '') + 'style="--tm-measure: 600px"><p>x</p></div>';
+        wrap.innerHTML = '<div data-tm-layout="center" ' + (pad ? 'data-tm-pad="' + pad + '" ' : '') + 'style="--tm-measure: 600px"><p>x</p></div>';
         document.body.prepend(wrap);
         const w = wrap.getBoundingClientRect(), c = wrap.firstChild.getBoundingClientRect();
         out.push({ width, pad, start: c.left - w.left, end: w.right - c.right, w: c.width });
@@ -263,7 +263,7 @@ test('data-layout="center" sits on a whole pixel at odd widths, and still fills 
       return out;
     })()`));
     for (const m of r) {
-      const name = `${dir} ${m.width}px${m.pad ? ' data-pad=' + m.pad : ''}`;
+      const name = `${dir} ${m.width}px${m.pad ? ' data-tm-pad=' + m.pad : ''}`;
       assert.ok(Number.isInteger(m.start) && Number.isInteger(m.end), `${name}: whole pixels, ${m.start} / ${m.end}`);
       assert.ok(Math.abs(m.start - m.end) <= 1, `${name}: centered, ${m.start} / ${m.end}`);
       if (m.width <= 600 + 2 * 16) assert.deepEqual([m.start, m.w], [0, m.width], `${name}: fills its parent`);

@@ -8,22 +8,22 @@
 <link rel="stylesheet" href="../../src/app.css">
 <link rel="stylesheet" href="../../src/icons.css">
 </head>
-<!-- the markup of the "Panes that adapt to their own width" recipe (llms-full.txt) in a data-shell="fixed" app -->
-<body data-shell="fixed">
-  <nav data-rail popover id="rail" aria-label="Main"><a href="#" data-icon="mail"><span>Mail</span></a></nav>
-  <main data-layout="split" data-wrap="none" data-gap="none" id="main">
-    <section data-scroll="y" style="--tm-split: 22rem" id="list">
-      <header data-sticky="top" data-layout="row" data-gap="xs" data-pad="sm">
-        <button popovertarget="rail" data-show="narrow" id="menu" data-icon="menu" data-variant="ghost" aria-label="Open menu"></button>
+<!-- the markup of the "Panes that adapt to their own width" recipe (llms-full.txt) in a data-tm-shell="fixed" app -->
+<body data-tm-shell="fixed">
+  <nav data-tm-rail popover id="rail" aria-label="Main"><a href="#" data-tm-icon="mail"><span>Mail</span></a></nav>
+  <main data-tm-layout="split" data-tm-wrap="none" data-tm-gap="none" id="main">
+    <section data-tm-scroll="y" style="--tm-split: 22rem" id="list">
+      <header data-tm-sticky="top" data-tm-layout="row" data-tm-gap="xs" data-tm-pad="sm">
+        <button popovertarget="rail" data-tm-show="narrow" id="menu" data-tm-icon="menu" data-tm-variant="ghost" aria-label="Open menu"></button>
         <h1>Inbox</h1>
       </header>
       <p style="block-size: 3000px">…message list…</p>
     </section>
-    <section data-scroll="y" data-container data-show="wide" id="reader">
-      <header data-sticky="top" data-layout="row" data-gap="xs" data-pad="sm">
-        <h2 data-grow data-truncate>Quarterly report</h2>
-        <button data-show="wide" data-icon="archive" data-variant="ghost">Archive</button>
-        <button data-show="narrow" data-icon="archive" data-variant="ghost" aria-label="Archive"></button>
+    <section data-tm-scroll="y" data-tm-container data-tm-show="wide" id="reader">
+      <header data-tm-sticky="top" data-tm-layout="row" data-tm-gap="xs" data-tm-pad="sm">
+        <h2 data-tm-grow data-tm-truncate>Quarterly report</h2>
+        <button data-tm-show="wide" data-tm-icon="archive" data-tm-variant="ghost">Archive</button>
+        <button data-tm-show="narrow" data-tm-icon="archive" data-tm-variant="ghost" aria-label="Archive"></button>
       </header>
       <p style="block-size: 5000px">…message…</p>
     </section>

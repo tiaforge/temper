@@ -14,7 +14,7 @@ Options:
                         (TM113) until you write the real one.
   --warnings-as-errors  also fail on warnings
   --icons <dir>         accept the icon names of an SVG folder
-  --lucide              accept every Lucide icon name, and say where a data-icon's names cannot be seen in
+  --lucide              accept every Lucide icon name, and say where a data-tm-icon's names cannot be seen in
                         the source (both match the Vite plugin's icons option)
   -h, --help            show this help
   -v, --version         show the version`;

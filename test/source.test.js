@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { stampSources } from '../lib/source.js';
 
 test('plain HTML elements get their line; components, custom elements and svelte: tags do not', () => {
-  const out = stampSources('<h1>a</h1>\n<Card />\n<my-el></my-el>\n<svelte:head></svelte:head>\n  <button\n  data-tone="x">b</button>', 'a.svelte', 'src/a.svelte');
-  assert.equal(out, '<h1 data-tm-src="src/a.svelte:1">a</h1>\n<Card />\n<my-el></my-el>\n<svelte:head></svelte:head>\n  <button data-tm-src="src/a.svelte:5"\n  data-tone="x">b</button>');
+  const out = stampSources('<h1>a</h1>\n<Card />\n<my-el></my-el>\n<svelte:head></svelte:head>\n  <button\n  data-tm-tone="x">b</button>', 'a.svelte', 'src/a.svelte');
+  assert.equal(out, '<h1 data-tm-src="src/a.svelte:1">a</h1>\n<Card />\n<my-el></my-el>\n<svelte:head></svelte:head>\n  <button data-tm-src="src/a.svelte:5"\n  data-tm-tone="x">b</button>');
 });
 
 test('script and style contents, comments and TypeScript generics are left alone', () => {

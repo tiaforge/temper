@@ -11,19 +11,19 @@
   <script>
     // ?t=light|dark, ?density=compact, ?dir=rtl
     { const q = new URLSearchParams(location.search), h = document.documentElement;
-      if (q.get('t')) h.dataset.theme = q.get('t');
-      if (q.get('density')) h.dataset.density = q.get('density');
+      if (q.get('t')) h.dataset.tmTheme = q.get('t');
+      if (q.get('density')) h.dataset.tmDensity = q.get('density');
       if (q.get('dir')) h.dir = q.get('dir'); }
   </script>
 </head>
 <body>
-<main data-layout="center" data-gap="xl" data-pad="xl">
+<main data-tm-layout="center" data-tm-gap="xl" data-tm-pad="xl">
 
   <!-- ───────── An article: rendered Markdown, flat ───────── -->
-  <article data-prose id="article">
+  <article data-tm-prose id="article">
     <header>
       <h1>Working with light and shadow on a small balcony</h1>
-      <p data-muted>Tia Heinrich · <time datetime="2026-11-20">November 20, 2026</time> · 6 min read</p>
+      <p data-tm-muted>Tia Heinrich · <time datetime="2026-11-20">November 20, 2026</time> · 6 min read</p>
     </header>
     <p>A balcony garden gets two kinds of light: a few hours of direct sun and a long stretch of bright shade.
       Most plants sold as “full sun” cope with less than the label says, as long as the soil stays cool and
@@ -65,7 +65,7 @@
       <li>Skip the shade pots unless the top two centimetres are dry.</li>
     </ol>
 
-    <div data-callout data-tone="warning" role="note">
+    <div data-tm-callout data-tm-tone="warning" role="note">
       <strong>Before you drill into the wall</strong>
       Most rental contracts in Germany need the landlord’s consent for railing planters that are screwed on.
     </div>
@@ -74,9 +74,9 @@
       <caption>What survived three summers</caption>
       <thead><tr><th>Plant</th><th>Spot</th><th>Verdict</th></tr></thead>
       <tbody>
-        <tr><td>Cherry tomato</td><td>Railing</td><td><span data-badge data-tone="success">Thrived</span></td></tr>
-        <tr><td>Basil</td><td>Railing</td><td><span data-badge data-tone="warning">Bolted early</span></td></tr>
-        <tr><td>Hosta</td><td>Floor</td><td><span data-badge data-tone="success">Thrived</span></td></tr>
+        <tr><td>Cherry tomato</td><td>Railing</td><td><span data-tm-badge data-tm-tone="success">Thrived</span></td></tr>
+        <tr><td>Basil</td><td>Railing</td><td><span data-tm-badge data-tm-tone="warning">Bolted early</span></td></tr>
+        <tr><td>Hosta</td><td>Floor</td><td><span data-tm-badge data-tm-tone="success">Thrived</span></td></tr>
       </tbody>
     </table>
 
@@ -96,35 +96,35 @@
 
     <hr>
     <p>Questions? I answer every mail, slowly.</p>
-    <div data-layout="row" data-gap="sm">
-      <a href="#" role="button" data-icon="mail">Write to me</a>
-      <button data-variant="outline" data-icon="share-2">Share</button>
+    <div data-tm-layout="row" data-tm-gap="sm">
+      <a href="#" role="button" data-tm-icon="mail">Write to me</a>
+      <button data-tm-variant="outline" data-tm-icon="share-2">Share</button>
     </div>
 
     <h2>Keep reading</h2>
-    <article data-layout="stack" data-gap="xs" id="card">
+    <article data-tm-layout="stack" data-tm-gap="xs" id="card">
       <h3>Composting in a flat</h3>
-      <p data-muted>A worm bin under the sink, and why it does not smell.</p>
+      <p data-tm-muted>A worm bin under the sink, and why it does not smell.</p>
       <a href="#">Read the post</a>
     </article>
-    <ul data-list id="list">
+    <ul data-tm-list id="list">
       <li>Seed swap, <time datetime="2027-03-14">March 14</time></li>
       <li>Balcony tour, <time datetime="2027-05-02">May 2</time></li>
     </ul>
-    <form data-layout="row" data-gap="sm" id="form">
-      <input type="email" data-grow aria-label="Email" placeholder="you@example.com">
+    <form data-tm-layout="row" data-tm-gap="sm" id="form">
+      <input type="email" data-tm-grow aria-label="Email" placeholder="you@example.com">
       <button>Subscribe</button>
     </form>
   </article>
 
   <!-- ───────── A mail body: arbitrary HTML, nested in divs and tables ───────── -->
-  <section data-layout="stack" data-gap="md" aria-labelledby="mail-subject">
+  <section data-tm-layout="stack" data-tm-gap="md" aria-labelledby="mail-subject">
     <h2 id="mail-subject">Re: Saturday at the community garden</h2>
-    <dl data-pairs>
+    <dl data-tm-pairs>
       <dt>From</dt><dd>Mira Okafor &lt;mira@okafor.io&gt;</dd>
       <dt>To</dt><dd>Tia Heinrich</dd>
     </dl>
-    <div data-prose id="mail" style="--tm-measure: none">
+    <div data-tm-prose id="mail" style="--tm-measure: none">
       <div dir="ltr">
         <div>Hi Tia,</div>
         <div><br></div>
@@ -141,14 +141,14 @@
             <p>Parking is on Gartenstraße.</p>
           </td></tr></table>
         </div>
-        <div data-callout data-tone="info" role="note">
+        <div data-tm-callout data-tm-tone="info" role="note">
           <strong>RSVP</strong>
           <p>Reply by Thursday so we can order enough coffee.</p>
           <p>Kids are welcome.</p>
         </div>
-        <div data-layout="row" data-gap="sm" id="mail-actions">
+        <div data-tm-layout="row" data-tm-gap="sm" id="mail-actions">
           <button id="mail-yes">I’m in</button>
-          <button data-variant="outline">Can’t make it</button>
+          <button data-tm-variant="outline">Can’t make it</button>
         </div>
         <p>Mira<br><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%23f2c14e'/%3E%3Ccircle cx='5.5' cy='6.5' r='1.2' fill='%23333'/%3E%3Ccircle cx='10.5' cy='6.5' r='1.2' fill='%23333'/%3E%3Cpath d='M4.5 10q3.5 3 7 0' stroke='%23333' fill='none'/%3E%3C/svg%3E" width="16" height="16" alt=""> <small>Community Garden Moabit</small></p>
         <blockquote type="cite">

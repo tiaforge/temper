@@ -28,7 +28,7 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
   // Fresh probes for every run of a group (Chrome can return a stale computed color for a reused element whose style
   // was replaced), all appended at once: each insertion into the document invalidates core's html:has(dialog:modal)
   // (the scroll lock) and so restyles the root, and one probe per read made the sweep take minutes instead of seconds.
-  // 'thumb' reads the scrollbar thumb color that core gives a data-scroll pane.
+  // 'thumb' reads the scrollbar thumb color that core gives a data-tm-scroll pane.
   let colors = new Map();
   const key = (expr, tone) => `${expr}\u0000${tone ?? ''}`;
   const snapshot = list => {
@@ -37,8 +37,8 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
       if (probes.has(key(expr, tone))) continue;
       const probe = box.appendChild(document.createElement('div'));
       if (tone === 'primary') probe.style.setProperty('--tm-tone', 'var(--tm-primary)');
-      else if (tone) probe.dataset.tone = tone;
-      if (expr === 'thumb') probe.dataset.scroll = '';
+      else if (tone) probe.dataset.tmTone = tone;
+      if (expr === 'thumb') probe.dataset.tmScroll = '';
       else probe.style.color = `var(${expr})`;
       probes.set(key(expr, tone), [expr, probe]);
     }
@@ -92,7 +92,7 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
     const all = document.createElement('div');
     const cases = ['warning', 'danger', 'neutral'].flatMap(tone => [false, true].map(invalid => {
       const box = all.appendChild(document.createElement('div'));
-      box.dataset.tone = tone;
+      box.dataset.tmTone = tone;
       const input = box.appendChild(Object.assign(document.createElement('input'), { type: 'checkbox', checked: true }));
       if (invalid) input.setAttribute('aria-invalid', 'true');
       return { tone, invalid, input };
@@ -114,7 +114,7 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
   ]);
   const results = [], caps = [];
   for (const scheme of ['light', 'dark']) {
-    html.dataset.theme = scheme;
+    html.dataset.tmTheme = scheme;
     set('--tm-chroma', chroma);
     for (const tint of tints) {
       set('--tm-neutral-tint', tint);
@@ -131,13 +131,13 @@ function sweep({ hues, chroma, tints, capFrom, capTo, capStep }) {
     let cap = null;
     for (let c = capFrom; c <= capTo + 1e-9; c += capStep) {
       set('--tm-chroma', c.toFixed(3));
-      const ok = ['light', 'dark'].every(s => { html.dataset.theme = s; return run('accent', s, {}).every(r => r.ratio >= r.min); });
+      const ok = ['light', 'dark'].every(s => { html.dataset.tmTheme = s; return run('accent', s, {}).every(r => r.ratio >= r.min); });
       if (!ok) break;
       cap = +c.toFixed(3);
     }
     caps.push({ hue, cap });
   }
-  set('--tm-hue', null); set('--tm-chroma', null); html.removeAttribute('data-theme');
+  set('--tm-hue', null); set('--tm-chroma', null); html.removeAttribute('data-tm-theme');
   return { results, caps, chroma: chroma != null ? String(chroma) : getComputedStyle(html).getPropertyValue('--tm-chroma').trim() };
 }
 
