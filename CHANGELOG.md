@@ -63,10 +63,46 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Vite plugin
 
+- `inspect`: the dev page also gets temper-inspect's new document, stylesheet and geometry checks (the client waits
+  for `prepare()`; an older temper-inspect has none and works as before).
 - `@import 'virtual:temper-icons.css'` from CSS also works for tools that compile project CSS through Vite's
   `preprocessCSS`, past the plugin's rewrite: sinter, reading image sizes, failed with ENOENT (SN527) and gave the
   page's images `sizes="auto, 100vw"`. The icon CSS is now a real file, written when the config resolves, and
   `resolve.alias` points the virtual name at it.
+
+### temper-inspect: is this the real page, did my CSS apply, does it look broken
+
+Twenty-two new checks in three groups (the [README](packages/inspect/README.md) lists them with their severities).
+All but the three that need DevTools also run in the Vite plugin's `inspect` option.
+
+- **The page's health.** Uncaught exceptions and unhandled rejections with file and line (`exception`),
+  `console.error` and errors the browser logs (`console`), failed requests (`request`: error for the page, stylesheets,
+  scripts and fonts), each in the state it happened in: what a dialog's opener throws belongs to the dialog. In the
+  page: quirks mode (`doctype`), no viewport meta tag (`viewport`, an error: without it a phone lays the page out
+  980px wide, and the 390px pass says nothing about a phone), zoom switched off (`zoom`), `lang`, `title`, images and
+  web fonts that did not load (`image`, `font`), duplicate ids (`id`), references to ids that are not there or
+  cannot be the target (`ref`: `for`, `commandfor`, `popovertarget`, `aria-*`, `list`, `form`, `headers`,
+  `href="#…"`), buttons that do not do what they say (`submit`: a `popovertarget` button that submits its form, a
+  `commandfor` button without `type` in a form, which Chrome ignores), layout shift while loading with the elements
+  that moved (`shift`), and animations still running when checked (`settle`). Finite animations now get up to 2 s to
+  end before the first check.
+- **The page's own CSS.** `css`: a declaration the browser dropped, in a stylesheet or a `style` attribute, with
+  the fix it could confirm (`align-item` → `align-items`, `display: flexbox` → `flex`, `margin: 10` → `10px`, a
+  missing `;`) and file and line. `var`: `var(--name)` without a fallback where the name is defined nowhere, with
+  the nearest defined names. Stylesheets from other origins and from `node_modules` are not checked; vendor
+  prefixes, `@supports` blocks and fallback pairs are not reported.
+- **Geometry.** `overlap`: text painted over other text. `spill`: content poking out of a box with a visible edge.
+  `squeezed`: text the layout shrank to a sliver, with what squeezes it. `distorted`: a stretched image.
+  `upscaled` (info): a raster image shown at 1.5× its size or more.
+- A dangling or empty `aria-labelledby` no longer counts as an accessible name.
+- An overlay whose button was clicked and did not open it is reported as that, not as a hidden button.
+- `__tsi.prepare()` (new) runs what the checks wait for: stylesheet and SVG sources, animations ending. `check()`
+  stays synchronous; without `prepare()` the checks that depend on it are skipped. A finding can be about selector
+  text or about no element (`selector` is then empty); `request` and `image` findings carry `resource`, the URL.
+- Found on temper's own kitchen sink: three links to ids that do not exist (`app.html`), and buttons in a narrow
+  table column that break letter by letter at 390px (`index.html`, `overflow-wrap: anywhere` on buttons). Both are
+  open.
+- Planned next: a layout snapshot and diff ([docs/inspect-snapshot-diff.md](docs/inspect-snapshot-diff.md)).
 
 ### Agent eval in the repository
 

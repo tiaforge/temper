@@ -13,10 +13,13 @@ if (!args.length || flag('help')) {
 Loads each page in headless Chrome at each width and color scheme, opens every dialog and popover,
 and reports layout and accessibility problems as text: horizontal overflow, overlays stuck in a
 corner or outside the viewport, text contrast, clipped text, controls without a name, controls
-covered by other elements, images without alt; and the page's health: uncaught exceptions, console
-errors, failed requests, broken images and fonts, quirks mode, a missing viewport tag, lang or title,
-duplicate ids and references to ids that do not exist, buttons that submit their form by accident,
-layout shift while loading. Point it at a running dev server.
+covered by other elements, images without alt, text painted over other text, content poking out of
+its box, text squeezed into a sliver, stretched images; the page's health: uncaught exceptions,
+console errors, failed requests, broken images and fonts, quirks mode, a missing viewport tag, lang or
+title, duplicate ids and references to ids that do not exist, buttons that submit their form by
+accident, layout shift while loading; and the page's own CSS: declarations the browser dropped
+(unknown property, invalid value) and var(--name) that is defined nowhere. Point it at a running dev
+server.
 
 Options:
   --widths 1280,390     viewport widths (default 1280,390)
@@ -26,7 +29,8 @@ Options:
                         renderer went away while the dev server restarted) is replaced and the step
                         run again, twice at most (default 30000)
   --no-overlays         do not open dialogs and popovers
-  --verbose             also show info (wrapped rows, small tap targets, animations still running)
+  --verbose             also show info (wrapped rows, small tap targets, upscaled images, animations
+                        still running)
   --limit 8             max lines per check and state
   --sheet <dir>         also write contact sheets: one PNG per page showing every state (page, each
                         dialog and popover) at every width and scheme, 3 states per image, scaled

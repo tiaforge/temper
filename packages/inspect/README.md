@@ -17,16 +17,53 @@ For each URL, it:
   state),
 - reports problems as plain text, with a selector for each element.
 
-| Check | Severity |
-|---|---|
-| Horizontal overflow (the outermost element that makes the page scroll sideways) | error |
-| Dialog or popover stuck in the top-left corner, or extending outside the viewport | error |
-| Text contrast below WCAG AA (4.5:1, or 3:1 for large text) | error below 3:1, otherwise warning |
-| Control without an accessible name; image without `alt` | error |
-| Field with only a placeholder | warning |
-| Control whose center is covered by another element (clicks go elsewhere) | warning |
-| Text cut off without an ellipsis | warning |
-| Rows that wrapped; tap targets under 24×24 on narrow screens | info (`--verbose`) |
+Layout and accessibility:
+
+| Check | Code | Severity |
+|---|---|---|
+| Horizontal overflow (the outermost element that makes the page scroll sideways) | `overflow` | error |
+| Dialog or popover stuck in the top-left corner, or extending outside the viewport | `position` | error |
+| Text contrast below WCAG AA (4.5:1, or 3:1 for large text) | `contrast` | error below 3:1, otherwise warning |
+| Control without an accessible name; image without `alt` | `label`, `alt` | error |
+| Field with only a placeholder | `label` | warning |
+| Control whose center is covered by another element (clicks go elsewhere) | `covered` | warning |
+| Text cut off without an ellipsis | `clipped` | warning |
+| Text painted over other text (a fixed height with content that grew, a negative margin, a line-height far below the font size) | `overlap` | warning |
+| Content poking out of a box that has a border, a background or a shadow (a long word or URL, a child wider than its parent) | `spill` | warning |
+| Text squeezed into a sliver by the layout: a flex or grid item, a table cell or a positioned box whose words stand one per line or break mid-word. The message says what squeezes it | `squeezed` | warning |
+| Image stretched: its box has another shape than the image and `object-fit` is `fill` | `distorted` | warning |
+| Raster image shown at 1.5× its natural size or more | `upscaled` | info (`--verbose`) |
+| Rows that wrapped; tap targets under 24×24 on narrow screens | `wrapped`, `target` | info (`--verbose`) |
+
+The page's health (is what was measured the real page?):
+
+| Check | Code | Severity |
+|---|---|---|
+| Uncaught exception or unhandled promise rejection, with file and line | `exception` | error |
+| `console.error`, and errors the browser logs itself (a CSP violation) | `console` | warning |
+| Request that failed or answered 400 or more | `request` | error for the page, stylesheets, scripts and fonts; warning for the rest |
+| Image that did not load; web font that failed to load | `image`, `font` | error; warning |
+| Quirks mode (no `<!doctype html>`) | `doctype` | error |
+| No viewport meta tag with `width=device-width`; zooming switched off | `viewport`, `zoom` | error; warning |
+| `<html>` without `lang`; no `<title>` | `lang`, `title` | warning |
+| An id on more than one element | `id` | error when something refers to it, otherwise warning |
+| A reference to an id that is not there, or to an element that cannot be its target (`for`, `commandfor`, `popovertarget`, `aria-labelledby`, `list`, `form`; other `aria-*` references, `headers`, `href="#…"`) | `ref` | error for the first group, warning for the second |
+| A button that does not do what its attributes say: `popovertarget` on a submit button in a form (it submits), `commandfor` without `type` in a form (Chrome does nothing). As info: a form with two or more buttons without `type`, each of which submits it | `submit` | error; info (`--verbose`) |
+| Layout shift while the page loads, with the elements that moved most | `shift` | warning above 0.1, info above 0.01 |
+| Animation still running when the page is checked (finite ones get 2 s to end first) | `settle` | info (`--verbose`) |
+
+The page's own CSS (not stylesheets from other origins or `node_modules`):
+
+| Check | Code | Severity |
+|---|---|---|
+| A declaration the browser dropped, in a stylesheet or a `style` attribute: an unknown property or an invalid value. The message gives the fix it could confirm (`align-item` → `align-items`, `display: flexbox` → `flex`, `margin: 10` → `10px`) and file and line | `css` | warning |
+| `var(--name)` without a fallback where `--name` is defined nowhere, with the nearest defined names (`--tm-color-primary` → `--tm-primary`) | `var` | warning; info when no element matches the rule, or when the name is defined but not for these elements |
+
+Not reported as dropped declarations: vendor prefixes, declarations inside `@supports`, and a rejected
+declaration next to an accepted one for the same property (a fallback pair).
+
+`exception`, `console` and `request` come from the DevTools side and exist only in this command. All other
+checks also run in the Vite plugin's `inspect` option, in your own browser tab.
 
 Findings are merged across widths and schemes, and capped per check (`--limit`). The exit code is 1 when
 there are errors. `--json` prints machine-readable output.
