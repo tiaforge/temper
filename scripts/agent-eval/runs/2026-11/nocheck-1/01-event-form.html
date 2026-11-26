@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New event</title>
+<link rel="stylesheet" href="/lib/all.css">
+</head>
+<body>
+<main data-tm-layout="center" data-tm-gap="lg" data-tm-pad="lg">
+  <h1>New event</h1>
+  <form data-tm-layout="stack" data-tm-gap="md">
+    <label>Title <input id="title" name="title" required></label>
+    <label>Start <input id="start" name="start" type="datetime-local"></label>
+    <label>End <input id="end" name="end" type="datetime-local"></label>
+    <label>Calendar
+      <select id="calendar" name="calendar">
+        <option>Personal</option>
+        <option>Work</option>
+        <option>Family</option>
+      </select>
+    </label>
+    <label>Notes <textarea id="notes" name="notes" rows="4"></textarea></label>
+    <div data-tm-layout="row" data-tm-gap="sm" data-tm-justify="end">
+      <button type="button" id="cancel" data-tm-variant="ghost">Cancel</button>
+      <button type="submit" id="save">Save</button>
+    </div>
+  </form>
+</main>
+</body>
+</html>

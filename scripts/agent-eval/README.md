@@ -9,6 +9,7 @@ top-level README come from here.
   painted, WCAG contrast, OKLCH hue, alignment, sizes, gaps, accessible names. A task is fully correct when every
   one of its checks passes (82 checks in all). It also counts the classes the pages use.
 - `reference/`: a hand-written solution. It must score 10 / 10; run it after changing a check.
+- `runs/2026-11/`: the pages four agents wrote for the 0.5 numbers (two with `temper check`, two without).
 
 ## Running it
 

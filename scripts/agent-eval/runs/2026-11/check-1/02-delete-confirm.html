@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delete event</title>
+<link rel="stylesheet" href="/lib/all.css">
+</head>
+<body>
+<main data-tm-layout="center" data-tm-pad="lg">
+  <h1>Calendar</h1>
+</main>
+<dialog id="confirm" aria-labelledby="confirm-title">
+  <header>
+    <h2 id="confirm-title">Delete “Team sync”?</h2>
+  </header>
+  <p>The event will be removed from your calendar for good.</p>
+  <footer>
+    <button id="keep" commandfor="confirm" command="close" data-tm-variant="ghost">Cancel</button>
+    <button id="delete" commandfor="confirm" command="close" data-tm-tone="danger">Delete</button>
+  </footer>
+</dialog>
+<script>document.getElementById('confirm').showModal();</script>
+</body>
+</html>

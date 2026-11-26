@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invalid field</title>
+<link rel="stylesheet" href="/lib/all.css">
+</head>
+<body>
+<main data-tm-layout="center" data-tm-pad="lg">
+  <form data-tm-layout="stack" data-tm-gap="md" novalidate aria-label="Contact">
+    <label>Email
+      <input id="email" type="email" name="email" value="ada@" aria-invalid="true" aria-describedby="email-error">
+      <small id="email-error" data-tm-tone="danger">Enter a full address, like name@example.com.</small>
+    </label>
+  </form>
+</main>
+</body>
+</html>

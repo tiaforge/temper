@@ -70,7 +70,8 @@ const CHECKS = {
     ['Save submits the form', `$('save').type === 'submit' && !!$('save').form`],
     ...both('Save is filled, with readable text', `H.rgba(getComputedStyle($('save')).backgroundColor)[3] > 0 && H.contrast(H.fg($('save')), H.bg($('save'))) >= 4.5`),
     ['Cancel is less prominent than Save', `H.contrast(H.bg($('cancel')), H.bg($('save').parentElement)) < H.contrast(H.bg($('save')), H.bg($('save').parentElement))`],
-    ['the fields start at one x', `new Set(['title','start','end','calendar','notes'].map(i => Math.round(H.box($(i)).left))).size === 1`],
+    // a row of fields side by side (start and end, as temper's form recipe does) counts once, by its first field
+    ['the rows of fields start at one x', `(() => { const rows = new Map(); for (const i of ['title','start','end','calendar','notes']) { const b = H.box($(i)); const k = Math.round(b.top); rows.set(k, Math.min(rows.get(k) ?? Infinity, b.left)); } return new Set([...rows.values()].map(Math.round)).size === 1; })()`],
     ['the fields are evenly spaced', `(() => { const b = ['title','start','end','calendar','notes'].map(i => H.box($(i))).sort((x, y) => x.top - y.top); const gaps = b.slice(1).map((x, i) => x.top - b[i].bottom); return Math.max(...gaps) - Math.min(...gaps) <= 2 || new Set(b.map(x => x.top)).size < 5 && Math.max(...gaps) >= 0; })()`],
     ['Save and Cancel sit in one row', `Math.abs((H.box($('save')).top + H.box($('save')).bottom) - (H.box($('cancel')).top + H.box($('cancel')).bottom)) <= 4`],
     ['the buttons sit at the end of the form', `Math.max(H.box($('save')).right, H.box($('cancel')).right) >= H.box($('save').form).right - parseFloat(getComputedStyle($('save').form).paddingRight) - 2`],
