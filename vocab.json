@@ -613,6 +613,23 @@
         "narrow": "A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem."
       }
     },
+    "data-tm-handle": {
+      "module": "drag",
+      "allowEmpty": true,
+      "on": "button",
+      "tags": [
+        "button"
+      ],
+      "requires": [
+        "aria-label",
+        "aria-labelledby"
+      ],
+      "description": "A drag handle: the button a row or card is picked up by. A grab cursor (grabbing while it is pressed, or while aria-pressed=\"true\" marks its row as picked up) and touch-action: none on the handle only, so a finger on it drags and the list still scrolls everywhere else. Empty, it is a square button with a grip icon (data-tm-icon draws another one); without data-tm-variant it is quiet (no fill, muted); data-tm-size works as on any button. Needs an aria-label (\"Move Inbox\"). The moving is your script's: the pointer, the keys (Space picks up, the arrows move, Space drops, Escape cancels) and the announcements.",
+      "short": "Drag handle button (grip, grab cursor); \"quiet\" shows on hover only.",
+      "values": {
+        "quiet": "Hidden until its row (the handle's parent) is under the pointer or has focus, on devices that can hover; always shown on touch screens and while aria-pressed=\"true\"."
+      }
+    },
     "data-tm-surface": {
       "module": "expressive",
       "on": "any container: body, main, header, section, article, aside, dialog, nav, div",

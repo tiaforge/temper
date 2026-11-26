@@ -50,6 +50,18 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - `temper check`: a number on another numeric axis is no longer suggested as a mix-up (`data-tm-cols="8"` is not
   "did you mean data-tm-seed").
 
+### New module: `drag.css` (asked for by sinter-alloy)
+
+- Dragging rows and cards, and resizing panes: temper draws the states, the script (yours, or a component library's
+  such as sinter-alloy's sortable list and board) moves things and sets them. `all.css` includes it.
+- `data-tm-handle` on a button is a drag handle (T1): a grab cursor (grabbing while pressed or while
+  `aria-pressed="true"` marks its row as picked up) and `touch-action: none` on the handle only, so the list still
+  scrolls on a phone. Empty, it is a square button with a grip drawn by temper itself, so it needs no icon from
+  `icons.css` or the Vite plugin (alloy's handles were empty when `grip-vertical` was not emitted); `data-tm-icon`
+  draws another. Without a variant it is quiet (no fill, muted). `data-tm-handle="quiet"` hides it until its row
+  (the handle's parent) is under the pointer or has focus, on devices that can hover; touch screens always show it.
+  `temper check` wants an `aria-label` on it (TM103).
+
 ### Core
 
 - `data-tm-layout="center"` with `data-tm-pad="none"` keeps its width. The padding token was a unitless `0`, and

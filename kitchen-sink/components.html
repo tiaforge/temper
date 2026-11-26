@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../src/core.css">
   <link rel="stylesheet" href="../src/feedback.css">
   <link rel="stylesheet" href="../src/table.css">
+  <link rel="stylesheet" href="../src/drag.css">
   <link rel="stylesheet" href="../src/icons.css">
   <script>
     // ?t=light|dark, ?tip (focus the first tooltip button, for screenshots)
@@ -87,6 +88,22 @@
   </section>
 
   <!-- ───────── Form controls ───────── -->
+  <!-- ───────── Drag ───────── -->
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2>Sortable list <small data-tm-muted>drag.css</small></h2>
+    <ul role="list" aria-label="Folders" data-tm-list id="sortable">
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs">
+        <button data-tm-handle aria-label="Move Inbox" aria-pressed="false" data-tm-size="sm"></button><span data-tm-grow>Inbox</span>
+      </li>
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs">
+        <button data-tm-handle aria-label="Move Projects" aria-pressed="true" data-tm-size="sm"></button><span data-tm-grow>Projects <small data-tm-muted>picked up</small></span>
+      </li>
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs">
+        <button data-tm-handle="quiet" aria-label="Move Archive" aria-pressed="false" data-tm-size="sm"></button><span data-tm-grow>Archive <small data-tm-muted>quiet handle: hover the row</small></span>
+      </li>
+    </ul>
+  </section>
+
   <section data-tm-layout="stack" data-tm-gap="md">
     <h2>Form controls</h2>
     <form data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 14rem">

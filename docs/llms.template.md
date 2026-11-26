@@ -22,7 +22,10 @@ import '@tiaforge-ui/temper/forms.css';  // data-tm-field (icon, unit, button in
 import '@tiaforge-ui/temper/sheet.css';  // data-tm-sheet: a dialog as a side panel or bottom sheet
 import '@tiaforge-ui/temper/expressive.css'; // surfaces, display type, hero and bento, seeded colour (opt-in voice)
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
+<!-- full -->
+import '@tiaforge-ui/temper/drag.css';   // data-tm-handle: drag handles (sortable lists, boards)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
+<!-- /full -->
 // or everything: import '@tiaforge-ui/temper/all.css';
 ```
 
@@ -474,6 +477,23 @@ Dialog recipe. `end` and `start` are full-height side panels (details, filters) 
 48rem and an ordinary centered dialog from there (pick it when a dialog should feel native on phones). Side
 panels are `--tm-dialog-width` wide, and on phones leave a strip of the page to tap. They mirror in RTL and
 keep clear of the notch and the home indicator with `viewport-fit=cover`, also with `data-tm-pad`.
+
+### Sortable list: drag handles (drag.css)
+
+```html
+<ul role="list" aria-label="Folders" data-tm-layout="stack" data-tm-gap="none">
+  <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none">
+    <button data-tm-handle aria-label="Move Inbox" aria-pressed="false" data-tm-size="sm"></button>
+    <a href="/inbox" data-tm-grow>Inbox</a>
+  </li>
+</ul>
+```
+
+An empty `data-tm-handle` button is a quiet square button with a grip, a grab cursor and `touch-action: none` (only
+the handle: the list still scrolls on a phone). Set `aria-pressed="true"` on it while its row is picked up (grabbing
+cursor, pressed look). `data-tm-handle="quiet"` hides it until its row (the handle's parent) is under the pointer or
+has focus, on devices that can hover. temper draws the states; the pointer, the keys and the announcements are your
+script's.
 
 ### Expressive: surfaces, display type, hero and bento (expressive.css)
 

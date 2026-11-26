@@ -1,0 +1,23 @@
+/* temper drag: dragging rows and cards, and resizing panes. Requires core.css. The script is yours (or a component
+   library's): it moves things and sets the state, temper only draws it.
+   <li><button data-tm-handle aria-label="Move Inbox" aria-pressed="false"></button> Inbox</li>
+   data-tm-handle: the button a row is picked up by (a grip when empty; "quiet": shown on hover and focus only). */
+
+@layer tm.components {
+  /* touch-action on the handle only: a finger on it drags, anywhere else in the list it still scrolls */
+  :where([data-tm-handle]) { cursor: grab; touch-action: none; }
+  :where([data-tm-handle]:is(:active, [aria-pressed="true"])) { cursor: grabbing; }
+  /* without a variant it is quiet: no fill, muted (a pressed handle keeps core's pressed look) */
+  :where(button[data-tm-handle]:not([data-tm-variant], [aria-pressed="true"])) { --_bg: #0000; --_fg: var(--tm-text-muted); }
+  /* empty: a square button with a grip (data-tm-icon draws another icon instead) */
+  :where(button[data-tm-handle]:empty) { inline-size: calc(var(--tm-control-h) * var(--_size, 1)); padding: 0; flex-shrink: 0; }
+  :where(button[data-tm-handle]:empty:not([data-tm-icon]))::before {
+    content: ""; inline-size: 1.125em; block-size: 1.125em; background: currentColor; forced-color-adjust: preserve-parent-color;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M9 5v0m0 7v0m0 7v0m6-14v0m0 7v0m0 7v0'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  /* quiet: only on the row (the handle's parent) under the pointer or with focus in it, where a pointer can hover;
+     touch screens always show it, and a picked-up handle stays */
+  @media (hover: hover) {
+    :where(:not(:hover, :focus-within)) > :where([data-tm-handle="quiet"]:not([aria-pressed="true"])) { opacity: 0; }
+  }
+}

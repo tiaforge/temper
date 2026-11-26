@@ -172,6 +172,8 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-tm-field'?: true | '' | null | Removes;
   /** Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. Needs sheet.css. */
   'data-tm-sheet'?: 'end' | 'start' | 'bottom' | 'narrow' | null | Removes;
+  /** Drag handle button (grip, grab cursor); "quiet" shows on hover only. Needs drag.css. */
+  'data-tm-handle'?: 'quiet' | '' | Empty | null | Removes;
   /** Background as a material: glass, gradient, mesh, or a wash at the top. Needs expressive.css. */
   'data-tm-surface'?: 'glass' | 'gradient' | 'mesh' | 'wash' | null | Removes;
   /** Faint film grain over the background. Needs expressive.css. */

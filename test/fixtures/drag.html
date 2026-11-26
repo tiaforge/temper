@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Drag</title>
+<link rel="stylesheet" href="../../src/core.css">
+<link rel="stylesheet" href="../../src/icons.css">
+<link rel="stylesheet" href="../../src/drag.css">
+</head>
+<body>
+<main data-tm-layout="stack" data-tm-pad="md">
+  <ul role="list" aria-label="Folders" data-tm-list id="list">
+    <li id="row-1" data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none"><button id="h-1" data-tm-handle aria-label="Move Inbox" aria-pressed="false"></button><span>Inbox</span></li>
+    <li id="row-2" data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none"><button id="h-2" data-tm-handle aria-label="Move Sent" aria-pressed="true" data-tm-size="sm"></button><span>Sent</span></li>
+    <li id="row-3" data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none"><button id="h-3" data-tm-handle="quiet" aria-label="Move Archive" aria-pressed="false"></button><span>Archive</span></li>
+    <li id="row-4" data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none"><button id="h-4" data-tm-handle data-tm-icon="menu" data-tm-variant="outline" aria-label="Move Spam"></button><span>Spam</span></li>
+  </ul>
+</main>
+</body>
+</html>

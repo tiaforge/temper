@@ -16,6 +16,7 @@ import '@tiaforge-ui/temper/forms.css';  // data-tm-field (icon, unit, button in
 import '@tiaforge-ui/temper/sheet.css';  // data-tm-sheet: a dialog as a side panel or bottom sheet
 import '@tiaforge-ui/temper/expressive.css'; // surfaces, display type, hero and bento, seeded colour (opt-in voice)
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
+import '@tiaforge-ui/temper/drag.css';   // data-tm-handle: drag handles (sortable lists, boards)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/temper/all.css';
 ```
@@ -368,6 +369,14 @@ On: dialog. The dialog is a sheet that slides in from an edge of the screen inst
 - `start`: Full-height panel at the inline start: filters, navigation. The footer sits at the bottom.
 - `bottom`: Along the bottom edge, as tall as its content: actions, a short form. Full width on phones.
 - `narrow`: A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem.
+
+### `data-tm-handle`
+
+On: button. A drag handle: the button a row or card is picked up by. A grab cursor (grabbing while it is pressed, or while aria-pressed="true" marks its row as picked up) and touch-action: none on the handle only, so a finger on it drags and the list still scrolls everywhere else. Empty, it is a square button with a grip icon (data-tm-icon draws another one); without data-tm-variant it is quiet (no fill, muted); data-tm-size works as on any button. Needs an aria-label ("Move Inbox"). The moving is your script's: the pointer, the keys (Space picks up, the arrows move, Space drops, Escape cancels) and the announcements. Needs `drag.css`.
+
+Also valid without a value.
+
+- `quiet`: Hidden until its row (the handle's parent) is under the pointer or has focus, on devices that can hover; always shown on touch screens and while aria-pressed="true".
 
 ### `data-tm-surface`
 
@@ -916,6 +925,23 @@ Dialog recipe. `end` and `start` are full-height side panels (details, filters) 
 48rem and an ordinary centered dialog from there (pick it when a dialog should feel native on phones). Side
 panels are `--tm-dialog-width` wide, and on phones leave a strip of the page to tap. They mirror in RTL and
 keep clear of the notch and the home indicator with `viewport-fit=cover`, also with `data-tm-pad`.
+
+### Sortable list: drag handles (drag.css)
+
+```html
+<ul role="list" aria-label="Folders" data-tm-layout="stack" data-tm-gap="none">
+  <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none">
+    <button data-tm-handle aria-label="Move Inbox" aria-pressed="false" data-tm-size="sm"></button>
+    <a href="/inbox" data-tm-grow>Inbox</a>
+  </li>
+</ul>
+```
+
+An empty `data-tm-handle` button is a quiet square button with a grip, a grab cursor and `touch-action: none` (only
+the handle: the list still scrolls on a phone). Set `aria-pressed="true"` on it while its row is picked up (grabbing
+cursor, pressed look). `data-tm-handle="quiet"` hides it until its row (the handle's parent) is under the pointer or
+has focus, on devices that can hover. temper draws the states; the pointer, the keys and the announcements are your
+script's.
 
 ### Expressive: surfaces, display type, hero and bento (expressive.css)
 

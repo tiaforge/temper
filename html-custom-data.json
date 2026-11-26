@@ -698,6 +698,16 @@
       ]
     },
     {
+      "name": "data-tm-handle",
+      "description": "temper (drag.css). On: button. A drag handle: the button a row or card is picked up by. A grab cursor (grabbing while it is pressed, or while aria-pressed=\"true\" marks its row as picked up) and touch-action: none on the handle only, so a finger on it drags and the list still scrolls everywhere else. Empty, it is a square button with a grip icon (data-tm-icon draws another one); without data-tm-variant it is quiet (no fill, muted); data-tm-size works as on any button. Needs an aria-label (\"Move Inbox\"). The moving is your script's: the pointer, the keys (Space picks up, the arrows move, Space drops, Escape cancels) and the announcements.",
+      "values": [
+        {
+          "name": "quiet",
+          "description": "Hidden until its row (the handle's parent) is under the pointer or has focus, on devices that can hover; always shown on touch screens and while aria-pressed=\"true\"."
+        }
+      ]
+    },
+    {
       "name": "data-tm-surface",
       "description": "temper (expressive.css). On: any container: body, main, header, section, article, aside, dialog, nav, div. The element's background as a material. Text on it keeps temper's colours and WCAG AA in light and dark mode for any --tm-hue/--tm-chroma. Under prefers-contrast: more and forced colours every surface is temper's plain surface; under prefers-reduced-transparency glass is opaque.",
       "values": [
