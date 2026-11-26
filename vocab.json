@@ -535,7 +535,7 @@
       "module": "menu",
       "boolean": true,
       "on": "a wrapper around an input and its suggestion list",
-      "description": "Combobox: the data-tm-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script. Options look the same in any role=\"listbox\", also outside a data-tm-menu (a command palette's list in a dialog): rows with a hover fill, the marked one (aria-selected=\"true\") in the soft accent. sinter's data-sn-options sets that aria-selected on the option it marks, so such a list needs nothing else.",
+      "description": "Combobox: the data-tm-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script. Options look the same in any role=\"listbox\", also outside a data-tm-menu (a command palette's list in a dialog): rows with a hover fill, the marked one (aria-selected=\"true\") in the soft accent. A script that sets aria-selected on the option it marks (sinter's data-sn-options does) is all such a list needs.",
       "short": "Wraps a field and its suggestion list (data-tm-menu, role=\"listbox\"), which opens under it."
     },
     "data-tm-toasts": {
@@ -582,7 +582,7 @@
       "tags": [
         "table"
       ],
-      "description": "A table that is a grid of controls, not a data table: a month calendar (role=\"grid\", a button in each cell), a keypad. It drops temper's data-table look (row lines, cell padding, row hover, full width, the sticky header, selected rows), so the table and its cells start from the browser's defaults and the controls inside keep their own styles. Data tables keep their look even with buttons in their rows (actions, a sortable header): leave it off there.",
+      "description": "A table that is a grid of controls, not a data table: a month calendar (role=\"grid\", a button in each cell), a keypad. It drops temper's data-table look (row lines, cell padding, row hover, full width, the sticky header, selected rows), so the table and its cells fall back to temper's base styles (with the browser's table defaults beneath, such as border-spacing and 1px cell padding) and the controls inside keep their own styles. Data tables keep their look even with buttons in their rows (actions, a sortable header): leave it off there.",
       "short": "A grid of controls (month calendar), not a data table: no row lines, padding, hover or sticky header."
     },
     "data-tm-prose": {
@@ -615,7 +615,7 @@
         "dialog"
       ],
       "description": "The dialog is a sheet that slides in from an edge of the screen instead of appearing in the middle. Open and close it like any dialog (command=\"show-modal\", closedby=\"any\"); header and footer stay in view while its content scrolls. Width: --tm-dialog-width. Keeps clear of the notch and home indicator (viewport-fit=cover), mirrors in RTL.",
-      "short": "Dialog as a sheet sliding in from an edge: side panel (end, start) bottom or top sheet.",
+      "short": "Dialog as a sheet sliding in from an edge: side panel (end, start), bottom or top sheet.",
       "values": {
         "end": "Full-height panel at the inline end (right; left in RTL): details, an inspector. The footer sits at the bottom.",
         "start": "Full-height panel at the inline start: filters, navigation. The footer sits at the bottom.",
