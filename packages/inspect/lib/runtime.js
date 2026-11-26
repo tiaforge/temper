@@ -10,6 +10,9 @@ const IGNORED = new Set(['WebSocket', 'EventSource', 'Ping', 'CSPViolationReport
 const NEEDED = { Document: 'so the page is an error page', Stylesheet: 'so its styles are missing', Script: 'so its code does not run', Font: 'so text set in it falls back to another font' };
 const KIND = { Document: 'the page', Stylesheet: 'stylesheet', Script: 'script', Font: 'font', Image: 'image', Media: 'media', Fetch: 'fetch', XHR: 'XHR', Manifest: 'manifest', TextTrack: 'text track' };
 const MAX = 50; // distinct findings kept per step: a page that logs in a loop must not fill the memory
+/** The name inspect.js gives the audit's code in the page (a sourceURL), so the requests the audit makes itself (it
+ * fetches stylesheet and SVG sources) are told from the page's: a stylesheet that is a 404 is one finding, not two. */
+export const AUDIT_URL = 'temper-inspect-audit.js';
 
 /** Shortens a URL for the report: relative to the page's directory, or its path on the same origin, or whole. */
 export function shortUrl(url, page) {
@@ -77,7 +80,8 @@ export async function watchRuntime(page) {
     // only a stack says where: the line given for a CSP violation in a stylesheet differs from load to load
     add(now, 'warning', 'console', '', `the browser logged: ${firstLine(entry.text)}${where(entry.stackTrace?.callFrames)}`);
   });
-  page.on('Network.requestWillBeSent', ({ requestId, request, type, frameId }) => {
+  page.on('Network.requestWillBeSent', ({ requestId, request, type, frameId, initiator }) => {
+    if (initiator?.stack?.callFrames?.some(f => f.url === AUDIT_URL)) return; // the audit's own fetch: not the page's
     requests.set(requestId, { state: now, url: request.url, type, main: type === 'Document' && frameId === page.targetId });
   });
   const fail = (id, why, type) => {

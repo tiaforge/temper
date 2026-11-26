@@ -1190,6 +1190,7 @@ export function install(opts) {
   let list = [], current = null, stack = [];
 
   async function openOverlay(el, depth) {
+    let clicked = 0; // openers that were clicked and did not open it (a submit button in a form, a handler that prevents it)
     for (const op of openersOf(el)) {
       if (!reachable(op)) {
         const outer = op.parentElement?.closest('dialog:not([open]), [popover]:not(:popover-open)');
@@ -1199,13 +1200,14 @@ export function install(opts) {
       op.click();
       await frames(); await sleep(opts.overlayWait);
       if (isOpen(el)) { stack.push(el); return { via: op }; }
+      clicked++;
     }
     if (depth > 0) return null; // only the inspected overlay itself may be opened directly
     try { el.matches('dialog') ? el.showModal() : el.showPopover(); } catch { return null; }
     await frames(); await sleep(opts.overlayWait);
     if (!isOpen(el)) return null;
     stack.push(el);
-    return { direct: true, openers: openersOf(el).length };
+    return { direct: true, openers: openersOf(el).length, clicked };
   }
 
   let prepared = null;
@@ -1230,7 +1232,8 @@ export function install(opts) {
         if (current.how.via) findings.push({ state, severity: 'info', code: 'opened', selector: sel(current.how.via), message: 'opened by clicking this' });
         if (current.how.direct) {
           const text = (current.el.innerText ?? '').replace(/\s+/g, ' ').trim();
-          const why = current.how.openers ? 'its button is hidden or off-screen at this width' : 'no button opens it via commandfor or popovertarget';
+          const why = current.how.clicked ? 'clicking its button did not open it'
+            : current.how.openers ? 'its button is hidden or off-screen at this width' : 'no button opens it via commandfor or popovertarget';
           if (text.length < 25) findings.push({ state, severity: 'warning', code: 'state', selector: sel(current.el).split(' "')[0],
             message: `opened directly because ${why}, and it is nearly empty: its content probably depends on app state, so this check says little about it` });
           else findings.push({ state, severity: 'info', code: 'state', selector: sel(current.el).split(' "')[0], message: `opened directly because ${why}` });

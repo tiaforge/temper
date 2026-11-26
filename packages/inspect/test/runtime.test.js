@@ -67,6 +67,7 @@ test('every runtime and document check on health-broken.html, attributed to its 
       const has = (re, list = page) => assert.ok(list.some(f => re.test(line(f))), `${re} in\n${list.map(line).join('\n')}`);
 
       // runtime: exceptions and rejections with where they happened, two console errors kept apart, the CSP violation
+      assert.equal(page.filter(f => f.code === 'request' && f.selector.includes('health-missing.css')).length, 1, 'the audit\'s own fetch of a stylesheet is not reported');
       has(/^error exception: uncaught exception: TypeError: late is undefined \(at line \d+ of the page\)$/);
       has(/^error exception: unhandled promise rejection: Error: nobody handles this/);
       has(/^warning console: console\.error: Something failed: \{code: 42\}/);
@@ -129,6 +130,9 @@ test('from file://: missing files are failed requests, fetch is blocked by the s
     const { findings } = await inspect([url], { settle: 200, widths: [390], schemes: ['light'], overlays: false });
     const lines = findings.filter(f => f.code === 'request').map(line);
     assert.ok(lines.includes('error request: health-missing.css failed (net::ERR_FILE_NOT_FOUND) (stylesheet), so its styles are missing'), lines.join('\n'));
+    // the audit fetches stylesheet sources itself (the stylesheet checks): that request is not the page's, so the missing
+    // stylesheet is reported once
+    assert.equal(lines.filter(l => l.includes('health-missing.css')).length, 1, lines.join('\n'));
     assert.ok(lines.includes('error request: health-missing.woff2 failed (net::ERR_FILE_NOT_FOUND) (font), so text set in it falls back to another font'), lines.join('\n'));
     assert.ok(lines.some(l => /^warning request: api\/missing was blocked by CORS \(CorsDisabledScheme\): fetch does not work in file:\/\/ pages/.test(l)), lines.join('\n'));
     assert.ok(!lines.some(l => /png/.test(l)), 'the broken image is reported by its element');

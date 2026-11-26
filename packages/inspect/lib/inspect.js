@@ -3,7 +3,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, findBrowser } from './cdp.js';
 import { install } from './audit.js';
-import { watchRuntime } from './runtime.js';
+import { watchRuntime, AUDIT_URL } from './runtime.js';
 
 /**
  * Loads each URL at each width and color scheme, opens every dialog and popover one at a time, and
@@ -44,7 +44,7 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
     rt.reset(url);
     await page.goto(url, { width, height, scheme, settle });
     await page.evaluate(NO_GUTTERS);
-    await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})`);
+    await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})\n//# sourceURL=${AUDIT_URL}`);
     // A file:// page cannot fetch() its own stylesheets, nor read their rules: hand the audit their text (and that of its
     // <style> elements, keyed by their line in the page) over the protocol, so the stylesheet checks see them.
     if (url.startsWith('file:')) {
