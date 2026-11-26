@@ -2,7 +2,8 @@
    <button popovertarget="m">Options</button>
    <div popover id="m" data-tm-menu> <button>Rename</button> <hr> <button data-tm-tone="danger">Delete</button> </div>
    A [popover][data-tm-menu] opens under the button that opened it (CSS anchor positioning, implicit anchor from
-   popovertarget). Where anchor positioning is not supported it stays centered, as popovers do by default. */
+   popovertarget, commandfor, or showPopover({ source: button }) in a script). Where anchor positioning is not
+   supported it stays centered, as popovers do by default. */
 
 @layer tm.components {
   :where([data-tm-menu]) {

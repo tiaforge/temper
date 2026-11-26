@@ -92,6 +92,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   measured); elsewhere (Firefox) the line box stays centred, as before. The avatar no longer clips with
   `overflow: hidden` (an inline-block with it sits on its bottom edge): its photo is rounded itself.
 
+### Menu
+
+- Documented (T7): a `[popover][data-tm-menu]` opened from a script with `showPopover({ source: button })`, without
+  `popovertarget` and without ids, opens under that button: the source is the popover's implicit anchor, which
+  temper's anchor positioning already uses (checked in Chromium; a test covers it where the browser has both).
+
 ### Vite plugin
 
 - `inspect`: the dev page also gets temper-inspect's new document, stylesheet and geometry checks (the client waits

@@ -162,6 +162,9 @@
   <button data-tm-icon="copy" id="icon-kbd">Copy <kbd>Ctrl C</kbd></button>
   <label id="check-kbd"><input type="checkbox"> Weekends <kbd>W</kbd></label>
 </div>
+<!-- opened from a script with showPopover({ source }), no popovertarget and no id on the button -->
+<p style="padding-inline-start: 20rem"><button type="button" id="source-button">Pick a date</button></p>
+<div popover id="source-menu" data-tm-menu><button>Today</button></div>
 <div popover id="note"><p>A plain popover.</p></div>
 <div data-tm-toasts popover="manual" role="status" id="toasts"></div>
 <script>

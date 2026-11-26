@@ -457,6 +457,9 @@ icon buttons (`data-tm-icon`) do not. A submit button (`type="submit"`, the defa
 
 A `data-tm-menu` popover can hold any content, not only items: a month picker, a small form.
 
+Opened from a script, `menu.showPopover({ source: button })` places it under that button too: the source is its
+anchor, so neither needs an id (a component used twice on a page).
+
 ### Sheet: side panel or bottom sheet (sheet.css)
 
 ```html

@@ -528,7 +528,7 @@
       "module": "menu",
       "boolean": true,
       "on": "[popover] (dropdown) or any container (static menu)",
-      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-tm-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-tm-menu is centered in the viewport); it fades in and out.",
+      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-tm-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget, commandfor or a script's showPopover({ source: button }) (no id needed: the source is its anchor) it is placed under its button (a plain [popover] without data-tm-menu is centered in the viewport); it fades in and out.",
       "short": "Menu of buttons, links and checkbox labels; as a [popover] it opens under its button."
     },
     "data-tm-combo": {

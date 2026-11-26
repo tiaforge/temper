@@ -480,6 +480,21 @@ test('menus: a data-tm-caption labels a group, a kbd sits at the end of its item
   });
 });
 
+test('a data-tm-menu opened with showPopover({ source }) opens under that button, as with popovertarget', { skip }, async () => {
+  await withPage({}, async page => {
+    const r = await page.evaluate(`(() => {
+      if (!CSS.supports('position-area: block-end')) return null;
+      try { $('source-menu').showPopover({ source: $('source-button') }); } catch { return null; }
+      if (!$('source-menu').matches(':popover-open')) return null;
+      return { button: box('source-button'), menu: box('source-menu') };
+    })()`);
+    if (!r) return; // no anchor positioning or no source option: centred, as documented
+    // under the button (at its start, or shifted inside the screen near its edge), not centred in the viewport
+    assert.ok(r.menu.x < r.button.right && r.menu.right > r.button.x, `the menu is under the button: ${JSON.stringify(r)}`);
+    assert.ok(r.menu.y >= r.button.bottom && r.menu.y - r.button.bottom < 10, `the menu is just under the button: ${r.menu.y}, ${r.button.bottom}`);
+  });
+});
+
 // A modal dialog makes the rest of the page inert, so Chrome restyles the whole document when one opens or closes, with
 // or without temper. The scroll lock (a :has() on the root) must add next to nothing to that; a menu restyles itself.
 test('restyle cost: the scroll lock adds next to nothing to opening a modal dialog; a menu restyles itself only', { skip }, async () => {

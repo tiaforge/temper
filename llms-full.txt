@@ -329,7 +329,7 @@ On: a pane: main, a data-tm-scroll pane, a data-tm-grow or data-tm-layout="split
 
 ### `data-tm-menu` (boolean, no value)
 
-On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-tm-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-tm-menu is centered in the viewport); it fades in and out. Needs `menu.css`.
+On: [popover] (dropdown) or any container (static menu). Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-tm-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget, commandfor or a script's showPopover({ source: button }) (no id needed: the source is its anchor) it is placed under its button (a plain [popover] without data-tm-menu is centered in the viewport); it fades in and out. Needs `menu.css`.
 
 ### `data-tm-combo` (boolean, no value)
 
@@ -904,6 +904,9 @@ icon buttons (`data-tm-icon`) do not. A submit button (`type="submit"`, the defa
 `popovertarget` and `commandfor`; give opener and closer buttons `type="button"`.
 
 A `data-tm-menu` popover can hold any content, not only items: a month picker, a small form.
+
+Opened from a script, `menu.showPopover({ source: button })` places it under that button too: the source is its
+anchor, so neither needs an id (a component used twice on a page).
 
 ### Sheet: side panel or bottom sheet (sheet.css)
 
