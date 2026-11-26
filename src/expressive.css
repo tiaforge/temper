@@ -19,15 +19,15 @@
     --tm-glass-blur: 18px;
     --tm-bento-row: 7rem;
 
-    /* surface tints: light 0.958–0.966, dark 0.235–0.26 lightness, so temper's text and muted text keep AA on them */
+    /* surface tints: light 0.958–0.966, dark 0.285–0.29 lightness, so temper's text and muted text keep AA on them */
     --_ex-c: var(--tm-chroma, 0.19);
     --_ex-h: var(--tm-hue, 255);
     --_ex-tc: min(var(--_ex-c), 0.2); /* surfaces stay calm however loud the brand is */
-    --tm-tint-1: light-dark(oklch(0.96 calc(var(--_ex-tc) * 0.36) calc(var(--_ex-h) - 40)), oklch(0.255 calc(var(--_ex-c) * 0.42) calc(var(--_ex-h) - 40)));
-    --tm-tint-2: light-dark(oklch(0.958 calc(var(--_ex-tc) * 0.4) var(--_ex-h)), oklch(0.26 calc(var(--_ex-c) * 0.5) var(--_ex-h)));
-    --tm-tint-3: light-dark(oklch(0.966 calc(var(--_ex-tc) * 0.34) calc(var(--_ex-h) + 50)), oklch(0.245 calc(var(--_ex-c) * 0.4) calc(var(--_ex-h) + 50)));
-    --tm-glass: light-dark(oklch(1 0 0 / 0.72), oklch(0.2 calc(var(--_ex-c) * 0.08) var(--_ex-h) / 0.62));
-    --_ex-rim: light-dark(oklch(1 0 0 / 0.75), oklch(1 0 0 / 0.09));
+    --tm-tint-1: light-dark(oklch(0.96 calc(var(--_ex-tc) * 0.36) calc(var(--_ex-h) - 40)), oklch(0.29 calc(var(--_ex-tc) * 0.75) calc(var(--_ex-h) - 40)));
+    --tm-tint-2: light-dark(oklch(0.958 calc(var(--_ex-tc) * 0.4) var(--_ex-h)), oklch(0.285 calc(var(--_ex-tc) * 0.8) var(--_ex-h)));
+    --tm-tint-3: light-dark(oklch(0.966 calc(var(--_ex-tc) * 0.34) calc(var(--_ex-h) + 50)), oklch(0.285 calc(var(--_ex-tc) * 0.7) calc(var(--_ex-h) + 50)));
+    --tm-glass: light-dark(oklch(1 0 0 / 0.72), oklch(0.4 calc(var(--_ex-c) * 0.12) var(--_ex-h) / 0.16));
+    --_ex-rim: light-dark(oklch(1 0 0 / 0.75), oklch(1 0 0 / 0.12));
 
     /* gradient ink: dark enough on light surfaces, light enough on dark ones */
     --tm-ink-1: light-dark(oklch(0.42 calc(var(--_ex-c) * 1.05) calc(var(--_ex-h) - 30)), oklch(0.82 calc(var(--_ex-c) * 0.6) calc(var(--_ex-h) - 30)));
@@ -72,9 +72,9 @@
   }
   :where([data-tm-surface="mesh"]) {
     background-image: var(--_ex-noise)
-      radial-gradient(60% 70% at 8% 0%, var(--tm-tint-1), transparent 70%),
-      radial-gradient(55% 60% at 95% 10%, var(--tm-tint-3), transparent 70%),
-      radial-gradient(70% 70% at 60% 105%, var(--tm-tint-2), transparent 70%);
+      radial-gradient(75% 95% at 0% 0%, var(--tm-tint-1), transparent 75%),
+      radial-gradient(70% 95% at 100% 0%, var(--tm-tint-3), transparent 75%),
+      radial-gradient(90% 85% at 55% 110%, var(--tm-tint-2), transparent 75%);
   }
   :where([data-tm-surface="glass"]) {
     background-color: var(--tm-glass);
@@ -89,7 +89,7 @@
 
   /* grain: a noise layer on top of the surface's own layers (or alone on a plain element) */
   :where([data-tm-grain]) {
-    --_ex-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),;
+    --_ex-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),;
   }
   :where([data-tm-grain]:not([data-tm-surface])) {
     background-image: var(--_ex-noise) none;
