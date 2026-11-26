@@ -37,4 +37,16 @@
   :where([data-tm-layout="row"]) > :where([data-tm-drop="before"])::after { inset-inline: -1px auto; }
   :where([data-tm-layout="row"]) > :where([data-tm-drop="after"])::after { inset-inline: auto -1px; }
   :where([data-tm-drop="inside"]) { outline: 2px solid var(--tm-accent); outline-offset: -2px; }
+
+  /* window splitter: a focusable role="separator" between two panes. A 1px line (a border: forced colors keep it) with
+     a 9px hit area (the ::after), accent and 3px wide on hover, focus and while dragged (:active lasts the whole drag).
+     aria-orientation="vertical" splits columns; without it (the ARIA default, horizontal) it splits rows */
+  :where([role="separator"][tabindex]) {
+    position: relative; flex: none; align-self: stretch; z-index: 1; touch-action: none;
+    block-size: 0; border-block-start: 1px solid var(--tm-border); cursor: row-resize; outline: 0 solid var(--tm-accent);
+  }
+  :where([role="separator"][tabindex][aria-orientation="vertical"]) { block-size: auto; inline-size: 0; border-block-start: 0; border-inline-start: 1px solid var(--tm-border); cursor: col-resize; }
+  :where([role="separator"][tabindex])::after { content: ""; position: absolute; inset: -5px 0 -4px; }
+  :where([role="separator"][tabindex][aria-orientation="vertical"])::after { inset-block: 0; inset-inline: -5px -4px; }
+  :where([role="separator"][tabindex]):is(:hover, :focus-visible, :active) { border-color: var(--tm-accent); outline-width: 1px; outline-offset: 0; }
 }

@@ -506,6 +506,10 @@ While a row moves: `data-tm-lifted` on it (raised surface, shadow) and `data-tm-
 row it will land next to (a 2px accent line on that edge; on the inline edges in a `data-tm-layout="row"`), or
 `data-tm-drop="inside"` on a target it drops into (an outline: a folder, an empty column). Nothing moves for them.
 
+Resizable panes: a focusable `<div role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize folders"
+aria-valuenow="220" aria-valuemin="140" aria-valuemax="400">` between them is a 1px line with a 9px hit area, accent
+on hover, focus and while dragged; your script sizes the panes (WAI-ARIA window splitter keys).
+
 ### Expressive: surfaces, display type, hero and bento (expressive.css)
 
 ```html

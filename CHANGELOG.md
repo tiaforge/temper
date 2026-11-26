@@ -65,6 +65,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   shadow, above its neighbours) and `data-tm-drop="before|after|inside"` on where it will land: a 2px accent line
   centred on the element's start or end edge (its inline edges in a `data-tm-layout="row"`), or an outline inside it.
   Drawn with a border on `::after` and an outline (forced colours keep both), no outer margin: nothing moves.
+- Window splitter (T4): a focusable `role="separator"` (with `tabindex`) between two panes is a 1px `--tm-border` line
+  with a 9px hit area, accent and 3px wide on hover, focus and while it is dragged (`:active`), `col-resize` with
+  `aria-orientation="vertical"` (columns), else `row-resize`, and `touch-action: none`. Sizing the panes is the
+  script's (`aria-valuenow` and a size it writes). A border and an outline, which forced colours keep.
 
 ### Core
 
