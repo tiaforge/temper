@@ -69,8 +69,9 @@ export default { plugins: [temper()] };
    unlabeled buttons. For "no attribute" use `null`, not `false`: `cond ? 'x' : null`.
 11. To see the result, prefer `npx temper-inspect <dev-server-url>` (package
     `@tiaforge-ui/temper-inspect`, if installed) over screenshots. It opens every dialog and popover
-    at a wide and a narrow width, in light and dark mode, and reports overflow, misplaced overlays,
-    contrast, unlabeled controls and covered click targets as text. To judge how it looks, add
+    at a wide and a narrow width, in light and dark mode, and reports as text: overflow, misplaced overlays,
+    contrast, unlabeled controls, overlapping text, script errors, failed requests and CSS the browser
+    dropped. To judge how it looks, add
     `--sheet <dir>`: one small image per page with every state at every width and scheme, plus each
     state at full size in `<dir>/<page>/` for details.
 

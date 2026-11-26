@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stylesheet look-alikes</title>
+<link rel="stylesheet" href="styles-clean.css">
+<!-- third-party CSS is not the author's: a dependency's sheet, as Vite dev serves it -->
+<style data-vite-dev-id="/app/node_modules/some-lib/lib.css">.lib { colr: red; color: var(--lib-undefined); zoom: 1; }</style>
+<style>
+  .inline-sheet { display: flex; color: var(--tm-accent); }
+</style>
+<script>
+  document.documentElement.style.setProperty('--from-js', 'green');
+  // a sheet filled by insertRule has no source text: the dropped-declaration check skips it
+  const s = document.createElement('style'); document.head.append(s);
+  s.sheet.insertRule('.ins { colr: red; color: var(--tm-accent); }');
+  // a constructed sheet
+  const c = new CSSStyleSheet(); c.replaceSync('.made { colr: red; }'); document.adoptedStyleSheets = [c];
+</script>
+</head>
+<body>
+  <main>
+    <div class="vendor hacks pair vars important url url2 strings grid toggle js registered p h w mq nest sup l c o imported lib inline-sheet ins made">Text</div>
+    <div class="s"><p class="t">Scoped</p></div>
+    <p style="-webkit-line-clamp: 2; color: maroon !important; margin: var(--m); --local: ; padding: var(--local) 1px">Inline</p>
+    <p style="color: var(--tm-accent); height: 100vh; height: 100zz">Inline fallback pair</p>
+  </main>
+</body></html>

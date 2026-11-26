@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
-import temper from '../lib/vite.js';
+import temper, { locateDecl } from '../lib/vite.js';
 
 function project(html) {
   const dir = mkdtempSync(join(tmpdir(), 'tm-vite-'));
@@ -275,6 +275,28 @@ test('inspect names the source line of a finding', () => {
   const { log, send } = devServer({ inspect: { audit: AUDIT } });
   send({ page: '/', findings: [{ state: 'page', severity: 'error', code: 'contrast', selector: 'p', message: 'low', src: 'src/App.svelte:7' }] });
   assert.match(log.warn[0], /\n {2}src\/App\.svelte:7 error contrast: p low$/);
+});
+
+test('inspect finds the source line of a stylesheet finding: the dev server serves CSS transformed, so the page cannot', () => {
+  const root = mkdtempSync(join(tmpdir(), 'temper-decl-'));
+  try {
+    mkdirSync(join(root, 'src'));
+    writeFileSync(join(root, 'src/app.css'), "@import 'temper';\n.card { display: flex;\n  align-item:   center; }\n.a { margin: 10 }\n.b { margin: 10 }\n");
+    const f = (file, prop, value) => ({ state: 'page', severity: 'error', code: 'css', selector: `.x { ${prop}: ${value} }`, message: `is not valid CSS (${file})`, decl: { file, prop, value } });
+    // found once: the line; the file is no longer repeated in the message
+    assert.deepEqual(locateDecl(root, '/', f('src/app.css', 'align-item', 'center')), { ...f('src/app.css', 'align-item', 'center'), message: 'is not valid CSS', src: 'src/app.css:3' });
+    // a page in a folder names the sheet from there; a <style> Vite injected, by its absolute path
+    assert.equal(locateDecl(root, '/src/index.html', f('app.css', 'align-item', 'center')).src, 'src/app.css:3');
+    assert.equal(locateDecl(root, '/', f(join(root, 'src/app.css'), 'align-item', 'center')).src, 'src/app.css:3');
+    // found twice: the file alone; not found (a preprocessor wrote it differently): the file alone
+    assert.equal(locateDecl(root, '/', f('src/app.css', 'margin', '10')).src, 'src/app.css');
+    assert.equal(locateDecl(root, '/', f('src/app.css', 'colr', 'red')).src, 'src/app.css');
+    // no such file, an element's finding, a finding that has its line: untouched
+    const gone = f('src/gone.css', 'colr', 'red');
+    assert.equal(locateDecl(root, '/', gone), gone);
+    const el = { state: 'page', severity: 'error', code: 'contrast', selector: 'p', message: 'low', src: 'index.html:3' };
+    assert.equal(locateDecl(root, '/', el), el);
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
 test('inspect keeps what a dialog showed while it is closed again, and forgets it on a reload or hot update', () => {
