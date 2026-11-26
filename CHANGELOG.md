@@ -42,6 +42,7 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   cyan, blue or red; light tints are paler (chroma ×0.24–0.28), dark seeds calmer (lightness 0.34–0.42).
 - A hero's paragraph with `data-tm-display` keeps its display size (the lead style is for plain paragraphs), and
   the editorial pairing sets Fraunces at weight 500, tracking −0.01em (600 looked heavy at display sizes).
+- `data-tm-hero` keeps a `data-tm-gap` given with `data-tm-layout` (its own gap applied over it).
 - `data-tm-figure` uses the UI face (semibold, tabular): a big number is data, not a second display moment.
 - `kitchen-sink/expressive.html` teaches restraint: two worked examples (a sign-in "front door", a working view) and
   the parts, each with when to use it. A test checks that every surface paints (a gradient value Chromium refuses
