@@ -375,6 +375,7 @@ On: any container: body, main, header, section, article, aside, dialog, nav, div
 - `glass`: Translucent raised surface with a backdrop blur and a hairline highlight. Over a temper surface or the page background.
 - `gradient`: A soft diagonal wash between two tints of the brand hue.
 - `mesh`: Three soft light blobs around the brand hue over the page background: page backgrounds, mastheads, heroes.
+- `wash`: The mesh's colour at the top only, fading out within the first screenful, with no box. On <main> or a pane of a working view: colour at the top, a plain background where people work.
 
 ### `data-tm-grain` (boolean, no value)
 
@@ -435,7 +436,7 @@ On: html, body (or any container). A font pairing: the display face for data-tm-
 
 ### `data-tm-seed`
 
-On: [data-tm-avatar] (temper), or any small tile. A gradient fill and ink from one of twelve hues around the brand hue (−82.5° to +82.5°), so things with the same seed look alike and neighbours differ. Choose it from a name (a hash of the name modulo 12) so a person keeps their colour everywhere. Needs `expressive.css`.
+On: [data-tm-avatar] (temper), or any small tile. A gradient fill and ink from one of twelve hues around the brand hue (−50° to +50°), so things with the same seed look alike and neighbours differ. Choose it from a name (a hash of the name modulo 12) so a person keeps their colour everywhere. Needs `expressive.css`.
 
 Values: `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`.
 
@@ -497,9 +498,9 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 - `--tm-tone-ink`: Text-safe version of --tm-tone. (derived, read only)
 - `--tm-tone-soft`: Tinted background from --tm-tone. (derived, read only)
 - `--tm-tone-on`: Text color on a solid --tm-tone fill (black or white). (derived, read only)
-- `--tm-tint-1`: Surface tint at hue − 40°. (expressive.css) (derived, read only)
+- `--tm-tint-1`: Surface tint at hue − 20°. (expressive.css) (derived, read only)
 - `--tm-tint-2`: Surface tint at the brand hue. (expressive.css) (derived, read only)
-- `--tm-tint-3`: Surface tint at hue + 50°. (expressive.css) (derived, read only)
+- `--tm-tint-3`: Surface tint at hue + 20°. (expressive.css) (derived, read only)
 - `--tm-glass`: The glass fill (translucent raised surface). (expressive.css) (derived, read only)
 - `--tm-ink-1`: Gradient ink, start. (expressive.css) (derived, read only)
 - `--tm-ink-2`: Gradient ink, end. (expressive.css) (derived, read only)

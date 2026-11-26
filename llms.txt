@@ -129,7 +129,7 @@ export default { plugins: [temper()] };
 | `data-tm-prose` (prose.css) | (boolean) | Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. |
 | `data-tm-field` (forms.css) | (boolean) | One field around an input and its icon, text (<span>€</span>) or end button. |
 | `data-tm-sheet` (sheet.css) | end, start, bottom, narrow | Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. |
-| `data-tm-surface` (expressive.css) | glass, gradient, mesh | Background as a material: glass, gradient or mesh. |
+| `data-tm-surface` (expressive.css) | glass, gradient, mesh, wash | Background as a material: glass, gradient, mesh, or a wash at the top. |
 | `data-tm-grain` (expressive.css) | (boolean) | Faint film grain over the background. |
 | `data-tm-elevation` (expressive.css) | raised, floating | Brand-tinted shadow: raised or floating. |
 | `data-tm-halo` (expressive.css) | (boolean) | Soft accent glow around the element. |

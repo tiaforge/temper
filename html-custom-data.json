@@ -712,6 +712,10 @@
         {
           "name": "mesh",
           "description": "Three soft light blobs around the brand hue over the page background: page backgrounds, mastheads, heroes."
+        },
+        {
+          "name": "wash",
+          "description": "The mesh's colour at the top only, fading out within the first screenful, with no box. On <main> or a pane of a working view: colour at the top, a plain background where people work."
         }
       ]
     },
@@ -820,7 +824,7 @@
     },
     {
       "name": "data-tm-seed",
-      "description": "temper (expressive.css). On: [data-tm-avatar] (temper), or any small tile. A gradient fill and ink from one of twelve hues around the brand hue (−82.5° to +82.5°), so things with the same seed look alike and neighbours differ. Choose it from a name (a hash of the name modulo 12) so a person keeps their colour everywhere.",
+      "description": "temper (expressive.css). On: [data-tm-avatar] (temper), or any small tile. A gradient fill and ink from one of twelve hues around the brand hue (−50° to +50°), so things with the same seed look alike and neighbours differ. Choose it from a name (a hash of the name modulo 12) so a person keeps their colour everywhere.",
       "values": [
         {
           "name": "0"

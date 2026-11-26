@@ -23,9 +23,9 @@
     --_ex-c: var(--tm-chroma, 0.19);
     --_ex-h: var(--tm-hue, 255);
     --_ex-tc: min(var(--_ex-c), 0.2); /* surfaces stay calm however loud the brand is */
-    --tm-tint-1: light-dark(oklch(0.96 calc(var(--_ex-tc) * 0.36) calc(var(--_ex-h) - 40)), oklch(0.29 calc(var(--_ex-tc) * 0.75) calc(var(--_ex-h) - 40)));
-    --tm-tint-2: light-dark(oklch(0.958 calc(var(--_ex-tc) * 0.4) var(--_ex-h)), oklch(0.285 calc(var(--_ex-tc) * 0.8) var(--_ex-h)));
-    --tm-tint-3: light-dark(oklch(0.966 calc(var(--_ex-tc) * 0.34) calc(var(--_ex-h) + 50)), oklch(0.285 calc(var(--_ex-tc) * 0.7) calc(var(--_ex-h) + 50)));
+    --tm-tint-1: light-dark(oklch(0.96 calc(var(--_ex-tc) * 0.24) calc(var(--_ex-h) - 20)), oklch(0.29 calc(var(--_ex-tc) * 0.75) calc(var(--_ex-h) - 20)));
+    --tm-tint-2: light-dark(oklch(0.958 calc(var(--_ex-tc) * 0.28) var(--_ex-h)), oklch(0.285 calc(var(--_ex-tc) * 0.8) var(--_ex-h)));
+    --tm-tint-3: light-dark(oklch(0.966 calc(var(--_ex-tc) * 0.24) calc(var(--_ex-h) + 20)), oklch(0.285 calc(var(--_ex-tc) * 0.7) calc(var(--_ex-h) + 20)));
     --tm-glass: light-dark(oklch(1 0 0 / 0.72), oklch(0.4 calc(var(--_ex-c) * 0.12) var(--_ex-h) / 0.16));
     --_ex-rim: light-dark(oklch(1 0 0 / 0.75), oklch(1 0 0 / 0.12));
 
@@ -76,6 +76,21 @@
       radial-gradient(70% 95% at 100% 0%, var(--tm-tint-3), transparent 75%),
       radial-gradient(90% 85% at 55% 110%, var(--tm-tint-2), transparent 75%);
   }
+  /* wash: the mesh's colour at the top of a page or pane only, fading out within the first screenful, with no box, so
+     a working view keeps a plain background. It stays at the top of the pane (attachment scroll, painted under the
+     scrollbar gutter too: no seam at the edge) */
+  :where([data-tm-surface="wash"]) {
+    /* dark: the tints at 60%, so a working view's top glows instead of shouting; the 30% hint eases the falloff, so
+       the blobs have no visible edge */
+    --_ex-w1: light-dark(var(--tm-tint-1), color-mix(in oklab, var(--tm-tint-1) 60%, transparent));
+    --_ex-w2: light-dark(var(--tm-tint-2), color-mix(in oklab, var(--tm-tint-2) 60%, transparent));
+    --_ex-w3: light-dark(var(--tm-tint-3), color-mix(in oklab, var(--tm-tint-3) 60%, transparent));
+    background-image: var(--_ex-noise)
+      radial-gradient(60% 18rem at 0% 0%, var(--_ex-w1), 30%, transparent),
+      radial-gradient(60% 18rem at 100% 0%, var(--_ex-w3), 30%, transparent),
+      radial-gradient(75% 15rem at 50% 0%, var(--_ex-w2), 30%, transparent);
+    background-repeat: no-repeat;
+  }
   :where([data-tm-surface="glass"]) {
     background-color: var(--tm-glass);
     background-image: var(--_ex-noise) none;
@@ -111,11 +126,11 @@
   :where([data-tm-halo][data-tm-elevation="raised"]) { box-shadow: var(--tm-shadow-raised), 0 10px 36px -8px var(--tm-glow); }
   :where([data-tm-halo][data-tm-elevation="floating"]) { box-shadow: var(--tm-shadow-floating), 0 18px 56px -12px var(--tm-glow); }
 
-  /* seeds: twelve hues around the brand hue, 15° apart; a gradient fill and an ink that keeps AA on both its ends */
+  /* seeds: twelve hues around the brand hue, 9° apart (±50°, so none strays far from the brand); a gradient fill and an ink that keeps AA on both its ends */
   :where([data-tm-seed]) {
-    --_ex-sh: calc(var(--_ex-h) + (var(--_ex-seed, 0) - 5.5) * 15);
-    --_ex-seed-a: light-dark(oklch(0.9 calc(var(--_ex-c) * 0.42) var(--_ex-sh)), oklch(0.46 calc(var(--_ex-c) * 0.62) var(--_ex-sh)));
-    --_ex-seed-b: light-dark(oklch(0.8 calc(var(--_ex-c) * 0.62) calc(var(--_ex-sh) + 35)), oklch(0.34 calc(var(--_ex-c) * 0.7) calc(var(--_ex-sh) + 35)));
+    --_ex-sh: calc(var(--_ex-h) + (var(--_ex-seed, 0) - 5.5) * 9);
+    --_ex-seed-a: light-dark(oklch(0.9 calc(var(--_ex-c) * 0.42) var(--_ex-sh)), oklch(0.42 calc(var(--_ex-c) * 0.45) var(--_ex-sh)));
+    --_ex-seed-b: light-dark(oklch(0.8 calc(var(--_ex-c) * 0.62) calc(var(--_ex-sh) + 20)), oklch(0.34 calc(var(--_ex-c) * 0.5) calc(var(--_ex-sh) + 20)));
     --_ex-seed-ink: light-dark(oklch(0.3 calc(var(--_ex-c) * 0.55) var(--_ex-sh)), oklch(0.96 calc(var(--_ex-c) * 0.15) var(--_ex-sh)));
     background-color: var(--_ex-seed-b);
     background-image: linear-gradient(140deg, var(--_ex-seed-a), var(--_ex-seed-b));

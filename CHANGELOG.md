@@ -35,6 +35,11 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   opaque glass, `prefers-reduced-motion` no lift. 1.9 KB brotli; `all.css` includes it (budget 14,700 B).
 - Grown out of a demo on caley (it started there as a separate package, patina); the kitchen sink has a page,
   `kitchen-sink/expressive.html` (`?hue=150`, `?t=dark`).
+- `data-tm-surface="wash"`: the mesh's colour at the top of a page or pane only, fading out within the first
+  screenful, with no box, for working views (caley's contacts page): colour at the top, a plain background where
+  people work. In dark mode it runs at 60%.
+- The mesh's tints sit at the brand hue ±20° and the seeds at ±50° (the second stop +20°), so nothing strays into
+  cyan, blue or red; light tints are paler (chroma ×0.24–0.28), dark seeds calmer (lightness 0.34–0.42).
 - `temper check`: a number on another numeric axis is no longer suggested as a mix-up (`data-tm-cols="8"` is not
   "did you mean data-tm-seed").
 
