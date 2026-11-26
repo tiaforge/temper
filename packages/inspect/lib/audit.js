@@ -1,6 +1,10 @@
 // Runs inside the page (serialized with Function.prototype.toString). Installs window.__tsi, which Node
-// drives state by state: list() overlays, open(i), check(state) -> findings, close(i).
+// drives state by state: prepare(), list() overlays, open(i), check(state) -> findings, close(i).
 // Findings: { state, severity: 'error'|'warning'|'info', code, selector, message, src? }
+// selector is empty for a finding that is about no element (a stylesheet rule, the document as a whole).
+// check() is synchronous. What needs waiting (fetching a stylesheet's source, letting transitions end) registers in
+// `prepares` and runs in prepare(), once, before the first check; a caller that never calls prepare() (an older
+// Vite client) gets every check that does not depend on it.
 // src ("file:line") is there when the page was served with data-tm-src attributes (temper's Vite plugin adds them in dev).
 export function install(opts) {
   let findings = [];
@@ -9,6 +13,7 @@ export function install(opts) {
   const R = el => el.getBoundingClientRect();
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const frames = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  const prepares = []; // async () => void, run by prepare()
 
   // ── colors ──
   const ctx = Object.assign(document.createElement('canvas'), { width: 1, height: 1 }).getContext('2d', { willReadFrequently: true });
@@ -57,6 +62,10 @@ export function install(opts) {
 
   const srcOf = el => el?.closest?.('[data-tm-src]')?.getAttribute('data-tm-src') ?? undefined;
 
+  // ── document checks: once per page, in the 'page' state (doctype, viewport, ids, references, images, fonts) ──
+  // add(severity, code, element | selector text | null, message)
+  function checkDocument(add) {}
+
   // ── visibility ──
   let scope = document.body; // a modal dialog limits checks to itself
   function visible(el) {
@@ -67,11 +76,16 @@ export function install(opts) {
   }
   const all = () => [...scope.querySelectorAll('*')].filter(e => !['SCRIPT', 'STYLE', 'TEMPLATE', 'svg', 'path'].includes(e.tagName) && !e.closest('svg') && visible(e));
 
+  // ── stylesheet checks: once per page, in the 'page' state (declarations the browser dropped, undefined custom properties) ──
+  function checkStyles(add) {}
+
   // ── checks ──
   const INTERACTIVE = 'a[href], button, input:not([type=hidden]), select, textarea, summary, [role=button], [role=link], [role=switch], [role=checkbox], [role=tab], [role=menuitem], [tabindex]:not([tabindex="-1"])';
 
   function check(state) {
-    const add = (severity, code, el, message) => findings.push({ state, severity, code, selector: el ? sel(el) : '', message, src: srcOf(el) });
+    // el: the element the finding is about, or selector text (a stylesheet rule), or null
+    const add = (severity, code, el, message) => findings.push({ state, severity, code,
+      selector: typeof el === 'string' ? el : el ? sel(el) : '', message, src: typeof el === 'string' ? undefined : srcOf(el) });
     const els = all();
 
     // horizontal overflow: report the outermost element that sticks out
@@ -157,6 +171,9 @@ export function install(opts) {
       const tops = kids.map(k => R(k).top), h = Math.min(...kids.map(k => R(k).height));
       if (Math.max(...tops) - Math.min(...tops) > h * 0.75) add('info', 'wrapped', el, `row wrapped onto ${lines} lines`);
     }
+
+    if (!current) { checkDocument(add); checkStyles(add); }
+    checkGeometry(add, els);
   }
 
   function checkOverlay(state, el) {
@@ -168,6 +185,10 @@ export function install(opts) {
     if (r.right > vw + 1 || r.bottom > vh + 1 || r.left < -1 || r.top < -1)
       findings.push({ state, severity: 'error', code: 'position', selector: sel(el), message: `extends outside the viewport (${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}×${Math.round(r.height)})` , src: srcOf(el) });
   }
+
+  // ── geometry checks: in every state (overlapping text, content poking out of its box, squeezed text, distorted images) ──
+  // els: the visible elements of the state being checked (all()), in document order
+  function checkGeometry(add, els) {}
 
   // ── states: the page, then every dialog and every closed popover, opened one at a time ──
   const overlays = () => [
@@ -221,7 +242,10 @@ export function install(opts) {
     return { direct: true, openers: openersOf(el).length };
   }
 
+  let prepared = null;
   window.__tsi = {
+    /** Runs what the checks need to wait for. Call it once before the first check(); calling it again is free. */
+    prepare() { return prepared ??= Promise.all(prepares.map(f => f().catch(() => {}))).then(() => {}); },
     list() { list = opts.overlays ? overlays() : []; return list.length; },
     check(state) {
       findings = [];

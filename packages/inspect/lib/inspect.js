@@ -41,6 +41,7 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
     await page.goto(url, { width, height, scheme, settle });
     await page.evaluate(NO_GUTTERS);
     await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})`);
+    await page.evaluate('window.__tsi.prepare()');
     const take = async state => {
       if (!sheet) return;
       // Full size; the contact sheet scales it down when it lays it out.
