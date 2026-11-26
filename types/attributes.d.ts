@@ -172,4 +172,28 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-tm-field'?: true | '' | null | Removes;
   /** Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. Needs sheet.css. */
   'data-tm-sheet'?: 'end' | 'start' | 'bottom' | 'narrow' | null | Removes;
+  /** Background as a material: glass, gradient or mesh. Needs expressive.css. */
+  'data-tm-surface'?: 'glass' | 'gradient' | 'mesh' | null | Removes;
+  /** Faint film grain over the background. Needs expressive.css. */
+  'data-tm-grain'?: true | '' | null | Removes;
+  /** Brand-tinted shadow: raised or floating. Needs expressive.css. */
+  'data-tm-elevation'?: 'raised' | 'floating' | null | Removes;
+  /** Soft accent glow around the element. Needs expressive.css. */
+  'data-tm-halo'?: true | '' | null | Removes;
+  /** Display type: hero, xl, lg. Needs expressive.css. */
+  'data-tm-display'?: 'hero' | 'xl' | 'lg' | null | Removes;
+  /** Gradient text (gradient). Needs expressive.css. */
+  'data-tm-ink'?: 'gradient' | null | Removes;
+  /** A big number (stat tiles). Needs expressive.css. */
+  'data-tm-figure'?: true | '' | null | Removes;
+  /** Centered hero column with generous padding. Needs expressive.css. */
+  'data-tm-hero'?: true | '' | null | Removes;
+  /** Bento grid (with data-tm-layout="grid"); tiles take data-tm-span. Needs expressive.css. */
+  'data-tm-bento'?: true | '' | null | Removes;
+  /** Bento tile size: wide, tall, large, full. Needs expressive.css. */
+  'data-tm-span'?: 'wide' | 'tall' | 'large' | 'full' | null | Removes;
+  /** Display font pairing: editorial, grotesk. Needs expressive.css. */
+  'data-tm-pairing'?: 'editorial' | 'grotesk' | null | Removes;
+  /** Seeded gradient fill, 0–11. Needs expressive.css. */
+  'data-tm-seed'?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | null | Removes;
 }

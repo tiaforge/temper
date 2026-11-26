@@ -226,7 +226,7 @@ image with the changed pixels in red. Baselines depend on fonts and the Chrome v
 compared on the machine that made them; `npm run visual -- --update` accepts an intended change.
 
 <!-- sizes -->
-**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.8 KB, `icons.css` 2.8 KB, `all.css` 12.6 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 98 % of its budget, `icons.css` 97 % and `all.css` 99 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
+**Size budgets are enforced.** `npm run build` fails above budget: `core.css` 6.8 KB, `icons.css` 2.8 KB, `expressive.css` 1.9 KB, `all.css` 14.4 KB, every other file 1.5 KB (brotli). Right now `core.css` uses 98 % of its budget, `icons.css` 97 %, `expressive.css` 99 % and `all.css` 98 %, so real growth means raising a budget on purpose (in `scripts/build.mjs`). `npm test` checks this paragraph and the table against a real build; `npm run gen` rewrites them.
 
 | File | brotli | What's in it |
 |---|---|---|
@@ -240,7 +240,8 @@ compared on the machine that made them; `npm run visual -- --update` accepts an 
 | `forms.css` | 1.1 KB | fields with an icon, unit or button (`data-tm-field`), read-only and required marks, autofill tint, range slider, indeterminate progress |
 | `prose.css` | 0.6 KB | long-form text (`data-tm-prose`): rhythm between blocks, reading measure, fluid headings, inline images in text, plain layout tables, blockquote, figure |
 | `sheet.css` | 0.6 KB | dialogs as sheets (`data-tm-sheet`): side panels at the inline end or start, bottom sheets, a bottom sheet on phones only |
-| `all.css` | 12.6 KB | everything |
+| `expressive.css` | 1.9 KB | opt-in voice: glass, gradient and mesh surfaces, grain, brand-tinted elevation and halo, display type and font pairings, hero and bento layouts, seeded gradients (`data-tm-surface`, `data-tm-display`, `data-tm-bento`, …) |
+| `all.css` | 14.1 KB | everything |
 | `enhance/customizable-select.css` | 0.8 KB | opt-in: the open `<select>` list styled like a menu (see below) |
 <!-- /sizes -->
 
@@ -278,6 +279,7 @@ import '@tiaforge-ui/temper/table.css';  // data tables
 import '@tiaforge-ui/temper/prose.css';  // long-form text: articles, rendered Markdown, mail bodies
 import '@tiaforge-ui/temper/forms.css';  // fields with icons, units and buttons; range, read-only, required
 import '@tiaforge-ui/temper/sheet.css';  // dialogs as side panels and bottom sheets
+import '@tiaforge-ui/temper/expressive.css'; // surfaces, display type, hero and bento, seeded colour
 import '@tiaforge-ui/temper/icons.css';  // the default icon set
 // or everything: import '@tiaforge-ui/temper/all.css';
 ```

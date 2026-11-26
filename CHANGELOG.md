@@ -19,6 +19,25 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   still checked. The old names have no CSS: this is a rename, not a deprecation (there were no users to carry).
 - Scripts: `el.dataset.tmTone`, `setAttribute('data-tm-tone', …)`.
 
+### New module: `expressive.css`
+
+- An opt-in voice on top of core, for the screens people see first: `data-tm-surface` (glass, gradient, mesh),
+  `data-tm-grain`, `data-tm-elevation` (raised, floating; brand-tinted shadows, a clickable card lifts on hover),
+  `data-tm-halo`, `data-tm-display` (hero, xl, lg) with `data-tm-ink="gradient"` and `data-tm-figure` for stat
+  numbers, `data-tm-pairing` (editorial: Fraunces, grotesk: Bricolage Grotesque, self-hosted by the app),
+  `data-tm-hero`, `data-tm-bento` on `data-tm-layout="grid"` with `data-tm-span` (wide, tall, large, full), and
+  `data-tm-seed` (twelve gradient fills around the brand hue, for avatars and icon tiles). New tokens:
+  `--tm-font-display`, `--tm-display-weight`, `--tm-display-tracking`, `--tm-glass-blur`, `--tm-bento-row`; derived
+  `--tm-tint-1…3`, `--tm-glass`, `--tm-ink-1…2`, `--tm-glow`, `--tm-shadow-raised`, `--tm-shadow-floating`.
+- Every colour is oklch() of `--tm-hue`/`--tm-chroma`. temper's text, muted text and accent, the gradient ink and
+  the seed inks keep 4.5:1 on every surface in light and dark mode, tested every 15° of hue at chroma 0.04–0.22.
+  `prefers-contrast: more` and forced colours give plain surfaces and solid text, `prefers-reduced-transparency`
+  opaque glass, `prefers-reduced-motion` no lift. 1.9 KB brotli; `all.css` includes it (budget 14,700 B).
+- Grown out of a demo on caley (it started there as a separate package, patina); the kitchen sink has a page,
+  `kitchen-sink/expressive.html` (`?hue=150`, `?t=dark`).
+- `temper check`: a number on another numeric axis is no longer suggested as a mix-up (`data-tm-cols="8"` is not
+  "did you mean data-tm-seed").
+
 ### Core
 
 - `data-layout="center"` sits on a whole pixel. `margin-inline: auto` split an odd remainder in two (a 2560px window

@@ -696,6 +696,169 @@
           "description": "A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem."
         }
       ]
+    },
+    {
+      "name": "data-tm-surface",
+      "description": "temper (expressive.css). On: any container: body, main, header, section, article, aside, dialog, nav, div. The element's background as a material. Text on it keeps temper's colours and WCAG AA in light and dark mode for any --tm-hue/--tm-chroma. Under prefers-contrast: more and forced colours every surface is temper's plain surface; under prefers-reduced-transparency glass is opaque.",
+      "values": [
+        {
+          "name": "glass",
+          "description": "Translucent raised surface with a backdrop blur and a hairline highlight. Over a temper surface or the page background."
+        },
+        {
+          "name": "gradient",
+          "description": "A soft diagonal wash between two tints of the brand hue."
+        },
+        {
+          "name": "mesh",
+          "description": "Three soft light blobs around the brand hue over the page background: page backgrounds, mastheads, heroes."
+        }
+      ]
+    },
+    {
+      "name": "data-tm-grain",
+      "description": "temper (expressive.css). On: any element, usually one with data-tm-surface. A faint film-grain texture over the element's background (an inline SVG noise image: needs img-src data: in the CSP). Off under prefers-contrast: more.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-tm-elevation",
+      "description": "temper (expressive.css). On: article, section, aside, dialog, div, img. Shadows tinted with the brand hue instead of grey. A raised card that holds a data-tm-stretch control lifts a little on hover (not with reduced motion).",
+      "values": [
+        {
+          "name": "raised",
+          "description": "Resting card: a contact shadow and a soft ambient one."
+        },
+        {
+          "name": "floating",
+          "description": "Dialogs, popovers, a hero's card: a deep, wide shadow."
+        }
+      ]
+    },
+    {
+      "name": "data-tm-halo",
+      "description": "temper (expressive.css). On: any element with a box: an avatar, an icon tile, a main button, a card. A soft glow of the accent around the element. Decorative only: no meaning depends on it.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-tm-display",
+      "description": "temper (expressive.css). On: h1, h2, h3, p, span, strong. Display type: the display font (--tm-font-display, set by data-tm-pairing), fluid size, tight tracking, balanced lines.",
+      "values": [
+        {
+          "name": "hero",
+          "description": "The one headline of a landing or sign-in page (2.75–5.5rem)."
+        },
+        {
+          "name": "xl",
+          "description": "A page title (2.25–3.5rem)."
+        },
+        {
+          "name": "lg",
+          "description": "A section title or a big letter (1.75–2.5rem)."
+        }
+      ]
+    },
+    {
+      "name": "data-tm-ink",
+      "description": "temper (expressive.css). On: text with data-tm-display or data-tm-figure. Text painted with a gradient of the brand hue. Both ends keep AA against temper's backgrounds and temper's surfaces; solid text colour under prefers-contrast: more and forced colours.",
+      "values": [
+        {
+          "name": "gradient",
+          "description": "Brand gradient from hue − 30° to hue + 40°."
+        }
+      ]
+    },
+    {
+      "name": "data-tm-figure",
+      "description": "temper (expressive.css). On: data, strong, span, p. A big number for stat tiles: display font, tabular figures, tight line. Pair it with a data-tm-caption label.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-tm-hero",
+      "description": "temper (expressive.css). On: header, section, main, div. A hero column: centered, balanced text, generous block padding that grows with the screen. Its children are stacked with a gap; give it a surface for colour.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-tm-bento",
+      "description": "temper (expressive.css). On: an element with data-tm-layout=\"grid\". Turns temper's grid into a bento box: rows at least --tm-bento-row tall (default 7rem), gaps filled densely, children sized with data-tm-span. Spans apply from a 32rem wide grid up; below, every tile is one cell.",
+      "valueSet": "v"
+    },
+    {
+      "name": "data-tm-span",
+      "description": "temper (expressive.css). On: a child of a data-tm-bento grid. How many cells a bento tile takes (from a 32rem wide grid up).",
+      "values": [
+        {
+          "name": "wide",
+          "description": "Two columns."
+        },
+        {
+          "name": "tall",
+          "description": "Two rows."
+        },
+        {
+          "name": "large",
+          "description": "Two columns and two rows."
+        },
+        {
+          "name": "full",
+          "description": "The whole row."
+        }
+      ]
+    },
+    {
+      "name": "data-tm-pairing",
+      "description": "temper (expressive.css). On: html, body (or any container). A font pairing: the display face for data-tm-display and data-tm-figure, with its weight and tracking; body text stays --tm-font-sans. The faces are self-hosted through Fontsource packages, which the app installs and imports (sinter bundles them and can preload them). Without the package the display falls back to a matching system face.",
+      "values": [
+        {
+          "name": "editorial",
+          "description": "Fraunces (a soft serif) for display: import '@fontsource-variable/fraunces'."
+        },
+        {
+          "name": "grotesk",
+          "description": "Bricolage Grotesque for display: import '@fontsource-variable/bricolage-grotesque'."
+        }
+      ]
+    },
+    {
+      "name": "data-tm-seed",
+      "description": "temper (expressive.css). On: [data-tm-avatar] (temper), or any small tile. A gradient fill and ink from one of twelve hues around the brand hue (−82.5° to +82.5°), so things with the same seed look alike and neighbours differ. Choose it from a name (a hash of the name modulo 12) so a person keeps their colour everywhere.",
+      "values": [
+        {
+          "name": "0"
+        },
+        {
+          "name": "1"
+        },
+        {
+          "name": "2"
+        },
+        {
+          "name": "3"
+        },
+        {
+          "name": "4"
+        },
+        {
+          "name": "5"
+        },
+        {
+          "name": "6"
+        },
+        {
+          "name": "7"
+        },
+        {
+          "name": "8"
+        },
+        {
+          "name": "9"
+        },
+        {
+          "name": "10"
+        },
+        {
+          "name": "11"
+        }
+      ]
     }
   ]
 }

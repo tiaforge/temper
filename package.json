@@ -26,6 +26,7 @@
     "./prose.css": "./dist/prose.css",
     "./forms.css": "./dist/forms.css",
     "./sheet.css": "./dist/sheet.css",
+    "./expressive.css": "./dist/expressive.css",
     "./all.css": "./dist/all.css",
     "./vocab.json": "./vocab.json",
     "./html-custom-data.json": "./html-custom-data.json",

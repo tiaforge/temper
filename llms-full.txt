@@ -14,6 +14,7 @@ import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selec
 import '@tiaforge-ui/temper/prose.css';  // data-tm-prose: articles, Markdown, mail bodies
 import '@tiaforge-ui/temper/forms.css';  // data-tm-field (icon, unit, button in a field), range, read-only, required *, loading bar
 import '@tiaforge-ui/temper/sheet.css';  // data-tm-sheet: a dialog as a side panel or bottom sheet
+import '@tiaforge-ui/temper/expressive.css'; // surfaces, display type, hero and bento, seeded colour (opt-in voice)
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/temper/all.css';
@@ -367,6 +368,77 @@ On: dialog. The dialog is a sheet that slides in from an edge of the screen inst
 - `bottom`: Along the bottom edge, as tall as its content: actions, a short form. Full width on phones.
 - `narrow`: A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem.
 
+### `data-tm-surface`
+
+On: any container: body, main, header, section, article, aside, dialog, nav, div. The element's background as a material. Text on it keeps temper's colours and WCAG AA in light and dark mode for any --tm-hue/--tm-chroma. Under prefers-contrast: more and forced colours every surface is temper's plain surface; under prefers-reduced-transparency glass is opaque. Needs `expressive.css`.
+
+- `glass`: Translucent raised surface with a backdrop blur and a hairline highlight. Over a temper surface or the page background.
+- `gradient`: A soft diagonal wash between two tints of the brand hue.
+- `mesh`: Three soft light blobs around the brand hue over the page background: page backgrounds, mastheads, heroes.
+
+### `data-tm-grain` (boolean, no value)
+
+On: any element, usually one with data-tm-surface. A faint film-grain texture over the element's background (an inline SVG noise image: needs img-src data: in the CSP). Off under prefers-contrast: more. Needs `expressive.css`.
+
+### `data-tm-elevation`
+
+On: article, section, aside, dialog, div, img. Shadows tinted with the brand hue instead of grey. A raised card that holds a data-tm-stretch control lifts a little on hover (not with reduced motion). Needs `expressive.css`.
+
+- `raised`: Resting card: a contact shadow and a soft ambient one.
+- `floating`: Dialogs, popovers, a hero's card: a deep, wide shadow.
+
+### `data-tm-halo` (boolean, no value)
+
+On: any element with a box: an avatar, an icon tile, a main button, a card. A soft glow of the accent around the element. Decorative only: no meaning depends on it. Needs `expressive.css`.
+
+### `data-tm-display`
+
+On: h1, h2, h3, p, span, strong. Display type: the display font (--tm-font-display, set by data-tm-pairing), fluid size, tight tracking, balanced lines. Needs `expressive.css`.
+
+- `hero`: The one headline of a landing or sign-in page (2.75–5.5rem).
+- `xl`: A page title (2.25–3.5rem).
+- `lg`: A section title or a big letter (1.75–2.5rem).
+
+### `data-tm-ink`
+
+On: text with data-tm-display or data-tm-figure. Text painted with a gradient of the brand hue. Both ends keep AA against temper's backgrounds and temper's surfaces; solid text colour under prefers-contrast: more and forced colours. Needs `expressive.css`.
+
+- `gradient`: Brand gradient from hue − 30° to hue + 40°.
+
+### `data-tm-figure` (boolean, no value)
+
+On: data, strong, span, p. A big number for stat tiles: display font, tabular figures, tight line. Pair it with a data-tm-caption label. Needs `expressive.css`.
+
+### `data-tm-hero` (boolean, no value)
+
+On: header, section, main, div. A hero column: centered, balanced text, generous block padding that grows with the screen. Its children are stacked with a gap; give it a surface for colour. Needs `expressive.css`.
+
+### `data-tm-bento` (boolean, no value)
+
+On: an element with data-tm-layout="grid". Turns temper's grid into a bento box: rows at least --tm-bento-row tall (default 7rem), gaps filled densely, children sized with data-tm-span. Spans apply from a 32rem wide grid up; below, every tile is one cell. Needs `expressive.css`.
+
+### `data-tm-span`
+
+On: a child of a data-tm-bento grid. How many cells a bento tile takes (from a 32rem wide grid up). Needs `expressive.css`.
+
+- `wide`: Two columns.
+- `tall`: Two rows.
+- `large`: Two columns and two rows.
+- `full`: The whole row.
+
+### `data-tm-pairing`
+
+On: html, body (or any container). A font pairing: the display face for data-tm-display and data-tm-figure, with its weight and tracking; body text stays --tm-font-sans. The faces are self-hosted through Fontsource packages, which the app installs and imports (sinter bundles them and can preload them). Without the package the display falls back to a matching system face. Needs `expressive.css`.
+
+- `editorial`: Fraunces (a soft serif) for display: import '@fontsource-variable/fraunces'.
+- `grotesk`: Bricolage Grotesque for display: import '@fontsource-variable/bricolage-grotesque'.
+
+### `data-tm-seed`
+
+On: [data-tm-avatar] (temper), or any small tile. A gradient fill and ink from one of twelve hues around the brand hue (−82.5° to +82.5°), so things with the same seed look alike and neighbours differ. Choose it from a name (a hash of the name modulo 12) so a person keeps their colour everywhere. Needs `expressive.css`.
+
+Values: `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`.
+
 ## Tokens
 
 Set inputs on `:root` in your own CSS to change the theme. Use the rest in your own CSS.
@@ -397,6 +469,11 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 - `--tm-rail-width-collapsed`: Width of a collapsed rail. Default: one icon button plus padding.
 - `--tm-grow-basis`: Width a data-tm-grow child needs before its row wraps. Default 8rem.
 - `--tm-icon-<name>`: The icon image for data-tm-icon="<name>", as a url() of an SVG (shape only; the color is the text color). Set it to replace a default icon or to add your own: :root { --tm-icon-rocket: url(/icons/rocket.svg); } plus [data-tm-icon="rocket"] { --_icon: var(--tm-icon-rocket); }. An input only: temper does not declare it (the default image is the fallback in the [data-tm-icon] rule), so var(--tm-icon-mail) in your CSS is empty unless you set it; draw a default icon with data-tm-icon instead.
+- `--tm-font-display`: The display face (data-tm-display, data-tm-figure). Default: --tm-font-sans; data-tm-pairing sets it (expressive.css).
+- `--tm-display-weight`: Display weight. Default 700. (expressive.css)
+- `--tm-display-tracking`: Display letter spacing. Default -0.035em. (expressive.css)
+- `--tm-glass-blur`: Glass backdrop blur. Default 18px. (expressive.css)
+- `--tm-bento-row`: Bento row height. Default 7rem. (expressive.css)
 
 ### Colors
 
@@ -420,6 +497,13 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 - `--tm-tone-ink`: Text-safe version of --tm-tone. (derived, read only)
 - `--tm-tone-soft`: Tinted background from --tm-tone. (derived, read only)
 - `--tm-tone-on`: Text color on a solid --tm-tone fill (black or white). (derived, read only)
+- `--tm-tint-1`: Surface tint at hue − 40°. (expressive.css) (derived, read only)
+- `--tm-tint-2`: Surface tint at the brand hue. (expressive.css) (derived, read only)
+- `--tm-tint-3`: Surface tint at hue + 50°. (expressive.css) (derived, read only)
+- `--tm-glass`: The glass fill (translucent raised surface). (expressive.css) (derived, read only)
+- `--tm-ink-1`: Gradient ink, start. (expressive.css) (derived, read only)
+- `--tm-ink-2`: Gradient ink, end. (expressive.css) (derived, read only)
+- `--tm-glow`: The halo's colour. (expressive.css) (derived, read only)
 
 ### Space
 
@@ -448,6 +532,8 @@ Set inputs on `:root` in your own CSS to change the theme. Use the rest in your 
 
 - `--tm-shadow-sm`: Resting shadow: cards, the selected segment, tooltips. A faint 0 1px 2px by default; none in print.
 - `--tm-shadow-lg`: Overlay shadow: dialogs, popovers.
+- `--tm-shadow-raised`: data-tm-elevation="raised". (expressive.css)
+- `--tm-shadow-floating`: data-tm-elevation="floating". (expressive.css)
 
 ### Density (read only)
 
@@ -828,6 +914,37 @@ Dialog recipe. `end` and `start` are full-height side panels (details, filters) 
 48rem and an ordinary centered dialog from there (pick it when a dialog should feel native on phones). Side
 panels are `--tm-dialog-width` wide, and on phones leave a strip of the page to tap. They mirror in RTL and
 keep clear of the notch and the home indicator with `viewport-fit=cover`, also with `data-tm-pad`.
+
+### Expressive: surfaces, display type, hero and bento (expressive.css)
+
+```html
+<body data-tm-surface="mesh" data-tm-grain data-tm-pairing="editorial">   <!-- import '@fontsource-variable/fraunces' -->
+  <main data-tm-layout="center" data-tm-gap="xl" data-tm-pad="lg">
+    <div data-tm-hero>
+      <h1 data-tm-display="hero" data-tm-ink="gradient">Caley</h1>
+      <p data-tm-muted>Calendar, contacts and mail on your own servers.</p>
+      <div data-tm-layout="center" style="--tm-measure: 24rem">
+        <article data-tm-surface="glass" data-tm-elevation="floating" data-tm-pad="lg"><button data-tm-halo>Sign in</button></article>
+      </div>
+    </div>
+    <ul data-tm-layout="grid" data-tm-bento data-tm-gap="md" style="--tm-min: 12rem">
+      <li data-tm-surface="glass" data-tm-span="wide" data-tm-layout="stack" data-tm-gap="sm" data-tm-pad="lg">
+        <span data-tm-avatar data-tm-seed="4" aria-hidden="true"><span data-tm-icon="calendar"></span></span>
+        <h3>Calendar</h3><p data-tm-muted>Week and month at a glance.</p>
+      </li>
+    </ul>
+  </main>
+</body>
+```
+
+The opt-in voice on top of core. Use it for the screens people see first (sign-in, a page's masthead, a profile)
+and keep working views plain. Mastheads: `header data-tm-surface="mesh" data-tm-pad="lg"` with an
+`h1 data-tm-display="xl"`, and stat tiles as glass `div`s in a `dl data-tm-layout="grid" data-tm-bento` holding
+`dt data-tm-caption` and `dd data-tm-figure`. A sticky glass toolbar: `data-tm-surface="glass" data-tm-sticky="top"`.
+Cards: `article data-tm-elevation="raised"` (it lifts on hover when it holds a `data-tm-stretch` control). Seeded
+colour: `data-tm-seed` on `data-tm-avatar` (initials or an icon); choose the seed from a name's hash so a person
+keeps their colour. Everything follows `--tm-hue`/`--tm-chroma` and keeps AA (checked for chroma 0.04–0.22); never
+write gradient colours of your own. `data-tm-grain` is an inline SVG image: the CSP needs `img-src data:`.
 
 ### Toasts and tooltips (feedback.css)
 

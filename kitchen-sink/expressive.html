@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-tm-pairing="grotesk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>temper expressive</title>
+  <link rel="stylesheet" href="../src/core.css">
+  <link rel="stylesheet" href="../src/expressive.css">
+  <link rel="stylesheet" href="../src/icons.css">
+  <script>
+    // ?t=light|dark, ?hue=<0–359>: the whole page follows --tm-hue
+    { const q = new URLSearchParams(location.search);
+      if (q.get('t')) document.documentElement.dataset.tmTheme = q.get('t');
+      if (q.get('hue')) document.documentElement.style.setProperty('--tm-hue', q.get('hue')); }
+  </script>
+</head>
+<body data-tm-surface="mesh" data-tm-grain>
+<main data-tm-layout="center" data-tm-gap="xl" data-tm-pad="lg">
+  <div data-tm-hero>
+    <h1 data-tm-display="hero" data-tm-ink="gradient">Expressive</h1>
+    <p data-tm-muted>Surfaces, display type, hero and bento layouts and seeded colour, all from --tm-hue and --tm-chroma. Try ?hue=150 or ?t=dark.</p>
+    <div data-tm-layout="center" style="--tm-measure: 24rem">
+      <article data-tm-surface="glass" data-tm-elevation="floating" data-tm-layout="stack" data-tm-gap="md" data-tm-pad="lg">
+        <label>Email <input type="email" autocomplete="email"></label>
+        <button type="button" data-tm-halo>Continue</button>
+      </article>
+    </div>
+  </div>
+
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2 data-tm-display="lg">Bento</h2>
+    <dl data-tm-layout="grid" data-tm-bento data-tm-gap="md" style="--tm-min: 10rem">
+      <div data-tm-surface="glass" data-tm-span="large" data-tm-layout="stack" data-tm-gap="xs" data-tm-pad="lg">
+        <dt data-tm-caption>People</dt><dd data-tm-figure>1,284</dd>
+      </div>
+      <div data-tm-surface="gradient" data-tm-span="wide" data-tm-layout="stack" data-tm-gap="xs" data-tm-pad="lg">
+        <dt data-tm-caption>Organizations</dt><dd data-tm-figure>96</dd>
+      </div>
+      <div data-tm-surface="glass" data-tm-layout="stack" data-tm-gap="xs" data-tm-pad="lg">
+        <dt data-tm-caption>Address books</dt><dd data-tm-figure>3</dd>
+      </div>
+      <div data-tm-surface="glass" data-tm-layout="stack" data-tm-gap="xs" data-tm-pad="lg">
+        <dt data-tm-caption>Shared</dt><dd data-tm-figure>12</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2 data-tm-display="lg">Seeds and elevation</h2>
+    <div data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 12rem">
+      <article data-tm-elevation="raised" data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+        <span data-tm-avatar data-tm-size="lg" data-tm-seed="2" aria-hidden="true">AL</span>
+        <button type="button" data-tm-stretch data-tm-variant="link"><strong>Ada Lovelace</strong></button>
+        <small data-tm-muted>Analytical Engines</small>
+      </article>
+      <article data-tm-elevation="raised" data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+        <span data-tm-avatar data-tm-size="lg" data-tm-seed="7" aria-hidden="true">GH</span>
+        <button type="button" data-tm-stretch data-tm-variant="link"><strong>Grace Hopper</strong></button>
+        <small data-tm-muted>Navy</small>
+      </article>
+      <article data-tm-elevation="raised" data-tm-layout="stack" data-tm-gap="xs" data-tm-align="center">
+        <span data-tm-avatar data-tm-size="lg" data-tm-seed="10" data-tm-halo aria-hidden="true"><span data-tm-icon="lock"></span></span>
+        <button type="button" data-tm-stretch data-tm-variant="link"><strong>Encrypted</strong></button>
+        <small data-tm-muted>An icon on a seed, with a halo</small>
+      </article>
+    </div>
+    <div data-tm-layout="row" data-tm-gap="sm" aria-label="The twelve seeds">
+      <span data-tm-avatar data-tm-seed="0">0</span><span data-tm-avatar data-tm-seed="1">1</span><span data-tm-avatar data-tm-seed="2">2</span>
+      <span data-tm-avatar data-tm-seed="3">3</span><span data-tm-avatar data-tm-seed="4">4</span><span data-tm-avatar data-tm-seed="5">5</span>
+      <span data-tm-avatar data-tm-seed="6">6</span><span data-tm-avatar data-tm-seed="7">7</span><span data-tm-avatar data-tm-seed="8">8</span>
+      <span data-tm-avatar data-tm-seed="9">9</span><span data-tm-avatar data-tm-seed="10">10</span><span data-tm-avatar data-tm-seed="11">11</span>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,240 @@
+/* temper expressive: an opt-in voice on top of core. Requires core.css. No JavaScript.
+   Materials (data-tm-surface glass, gradient, mesh; data-tm-grain), brand-tinted depth (data-tm-elevation,
+   data-tm-halo), display type (data-tm-display, data-tm-ink, data-tm-figure) with font pairings (data-tm-pairing),
+   layouts (data-tm-hero, data-tm-bento with data-tm-span) and seeded colour (data-tm-seed).
+   Every colour is oklch() of --tm-hue and --tm-chroma, so a rebrand is still two numbers; every surface stays in the
+   lightness band where temper's text, muted text and accent keep WCAG AA in light and dark mode (test/expressive.test.js
+   sweeps every 15° of hue, chroma 0.04–0.22). prefers-contrast: more and forced colours fall back to temper's plain
+   surfaces; prefers-reduced-transparency makes glass opaque; prefers-reduced-motion stops the hover lift. */
+
+@layer tm.reset, tm.base, tm.components, tm.layout; /* the order core.css declares, in case this file loads first */
+
+/* ───────────── tokens ───────────── */
+@layer tm.base {
+  /* :where(): data-tm-pairing on <html> itself must win over these defaults */
+  :where(:root) {
+    --tm-font-display: var(--tm-font-sans);
+    --tm-display-weight: 700;
+    --tm-display-tracking: -0.035em;
+    --tm-glass-blur: 18px;
+    --tm-bento-row: 7rem;
+
+    /* surface tints: light 0.958–0.966, dark 0.235–0.26 lightness, so temper's text and muted text keep AA on them */
+    --_ex-c: var(--tm-chroma, 0.19);
+    --_ex-h: var(--tm-hue, 255);
+    --_ex-tc: min(var(--_ex-c), 0.2); /* surfaces stay calm however loud the brand is */
+    --tm-tint-1: light-dark(oklch(0.96 calc(var(--_ex-tc) * 0.36) calc(var(--_ex-h) - 40)), oklch(0.255 calc(var(--_ex-c) * 0.42) calc(var(--_ex-h) - 40)));
+    --tm-tint-2: light-dark(oklch(0.958 calc(var(--_ex-tc) * 0.4) var(--_ex-h)), oklch(0.26 calc(var(--_ex-c) * 0.5) var(--_ex-h)));
+    --tm-tint-3: light-dark(oklch(0.966 calc(var(--_ex-tc) * 0.34) calc(var(--_ex-h) + 50)), oklch(0.245 calc(var(--_ex-c) * 0.4) calc(var(--_ex-h) + 50)));
+    --tm-glass: light-dark(oklch(1 0 0 / 0.72), oklch(0.2 calc(var(--_ex-c) * 0.08) var(--_ex-h) / 0.62));
+    --_ex-rim: light-dark(oklch(1 0 0 / 0.75), oklch(1 0 0 / 0.09));
+
+    /* gradient ink: dark enough on light surfaces, light enough on dark ones */
+    --tm-ink-1: light-dark(oklch(0.42 calc(var(--_ex-c) * 1.05) calc(var(--_ex-h) - 30)), oklch(0.82 calc(var(--_ex-c) * 0.6) calc(var(--_ex-h) - 30)));
+    --tm-ink-2: light-dark(oklch(0.43 calc(var(--_ex-c) * 1.05) calc(var(--_ex-h) + 40)), oklch(0.84 calc(var(--_ex-c) * 0.6) calc(var(--_ex-h) + 40)));
+
+    /* brand-tinted shadows and the halo */
+    --_ex-shade: light-dark(oklch(0.32 calc(var(--_ex-c) * 0.45) var(--_ex-h) / 0.14), oklch(0.05 0.01 var(--_ex-h) / 0.6));
+    --_ex-shade-far: light-dark(oklch(0.32 calc(var(--_ex-c) * 0.6) var(--_ex-h) / 0.2), oklch(0.03 0.01 var(--_ex-h) / 0.7));
+    --tm-shadow-raised: 0 1px 2px var(--_ex-shade), 0 6px 18px -8px var(--_ex-shade-far), inset 0 1px 0 var(--_ex-rim);
+    --tm-shadow-floating: 0 2px 6px var(--_ex-shade), 0 28px 64px -18px var(--_ex-shade-far), inset 0 1px 0 var(--_ex-rim);
+    --tm-glow: light-dark(oklch(0.62 calc(var(--_ex-c) * 0.9) var(--_ex-h) / 0.35), oklch(0.66 calc(var(--_ex-c) * 0.9) var(--_ex-h) / 0.4));
+  }
+
+  /* font pairings: the display face, its weight and tracking (the faces come from Fontsource packages the app imports) */
+  :where([data-tm-pairing="editorial"]) {
+    --tm-font-display: "Fraunces Variable", "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --tm-display-weight: 600;
+    --tm-display-tracking: -0.02em;
+  }
+  :where([data-tm-pairing="grotesk"]) {
+    --tm-font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", var(--tm-font-sans);
+    --tm-display-weight: 700;
+    --tm-display-tracking: -0.04em;
+  }
+}
+
+/* ───────────── surfaces ───────────── */
+@layer tm.components {
+  :where([data-tm-surface]) {
+    --_ex-noise: ;
+    background-color: var(--tm-bg);
+  }
+  /* a surface on <body> is the page's: the root gives up its own background, so the body's covers the whole canvas
+     (the browser paints the root's background there only when it has one), and the body is at least a screen tall,
+     so the surface is not repeated below short content */
+  :where(html:has(> body[data-tm-surface])) { background: none; }
+  :where(body[data-tm-surface]) { min-block-size: 100dvh; }
+  /* a surface inside the page is a panel: temper's large radius (the page itself, body and main, stays square) */
+  :where([data-tm-surface]:not(html, body, main)) { border-radius: var(--tm-radius-lg); }
+  :where([data-tm-surface="gradient"]) {
+    background-image: var(--_ex-noise) linear-gradient(135deg, var(--tm-tint-1), var(--tm-tint-2) 55%, var(--tm-tint-3));
+  }
+  :where([data-tm-surface="mesh"]) {
+    background-image: var(--_ex-noise)
+      radial-gradient(60% 70% at 8% 0%, var(--tm-tint-1), transparent 70%),
+      radial-gradient(55% 60% at 95% 10%, var(--tm-tint-3), transparent 70%),
+      radial-gradient(70% 70% at 60% 105%, var(--tm-tint-2), transparent 70%);
+  }
+  :where([data-tm-surface="glass"]) {
+    background-color: var(--tm-glass);
+    background-image: var(--_ex-noise) none;
+    -webkit-backdrop-filter: blur(var(--tm-glass-blur)) saturate(1.5);
+    backdrop-filter: blur(var(--tm-glass-blur)) saturate(1.5);
+    border: 1px solid var(--_ex-rim);
+    box-shadow: inset 0 1px 0 var(--_ex-rim);
+  }
+  /* temper's article and dialog have a border of their own; on glass the rim replaces it */
+  :where(article, dialog)[data-tm-surface="glass"] { border-color: var(--_ex-rim); }
+
+  /* grain: a noise layer on top of the surface's own layers (or alone on a plain element) */
+  :where([data-tm-grain]) {
+    --_ex-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),;
+  }
+  :where([data-tm-grain]:not([data-tm-surface])) {
+    background-image: var(--_ex-noise) none;
+  }
+
+  /* elevation: tinted shadows; a clickable raised card lifts on hover */
+  :where([data-tm-elevation="raised"]) { box-shadow: var(--tm-shadow-raised); }
+  :where([data-tm-elevation="floating"]) { box-shadow: var(--tm-shadow-floating); }
+  :where([data-tm-elevation="raised"]:has([data-tm-stretch])) {
+    transition: box-shadow var(--tm-duration, 150ms) var(--tm-ease, ease), translate var(--tm-duration, 150ms) var(--tm-ease, ease);
+  }
+  :where([data-tm-elevation="raised"]:has([data-tm-stretch]):hover) { box-shadow: var(--tm-shadow-floating); }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-tm-elevation="raised"]:has([data-tm-stretch]):hover) { translate: 0 -2px; }
+  }
+
+  /* halo: the accent's glow, added to whatever shadow the element has */
+  :where([data-tm-halo]) { box-shadow: 0 0 0 1px var(--tm-glow), 0 8px 32px -6px var(--tm-glow); }
+  :where([data-tm-halo][data-tm-elevation="raised"]) { box-shadow: var(--tm-shadow-raised), 0 10px 36px -8px var(--tm-glow); }
+  :where([data-tm-halo][data-tm-elevation="floating"]) { box-shadow: var(--tm-shadow-floating), 0 18px 56px -12px var(--tm-glow); }
+
+  /* seeds: twelve hues around the brand hue, 15° apart; a gradient fill and an ink that keeps AA on both its ends */
+  :where([data-tm-seed]) {
+    --_ex-sh: calc(var(--_ex-h) + (var(--_ex-seed, 0) - 5.5) * 15);
+    --_ex-seed-a: light-dark(oklch(0.9 calc(var(--_ex-c) * 0.42) var(--_ex-sh)), oklch(0.46 calc(var(--_ex-c) * 0.62) var(--_ex-sh)));
+    --_ex-seed-b: light-dark(oklch(0.8 calc(var(--_ex-c) * 0.62) calc(var(--_ex-sh) + 35)), oklch(0.34 calc(var(--_ex-c) * 0.7) calc(var(--_ex-sh) + 35)));
+    --_ex-seed-ink: light-dark(oklch(0.3 calc(var(--_ex-c) * 0.55) var(--_ex-sh)), oklch(0.96 calc(var(--_ex-c) * 0.15) var(--_ex-sh)));
+    background-color: var(--_ex-seed-b);
+    background-image: linear-gradient(140deg, var(--_ex-seed-a), var(--_ex-seed-b));
+    color: var(--_ex-seed-ink);
+  }
+  :where([data-tm-seed="0"]) { --_ex-seed: 0; }
+  :where([data-tm-seed="1"]) { --_ex-seed: 1; }
+  :where([data-tm-seed="2"]) { --_ex-seed: 2; }
+  :where([data-tm-seed="3"]) { --_ex-seed: 3; }
+  :where([data-tm-seed="4"]) { --_ex-seed: 4; }
+  :where([data-tm-seed="5"]) { --_ex-seed: 5; }
+  :where([data-tm-seed="6"]) { --_ex-seed: 6; }
+  :where([data-tm-seed="7"]) { --_ex-seed: 7; }
+  :where([data-tm-seed="8"]) { --_ex-seed: 8; }
+  :where([data-tm-seed="9"]) { --_ex-seed: 9; }
+  :where([data-tm-seed="10"]) { --_ex-seed: 10; }
+  :where([data-tm-seed="11"]) { --_ex-seed: 11; }
+  /* data-tm-avatar takes its colours from its tone; a seed is a fill of its own */
+  :where([data-tm-avatar][data-tm-seed]) { font-weight: 600; }
+}
+
+/* ───────────── type ───────────── */
+@layer tm.components {
+  :where([data-tm-display], [data-tm-figure]) {
+    font-family: var(--tm-font-display);
+    font-weight: var(--tm-display-weight);
+    letter-spacing: var(--tm-display-tracking);
+    font-optical-sizing: auto;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  :where([data-tm-display="hero"]) { font-size: clamp(2.75rem, 1.4rem + 5.2vw, 5.5rem); line-height: 0.98; }
+  :where([data-tm-display="xl"]) { font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem); }
+  :where([data-tm-display="lg"]) { font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem); }
+  :where([data-tm-figure]) {
+    font-size: clamp(2rem, 1.5rem + 1.8vw, 3rem);
+    font-variant-numeric: tabular-nums lining-nums;
+    line-height: 1;
+  }
+
+  :where([data-tm-ink="gradient"]) {
+    color: var(--tm-ink-1);
+    background-image: linear-gradient(100deg, var(--tm-ink-1), var(--tm-ink-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* the clip box ends at the line box: room for descenders and the italic overhang */
+    padding-block-end: 0.08em;
+    padding-inline-end: 0.04em;
+  }
+}
+
+/* ───────────── layouts ───────────── */
+@layer tm.layout {
+  :where([data-tm-hero]) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--tm-space-lg);
+    text-align: center;
+    text-wrap: balance;
+  }
+  /* its padding grows with the screen; temper's data-pad sets a fixed one instead (a band in a dialog) */
+  :where([data-tm-hero]:not([data-tm-pad])) {
+    padding-block: clamp(var(--tm-space-xl), 5vw, calc(var(--tm-space-xl) * 2.5));
+    padding-inline: var(--tm-space-md);
+  }
+  :where([data-tm-hero]) > :where(p) { max-inline-size: 36rem; font-size: var(--tm-text-lg); }
+
+  /* bento: temper's grid (columns at least --tm-min wide) with rows, dense filling and spans */
+  :where([data-tm-bento]) {
+    container-type: inline-size;
+    grid-auto-rows: minmax(var(--tm-bento-row), auto);
+    grid-auto-flow: row dense;
+  }
+  :where([data-tm-bento]) > * { min-inline-size: 0; }
+  @container (min-width: 32rem) {
+    :where([data-tm-bento]) > :where([data-tm-span="wide"]) { grid-column: span 2; }
+    :where([data-tm-bento]) > :where([data-tm-span="tall"]) { grid-row: span 2; }
+    :where([data-tm-bento]) > :where([data-tm-span="large"]) { grid-column: span 2; grid-row: span 2; }
+  }
+  :where([data-tm-bento]) > :where([data-tm-span="full"]) { grid-column: 1 / -1; }
+}
+
+/* ───────────── preferences ───────────── */
+@layer tm.components {
+  @media (prefers-reduced-transparency: reduce) {
+    :where([data-tm-surface="glass"]) {
+      background-color: var(--tm-surface-raised);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+  @media (prefers-contrast: more) {
+    :where([data-tm-surface]) {
+      --_ex-noise: ;
+      background-color: var(--tm-surface);
+      background-image: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    :where([data-tm-surface="glass"]) { border-color: var(--tm-border-strong); }
+    :where([data-tm-grain]) { --_ex-noise: ; }
+    :where([data-tm-grain]:not([data-tm-surface])) { background-image: none; }
+    :where([data-tm-halo]) { box-shadow: 0 0 0 2px var(--tm-accent); }
+  }
+  @media (forced-colors: active) {
+    :where([data-tm-surface], [data-tm-grain]) { background-image: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  }
+}
+@layer tm.components {
+  @media (prefers-contrast: more) {
+    :where([data-tm-ink="gradient"]) {
+      background-image: none;
+      -webkit-text-fill-color: currentColor;
+      color: var(--tm-text);
+    }
+  }
+  @media (forced-colors: active) {
+    :where([data-tm-ink="gradient"]) { background-image: none; -webkit-text-fill-color: currentColor; }
+  }
+}

@@ -20,6 +20,7 @@ import '@tiaforge-ui/temper/table.css';  // data tables: sortable headers, selec
 import '@tiaforge-ui/temper/prose.css';  // data-tm-prose: articles, Markdown, mail bodies
 import '@tiaforge-ui/temper/forms.css';  // data-tm-field (icon, unit, button in a field), range, read-only, required *, loading bar
 import '@tiaforge-ui/temper/sheet.css';  // data-tm-sheet: a dialog as a side panel or bottom sheet
+import '@tiaforge-ui/temper/expressive.css'; // surfaces, display type, hero and bento, seeded colour (opt-in voice)
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
 // or everything: import '@tiaforge-ui/temper/all.css';
@@ -472,6 +473,37 @@ Dialog recipe. `end` and `start` are full-height side panels (details, filters) 
 48rem and an ordinary centered dialog from there (pick it when a dialog should feel native on phones). Side
 panels are `--tm-dialog-width` wide, and on phones leave a strip of the page to tap. They mirror in RTL and
 keep clear of the notch and the home indicator with `viewport-fit=cover`, also with `data-tm-pad`.
+
+### Expressive: surfaces, display type, hero and bento (expressive.css)
+
+```html
+<body data-tm-surface="mesh" data-tm-grain data-tm-pairing="editorial">   <!-- import '@fontsource-variable/fraunces' -->
+  <main data-tm-layout="center" data-tm-gap="xl" data-tm-pad="lg">
+    <div data-tm-hero>
+      <h1 data-tm-display="hero" data-tm-ink="gradient">Caley</h1>
+      <p data-tm-muted>Calendar, contacts and mail on your own servers.</p>
+      <div data-tm-layout="center" style="--tm-measure: 24rem">
+        <article data-tm-surface="glass" data-tm-elevation="floating" data-tm-pad="lg"><button data-tm-halo>Sign in</button></article>
+      </div>
+    </div>
+    <ul data-tm-layout="grid" data-tm-bento data-tm-gap="md" style="--tm-min: 12rem">
+      <li data-tm-surface="glass" data-tm-span="wide" data-tm-layout="stack" data-tm-gap="sm" data-tm-pad="lg">
+        <span data-tm-avatar data-tm-seed="4" aria-hidden="true"><span data-tm-icon="calendar"></span></span>
+        <h3>Calendar</h3><p data-tm-muted>Week and month at a glance.</p>
+      </li>
+    </ul>
+  </main>
+</body>
+```
+
+The opt-in voice on top of core. Use it for the screens people see first (sign-in, a page's masthead, a profile)
+and keep working views plain. Mastheads: `header data-tm-surface="mesh" data-tm-pad="lg"` with an
+`h1 data-tm-display="xl"`, and stat tiles as glass `div`s in a `dl data-tm-layout="grid" data-tm-bento` holding
+`dt data-tm-caption` and `dd data-tm-figure`. A sticky glass toolbar: `data-tm-surface="glass" data-tm-sticky="top"`.
+Cards: `article data-tm-elevation="raised"` (it lifts on hover when it holds a `data-tm-stretch` control). Seeded
+colour: `data-tm-seed` on `data-tm-avatar` (initials or an icon); choose the seed from a name's hash so a person
+keeps their colour. Everything follows `--tm-hue`/`--tm-chroma` and keeps AA (checked for chroma 0.04–0.22); never
+write gradient colours of your own. `data-tm-grain` is an inline SVG image: the CSP needs `img-src data:`.
 
 ### Toasts and tooltips (feedback.css)
 
