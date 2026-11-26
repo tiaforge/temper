@@ -120,6 +120,33 @@ test('a stretch card is clickable anywhere, its other links on their own', { ski
   }, 'stretch.html');
 });
 
+test('a button in a narrow table keeps its label on one line; in a narrow box a long word still breaks', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(390, async page => {
+    const r = await page.evaluate(`(() => {
+      const host = document.createElement('div');
+      host.innerHTML = \`
+        <div id="narrow-table" style="width: 160px; overflow: auto"><table><tr>
+          <th><button id="in-th">Customer</button></th><td><button id="in-td">Forward</button></td>
+          <td><a role="button" href="#" id="link-in-td">Export</a></td><td><button>Delete</button></td>
+        </tr></table></div>
+        <div style="width: 90px"><button id="long-word">Donaudampfschifffahrtsgesellschaft</button></div>
+        <div style="width: 110px"><button id="words">Save all changes now</button></div>\`;
+      document.body.append(host);
+      const lines = id => { const range = document.createRange(); range.selectNodeContents(document.getElementById(id)); return new Set([...range.getClientRects()].map(q => Math.round(q.top))).size; };
+      const box = id => document.getElementById(id).getBoundingClientRect();
+      const t = document.getElementById('narrow-table');
+      return { th: lines('in-th'), td: lines('in-td'), link: lines('link-in-td'), scrolls: t.scrollWidth > t.clientWidth,
+        long: lines('long-word'), longWidth: box('long-word').width, words: lines('words'), wordsWidth: box('words').width };
+    })()`);
+    // overflow-wrap: anywhere leaves a label no least width, so a table squeezed it to one letter per line
+    assert.deepEqual([r.th, r.td, r.link], [1, 1, 1]);
+    assert.ok(r.scrolls, 'the table is wider than its box and scrolls');
+    // outside a table nothing changed: the button fits its box, a word too long for it breaks, words wrap
+    assert.ok(r.long > 1 && r.longWidth <= 90, `long word: ${r.long} line(s), ${r.longWidth}px`);
+    assert.ok(r.words > 1 && r.wordsWidth <= 110, `words: ${r.words} line(s), ${r.wordsWidth}px`);
+  });
+});
+
 test('a menu with more items than fit scrolls, and no item shrinks', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   await withPage(1280, async page => {
     const r = await page.evaluate(`(() => {

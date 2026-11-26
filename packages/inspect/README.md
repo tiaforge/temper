@@ -56,7 +56,7 @@ The page's own CSS (not stylesheets from other origins or `node_modules`):
 
 | Check | Code | Severity |
 |---|---|---|
-| A declaration the browser dropped, in a stylesheet or a `style` attribute: an unknown property or an invalid value. The message gives the fix it could confirm (`align-item` → `align-items`, `display: flexbox` → `flex`, `margin: 10` → `10px`) and file and line | `css` | warning |
+| A declaration the browser dropped, in a stylesheet or a `style` attribute: an unknown property or an invalid value. The message gives the fix it could confirm (`align-item` → `align-items`, `display: flexbox` → `flex`, `margin: 10` → `10px`) and file and line | `css` | error; warning for a property Chrome does not know and that is near no known one (it may be another browser's) |
 | `var(--name)` without a fallback where `--name` is defined nowhere, with the nearest defined names (`--tm-color-primary` → `--tm-primary`) | `var` | warning; info when no element matches the rule, or when the name is defined but not for these elements |
 
 Not reported as dropped declarations: vendor prefixes, declarations inside `@supports`, and a rejected

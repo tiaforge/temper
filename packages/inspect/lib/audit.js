@@ -514,19 +514,24 @@ export function install(opts) {
     return out;
   }
 
+  // An error: the browser's own parser rejected it, so the declaration does nothing, and the message says what would
+  // work. A warning only for a property Chrome does not know and that is near no known one: it may be a property of
+  // another browser, and then there is nothing to fix.
+  const certain = why => !why.startsWith('Chrome knows no such property');
   function checkDropped(add) {
     for (const sheet of sheets) {
       if (!sheet.own || sheet.serialized) continue;
       walk(sheet.tree, { sel: null, supports: false, cond: 'on' }, (decls, ctx) => {
         if (ctx.supports) return; // written for browsers that pass the @supports test (or that fail it)
         for (const { d, why } of droppedIn(decls))
-          add('warning', 'css', ruleText(ctx.sel, d.prop, d.value), `is not valid CSS, so the browser ignores it: ${why} ${where(sheet, d.line)}`);
+          add(certain(why) ? 'error' : 'warning', 'css', ruleText(ctx.sel, d.prop, d.value), `is not valid CSS, so the browser ignores it: ${why} ${where(sheet, d.line)}`);
       });
     }
     for (const el of document.querySelectorAll('[style]')) {
       if (!visible(el)) continue;
-      const bad = droppedIn(declsOf(el.getAttribute('style'))).map(({ d, why }) => `${code(`${d.prop}: ${clip(d.value, 60)}`)} (${why})`);
-      if (bad.length) add('warning', 'css', el, `has inline style the browser ignores, it is not valid CSS: ${bad.join('; ')}`);
+      const found = droppedIn(declsOf(el.getAttribute('style')));
+      const bad = found.map(({ d, why }) => `${code(`${d.prop}: ${clip(d.value, 60)}`)} (${why})`);
+      if (bad.length) add(found.some(f => certain(f.why)) ? 'error' : 'warning', 'css', el, `has inline style the browser ignores, it is not valid CSS: ${bad.join('; ')}`);
     }
   }
 

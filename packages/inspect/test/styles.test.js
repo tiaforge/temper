@@ -82,24 +82,24 @@ test('dropped declarations and undefined custom properties: each kind reported o
     const of = url => findings.filter(f => f.url === url && (f.code === 'css' || f.code === 'var'));
     const lines = url => of(url).map(f => `${f.severity} ${f.code} ${f.selector} | ${f.message}`);
     const expected = [
-      'warning css .card { align-item: center } | is not valid CSS, so the browser ignores it: unknown property, did you mean `align-items`? (styles-broken.css:5)',
-      'warning css .box { display: flexbox } | is not valid CSS, so the browser ignores it: `flexbox` is not a value of display, did you mean `flex`? (styles-broken.css:6)',
-      'warning css .m { margin: 10 } | is not valid CSS, so the browser ignores it: a number needs a unit here: `margin: 10px` would be valid (styles-broken.css:7)',
-      'warning css .fade { transition: opacity 200 } | is not valid CSS, so the browser ignores it: a number needs a unit here: `transition: opacity 200ms` would be valid (styles-broken.css:8)',
+      'error css .card { align-item: center } | is not valid CSS, so the browser ignores it: unknown property, did you mean `align-items`? (styles-broken.css:5)',
+      'error css .box { display: flexbox } | is not valid CSS, so the browser ignores it: `flexbox` is not a value of display, did you mean `flex`? (styles-broken.css:6)',
+      'error css .m { margin: 10 } | is not valid CSS, so the browser ignores it: a number needs a unit here: `margin: 10px` would be valid (styles-broken.css:7)',
+      'error css .fade { transition: opacity 200 } | is not valid CSS, so the browser ignores it: a number needs a unit here: `transition: opacity 200ms` would be valid (styles-broken.css:8)',
       'warning css .smooth { font-smoothing: antialiased } | is not valid CSS, so the browser ignores it: Chrome knows no such property (a typo, or a property other browsers have and Chrome does not) (styles-broken.css:9)',
-      'warning css .bang { color: red !importnat } | is not valid CSS, so the browser ignores it: `!importnat` is not `!important` (styles-broken.css:10)',
-      'warning css .semi { color: red background: blue } | is not valid CSS, so the browser ignores it: a `;` is missing after `red`, so `background: blue` is swallowed into this value (styles-broken.css:11)',
-      'warning css .quoted { width: "100px" } | is not valid CSS, so the browser ignores it: the value is quoted: `width: 100px` would be valid (styles-broken.css:13)',
-      'warning css .comma { padding: 4px, 8px } | is not valid CSS, so the browser ignores it: values are separated by spaces here, not commas: `padding: 4px 8px` would be valid (styles-broken.css:14)',
-      'warning css .just { justify-content: centre } | is not valid CSS, so the browser ignores it: `centre` is not a value of justify-content, did you mean `center`? (styles-broken.css:15)',
-      'warning css .camel { alignItems: center } | is not valid CSS, so the browser ignores it: unknown property, did you mean `align-items`? (styles-broken.css:16)',
-      'warning css .ink { text-color: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (styles-broken.css:17)',
-      'warning css .nav:hover { colr: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (styles-broken.css:20)',
-      'warning css .icon { background: url(data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2… } | is not valid CSS, so the browser ignores it: a url() without quotes cannot hold quotes, spaces or parentheses: put the URL in double quotes, url("…") (styles-broken.css:27)',
-      'warning css .imported { paddin: 1rem } | is not valid CSS, so the browser ignores it: unknown property, did you mean `padding`? (styles-broken-imported.css:2)',
-      'warning css .page { gap: 1rm } | is not valid CSS, so the browser ignores it: `rm` is not a unit, did you mean `1rem`? (styles-broken.html:5)',
-      'warning css .dev { colour: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (/app/src/Card.css:2)',
-      'warning css p "Inline" | has inline style the browser ignores, it is not valid CSS: `align-item: center` (unknown property, did you mean `align-items`?); `margin: 10` (a number needs a unit here: `margin: 10px` would be valid)',
+      'error css .bang { color: red !importnat } | is not valid CSS, so the browser ignores it: `!importnat` is not `!important` (styles-broken.css:10)',
+      'error css .semi { color: red background: blue } | is not valid CSS, so the browser ignores it: a `;` is missing after `red`, so `background: blue` is swallowed into this value (styles-broken.css:11)',
+      'error css .quoted { width: "100px" } | is not valid CSS, so the browser ignores it: the value is quoted: `width: 100px` would be valid (styles-broken.css:13)',
+      'error css .comma { padding: 4px, 8px } | is not valid CSS, so the browser ignores it: values are separated by spaces here, not commas: `padding: 4px 8px` would be valid (styles-broken.css:14)',
+      'error css .just { justify-content: centre } | is not valid CSS, so the browser ignores it: `centre` is not a value of justify-content, did you mean `center`? (styles-broken.css:15)',
+      'error css .camel { alignItems: center } | is not valid CSS, so the browser ignores it: unknown property, did you mean `align-items`? (styles-broken.css:16)',
+      'error css .ink { text-color: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (styles-broken.css:17)',
+      'error css .nav:hover { colr: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (styles-broken.css:20)',
+      'error css .icon { background: url(data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2… } | is not valid CSS, so the browser ignores it: a url() without quotes cannot hold quotes, spaces or parentheses: put the URL in double quotes, url("…") (styles-broken.css:27)',
+      'error css .imported { paddin: 1rem } | is not valid CSS, so the browser ignores it: unknown property, did you mean `padding`? (styles-broken-imported.css:2)',
+      'error css .page { gap: 1rm } | is not valid CSS, so the browser ignores it: `rm` is not a unit, did you mean `1rem`? (styles-broken.html:5)',
+      'error css .dev { colour: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (/app/src/Card.css:2)',
+      'error css p "Inline" | has inline style the browser ignores, it is not valid CSS: `align-item: center` (unknown property, did you mean `align-items`?); `margin: 10` (a number needs a unit here: `margin: 10px` would be valid)',
       'warning var :root { --a: var(--tm-nope) } | --tm-nope is not defined anywhere, so --a has no value either (styles-broken.css:4)',
       'warning var .token { color: var(--tm-color-primary) } | --tm-color-primary is not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration); did you mean --tm-primary? (styles-broken.css:22)',
       'warning var .chain { color: var(--undefined-a, var(--undefined-b)) } | --undefined-a and --undefined-b are not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration) (styles-broken.css:23)',
@@ -117,7 +117,7 @@ test('dropped declarations and undefined custom properties: each kind reported o
     assert.deepEqual(lines(urls[3]), []);
     // the rule's identity is in the selector, so two findings in one rule stay two after merging; the report prints both
     const text = format(findings.filter(f => f.url === urls[0]), { allWhere: ['1280 light'], limit: 50 });
-    assert.match(text, /\n    warning css: \.card \{ align-item: center \} is not valid CSS, so the browser ignores it: unknown property, did you mean `align-items`\? \(styles-broken\.css:5\)\n/);
+    assert.match(text, /\n    error css: \.card \{ align-item: center \} is not valid CSS, so the browser ignores it: unknown property, did you mean `align-items`\? \(styles-broken\.css:5\)\n/);
   } finally {
     if (prevTmp === undefined) delete process.env.TMPDIR; else process.env.TMPDIR = prevTmp;
     rmSync(tmp, { recursive: true, force: true });

@@ -56,6 +56,13 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   center takes `max(var(--tm-space-md), <padding>)`, which a unitless 0 makes invalid, so the width limit was dropped
   and the column ran full width. `--tm-space-none`, `data-tm-pad="none"` and `data-tm-gap="none"` are `0px` now.
 
+- A button in a table cell keeps its label on one line. Buttons wrap with `overflow-wrap: anywhere`, which leaves a
+  label no least width, and a table column takes its least width from its content: a table too wide for its box
+  (a phone) squeezed "Forward" to 43px and one letter per line, and broke a sortable header such as "Customer" in two.
+  Now the table scrolls (`data-tm-scroll`). Outside tables nothing changes: a button fits its box, a word too long
+  for it breaks. Found by temper-inspect's new `squeezed` check. Still open: a row with `data-tm-wrap="none"` too
+  narrow for its buttons squeezes them the same way.
+
 - `data-layout="center"` sits on a whole pixel. `margin-inline: auto` split an odd remainder in two (a 2560px window
   minus a 17px scrollbar leaves 2543px), so everything in the column sat at x.5 and mask icons drew soft vertical
   edges, visible at 100% scaling. The start margin is now rounded down and the end takes the rest; browsers without
@@ -86,9 +93,10 @@ All but the three that need DevTools also run in the Vite plugin's `inspect` opt
   `commandfor` button without `type` in a form, which Chrome ignores), layout shift while loading with the elements
   that moved (`shift`), and animations still running when checked (`settle`). Finite animations now get up to 2 s to
   end before the first check.
-- **The page's own CSS.** `css`: a declaration the browser dropped, in a stylesheet or a `style` attribute, with
-  the fix it could confirm (`align-item` → `align-items`, `display: flexbox` → `flex`, `margin: 10` → `10px`, a
-  missing `;`) and file and line. `var`: `var(--name)` without a fallback where the name is defined nowhere, with
+- **The page's own CSS.** `css` (an error: the declaration does nothing): a declaration the browser dropped, in a
+  stylesheet or a `style` attribute, with the fix it could confirm (`align-item` → `align-items`,
+  `display: flexbox` → `flex`, `margin: 10` → `10px`, a missing `;`) and file and line. A property Chrome does not
+  know and that is near no known one is a warning: it may be another browser's. `var`: `var(--name)` without a fallback where the name is defined nowhere, with
   the nearest defined names. Stylesheets from other origins and from `node_modules` are not checked; vendor
   prefixes, `@supports` blocks and fallback pairs are not reported.
 - **Geometry.** `overlap`: text painted over other text. `spill`: content poking out of a box with a visible edge.
@@ -99,9 +107,9 @@ All but the three that need DevTools also run in the Vite plugin's `inspect` opt
 - `__tsi.prepare()` (new) runs what the checks wait for: stylesheet and SVG sources, animations ending. `check()`
   stays synchronous; without `prepare()` the checks that depend on it are skipped. A finding can be about selector
   text or about no element (`selector` is then empty); `request` and `image` findings carry `resource`, the URL.
-- Found on temper's own kitchen sink: three links to ids that do not exist (`app.html`), and buttons in a narrow
-  table column that break letter by letter at 390px (`index.html`, `overflow-wrap: anywhere` on buttons). Both are
-  open.
+- Found on temper's own kitchen sink: buttons in a narrow table that broke letter by letter (fixed, see Core), three
+  links to ids that do not exist (`app.html`) and a rule with an undefined `--c` that no page uses (`demo.css`); the
+  last two are open.
 - Planned next: a layout snapshot and diff ([docs/inspect-snapshot-diff.md](docs/inspect-snapshot-diff.md)).
 
 ### Agent eval in the repository
