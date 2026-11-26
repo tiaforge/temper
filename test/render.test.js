@@ -150,22 +150,28 @@ test('a button in a narrow table keeps its label on one line; in a narrow box a 
 test('buttons in a row that may not wrap break between words only, never into letters', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   await withPage(390, async page => {
     const r = await page.evaluate(`(() => {
+      const buttons = id => '<button id="' + id + '">Speichern unter</button><button id="' + id + '-a">Abbrechen</button><button id="' + id + '-b">Verwerfen</button>';
       const host = document.createElement('div');
-      host.innerHTML = \`
-        <div id="tight" style="width: 300px" data-tm-layout="row" data-tm-wrap="none"><button id="two-words">Speichern unter</button><button id="word-a">Abbrechen</button><button id="word-b">Verwerfen</button></div>
-        <div id="roomy" style="width: 420px" data-tm-layout="row" data-tm-wrap="none"><button id="roomy-a">Speichern unter</button><button>Abbrechen</button><button>Verwerfen</button></div>
-        <div style="width: 300px" data-tm-layout="row"><button id="wrapping">Speichern unter</button><button>Abbrechen</button><button>Verwerfen</button></div>\`;
+      host.innerHTML = '<div id="tight" data-tm-layout="row" data-tm-wrap="none">' + buttons('t') + '</div>'
+        + '<div id="roomy" data-tm-layout="row" data-tm-wrap="none">' + buttons('r') + '</div>'
+        + '<div id="wrapping" data-tm-layout="row">' + buttons('w') + '</div>';
       document.body.append(host);
-      const lines = id => { const range = document.createRange(); range.selectNodeContents(document.getElementById(id)); return new Set([...range.getClientRects()].map(q => Math.round(q.top))).size; };
-      return { twoWords: lines('two-words'), a: lines('word-a'), b: lines('word-b'), roomy: lines('roomy-a'), wrapping: lines('wrapping'),
-        wrap: getComputedStyle(document.getElementById('wrapping')).overflowWrap };
+      const el = id => document.getElementById(id);
+      // The widths come from the buttons, not from a number of px: how wide a label is depends on the machine's fonts.
+      el('roomy').style.inlineSize = 'max-content';
+      const natural = el('roomy').getBoundingClientRect().width;
+      el('roomy').style.inlineSize = natural + 20 + 'px';
+      el('tight').style.inlineSize = el('wrapping').style.inlineSize = natural - 20 + 'px';
+      const lines = id => { const range = document.createRange(); range.selectNodeContents(el(id)); return new Set([...range.getClientRects()].map(q => Math.round(q.top))).size; };
+      return { twoWords: lines('t'), a: lines('t-a'), b: lines('t-b'), roomy: [lines('r'), lines('r-a'), lines('r-b')],
+        wrapping: [lines('w'), lines('w-a'), lines('w-b')], wrap: getComputedStyle(el('w')).overflowWrap, natural };
     })()`);
-    // with overflow-wrap: anywhere the row shrank "Abbrechen" below its width and broke it in two
+    // 20px short of its buttons: with overflow-wrap: anywhere the row shrank every button, and broke "Abbrechen" in two
     assert.deepEqual([r.a, r.b], [1, 1], 'a single word stays whole');
-    assert.equal(r.twoWords, 2, 'a label of two words gives way first, at its space');
-    assert.equal(r.roomy, 1, 'with room, nothing wraps');
-    // a row that wraps puts buttons on the next line instead, and they keep overflow-wrap: anywhere for a narrow box
-    assert.equal(r.wrapping, 1);
+    assert.equal(r.twoWords, 2, 'a label of two words gives way, at its space');
+    assert.deepEqual(r.roomy, [1, 1, 1], 'with room, nothing wraps');
+    // a row that wraps puts a button on the next line instead, and its buttons keep overflow-wrap: anywhere for a narrow box
+    assert.deepEqual(r.wrapping, [1, 1, 1]);
     assert.equal(r.wrap, 'anywhere');
   });
 });
