@@ -107,6 +107,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   measured); elsewhere (Firefox) the line box stays centred, as before. The avatar no longer clips with
   `overflow: hidden` (an inline-block with it sits on its bottom edge): its photo is rounded itself.
 
+### Sheet
+
+- `data-tm-sheet="top"` (T6): a dialog along the top edge, as wide as a dialog and as tall as its content, sliding
+  down; full width on phones, clear of the notch. For a command palette, which could not be placed near the top
+  without an outer margin (TM206).
+
 ### Menu
 
 - Documented (T7): a `[popover][data-tm-menu]` opened from a script with `showPopover({ source: button })`, without

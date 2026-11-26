@@ -370,6 +370,7 @@ On: dialog. The dialog is a sheet that slides in from an edge of the screen inst
 - `end`: Full-height panel at the inline end (right; left in RTL): details, an inspector. The footer sits at the bottom.
 - `start`: Full-height panel at the inline start: filters, navigation. The footer sits at the bottom.
 - `bottom`: Along the bottom edge, as tall as its content: actions, a short form. Full width on phones.
+- `top`: Along the top edge, as tall as its content, sliding down: a command palette or a search. Full width on phones.
 - `narrow`: A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem.
 
 ### `data-tm-handle`

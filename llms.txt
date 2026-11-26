@@ -128,7 +128,7 @@ export default { plugins: [temper()] };
 | `data-tm-num` (table.css) | (boolean) | Number cell: right-aligned, tabular figures (on th and every td of the column). |
 | `data-tm-prose` (prose.css) | (boolean) | Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. |
 | `data-tm-field` (forms.css) | (boolean) | One field around an input and its icon, text (<span>€</span>) or end button. |
-| `data-tm-sheet` (sheet.css) | end, start, bottom, narrow | Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. |
+| `data-tm-sheet` (sheet.css) | end, start, bottom, top, narrow | Dialog as a sheet sliding in from an edge: side panel (end, start) bottom or top sheet. |
 | `data-tm-handle` (drag.css) | (none), quiet | Drag handle button (grip, grab cursor); "quiet" shows on hover only. |
 | `data-tm-lifted` (drag.css) | (boolean) | The row or card being moved: raised surface and shadow. |
 | `data-tm-drop` (drag.css) | before, after, inside | Drop place while dragging: a line before or after the element, or an outline inside it. |

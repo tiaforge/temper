@@ -692,6 +692,10 @@
           "description": "Along the bottom edge, as tall as its content: actions, a short form. Full width on phones."
         },
         {
+          "name": "top",
+          "description": "Along the top edge, as tall as its content, sliding down: a command palette or a search. Full width on phones."
+        },
+        {
           "name": "narrow",
           "description": "A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem."
         }

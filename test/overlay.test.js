@@ -530,7 +530,7 @@ test('restyle cost: the scroll lock adds next to nothing to opening a modal dial
   });
 });
 
-test('checker: data-tm-sheet takes end, start, bottom or narrow, on a dialog, and needs sheet.css', () => {
+test('checker: data-tm-sheet takes end, start, bottom, top or narrow, on a dialog, and needs sheet.css', () => {
   const codes = (html, ctx = { modules: new Set(['core', 'sheet']) }) => checkMarkup(html, 'x.html', ctx).map(d => d.code);
   assert.deepEqual(codes('<dialog data-tm-sheet="end" aria-label="Details"></dialog>'), []);
   assert.deepEqual(codes('<dialog data-tm-sheet="narrow" aria-label="Share"></dialog>'), []);
