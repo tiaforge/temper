@@ -1,0 +1,27 @@
+/* Every kind of declaration the stylesheet checks report, one per rule (styles.test.js checks the lines). */
+@import url("styles-broken-imported.css");
+
+:root { --tm-primary: #36c; --tm-accent: #c36; --tm-space-md: 1rem; --a: var(--tm-nope); }
+.card { align-item: center; }
+.box { display: flexbox; }
+.m { margin: 10; }
+.fade { transition: opacity 200; }
+.smooth { font-smoothing: antialiased; }
+.bang { color: red !importnat; }
+.semi { color: red
+  background: blue; }
+.quoted { width: "100px"; }
+.comma { padding: 4px, 8px; }
+.just { justify-content: centre; }
+.camel { alignItems: center; }
+.ink { text-color: red; }
+.nav {
+  color: blue;
+  &:hover { colr: red; }
+}
+.token { color: var(--tm-color-primary); }
+.chain { color: var(--undefined-a, var(--undefined-b)); }
+.ghost { color: var(--ghost-undefined); }
+.side { --side-w: 200px; }
+.main { width: var(--side-w); }
+.icon { background: url(data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'/>); }

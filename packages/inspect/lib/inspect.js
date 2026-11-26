@@ -45,6 +45,17 @@ export async function inspect(urls, { widths = [1280, 390], schemes = ['light', 
     await page.goto(url, { width, height, scheme, settle });
     await page.evaluate(NO_GUTTERS);
     await page.evaluate(`(${install.toString()})(${JSON.stringify({ overlays, overlayWait: 200 })})`);
+    // A file:// page cannot fetch() its own stylesheets, nor read their rules: hand the audit their text (and that of its
+    // <style> elements, keyed by their line in the page) over the protocol, so the stylesheet checks see them.
+    if (url.startsWith('file:')) {
+      const added = [], off = page.on('CSS.styleSheetAdded', ({ header }) => added.push(header));
+      await page.send('DOM.enable'); await page.send('CSS.enable'); off();
+      const texts = {};
+      for (const h of added) if (h.origin === 'regular' && !h.isConstructed && (h.isInline || h.sourceURL.startsWith('file:')))
+        try { texts[h.isInline ? `inline:${h.startLine + 1}` : h.sourceURL] ??= (await page.send('CSS.getStyleSheetText', { styleSheetId: h.styleSheetId })).text; } catch {}
+      await page.send('CSS.disable'); await page.send('DOM.disable');
+      await page.evaluate(`window.__tsiSources = ${JSON.stringify(texts)}`);
+    }
     await page.evaluate('window.__tsi.prepare()');
     const take = async state => {
       if (!sheet) return;
