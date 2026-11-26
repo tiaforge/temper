@@ -461,6 +461,10 @@ icon buttons (`data-tm-icon`) do not. A submit button (`type="submit"`, the defa
 
 A `data-tm-menu` popover can hold any content, not only items: a month picker, a small form.
 
+Options (`role="option"`) in any `role="listbox"`, in a menu or not (a command palette's list in a dialog), are rows
+with a hover fill; the marked one, `aria-selected="true"`, has the soft accent. sinter's `data-sn-options` sets that
+`aria-selected` on the option it marks, so a palette or combobox list needs no attribute of temper's.
+
 Opened from a script, `menu.showPopover({ source: button })` places it under that button too: the source is its
 anchor, so neither needs an id (a component used twice on a page).
 

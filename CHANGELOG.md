@@ -123,6 +123,12 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Menu
 
+- Options in any `role="listbox"`, also outside a `data-tm-menu` (requested by sinter-alloy, T6: a command palette's
+  list in a dialog), get the menu's option rows, hover fill and the soft accent on the marked one
+  (`aria-selected="true"`). One selector list for both, so a listbox inside a menu gets each rule once. sinter's
+  `data-sn-options` sets `aria-selected` on the option it marks, so the list needs nothing else; temper still styles
+  no `data-sn-*` attribute.
+
 - Documented (T7): a `[popover][data-tm-menu]` opened from a script with `showPopover({ source: button })`, without
   `popovertarget` and without ids, opens under that button: the source is the popover's implicit anchor, which
   temper's anchor positioning already uses (checked in Chromium; a test covers it where the browser has both).

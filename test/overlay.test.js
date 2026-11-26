@@ -495,6 +495,21 @@ test('a data-tm-menu opened with showPopover({ source }) opens under that button
   });
 });
 
+test('a listbox outside a menu (a palette, a combobox) has option rows and the marked option\'s fill, as in a menu', { skip }, async () => {
+  await withPage({}, async page => {
+    const r = await page.evaluate(`(() => {
+      $('palette').showModal();
+      const look = id => { const s = cs(id); return { bg: s.backgroundColor, display: s.display, pad: s.paddingInlineStart, h: s.minBlockSize, radius: s.borderRadius, cursor: s.cursor }; };
+      return { plain: look('opt-plain'), marked: look('opt-marked'), menu: look('menu-marked') };
+    })()`);
+    assert.equal(r.plain.bg, 'rgba(0, 0, 0, 0)');
+    assert.notEqual(r.marked.bg, 'rgba(0, 0, 0, 0)', 'the marked option is filled');
+    assert.equal(r.marked.bg, r.menu.bg, 'the same fill as in a menu');
+    // the same row as in a menu: one rule for both, so a listbox in a menu gets nothing twice
+    for (const k of ['display', 'pad', 'h', 'radius', 'cursor']) assert.equal(r.marked[k], r.menu[k], k);
+  });
+});
+
 // A modal dialog makes the rest of the page inert, so Chrome restyles the whole document when one opens or closes, with
 // or without temper. The scroll lock (a :has() on the root) must add next to nothing to that; a menu restyles itself.
 test('restyle cost: the scroll lock adds next to nothing to opening a modal dialog; a menu restyles itself only', { skip }, async () => {

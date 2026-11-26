@@ -642,7 +642,7 @@
     },
     {
       "name": "data-tm-combo",
-      "description": "temper (menu.css). On: a wrapper around an input and its suggestion list. Combobox: the data-tm-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
+      "description": "temper (menu.css). On: a wrapper around an input and its suggestion list. Combobox: the data-tm-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script. Options look the same in any role=\"listbox\", also outside a data-tm-menu (a command palette's list in a dialog): rows with a hover fill, the marked one (aria-selected=\"true\") in the soft accent. sinter's data-sn-options sets that aria-selected on the option it marks, so such a list needs nothing else.",
       "valueSet": "v"
     },
     {

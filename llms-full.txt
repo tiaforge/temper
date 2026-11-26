@@ -335,7 +335,7 @@ On: [popover] (dropdown) or any container (static menu). Menu of buttons, links 
 
 ### `data-tm-combo` (boolean, no value)
 
-On: a wrapper around an input and its suggestion list. Combobox: the data-tm-menu (role="listbox", options role="option", the highlighted one aria-selected="true") inside it opens under the field. Show and hide the list from script. Needs `menu.css`.
+On: a wrapper around an input and its suggestion list. Combobox: the data-tm-menu (role="listbox", options role="option", the highlighted one aria-selected="true") inside it opens under the field. Show and hide the list from script. Options look the same in any role="listbox", also outside a data-tm-menu (a command palette's list in a dialog): rows with a hover fill, the marked one (aria-selected="true") in the soft accent. sinter's data-sn-options sets that aria-selected on the option it marks, so such a list needs nothing else. Needs `menu.css`.
 
 ### `data-tm-toasts` (boolean, no value)
 
@@ -923,6 +923,10 @@ icon buttons (`data-tm-icon`) do not. A submit button (`type="submit"`, the defa
 `popovertarget` and `commandfor`; give opener and closer buttons `type="button"`.
 
 A `data-tm-menu` popover can hold any content, not only items: a month picker, a small form.
+
+Options (`role="option"`) in any `role="listbox"`, in a menu or not (a command palette's list in a dialog), are rows
+with a hover fill; the marked one, `aria-selected="true"`, has the soft accent. sinter's `data-sn-options` sets that
+`aria-selected` on the option it marks, so a palette or combobox list needs no attribute of temper's.
 
 Opened from a script, `menu.showPopover({ source: button })` places it under that button too: the source is its
 anchor, so neither needs an id (a component used twice on a page).
