@@ -60,8 +60,13 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   label no least width, and a table column takes its least width from its content: a table too wide for its box
   (a phone) squeezed "Forward" to 43px and one letter per line, and broke a sortable header such as "Customer" in two.
   Now the table scrolls (`data-tm-scroll`). Outside tables nothing changes: a button fits its box, a word too long
-  for it breaks. Found by temper-inspect's new `squeezed` check. Still open: a row with `data-tm-wrap="none"` too
-  narrow for its buttons squeezes them the same way.
+  for it breaks. Found by temper-inspect's new `squeezed` check.
+
+- Buttons directly in a row with `data-tm-wrap="none"` break between words only. Such a row shrinks its items, and
+  with `overflow-wrap: anywhere` it shrank a button below its word: three buttons in 300px each broke in two
+  ("Abbreche-n"), in 200px into columns of letters. Now a label of several words gives way at its spaces and a
+  single word stays whole; a row too narrow even for that overflows, where it used to break words (a row that may
+  wrap moves buttons to the next line, as before).
 
 - `data-layout="center"` sits on a whole pixel. `margin-inline: auto` split an odd remainder in two (a 2560px window
   minus a 17px scrollbar leaves 2543px), so everything in the column sat at x.5 and mask icons drew soft vertical
@@ -98,8 +103,8 @@ All but the three that need DevTools also run in the Vite plugin's `inspect` opt
 - **The page's own CSS.** `css` (an error: the declaration does nothing): a declaration the browser dropped, in a
   stylesheet or a `style` attribute, with the fix it could confirm (`align-item` → `align-items`,
   `display: flexbox` → `flex`, `margin: 10` → `10px`, a missing `;`) and file and line. A property Chrome does not
-  know and that is near no known one is a warning: it may be another browser's. `var`: `var(--name)` without a fallback where the name is defined nowhere, with
-  the nearest defined names. Stylesheets from other origins and from `node_modules` are not checked; vendor
+  know and that is near no known one is a warning: it may be another browser's. `var` (an error when an element on the page is styled by it): `var(--name)` without a fallback where the name
+  is defined nowhere, with the nearest defined names. Stylesheets from other origins and from `node_modules` are not checked; vendor
   prefixes, `@supports` blocks and fallback pairs are not reported.
 - **Geometry.** `overlap`: text painted over other text. `spill`: content poking out of a box with a visible edge.
   `squeezed`: text the layout shrank to a sliver, with what squeezes it. `distorted`: a stretched image.
@@ -115,9 +120,9 @@ All but the three that need DevTools also run in the Vite plugin's `inspect` opt
 - The audit's own requests (it fetches stylesheet and SVG sources) are not reported as the page's.
 - A group of checks that fails on an unusual page is skipped and reported (`internal`, a warning); the other
   groups still report.
-- Found on temper's own kitchen sink: buttons in a narrow table that broke letter by letter (fixed, see Core), three
-  links to ids that do not exist (`app.html`) and a rule with an undefined `--c` that no page uses (`demo.css`); the
-  last two are open.
+- Found on temper's own kitchen sink, and fixed: buttons in a narrow table that broke letter by letter (see Core),
+  three links to ids that did not exist (`app.html`; each contact card now has the id its link names) and a rule
+  with an undefined `--c` that no page used (`demo.css`, removed).
 - Planned next: a layout snapshot and diff ([docs/inspect-snapshot-diff.md](docs/inspect-snapshot-diff.md)).
 
 ### Agent eval in the repository

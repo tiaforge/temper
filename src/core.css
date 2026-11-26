@@ -361,6 +361,10 @@
   /* a table column takes its least width from its content, and overflow-wrap: anywhere leaves a label none: a narrow
      table broke it into one letter per line. In a cell the label stays on one line; the table scrolls (data-tm-scroll) */
   :where(td, th) :where(button, a[role="button"]) { white-space: nowrap; }
+  /* the same in a row that may not wrap: its items shrink, and a label with no least width shrank to a column of
+     letters. There it breaks between words only, so a button is never narrower than its longest word; a row too
+     narrow even for that overflows */
+  :where([data-tm-wrap="none"]) > :where(button, a[role="button"]) { overflow-wrap: break-word; }
   :where([data-tm-variant="secondary"]) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); }
   :where([data-tm-variant="outline"]) {
     --_bg: #0000; --_fg: var(--tm-tone-ink);

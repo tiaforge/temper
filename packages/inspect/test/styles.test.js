@@ -100,12 +100,12 @@ test('dropped declarations and undefined custom properties: each kind reported o
       'error css .page { gap: 1rm } | is not valid CSS, so the browser ignores it: `rm` is not a unit, did you mean `1rem`? (styles-broken.html:5)',
       'error css .dev { colour: red } | is not valid CSS, so the browser ignores it: unknown property, did you mean `color`? (/app/src/Card.css)',
       'error css p "Inline" | has inline style the browser ignores, it is not valid CSS: `align-item: center` (unknown property, did you mean `align-items`?); `margin: 10` (a number needs a unit here: `margin: 10px` would be valid)',
-      'warning var :root { --a: var(--tm-nope) } | --tm-nope is not defined anywhere, so --a has no value either (styles-broken.css:4)',
-      'warning var .token { color: var(--tm-color-primary) } | --tm-color-primary is not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration); did you mean --tm-primary? (styles-broken.css:22)',
-      'warning var .chain { color: var(--undefined-a, var(--undefined-b)) } | --undefined-a and --undefined-b are not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration) (styles-broken.css:23)',
+      'error var :root { --a: var(--tm-nope) } | --tm-nope is not defined anywhere, so --a has no value either (styles-broken.css:4)',
+      'error var .token { color: var(--tm-color-primary) } | --tm-color-primary is not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration); did you mean --tm-primary? (styles-broken.css:22)',
+      'error var .chain { color: var(--undefined-a, var(--undefined-b)) } | --undefined-a and --undefined-b are not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration) (styles-broken.css:23)',
       'info var .ghost { color: var(--ghost-undefined) } | --ghost-undefined is not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration) (no element on this page matches the rule) (styles-broken.css:24)',
       'info var .main { width: var(--side-w) } | --side-w has no value on the element this rule matches (it is set on other elements), so width falls back to its inherited or initial value (not to an earlier width declaration) (styles-broken.css:26)',
-      'warning var p "Inline token" | has inline style `color: var(--tm-acent)`: --tm-acent is not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration); did you mean --tm-accent?',
+      'error var p "Inline token" | has inline style `color: var(--tm-acent)`: --tm-acent is not defined anywhere, so color falls back to its inherited or initial value (not to an earlier color declaration); did you mean --tm-accent?',
     ];
     const sorted = list => [...list].sort();
     assert.deepEqual(sorted(lines(urls[0])), sorted(expected));

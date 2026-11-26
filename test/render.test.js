@@ -147,6 +147,29 @@ test('a button in a narrow table keeps its label on one line; in a narrow box a 
   });
 });
 
+test('buttons in a row that may not wrap break between words only, never into letters', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
+  await withPage(390, async page => {
+    const r = await page.evaluate(`(() => {
+      const host = document.createElement('div');
+      host.innerHTML = \`
+        <div id="tight" style="width: 300px" data-tm-layout="row" data-tm-wrap="none"><button id="two-words">Speichern unter</button><button id="word-a">Abbrechen</button><button id="word-b">Verwerfen</button></div>
+        <div id="roomy" style="width: 420px" data-tm-layout="row" data-tm-wrap="none"><button id="roomy-a">Speichern unter</button><button>Abbrechen</button><button>Verwerfen</button></div>
+        <div style="width: 300px" data-tm-layout="row"><button id="wrapping">Speichern unter</button><button>Abbrechen</button><button>Verwerfen</button></div>\`;
+      document.body.append(host);
+      const lines = id => { const range = document.createRange(); range.selectNodeContents(document.getElementById(id)); return new Set([...range.getClientRects()].map(q => Math.round(q.top))).size; };
+      return { twoWords: lines('two-words'), a: lines('word-a'), b: lines('word-b'), roomy: lines('roomy-a'), wrapping: lines('wrapping'),
+        wrap: getComputedStyle(document.getElementById('wrapping')).overflowWrap };
+    })()`);
+    // with overflow-wrap: anywhere the row shrank "Abbrechen" below its width and broke it in two
+    assert.deepEqual([r.a, r.b], [1, 1], 'a single word stays whole');
+    assert.equal(r.twoWords, 2, 'a label of two words gives way first, at its space');
+    assert.equal(r.roomy, 1, 'with room, nothing wraps');
+    // a row that wraps puts buttons on the next line instead, and they keep overflow-wrap: anywhere for a narrow box
+    assert.equal(r.wrapping, 1);
+    assert.equal(r.wrap, 'anywhere');
+  });
+});
+
 test('a menu with more items than fit scrolls, and no item shrinks', { skip: !browser && 'no Chrome/Chromium found' }, async () => {
   await withPage(1280, async page => {
     const r = await page.evaluate(`(() => {

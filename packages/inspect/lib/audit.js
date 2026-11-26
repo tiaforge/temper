@@ -629,7 +629,8 @@ export function install(opts) {
           // A rule no element matches breaks nothing on this page, and a library's rule may leave a name for another of
           // its sheets to define (temper's core draws icons from --_icon, which icons.css sets): info only, and without
           // the suggestion, which costs the most (a library with a big palette has hundreds of these).
-          if (t?.els.length) add('warning', 'var', ruleText(ctx.sel, d.prop, d.value), `${undefinedText(d.prop, chain, defined)} ${where(sheet, d.line)}`);
+          // an error: the name is defined nowhere and an element on the page is styled by this declaration, which does nothing
+          if (t?.els.length) add('error', 'var', ruleText(ctx.sel, d.prop, d.value), `${undefinedText(d.prop, chain, defined)} ${where(sheet, d.line)}`);
           else add('info', 'var', ruleText(ctx.sel, d.prop, d.value), `${undefinedText(d.prop, chain, null)} (no element on this page matches the rule) ${where(sheet, d.line)}`);
           from(sheet, d);
         }
@@ -646,7 +647,7 @@ export function install(opts) {
       const text = el.getAttribute('style');
       if (!/\bvar\(/i.test(text) || !visible(el)) continue;
       for (const d of declsOf(text)) for (const chain of failing(d.value, name => !defined.has(name) && !computed(el, null, name)))
-        add('warning', 'var', el, `has inline style ${code(`${d.prop}: ${clip(d.value, 60)}`)}: ${undefinedText(d.prop, chain, defined)}`);
+        add('error', 'var', el, `has inline style ${code(`${d.prop}: ${clip(d.value, 60)}`)}: ${undefinedText(d.prop, chain, defined)}`);
     }
   }
 

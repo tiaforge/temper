@@ -74,5 +74,4 @@ body { min-block-size: 100dvh; }
   .mail > * + * { border-inline-start: 0; border-block-start: 1px solid var(--tm-border); }
 }
 .segmented [aria-pressed="true"] { background: var(--tm-surface-raised); color: var(--tm-text); box-shadow: 0 1px 2px oklch(0 0 0 / 0.12); }
-.swatch-dot { inline-size: 0.625rem; block-size: 0.625rem; border-radius: 50%; background: var(--c); }
 .topbar { row-gap: var(--tm-space-xs); }
