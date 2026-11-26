@@ -72,6 +72,10 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 
 ### Core
 
+- A button with `aria-current="date"` (today in a calendar, T5) has an accent ring instead of the current page's
+  soft fill, so today and a picked day (`aria-pressed="true"`, `aria-selected`) look different. Range fills (start,
+  middle, end of a run) stay the script's: CSS cannot see a run across table rows.
+
 - A `ul` or `ol` with `data-tm-layout` has no bullets and no start padding (T3): its items are rows or tiles. Add
   `role="list"`, since WebKit drops the list role of a list without bullets.
 
