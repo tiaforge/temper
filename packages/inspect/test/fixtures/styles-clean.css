@@ -1,0 +1,58 @@
+/* Look-alikes of mistakes that are not mistakes: the stylesheet checks must say nothing about any of this.
+   A comment with braces and a semicolon: } .x { colr: red; { */
+@import url(styles-clean-imported.css) layer(base);
+@charset "utf-8";
+@layer reset, base;
+@namespace svg url(http://www.w3.org/2000/svg);
+
+:root {
+  --tm-accent: #36c; --space: 1rem; --m: 4px;
+  --empty: ; --off: initial;          /* space toggles */
+  --json: { "a": [1, 2] };            /* any tokens are a valid custom property value */
+  --chain: var(--tm-accent);
+  --with-fallback: var(--nope, 1px);
+}
+.vendor { -webkit-box-orient: vertical; display: -webkit-box; -moz-osx-font-smoothing: grayscale; -webkit-line-clamp: 2; }
+.hacks { *zoom: 1; _height: 1px; width: 100px\9; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000', endColorstr='#fff'); }
+.pair { height: 100vh; height: 100zz; }  /* a fallback pair: the second is for browsers that know it */
+.vars { margin: var(--m) 0; padding: calc(var(--space) * 2); color: var(--undefined-but-fallback, red); gap: var(--x,); }
+.important { color: red !important; margin: 0 ! important; }
+.url { background: url(data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=) no-repeat; mask: url( data:x;y,z ); }
+.url2 { background-image: url("a;b}.png"), url( 'c{d.png' ); }
+.strings::before { content: "} { ; colr: red"; }
+.esc\:colon, .\31 0 { color: red; }
+.grid { grid-template-areas: "a b" "c d"; font: 12px/1.5 system-ui, sans-serif; }
+.toggle { color: var(--empty) red; border-color: var(--off) blue; }
+.js { color: var(--from-js); }
+.registered { color: var(--registered); }
+.p { --label: "x"; }
+.p::before { content: var(--label); }
+.h:hover { --hov: red; color: var(--hov); }
+.h:focus-visible { outline-color: var(--hov); }
+@media (min-width: 5000px) { :root { --wide: 1px; } }
+.w { width: var(--wide); }
+@media (min-width: 1px) { .mq { color: red; } }
+.nest {
+  color: red;
+  @media (width > 1px) { color: blue; }
+  .child & { color: green; }
+  > .kid { margin: 0; }
+  &:has(> img) { padding: 0; }
+}
+@supports (display: grid) { .sup { display: gridd; } }
+@supports not (display: grid) { .sup { foo-bar: 1; } }
+@layer base { .l { color: red; } }
+@container (min-width: 1px) { .c { color: red; } }
+@scope (.s) { .t { color: maroon; } }
+@starting-style { .o { opacity: 0; } }
+@keyframes spin { from { transform: rotate(0); } 50% { opacity: .5; } to { transform: rotate(1turn); } }
+@-webkit-keyframes spin2 { from { opacity: 0; } }
+@font-face { font-family: X; src: url(x.woff2) format("woff2"); font-display: swap; unicode-range: U+0000-00FF; ascent-override: 90%; }
+@property --registered { syntax: '<color>'; inherits: true; initial-value: red; }
+@counter-style thumbs { system: cyclic; symbols: "*"; suffix: " "; }
+@page { size: A4; margin: 1cm; @top-center { content: "x"; } }
+@view-transition { navigation: auto; }
+@position-try --flip { top: anchor(bottom); position-area: top; }
+@font-palette-values --pal { font-family: X; base-palette: 1; }
+@font-feature-values X { @styleset { nice: 2; } }
+.after-all { color: red }
