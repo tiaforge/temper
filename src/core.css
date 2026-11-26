@@ -120,6 +120,8 @@
   :where(img, video, canvas) { block-size: auto; }
   :where(input, button, select, textarea) { font: inherit; color: inherit; letter-spacing: inherit; }
   :where(ul, ol) { padding-inline-start: 1.25em; }
+  /* a list laid out by data-tm-layout is rows or tiles, not bullets (WebKit then drops its list role: add role="list") */
+  :where(ul[data-tm-layout], ol[data-tm-layout]) { list-style: none; padding-inline-start: 0; }
   :where([hidden]:not([hidden="until-found"])) { display: none !important; }
   @media (prefers-reduced-motion: reduce) {
     *, ::before, ::after, ::backdrop { animation-duration: 1ms !important; transition-duration: 1ms !important; } /* not :where(): no pseudo-elements in it; ::backdrop: dialog and drawer backdrops */
@@ -395,7 +397,7 @@
     text-decoration-color: color-mix(in oklab, currentColor 40%, #0000);
   }
   :where([data-tm-variant="link"]):hover { background: #0000; text-decoration-color: currentColor; }
-  :where([aria-pressed="true"], :is(button, a[role="button"])[aria-current]:not([aria-current="false"])) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent); }
+  :where([aria-pressed="true"], :is(button, a[role="button"])[aria-current]:not([aria-current="false"], [aria-current="date"])) { --_bg: var(--tm-tone-soft); --_fg: var(--tm-tone-ink); --tm-tone: var(--tm-accent); }
   :where([data-tm-size="sm"]) { --_size: 0.8; --_font: 0.8125rem; }
   :where([data-tm-size="md"]) { --_size: 1; --_font: var(--tm-control-font); } /* the control font again, inside a sm or lg container */
   :where([data-tm-size="lg"]) { --_size: 1.2; --_font: 1rem; }
@@ -790,14 +792,23 @@
   :where([data-tm-divider]) { display: flex; align-items: center; gap: var(--tm-space-sm); color: var(--tm-text-muted); font-size: var(--tm-text-sm); }
   :where([data-tm-divider])::before, :where([data-tm-divider])::after { content: ""; flex: 1; border-block-start: 1px solid var(--tm-border); }
   :where([aria-current="date"]:not(a, button)) { color: var(--tm-accent); font-weight: 600; }
+  /* today's day button in a calendar: a ring, not the current page's fill, so a picked day (aria-pressed) still shows */
+  :where(:is(button, a[role="button"])[aria-current="date"]) { box-shadow: inset 0 0 0 1px var(--tm-accent); }
 
-  /* avatar: initials or a photo in a circle, colored by tone */
+  /* avatar: initials or a photo in a circle, colored by tone. Centring the line box leaves capitals off centre by the
+     font's (ascent - descent - cap height) / 2: 1px high at 2.5rem in DejaVu Sans. Where text-box is supported, initials
+     are trimmed to the cap height and the alphabetic baseline, so the capitals sit in the middle in any font; that needs
+     a block container (text in a grid is an anonymous item, which a trim cannot reach), centred with align-content.
+     Clipped with overflow: clip, not hidden, which would put an inline-block's baseline at its bottom edge */
   :where([data-tm-avatar]) {
     --_av: calc(var(--tm-avatar-size, 2.5rem) * var(--_size, 1));
     display: inline-grid; place-items: center; flex-shrink: 0;
-    inline-size: var(--_av); block-size: var(--_av); border-radius: 50%; overflow: hidden;
+    inline-size: var(--_av); block-size: var(--_av); border-radius: 50%; overflow: clip;
     background: var(--tm-tone-soft); color: var(--tm-tone-ink);
     font-size: calc(var(--_av) * 0.4); font-weight: 600; line-height: 1; user-select: none;
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    :where([data-tm-avatar]) { display: inline-block; align-content: center; text-align: center; text-box: trim-both cap alphabetic; }
   }
   :where([data-tm-avatar]) > :where(img) { inline-size: 100%; block-size: 100%; object-fit: cover; }
 

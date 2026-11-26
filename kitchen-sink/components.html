@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../src/core.css">
   <link rel="stylesheet" href="../src/feedback.css">
   <link rel="stylesheet" href="../src/table.css">
+  <link rel="stylesheet" href="../src/drag.css">
   <link rel="stylesheet" href="../src/icons.css">
   <script>
     // ?t=light|dark, ?tip (focus the first tooltip button, for screenshots)
@@ -87,6 +88,48 @@
   </section>
 
   <!-- ───────── Form controls ───────── -->
+  <!-- a grid of controls, not a data table -->
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2>Calendar grid <small data-tm-muted>table.css, data-tm-plain</small></h2>
+    <table data-tm-plain role="grid" aria-label="November 2026" data-tm-self="start" style="border-spacing: 2px">
+      <thead><tr><th scope="col" abbr="Monday">Mo</th><th scope="col" abbr="Tuesday">Tu</th><th scope="col" abbr="Wednesday">We</th><th scope="col" abbr="Thursday">Th</th><th scope="col" abbr="Friday">Fr</th></tr></thead>
+      <tbody><tr>
+        <td role="gridcell" aria-selected="false"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-label="November 23">23</button></td>
+        <td role="gridcell" aria-selected="false"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-label="November 24">24</button></td>
+        <td role="gridcell" aria-selected="true"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-pressed="true" aria-label="November 25">25</button></td>
+        <td role="gridcell" aria-selected="false"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-current="date" aria-label="November 26">26</button></td>
+        <td role="gridcell" aria-selected="false"><button type="button" data-tm-variant="ghost" data-tm-icon="" aria-label="November 27">27</button></td>
+      </tr></tbody>
+    </table>
+  </section>
+
+  <!-- ───────── Drag ───────── -->
+  <section data-tm-layout="stack" data-tm-gap="md">
+    <h2>Sortable list <small data-tm-muted>drag.css</small></h2>
+    <ul role="list" aria-label="Folders" data-tm-list id="sortable">
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs">
+        <button data-tm-handle aria-label="Move Inbox" aria-pressed="false" data-tm-size="sm"></button><span data-tm-grow>Inbox</span>
+      </li>
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs">
+        <button data-tm-handle aria-label="Move Projects" aria-pressed="true" data-tm-size="sm"></button><span data-tm-grow>Projects <small data-tm-muted>picked up</small></span>
+      </li>
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs">
+        <button data-tm-handle="quiet" aria-label="Move Archive" aria-pressed="false" data-tm-size="sm"></button><span data-tm-grow>Archive <small data-tm-muted>quiet handle: hover the row</small></span>
+      </li>
+    </ul>
+    <ul role="list" aria-label="Cards" data-tm-layout="stack" data-tm-gap="sm">
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs" data-tm-drop="before" style="border: 1px solid var(--tm-border); border-radius: var(--tm-radius)">
+        <button data-tm-handle aria-label="Move Write the spec" data-tm-size="sm"></button><span>Write the spec <small data-tm-muted>drop line before it</small></span>
+      </li>
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs" data-tm-lifted style="border: 1px solid var(--tm-border); border-radius: var(--tm-radius)">
+        <button data-tm-handle aria-label="Move Review" aria-pressed="true" data-tm-size="sm"></button><span>Review <small data-tm-muted>lifted</small></span>
+      </li>
+      <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none" data-tm-pad="xs" data-tm-drop="inside" style="border: 1px solid var(--tm-border); border-radius: var(--tm-radius)">
+        <span data-tm-icon="folder"></span><span>Archive <small data-tm-muted>drop inside</small></span>
+      </li>
+    </ul>
+  </section>
+
   <section data-tm-layout="stack" data-tm-gap="md">
     <h2>Form controls</h2>
     <form data-tm-layout="grid" data-tm-gap="md" style="--tm-min: 14rem">

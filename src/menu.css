@@ -2,7 +2,9 @@
    <button popovertarget="m">Options</button>
    <div popover id="m" data-tm-menu> <button>Rename</button> <hr> <button data-tm-tone="danger">Delete</button> </div>
    A [popover][data-tm-menu] opens under the button that opened it (CSS anchor positioning, implicit anchor from
-   popovertarget). Where anchor positioning is not supported it stays centered, as popovers do by default. */
+   popovertarget, commandfor, or showPopover({ source: button }) in a script). Where anchor positioning is not
+   supported it stays centered, as popovers do by default.
+   Options (role="option") in a data-tm-menu or any role="listbox": rows; aria-selected="true" marks one. */
 
 @layer tm.components {
   :where([data-tm-menu]) {
@@ -40,12 +42,14 @@
   /* combobox: a non-popover data-tm-menu (role=listbox) inside a data-tm-combo wrapper opens under the field */
   :where([data-tm-combo]) { position: relative; }
   :where([data-tm-combo]) > :where([data-tm-menu]) { position: absolute; inset-block-start: calc(100% + var(--tm-space-xs)); inset-inline: 0; z-index: 20; }
-  :where([data-tm-menu]) :where([role="option"]) {
+  /* options: in a menu, and in any listbox (a palette's or combobox's list outside a menu); one selector list, so a
+     listbox inside a data-tm-menu gets each rule once. The marked option is aria-selected="true" */
+  :where([data-tm-menu], [role="listbox"]) :where([role="option"]) {
     display: flex; align-items: center; gap: var(--tm-space-sm); min-block-size: calc(var(--tm-control-h) * 0.85);
     padding-inline: var(--tm-space-sm); border-radius: var(--tm-radius-sm); cursor: pointer;
   }
-  :where([data-tm-menu]) :where([role="option"]):hover { background: var(--tm-fill); }
-  :where([data-tm-menu]) :where([role="option"][aria-selected="true"]) { background: var(--tm-tone-soft); --tm-tone: var(--tm-accent); }
+  :where([data-tm-menu], [role="listbox"]) :where([role="option"]):hover { background: var(--tm-fill); }
+  :where([data-tm-menu], [role="listbox"]) :where([role="option"][aria-selected="true"]) { background: var(--tm-tone-soft); --tm-tone: var(--tm-accent); }
   :where([data-tm-menu]) :where(svg) { inline-size: 1rem; block-size: 1rem; flex-shrink: 0; }
 
   /* Buttons that open a popover get a dropdown caret (not icon buttons, not close buttons). */

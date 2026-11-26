@@ -2,7 +2,8 @@
    <th aria-sort="ascending"><button>Name</button></th>   sortable column (your code sorts and sets aria-sort)
    <td data-tm-num>1,204.50</td>                              numbers: right-aligned, tabular figures
    a checked checkbox in the first cell (or aria-selected="true" on the row) highlights the row.
-   The header sticks to the top while the page (or a data-tm-scroll="y|both" wrapper) scrolls. */
+   The header sticks to the top while the page (or a data-tm-scroll="y|both" wrapper) scrolls.
+   <table data-tm-plain role="grid">                      not a data table (a calendar): none of this look */
 
 @layer tm.components {
   :where(caption) { padding-block-end: var(--tm-space-sm); caption-side: top; text-align: start; font-weight: 600; }
@@ -41,10 +42,17 @@
   /* selection: a checkbox column, and the selected rows */
   :where(th, td):has(> input[type="checkbox"]:only-child) { inline-size: 1%; padding-inline-end: 0; }
   :where(th, td) > :where(input[type="checkbox"]:only-child) { vertical-align: middle; }
-  :where(tbody tr):is([aria-selected="true"], :has(> :first-child > input[type="checkbox"]:only-child:checked)) {
+  :where(table:not([data-tm-plain]) tbody tr):is([aria-selected="true"], :has(> :first-child > input[type="checkbox"]:only-child:checked)) {
     background: color-mix(in oklab, var(--tm-accent) 9%, #0000);
   }
-  :where(tbody tr):is([aria-selected="true"], :has(> :first-child > input[type="checkbox"]:only-child:checked)):hover {
+  :where(table:not([data-tm-plain]) tbody tr):is([aria-selected="true"], :has(> :first-child > input[type="checkbox"]:only-child:checked)):hover {
     background: color-mix(in oklab, var(--tm-accent) 14%, #0000);
   }
+
+  /* a plain table (a month calendar, a grid of controls) is not a data table: core's and this module's look are undone
+     (row lines, cell padding, row hover, full width, sticky header; the selected rows skip it), as prose.css does for layout tables.
+     Last in this module, so it wins over every rule above in this layer */
+  :where(table[data-tm-plain]),
+  :where(table[data-tm-plain]) :where(tr, td, th),
+  :where(table[data-tm-plain]) :where(tr):hover { all: revert-layer; } /* core's row hover is (0,1,0); the selected rows above exclude plain tables */
 }

@@ -1,0 +1,60 @@
+/* temper drag: dragging rows and cards, and resizing panes. Requires core.css. The script is yours (or a component
+   library's): it moves things and sets the state, temper only draws it.
+   <li><button data-tm-handle aria-label="Move Inbox" aria-pressed="false"></button> Inbox</li>
+   data-tm-handle: the button a row is picked up by (a grip when empty; "quiet": shown on hover and focus only).
+   data-tm-lifted: the row or card being moved. data-tm-drop="before|after|inside": where it will land. */
+
+@layer tm.components {
+  /* touch-action on the handle only: a finger on it drags, anywhere else in the list it still scrolls */
+  :where([data-tm-handle]) { cursor: grab; touch-action: none; }
+  :where([data-tm-handle]:is(:active, [aria-pressed="true"])) { cursor: grabbing; }
+  /* without a variant it is quiet: no fill, muted (a pressed handle keeps core's pressed look) */
+  :where(button[data-tm-handle]:not([data-tm-variant], [aria-pressed="true"])) { --_bg: #0000; --_fg: var(--tm-text-muted); }
+  /* empty: a square button with a grip (data-tm-icon draws another icon instead) */
+  :where(button[data-tm-handle]:empty) { inline-size: calc(var(--tm-control-h) * var(--_size, 1)); padding: 0; flex-shrink: 0; }
+  :where(button[data-tm-handle]:empty:not([data-tm-icon]))::before {
+    content: ""; inline-size: 1.125em; block-size: 1.125em; background: currentColor; forced-color-adjust: preserve-parent-color;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M9 5v0m0 7v0m0 7v0m6-14v0m0 7v0m0 7v0'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  /* quiet: only on the row (the handle's parent) under the pointer or with focus in it, where a pointer can hover;
+     touch screens always show it, and a picked-up handle stays */
+  @media (hover: hover) {
+    :where(:not(:hover, :focus-within)) > :where([data-tm-handle="quiet"]:not([aria-pressed="true"])) { opacity: 0; }
+  }
+
+  /* lifted: the row or card being moved, raised above its neighbours (in dark mode the raised surface is lighter) */
+  :where([data-tm-lifted]) { position: relative; z-index: 1; background: var(--tm-surface-raised); color: var(--tm-text); box-shadow: var(--tm-shadow-lg); }
+  /* drop place: a 2px accent line centred on the element's start or end edge (its inline edges in a row), or an
+     outline inside it. Borders and outlines, which forced colors keep; no outer margin, nothing moves */
+  :where([data-tm-drop="before"], [data-tm-drop="after"]) { position: relative; }
+  :where([data-tm-drop="before"], [data-tm-drop="after"])::after {
+    content: ""; position: absolute; inset-inline: 0; z-index: 1; pointer-events: none;
+    border-block-start: 2px solid var(--tm-accent); border-radius: 1px;
+  }
+  :where([data-tm-drop="before"])::after { inset-block-start: -1px; }
+  :where([data-tm-drop="after"])::after { inset-block-end: -1px; }
+  :where([data-tm-layout="row"]) > :where([data-tm-drop="before"], [data-tm-drop="after"])::after { inset-block: 0; border-block-start: 0; border-inline-start: 2px solid var(--tm-accent); }
+  :where([data-tm-layout="row"]) > :where([data-tm-drop="before"])::after { inset-inline: -1px auto; }
+  :where([data-tm-layout="row"]) > :where([data-tm-drop="after"])::after { inset-inline: auto -1px; }
+  :where([data-tm-drop="inside"]) { outline: 2px solid var(--tm-accent); outline-offset: -2px; }
+
+  /* window splitter: a focusable role="separator" (in the tab order: not tabindex="-1") between two panes. A 1px line (a border: forced colors keep it) with
+     a 9px hit area (the ::after), accent and 3px wide on hover, focus and while dragged (:active lasts the whole drag).
+     aria-orientation="vertical" splits columns; without it (the ARIA default, horizontal) it splits rows */
+  :where([role="separator"][tabindex]:not([tabindex="-1"])) {
+    position: relative; flex: none; align-self: stretch; z-index: 1; touch-action: none;
+    block-size: 0; border-block-start: 1px solid var(--tm-border); cursor: row-resize; outline: 0 solid var(--tm-accent);
+  }
+  :where([role="separator"][tabindex]:not([tabindex="-1"])[aria-orientation="vertical"]) { block-size: auto; inline-size: 0; border-block-start: 0; border-inline-start: 1px solid var(--tm-border); cursor: col-resize; }
+  :where([role="separator"][tabindex]:not([tabindex="-1"]))::after { content: ""; position: absolute; inset: -5px 0 -4px; }
+  :where([role="separator"][tabindex]:not([tabindex="-1"])[aria-orientation="vertical"])::after { inset-block: 0; inset-inline: -5px -4px; }
+  :where([role="separator"][tabindex]:not([tabindex="-1"])):is(:hover, :focus-visible, :active) { border-color: var(--tm-accent); outline-width: 1px; outline-offset: 0; }
+}
+
+/* Forced colors drop the lifted row's surface and shadow: a ring in the selection color instead, as core gives selected
+   and pressed items (in this last layer, so it beats component rules; an outline, so app CSS restyling the fill keeps it) */
+@layer tm.layout {
+  @media (forced-colors: active) {
+    :where([data-tm-lifted]) { outline: 2px solid Highlight; outline-offset: -2px; }
+  }
+}

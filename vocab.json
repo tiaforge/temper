@@ -122,7 +122,7 @@
     "data-tm-layout": {
       "module": "core",
       "on": "any container",
-      "description": "Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-tm-gap, space around them from data-tm-pad; children never get margins.",
+      "description": "Lays out the element's children. Wins over the element's own display, so it also works on label, article, fieldset, dialog. Space between children comes from data-tm-gap, space around them from data-tm-pad; children never get margins. On ul and ol it removes the bullets and the start padding; add role=\"list\", since WebKit drops the list role of a list without bullets.",
       "values": {
         "stack": "Vertical column.",
         "row": "Horizontal row, items vertically centered. Wraps onto more lines when it runs out of space, except on button, a and label (icon + text stays on one line). Override with data-tm-wrap.",
@@ -528,14 +528,14 @@
       "module": "menu",
       "boolean": true,
       "on": "[popover] (dropdown) or any container (static menu)",
-      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-tm-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget it is placed under its button (a plain [popover] without data-tm-menu is centered in the viewport); it fades in and out.",
+      "description": "Menu of buttons, links and checkbox labels; <hr> separates groups, a <span data-tm-caption> labels one, and a <kbd> at the end of an item shows its shortcut. On a [popover] opened via popovertarget, commandfor or a script's showPopover({ source: button }) (no id needed: the source is its anchor) it is placed under its button (a plain [popover] without data-tm-menu is centered in the viewport); it fades in and out.",
       "short": "Menu of buttons, links and checkbox labels; as a [popover] it opens under its button."
     },
     "data-tm-combo": {
       "module": "menu",
       "boolean": true,
       "on": "a wrapper around an input and its suggestion list",
-      "description": "Combobox: the data-tm-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script.",
+      "description": "Combobox: the data-tm-menu (role=\"listbox\", options role=\"option\", the highlighted one aria-selected=\"true\") inside it opens under the field. Show and hide the list from script. Options look the same in any role=\"listbox\", also outside a data-tm-menu (a command palette's list in a dialog): rows with a hover fill, the marked one (aria-selected=\"true\") in the soft accent. A script that sets aria-selected on the option it marks (sinter's data-sn-options does) is all such a list needs.",
       "short": "Wraps a field and its suggestion list (data-tm-menu, role=\"listbox\"), which opens under it."
     },
     "data-tm-toasts": {
@@ -575,6 +575,16 @@
       "description": "A number cell: right-aligned (left in RTL) with tabular figures, so digits line up. Put it on the header cell and every cell of the column (and the footer total). In a sortable header the sort arrow moves to the left.",
       "short": "Number cell: right-aligned, tabular figures (on th and every td of the column)."
     },
+    "data-tm-plain": {
+      "module": "table",
+      "boolean": true,
+      "on": "table",
+      "tags": [
+        "table"
+      ],
+      "description": "A table that is a grid of controls, not a data table: a month calendar (role=\"grid\", a button in each cell), a keypad. It drops temper's data-table look (row lines, cell padding, row hover, full width, the sticky header, selected rows), so the table and its cells fall back to temper's base styles (with the browser's table defaults beneath, such as border-spacing and 1px cell padding) and the controls inside keep their own styles. Data tables keep their look even with buttons in their rows (actions, a sortable header): leave it off there.",
+      "short": "A grid of controls (month calendar), not a data table: no row lines, padding, hover or sticky header."
+    },
     "data-tm-prose": {
       "module": "prose",
       "boolean": true,
@@ -605,12 +615,48 @@
         "dialog"
       ],
       "description": "The dialog is a sheet that slides in from an edge of the screen instead of appearing in the middle. Open and close it like any dialog (command=\"show-modal\", closedby=\"any\"); header and footer stay in view while its content scrolls. Width: --tm-dialog-width. Keeps clear of the notch and home indicator (viewport-fit=cover), mirrors in RTL.",
-      "short": "Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet.",
+      "short": "Dialog as a sheet sliding in from an edge: side panel (end, start), bottom or top sheet.",
       "values": {
         "end": "Full-height panel at the inline end (right; left in RTL): details, an inspector. The footer sits at the bottom.",
         "start": "Full-height panel at the inline start: filters, navigation. The footer sits at the bottom.",
         "bottom": "Along the bottom edge, as tall as its content: actions, a short form. Full width on phones.",
+        "top": "Along the top edge, as tall as its content, sliding down: a command palette or a search. Full width on phones.",
         "narrow": "A bottom sheet on narrow screens (< 48rem), an ordinary centered dialog from 48rem."
+      }
+    },
+    "data-tm-handle": {
+      "module": "drag",
+      "allowEmpty": true,
+      "on": "button",
+      "tags": [
+        "button"
+      ],
+      "requires": [
+        "aria-label",
+        "aria-labelledby"
+      ],
+      "description": "A drag handle: the button a row or card is picked up by. A grab cursor (grabbing while it is pressed, or while aria-pressed=\"true\" marks its row as picked up) and touch-action: none on the handle only, so a finger on it drags and the list still scrolls everywhere else. Empty, it is a square button with a grip icon (data-tm-icon draws another one); without data-tm-variant it is quiet (no fill, muted); data-tm-size works as on any button. Needs an aria-label (\"Move Inbox\"). The moving is your script's: the pointer, the keys (Space picks up, the arrows move, Space drops, Escape cancels) and the announcements.",
+      "short": "Drag handle button (grip, grab cursor); \"quiet\" shows on hover only.",
+      "values": {
+        "quiet": "Hidden until its row (the handle's parent) is under the pointer or has focus, on devices that can hover; always shown on touch screens and while aria-pressed=\"true\"."
+      }
+    },
+    "data-tm-lifted": {
+      "module": "drag",
+      "boolean": true,
+      "on": "the row or card being moved (li, article, tr)",
+      "description": "The row or card that is picked up: raised above its neighbours with the raised surface, the text color and a large shadow. Set it while it moves (and aria-pressed=\"true\" on its data-tm-handle); following the pointer (a translate) is your script's.",
+      "short": "The row or card being moved: raised surface and shadow."
+    },
+    "data-tm-drop": {
+      "module": "drag",
+      "on": "a row, card or drop target while something is dragged over it",
+      "description": "Where the dragged row or card will land, drawn without moving anything: a 2px accent line centred on the element's edge, or an outline inside it. In a data-tm-layout=\"row\" the lines are on its inline edges. The line is the element's ::after (it is made position: relative), so not on a busy button or a data-tm-stretch card link. Set it on one element at a time from your script and remove it on drop or cancel.",
+      "short": "Drop place while dragging: a line before or after the element, or an outline inside it.",
+      "values": {
+        "before": "A line on its start edge (top; inline start in a row).",
+        "after": "A line on its end edge (bottom; inline end in a row).",
+        "inside": "An outline inside it: dropped into it (a folder, a board's empty column)."
       }
     },
     "data-tm-surface": {

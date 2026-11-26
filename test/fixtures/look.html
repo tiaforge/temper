@@ -20,6 +20,20 @@
   <!-- a sticky table header paints what the table sits on -->
   <div data-tm-scroll><table><thead><tr><th id="th-page">On the page</th></tr></thead></table></div>
   <article><table><thead><tr><th id="th-card">In a card</th></tr></thead></table></article>
+  <!-- a month calendar is a grid of controls (data-tm-plain); a data table with buttons in its rows keeps its look -->
+  <div data-tm-layout="row" data-tm-align="start">
+    <table data-tm-plain role="grid" aria-label="November 2026" id="cal">
+      <thead><tr><th scope="col" id="cal-th">Mo</th><th scope="col">Tu</th></tr></thead>
+      <tbody><tr id="cal-tr"><td role="gridcell" id="cal-td" aria-selected="false"><button type="button" data-tm-variant="ghost" id="cal-day">2</button></td>
+        <td role="gridcell" aria-selected="true"><button type="button" data-tm-variant="ghost" aria-pressed="true">3</button></td></tr></tbody>
+    </table>
+    <table id="data"><thead><tr><th id="data-th">Name</th></tr></thead>
+      <tbody><tr id="data-tr"><td id="data-td"><button type="button" data-tm-variant="ghost">Open</button></td></tr></tbody></table>
+  </div>
+  <!-- avatars: the capitals in the middle of the circle, in any font (each gets a baseline marker in the test) -->
+  <p id="avatars"><span data-tm-avatar id="av-1">HE</span> <span data-tm-avatar data-tm-size="lg" id="av-2" style="font-family: 'DejaVu Sans', sans-serif">HE</span>
+    <span data-tm-avatar id="av-3" style="--tm-avatar-size: 6rem; font-family: serif">HE</span>
+    <span data-tm-avatar id="av-long">WWWWWW</span></p>
 </main>
 </body>
 </html>

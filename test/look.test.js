@@ -1,6 +1,6 @@
 // The default look's details (fixtures/look.html in a real browser, skipped without Chrome/Chromium) and the build
 // output: pseudo-element rules that match, the md size, straight tone bars, scrollbars, sticky table headers, font
-// weights, and properties the build targets must keep.
+// weights, avatar initials in the middle, and properties the build targets must keep.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
@@ -10,6 +10,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bundle } from 'lightningcss';
 import { launch, findBrowser } from '../packages/inspect/lib/cdp.js';
+import { checkMarkup } from '../lib/check.js';
 
 let browser = null;
 try { browser = findBrowser(); } catch {}
@@ -82,4 +83,126 @@ test('placeholder, selection, md size, tone bars, scrollbars and sticky headers'
     await b.close();
     srv.close();
   }
+});
+
+test('avatar initials: the capitals sit in the middle of the circle, in any font; inline, the initials keep the text baseline', { skip }, async () => {
+  const srv = createServer(async (req, res) => {
+    try {
+      const body = await readFile(join(root, decodeURIComponent(req.url.split('?')[0])));
+      res.setHeader('content-type', extname(req.url) === '.css' ? 'text/css' : 'text/html');
+      res.end(body);
+    } catch { res.statusCode = 404; res.end(); }
+  });
+  await new Promise(r => srv.listen(0, '127.0.0.1', r));
+  const b = await launch(browser);
+  try {
+    const page = await b.newPage();
+    await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/look.html`, { width: 800, height: 700, scheme: 'light', settle: 100 });
+    const r = await page.evaluate(`(() => {
+      if (!CSS.supports('text-box: trim-both cap alphabetic')) return null;
+      const ctx = document.createElement('canvas').getContext('2d');
+      return ['av-1', 'av-2', 'av-3'].map(id => {
+        const av = document.getElementById(id), s = getComputedStyle(av);
+        // a zero-size inline-block sits on the baseline; the cap height is the font's, measured on an H
+        const mark = av.appendChild(document.createElement('span'));
+        mark.style.cssText = 'display: inline-block; inline-size: 0; block-size: 0';
+        const baseline = mark.getBoundingClientRect().bottom;
+        mark.remove();
+        ctx.font = s.fontWeight + ' ' + s.fontSize + ' ' + s.fontFamily;
+        const cap = ctx.measureText('H').actualBoundingBoxAscent, box = av.getBoundingClientRect();
+        // the paragraph's text baseline next to the avatar
+        const p = av.parentElement.appendChild(document.createElement('span'));
+        p.style.cssText = 'display: inline-block; inline-size: 0; block-size: 0';
+        const text = p.getBoundingClientRect().bottom;
+        p.remove();
+        return { id, off: baseline - cap / 2 - (box.top + box.height / 2), baseline, text };
+      });
+    })()`);
+    // text too long for the circle is clipped to it (overflow: clip keeps the inline baseline, unlike hidden)
+    const long = await page.evaluate(`(() => { const a = document.getElementById('av-long'), r = a.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.right + 3, r.top + r.height / 2); return { overflow: getComputedStyle(a).overflow, wider: a.scrollWidth > r.width, outside: hit === a }; })()`);
+    assert.deepEqual(long, { overflow: 'clip', wider: true, outside: false });
+    if (!r) return; // no text-box: the line box is centred, as before
+    for (const a of r) {
+      assert.ok(Math.abs(a.off) <= 0.5, `${a.id}: the capitals' middle is ${a.off.toFixed(2)}px from the circle's`);
+      assert.ok(Math.abs(a.baseline - a.text) <= 0.5, `${a.id}: initials on ${a.baseline}, the text's baseline ${a.text}`);
+    }
+  } finally {
+    await b.close();
+    srv.close();
+  }
+});
+
+test('data-tm-plain: a calendar grid has none of the data-table look; a data table with buttons keeps it', { skip }, async () => {
+  const srv = createServer(async (req, res) => {
+    try {
+      const body = await readFile(join(root, decodeURIComponent(req.url.split('?')[0])));
+      res.setHeader('content-type', extname(req.url) === '.css' ? 'text/css' : 'text/html');
+      res.end(body);
+    } catch { res.statusCode = 404; res.end(); }
+  });
+  await new Promise(r => srv.listen(0, '127.0.0.1', r));
+  const b = await launch(browser);
+  try {
+    const page = await b.newPage();
+    await page.goto(`http://127.0.0.1:${srv.address().port}/test/fixtures/look.html`, { width: 800, height: 700, scheme: 'light', settle: 100 });
+    const look = () => page.evaluate(`(() => {
+      const cs = id => getComputedStyle(document.getElementById(id));
+      const parent = document.getElementById('cal').parentElement.getBoundingClientRect().width;
+      return ['cal', 'data'].map(t => ({
+        width: document.getElementById(t).getBoundingClientRect().width, parent,
+        line: cs(t + '-td').borderBottomWidth, pad: cs(t + '-td').paddingLeft, sticky: cs(t + '-th').position,
+        hover: cs(t + '-tr').backgroundColor, collapse: cs(t).borderCollapse,
+        button: [cs(t === 'cal' ? 'cal-day' : 'data-td').cursor],
+      }));
+    })()`);
+    const [cal, data] = await look();
+    // the calendar: the browser's own table, no lines, no padding, not full width, the header does not stick
+    assert.equal(cal.line, '0px');
+    assert.equal(cal.pad, '1px', 'the browser default cell padding');
+    assert.equal(cal.sticky, 'static');
+    assert.equal(cal.collapse, 'separate');
+    assert.ok(cal.width < cal.parent / 2, `the calendar is as wide as its days: ${cal.width}`);
+    // the data table keeps its look although its row holds a button
+    assert.equal(data.line, '1px');
+    assert.notEqual(data.pad, '1px');
+    assert.equal(data.sticky, 'sticky');
+    // row hover: the data table's row gets a fill, the calendar's does not
+    for (const [t, filled] of [['cal-tr', false], ['data-tr', true]]) {
+      const r = await page.evaluate(`(() => { const r = document.getElementById('${t}').getBoundingClientRect(); return [r.x + 5, r.y + r.height / 2]; })()`);
+      await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: r[0], y: r[1] });
+      await new Promise(res => setTimeout(res, 300));
+      const bg = await page.evaluate(`getComputedStyle(document.getElementById('${t}')).backgroundColor`);
+      const clear = /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/.test(bg);
+      assert.equal(!clear, filled, `${t} on hover: ${bg}`);
+    }
+    // a selected row of a plain table (table.css's selection rules, specificity 0,4,1 through :is()) has no fill either
+    const c = await page.evaluate(`(() => { const r = document.getElementById('cal-tr').getBoundingClientRect(); return [r.x + 5, r.y + r.height / 2]; })()`);
+    await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: c[0], y: c[1] });
+    await new Promise(res => setTimeout(res, 300));
+    // read once the row's background transition has run (read at once, it still shows the start: no fill)
+    await page.evaluate(`document.getElementById('cal-tr').setAttribute('aria-selected', 'true')`);
+    await new Promise(res => setTimeout(res, 300));
+    const sel = await page.evaluate(`(() => { const tr = document.getElementById('cal-tr'); return [getComputedStyle(tr).backgroundColor, tr.matches(':hover')]; })()`);
+    assert.ok(sel[1], 'hovered');
+    assert.match(sel[0], /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/, `selected plain row, hovered: ${sel}`);
+    await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
+    await new Promise(res => setTimeout(res, 300));
+    const still = await page.evaluate(`getComputedStyle(document.getElementById('cal-tr')).backgroundColor`);
+    assert.match(still, /^rgba\(0, 0, 0, 0\)$|\/ 0\)$/, `selected plain row: ${still}`);
+    // the day buttons keep their own styles (a ghost button, the pressed fill)
+    const day = await page.evaluate(`(() => { const d = getComputedStyle(document.getElementById('cal-day')); return [d.cursor, d.borderRadius, d.minHeight]; })()`);
+    assert.deepEqual(day.slice(0, 2), ['pointer', '8px']);
+  } finally {
+    await b.close();
+    srv.close();
+  }
+});
+
+test('checker: data-tm-plain is a boolean on a table, in table.css', () => {
+  const codes = (html, modules = new Set(['core', 'table'])) => checkMarkup(html, 'x.html', { modules }).map(d => d.code);
+  assert.deepEqual(codes('<table data-tm-plain role="grid" aria-label="May"><tr><th>Mo</th></tr></table>'), []);
+  assert.deepEqual(codes('<table data-tm-plain="true"><tr><th>Mo</th></tr></table>'), ['TM102']);
+  assert.deepEqual(codes('<div data-tm-plain></div>'), ['TM108']);
+  assert.deepEqual(codes('<table data-tm-plain><tr><th>Mo</th></tr></table>', new Set(['core'])), ['TM110']);
 });

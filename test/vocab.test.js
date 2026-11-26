@@ -69,9 +69,9 @@ for (const file of ['llms.txt', 'llms-full.txt']) {
   });
 }
 
-test('llms.txt stays short', () => { // 12000 until feedback.css and table.css (2026-11-07), 13000 until forms.css and prose.css, 13500 until data-tm-sticky, data-tm-join and data-tm-container, 13850 until sheet.css (2026-11-24), then 14100, 14500 since the data-tm- prefix (about 300 bytes over 99 mentions), 16100 since expressive.css (12 attributes, 7 tokens)
+test('llms.txt stays short', () => { // 12000 until feedback.css and table.css (2026-11-07), 13000 until forms.css and prose.css, 13500 until data-tm-sticky, data-tm-join and data-tm-container, 13850 until sheet.css (2026-11-24), then 14100, 14500 since the data-tm- prefix (about 300 bytes over 99 mentions), 16100 since expressive.css (12 attributes, 7 tokens), 16700 since drag.css and data-tm-lifted, data-tm-drop, data-tm-sheet="top" (sinter-alloy T2–T6)
   const short = readFileSync(new URL('../llms.txt', import.meta.url), 'utf8');
-  assert.ok(short.length < 16100, `llms.txt is ${short.length} bytes; move detail to llms-full.txt (full-only blocks)`);
+  assert.ok(short.length < 16700, `llms.txt is ${short.length} bytes; move detail to llms-full.txt (full-only blocks)`);
 });
 
 test('dialog and card headers and footers are flex rows', () => {

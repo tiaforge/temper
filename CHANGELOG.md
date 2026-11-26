@@ -50,7 +50,37 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
 - `temper check`: a number on another numeric axis is no longer suggested as a mix-up (`data-tm-cols="8"` is not
   "did you mean data-tm-seed").
 
+### New module: `drag.css` (asked for by sinter-alloy)
+
+- Dragging rows and cards, and resizing panes: temper draws the states, the script (yours, or a component library's
+  such as sinter-alloy's sortable list and board) moves things and sets them. `all.css` includes it.
+- `data-tm-handle` on a button is a drag handle: a grab cursor (grabbing while pressed or while
+  `aria-pressed="true"` marks its row as picked up) and `touch-action: none` on the handle only, so the list still
+  scrolls on a phone. Empty, it is a square button with a grip drawn by temper itself, so it needs no icon from
+  `icons.css` or the Vite plugin (alloy's handles were empty when `grip-vertical` was not emitted); `data-tm-icon`
+  draws another. Without a variant it is quiet (no fill, muted). `data-tm-handle="quiet"` hides it until its row
+  (the handle's parent) is under the pointer or has focus, on devices that can hover; touch screens always show it.
+  `temper check` wants an `aria-label` on it (TM103).
+- Moving states: `data-tm-lifted` on the row or card being moved (raised surface, the text colour, a large
+  shadow, above its neighbours) and `data-tm-drop="before|after|inside"` on where it will land: a 2px accent line
+  centred on the element's start or end edge (its inline edges in a `data-tm-layout="row"`), or an outline inside it.
+  Drawn with a border on `::after` and an outline (forced colours keep both), no outer margin: nothing moves. In
+  forced colours the lifted row, whose surface and shadow are dropped, gets a `Highlight` ring, as selected and
+  pressed items do.
+- Window splitter: a focusable `role="separator"` (a `tabindex` other than -1) between two panes is a 1px
+  `--tm-border` line with a 9px hit area, accent and 3px wide on hover, focus and while it is dragged (`:active`),
+  `col-resize` with `aria-orientation="vertical"` (columns), else `row-resize`, and `touch-action: none`. Sizing the
+  panes is the script's (`aria-valuenow` and a size it writes). A border and an outline, which forced colours keep.
+
 ### Core
+
+- **Visible change:** a button with `aria-current="date"` (today in a calendar) has an accent ring instead of the
+  current page's soft fill, so today and a picked day (`aria-pressed="true"`, `aria-selected`) look different. Range
+  fills (start, middle, end of a run) stay the script's: CSS cannot see a run across table rows.
+
+- **Visible change:** a `ul` or `ol` with `data-tm-layout` has no bullets and no start padding: its items are rows or
+  tiles (a laid-out list that should keep its bullets needs `list-style` in app CSS). Add `role="list"`, since WebKit
+  drops the list role of a list without bullets.
 
 - `data-tm-layout="center"` with `data-tm-pad="none"` keeps its width. The padding token was a unitless `0`, and
   center takes `max(var(--tm-space-md), <padding>)`, which a unitless 0 makes invalid, so the width limit was dropped
@@ -73,7 +103,50 @@ through `deprecated` in `vocab.json` first: the old name keeps working, `temper 
   edges, visible at 100% scaling. The start margin is now rounded down and the end takes the rest; browsers without
   `round()` (before Chrome 125) keep `auto`. The `core.css` budget is 6960 B brotli (was 6800) for it.
 
+- `data-tm-avatar` initials sit in the middle of the circle. Centring the line box left capitals off centre by the
+  font's ascent minus descent minus cap height, halved: 1px high in a 2.5rem avatar with DejaVu Sans or FreeSans
+  (measured in Chromium; Inter was exact). Where `text-box` is supported (Chromium 133+, Safari 18.2+) the line is
+  trimmed to the cap height and the baseline, so the capitals are centred in any font (within 0.5px in every font
+  measured); elsewhere (Firefox) the line box stays centred, as before. The avatar clips with `overflow: clip`
+  instead of `hidden` (with `hidden` an inline-block sits on its bottom edge next to text): initials stay on the
+  text's baseline, and text too long for the circle is still cut off. An avatar holding an `<svg>` icon (no line
+  of text) now sits with its bottom edge on the baseline next to text where `text-box` is supported (8-10px higher
+  than before; in a row of `data-tm-layout`, which centres its items, nothing moves).
+
+### Sheet
+
+- `data-tm-sheet="top"`: a dialog along the top edge, as wide as a dialog and as tall as its content, sliding
+  down; full width on phones, clear of the notch. For a command palette, which could not be placed near the top
+  without an outer margin (TM206).
+
+### Table
+
+- `data-tm-plain` on a `<table>` (asked for by sinter-alloy): a grid of controls such as a month calendar
+  (`role="grid"`, a button in each cell) drops temper's data-table look, core's (row lines, cell padding, row hover,
+  full width) and table.css's (sticky header, selected rows), with `all: revert-layer` as prose.css does for layout
+  tables; the buttons in it keep their own styles. Data tables keep their look, also with buttons in their rows. In
+  `table.css`, after its own rules (core.css has no room); without table.css a table keeps core's look.
+
+### Menu
+
+- **Visible change:** options in any `role="listbox"`, also outside a `data-tm-menu` (asked for by sinter-alloy: a command palette's
+  list in a dialog), get the menu's option rows, hover fill and the soft accent on the marked one
+  (`aria-selected="true"`). One selector list for both, so a listbox inside a menu gets each rule once. sinter's
+  `data-sn-options` sets `aria-selected` on the option it marks, so the list needs nothing else; temper still styles
+  no `data-sn-*` attribute. An existing listbox's options become flex rows with a minimum height, padding and rounded
+  corners (a listbox of tiles changes; app CSS wins, as always).
+
+- Documented: a `[popover][data-tm-menu]` opened from a script with `showPopover({ source: button })`, without
+  `popovertarget` and without ids, opens under that button: the source is the popover's implicit anchor, which
+  temper's anchor positioning already uses (checked in Chromium; a test covers it where the browser has both).
+
 ### Vite plugin
+
+- Documented: markup shipped in a package (a sinter component library's components) is checked, scanned for
+  icons and kept by `prune` once its folder is named in `paths` and `prune.paths`, next to your own sources:
+  `temper({ paths: ['src', lib], prune: { paths: ['src', lib] } })`. Without it, node_modules is never scanned, so
+  the library's icons were not emitted (caley's empty `grip-vertical` handles) and `prune` would drop its attributes.
+  The plugin does not read sinter's configuration (temper knows nothing of sinter).
 
 - `inspect`: the dev page also gets temper-inspect's new document, stylesheet and geometry checks (the client waits
   for `prepare()`; an older temper-inspect has none and works as before). A stylesheet finding names its source

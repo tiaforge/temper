@@ -22,7 +22,10 @@ import '@tiaforge-ui/temper/forms.css';  // data-tm-field (icon, unit, button in
 import '@tiaforge-ui/temper/sheet.css';  // data-tm-sheet: a dialog as a side panel or bottom sheet
 import '@tiaforge-ui/temper/expressive.css'; // surfaces, display type, hero and bento, seeded colour (opt-in voice)
 import '@tiaforge-ui/temper/icons.css';  // the default icon set (see Icons)
+<!-- full -->
+import '@tiaforge-ui/temper/drag.css';   // data-tm-handle: drag handles (sortable lists, boards)
 import '@tiaforge-ui/temper/pico-compat.css'; // only while components written for Pico (reading --pico-*) remain
+<!-- /full -->
 // or everything: import '@tiaforge-ui/temper/all.css';
 ```
 
@@ -40,6 +43,10 @@ export default { plugins: [temper()] };
 // while migrating step by step, check only the migrated parts: temper({ paths: ['src/contacts', 'contacts'] })
 // opt-in enhancements (newer CSS, fine to leave off): temper({ enhance: ['customizable-select'] }) or enhance: 'all'
 // smaller builds: temper({ prune: true }) drops rules for attributes and values the project never uses
+<!-- full -->
+// markup from a package (a component library) is not scanned unless named: with lib = 'node_modules/<pkg>/<components dir>',
+// temper({ paths: ['src', lib], prune: { paths: ['src', lib] } }) checks it, emits its icons and keeps its attributes
+<!-- /full -->
 // without the plugin: import '@tiaforge-ui/temper/enhance/customizable-select.css' after core.css
 ```
 
@@ -454,6 +461,13 @@ icon buttons (`data-tm-icon`) do not. A submit button (`type="submit"`, the defa
 
 A `data-tm-menu` popover can hold any content, not only items: a month picker, a small form.
 
+Options (`role="option"`) in any `role="listbox"`, in a menu or not (a command palette's list in a dialog), are rows
+with a hover fill; the marked one, `aria-selected="true"`, has the soft accent. A script that sets that
+`aria-selected` on the option it marks (sinter's `data-sn-options` does) is all a palette or combobox list needs.
+
+Opened from a script, `menu.showPopover({ source: button })` places it under that button too: the source is its
+anchor, so neither needs an id (a component used twice on a page).
+
 ### Sheet: side panel or bottom sheet (sheet.css)
 
 ```html
@@ -474,6 +488,31 @@ Dialog recipe. `end` and `start` are full-height side panels (details, filters) 
 48rem and an ordinary centered dialog from there (pick it when a dialog should feel native on phones). Side
 panels are `--tm-dialog-width` wide, and on phones leave a strip of the page to tap. They mirror in RTL and
 keep clear of the notch and the home indicator with `viewport-fit=cover`, also with `data-tm-pad`.
+
+### Sortable list: drag handles (drag.css)
+
+```html
+<ul role="list" aria-label="Folders" data-tm-layout="stack" data-tm-gap="none">
+  <li data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none">
+    <button data-tm-handle aria-label="Move Inbox" aria-pressed="false" data-tm-size="sm"></button>
+    <a href="/inbox" data-tm-grow>Inbox</a>
+  </li>
+</ul>
+```
+
+An empty `data-tm-handle` button is a quiet square button with a grip, a grab cursor and `touch-action: none` (only
+the handle: the list still scrolls on a phone). Set `aria-pressed="true"` on it while its row is picked up (grabbing
+cursor, pressed look). `data-tm-handle="quiet"` hides it until its row (the handle's parent) is under the pointer or
+has focus, on devices that can hover. temper draws the states; the pointer, the keys and the announcements are your
+script's.
+
+While a row moves: `data-tm-lifted` on it (raised surface, shadow) and `data-tm-drop="before"` or `"after"` on the
+row it will land next to (a 2px accent line on that edge; on the inline edges in a `data-tm-layout="row"`), or
+`data-tm-drop="inside"` on a target it drops into (an outline: a folder, an empty column). Nothing moves for them.
+
+Resizable panes: a focusable `<div role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize folders"
+aria-valuenow="220" aria-valuemin="140" aria-valuemax="400">` between them is a 1px line with a 9px hit area, accent
+on hover, focus and while dragged; your script sizes the panes (WAI-ARIA window splitter keys).
 
 ### Expressive: surfaces, display type, hero and bento (expressive.css)
 
@@ -568,6 +607,10 @@ after the dialog opens (the top layer stacks in opening order).
 The header sticks while the page scrolls. Put `data-tm-num` on every cell of a number column. Never put
 `data-tm-layout` on a `td` (it stops being a cell); wrap the cell content instead. No rows: one
 `<tr><td colspan="5" data-tm-muted>No invoices yet.</td></tr>`.
+
+A table that is a grid of controls, not data (a month calendar: `<table role="grid" data-tm-plain>` with a button
+in each cell), takes `data-tm-plain`: no row lines, cell padding, row hover, full width or sticky header; style its
+cells yourself. A data table with buttons in its rows keeps its look: no `data-tm-plain` there.
 
 ### Fields with an icon, a unit or a button (forms.css)
 

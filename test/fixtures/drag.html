@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Drag</title>
+<link rel="stylesheet" href="../../src/core.css">
+<link rel="stylesheet" href="../../src/icons.css">
+<link rel="stylesheet" href="../../src/drag.css">
+</head>
+<body>
+<main data-tm-layout="stack" data-tm-pad="md">
+  <ul role="list" aria-label="Folders" data-tm-list id="list">
+    <li id="row-1" data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none"><button id="h-1" data-tm-handle aria-label="Move Inbox" aria-pressed="false"></button><span>Inbox</span></li>
+    <li id="row-2" data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none"><button id="h-2" data-tm-handle aria-label="Move Sent" aria-pressed="true" data-tm-size="sm"></button><span>Sent</span></li>
+    <li id="row-3" data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none"><button id="h-3" data-tm-handle="quiet" aria-label="Move Archive" aria-pressed="false"></button><span>Archive</span></li>
+    <li id="row-4" data-tm-layout="row" data-tm-gap="xs" data-tm-wrap="none"><button id="h-4" data-tm-handle data-tm-icon="menu" data-tm-variant="outline" aria-label="Move Spam"></button><span>Spam</span></li>
+  </ul>
+  <ul role="list" aria-label="Tasks" data-tm-layout="stack" data-tm-gap="sm" id="cards">
+    <li id="c-1" data-tm-drop="before">Before me</li>
+    <li id="c-2" data-tm-lifted>Lifted</li>
+    <li id="c-3" data-tm-drop="after">After me</li>
+    <li id="c-4" data-tm-drop="inside">Into me</li>
+  </ul>
+  <div data-tm-layout="row" data-tm-gap="sm" id="cols">
+    <section id="col-1" data-tm-drop="before">Column</section><section id="col-2" data-tm-drop="after">Column</section>
+    <!-- dropped into: an outline only; its own ::after (a menu caret, a spinner) is left alone -->
+    <button type="button" id="col-3" data-tm-drop="inside">Folder</button>
+  </div>
+  <!-- window splitters between panes; tabindex="-1" is not in the tab order, so not a splitter temper draws -->
+  <div data-tm-layout="row" data-tm-wrap="none" data-tm-gap="none" style="block-size: 120px">
+    <div style="inline-size: 200px">Folders</div>
+    <div role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize folders" aria-valuenow="200" id="sep-v"></div>
+    <div data-tm-grow>Messages</div>
+  </div>
+  <div data-tm-layout="stack" data-tm-gap="none" style="block-size: 200px">
+    <div style="block-size: 80px">Top</div>
+    <div role="separator" tabindex="0" aria-label="Resize top" aria-valuenow="80" id="sep-h"></div>
+    <div role="separator" tabindex="-1" id="sep-off"></div>
+    <div data-tm-grow>Bottom</div>
+  </div>
+</main>
+</body>
+</html>

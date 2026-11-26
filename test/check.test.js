@@ -630,3 +630,20 @@ test('Vue: strings in {{ }} are not markup, a single { in text is text, bindings
 </template>`;
   assert.deepEqual(checkMarkup(src, 'A.vue').map(d => `${d.code}:${d.line}`), ['TM101:3', 'TM101:4']);
 });
+
+test('a component library in node_modules is checked and scanned for icons once its folder is in paths', async () => {
+  const { mkdirSync } = await import('node:fs');
+  const { usedIcons } = await import('../lib/icons.js');
+  const dir = mkdtempSync(join(tmpdir(), 'temper-lib-'));
+  const lib = join(dir, 'node_modules/@acme/widgets/components');
+  mkdirSync(join(dir, 'src'));
+  mkdirSync(lib, { recursive: true });
+  writeFileSync(join(dir, 'src/index.html'), '<span data-tm-icon="inbox"></span>');
+  writeFileSync(join(lib, 'sortable.html'), '<button data-tm-icon="grip-vertical" data-tm-variant="ghostly" aria-label="Move"></button>');
+  // the root alone never descends into node_modules
+  assert.deepEqual([...usedIcons([dir]).names], ['inbox']);
+  assert.deepEqual(check([dir], { icons: new Set(['inbox', 'grip-vertical']) }).map(d => d.code), []);
+  // named next to the app's own sources, the library's markup counts
+  assert.deepEqual([...usedIcons([join(dir, 'src'), lib]).names].sort(), ['grip-vertical', 'inbox']);
+  assert.deepEqual(check([join(dir, 'src'), lib], { icons: new Set(['inbox', 'grip-vertical']) }).map(d => d.code), ['TM101']);
+});

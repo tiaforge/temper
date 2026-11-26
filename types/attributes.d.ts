@@ -166,12 +166,20 @@ export interface TemperAttributes<Removes = never, Empty = never> {
   'data-tm-tooltip'?: string | Empty | null | Removes;
   /** Number cell: right-aligned, tabular figures (on th and every td of the column). Needs table.css. */
   'data-tm-num'?: true | '' | null | Removes;
+  /** A grid of controls (month calendar), not a data table: no row lines, padding, hover or sticky header. Needs table.css. */
+  'data-tm-plain'?: true | '' | null | Removes;
   /** Long-form text (Markdown, CMS, mail): spacing between blocks, reading width. Needs prose.css. */
   'data-tm-prose'?: true | '' | null | Removes;
   /** One field around an input and its icon, text (<span>€</span>) or end button. Needs forms.css. */
   'data-tm-field'?: true | '' | null | Removes;
-  /** Dialog as a sheet sliding in from an edge: side panel (end, start) or bottom sheet. Needs sheet.css. */
-  'data-tm-sheet'?: 'end' | 'start' | 'bottom' | 'narrow' | null | Removes;
+  /** Dialog as a sheet sliding in from an edge: side panel (end, start), bottom or top sheet. Needs sheet.css. */
+  'data-tm-sheet'?: 'end' | 'start' | 'bottom' | 'top' | 'narrow' | null | Removes;
+  /** Drag handle button (grip, grab cursor); "quiet" shows on hover only. Needs drag.css. */
+  'data-tm-handle'?: 'quiet' | '' | Empty | null | Removes;
+  /** The row or card being moved: raised surface and shadow. Needs drag.css. */
+  'data-tm-lifted'?: true | '' | null | Removes;
+  /** Drop place while dragging: a line before or after the element, or an outline inside it. Needs drag.css. */
+  'data-tm-drop'?: 'before' | 'after' | 'inside' | null | Removes;
   /** Background as a material: glass, gradient, mesh, or a wash at the top. Needs expressive.css. */
   'data-tm-surface'?: 'glass' | 'gradient' | 'mesh' | 'wash' | null | Removes;
   /** Faint film grain over the background. Needs expressive.css. */
